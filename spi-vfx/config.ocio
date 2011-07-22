@@ -1,0 +1,289 @@
+---
+ocio_profile_version: 1
+
+search_path: luts
+strictparsing: true
+luma: [0.2126, 0.7152, 0.0722]
+
+roles:
+  color_picking: cpf
+  color_timing: lg10
+  compositing_log: lgf
+  data: ncf
+  default: ncf
+  reference: lnf
+  scene_linear: lnf
+  spi_spm: lg8
+
+displays:
+  DCIP3:
+    - !<View> {name: Raw, colorspace: nc10}
+    - !<View> {name: Log, colorspace: lg10}
+    - !<View> {name: Film, colorspace: p3dci8}
+  sRGB:
+    - !<View> {name: Raw, colorspace: nc10}
+    - !<View> {name: Log, colorspace: lg10}
+    - !<View> {name: Film, colorspace: srgb8}
+active_displays: [sRGB, DCIP3]
+active_views: [Film, Log, Raw]
+
+colorspaces:
+  - !<ColorSpace>
+    name: lnf
+    family: ln
+    bitdepth: 32f
+    isdata: false
+    allocation: lg2
+    allocationvars: [-15, 6, 0.01]
+
+  - !<ColorSpace>
+    name: lnh
+    family: ln
+    bitdepth: 16f
+    isdata: false
+    allocation: lg2
+    allocationvars: [-15, 6]
+
+  - !<ColorSpace>
+    name: ln16
+    family: ln
+    bitdepth: 16ui
+    isdata: false
+    allocation: lg2
+    allocationvars: [-15, 0]
+
+  - !<ColorSpace>
+    name: lg16
+    family: lg
+    bitdepth: 16ui
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<FileTransform> {src: lg16.spi1d, interpolation: nearest}
+
+  - !<ColorSpace>
+    name: lg10
+    family: lg
+    bitdepth: 10ui
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<FileTransform> {src: lg10.spi1d, interpolation: nearest}
+
+  - !<ColorSpace>
+    name: lg8
+    family: lg
+    bitdepth: 8ui
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<FileTransform> {src: lg10.spi1d, interpolation: nearest}
+
+  - !<ColorSpace>
+    name: lgf
+    family: lg
+    bitdepth: 32f
+    isdata: false
+    allocation: uniform
+    allocationvars: [-0.25, 1.5]
+    to_reference: !<FileTransform> {src: lgf.spi1d, interpolation: linear}
+
+  - !<ColorSpace>
+    name: gn16
+    family: gn
+    bitdepth: 16ui
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<FileTransform> {src: gn16.spi1d, interpolation: nearest}
+
+  - !<ColorSpace>
+    name: gn10
+    family: gn
+    bitdepth: 10ui
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<FileTransform> {src: gn16.spi1d, interpolation: nearest}
+
+  - !<ColorSpace>
+    name: gn8
+    family: gn
+    bitdepth: 8ui
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<FileTransform> {src: gn16.spi1d, interpolation: nearest}
+
+  - !<ColorSpace>
+    name: gnf
+    family: gn
+    bitdepth: 32f
+    isdata: false
+    allocation: uniform
+    allocationvars: [-0.25, 1.5]
+    to_reference: !<FileTransform> {src: gnf.spi1d, interpolation: linear}
+
+  - !<ColorSpace>
+    name: vd16
+    family: vd
+    bitdepth: 16ui
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: version_8_whitebalanced.spimtx, interpolation: unknown, direction: inverse}
+        - !<FileTransform> {src: vd16.spi1d, interpolation: nearest}
+
+  - !<ColorSpace>
+    name: vd8
+    family: vd
+    bitdepth: 8ui
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: version_8_whitebalanced.spimtx, interpolation: unknown, direction: inverse}
+        - !<FileTransform> {src: vd16.spi1d, interpolation: nearest}
+
+  - !<ColorSpace>
+    name: vd10
+    family: vd
+    bitdepth: 10ui
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: version_8_whitebalanced.spimtx, interpolation: unknown, direction: inverse}
+        - !<FileTransform> {src: vd16.spi1d, interpolation: nearest}
+
+  - !<ColorSpace>
+    name: vdf
+    family: vd
+    bitdepth: 32f
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<GroupTransform>
+      children:
+        - !<ColorSpaceTransform> {src: vd16, dst: lnf}
+
+  - !<ColorSpace>
+    name: hd10
+    family: hd
+    bitdepth: 10ui
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: hdOffset.spimtx, interpolation: nearest, direction: inverse}
+        - !<ColorSpaceTransform> {src: vdf, dst: lnf}
+
+  - !<ColorSpace>
+    name: dt8
+    family: dt
+    bitdepth: 8ui
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: diffuseTextureMultiplier.spimtx, interpolation: nearest}
+        - !<ColorSpaceTransform> {src: vdf, dst: lnf}
+
+  - !<ColorSpace>
+    name: dt16
+    family: dt
+    bitdepth: 16ui
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: diffuseTextureMultiplier.spimtx, interpolation: nearest}
+        - !<ColorSpaceTransform> {src: vdf, dst: lnf}
+
+  - !<ColorSpace>
+    name: cpf
+    family: cp
+    bitdepth: 32f
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: cpf.spi1d, interpolation: linear}
+
+  - !<ColorSpace>
+    name: nc8
+    family: nc
+    bitdepth: 8ui
+    isdata: true
+    allocation: uniform
+    allocationvars: [0, 1]
+
+  - !<ColorSpace>
+    name: nc10
+    family: nc
+    bitdepth: 10ui
+    isdata: true
+    allocation: uniform
+    allocationvars: [0, 1]
+
+  - !<ColorSpace>
+    name: nc16
+    family: nc
+    bitdepth: 16ui
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+
+  - !<ColorSpace>
+    name: ncf
+    family: nc
+    bitdepth: 32f
+    isdata: true
+    allocation: uniform
+    allocationvars: [0, 1]
+
+  - !<ColorSpace>
+    name: srgb8
+    family: srgb
+    bitdepth: 8ui
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    from_reference: !<GroupTransform>
+      children:
+        - !<ColorSpaceTransform> {src: lnf, dst: lg10}
+        - !<FileTransform> {src: spi_ocio_srgb_test.spi3d, interpolation: linear}
+
+  - !<ColorSpace>
+    name: p3dci8
+    family: p3dci
+    bitdepth: 16ui
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    from_reference: !<GroupTransform>
+      children:
+        - !<ColorSpaceTransform> {src: lnf, dst: lg10}
+        - !<FileTransform> {src: colorworks_filmlg_to_p3.3dl, interpolation: linear}
+
+  - !<ColorSpace>
+    name: xyz16
+    family: xyz
+    bitdepth: 16ui
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    from_reference: !<GroupTransform>
+      children:
+        - !<ColorSpaceTransform> {src: lnf, dst: p3dci8}
+        - !<ExponentTransform> {value: [2.6, 2.6, 2.6, 1]}
+        - !<FileTransform> {src: p3_to_xyz16.spimtx, interpolation: unknown}
+        - !<ExponentTransform> {value: [2.6, 2.6, 2.6, 1], direction: inverse}

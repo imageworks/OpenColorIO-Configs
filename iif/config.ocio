@@ -1,0 +1,84 @@
+---
+ocio_profile_version: 1
+
+search_path: luts
+strictparsing: true
+luma: [0.2126, 0.7152, 0.0722]
+
+roles:
+  color_picking: raw
+  color_timing: adx10
+  compositing_log: adx10
+  data: raw
+  default: raw
+  reference: aces
+  scene_linear: aces
+
+displays:
+  p3d60:
+    - !<View> {name: Raw, colorspace: raw}
+    - !<View> {name: RRT, colorspace: rrt_odt_p3d60}
+  sRGB:
+    - !<View> {name: Raw, colorspace: raw}
+    - !<View> {name: RRT, colorspace: rrt_odt_r709}
+active_displays: [sRGB, p3d60]
+active_views: [RRT, Raw]
+
+colorspaces:
+  - !<ColorSpace>
+    name: aces
+    family: aces
+    bitdepth: 32f
+    isdata: false
+    allocation: lg2
+    allocationvars: [-12, 6]
+
+  - !<ColorSpace>
+    name: adx10
+    family: adx
+    bitdepth: 10ui
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: channel_dependent_offset.spimtx, interpolation: linear}
+        - !<FileTransform> {src: ten_bit_scale.spimtx, interpolation: linear}
+        - !<FileTransform> {src: channel_dependent_scalar.spimtx, interpolation: linear}
+        - !<FileTransform> {src: cdd_to_cid.spimtx, interpolation: linear}
+        - !<FileTransform> {src: rel_log_exp_scalar.spimtx, interpolation: linear}
+        - !<FileTransform> {src: refpt.spimtx, interpolation: linear}
+        - !<LogTransform> {base: 10, direction: inverse}
+        - !<FileTransform> {src: exp_to_aces.spimtx, interpolation: linear}
+
+  - !<ColorSpace>
+    name: rrt_odt_p3d60
+    family: rrt_odt_p3d60
+    bitdepth: 32f
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    from_reference: !<GroupTransform>
+      children:
+        - !<AllocationTransform> {allocation: lg2, vars: [-10.4739, 5.52607]}
+        - !<FileTransform> {src: aceslg2_to_P3D60.cube, interpolation: linear}
+
+  - !<ColorSpace>
+    name: rrt_odt_r709
+    family: rrt_odt_r709
+    bitdepth: 32f
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    from_reference: !<GroupTransform>
+      children:
+        - !<AllocationTransform> {allocation: lg2, vars: [-10.4739, 5.52607]}
+        - !<FileTransform> {src: aceslg2_to_Rec709.cube, interpolation: linear}
+
+  - !<ColorSpace>
+    name: raw
+    family: raw
+    bitdepth: 32f
+    isdata: true
+    allocation: uniform
+    allocationvars: [0, 1]

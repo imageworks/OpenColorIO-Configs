@@ -1,0 +1,120 @@
+---
+ocio_profile_version: 1
+
+search_path: luts
+strictparsing: true
+luma: [0.2126, 0.7152, 0.0722]
+
+roles:
+  color_picking: sRGB
+  color_timing: Cineon
+  compositing_log: Cineon
+  data: raw
+  reference: linear
+  scene_linear: linear
+
+displays:
+  default:
+    - !<View> {name: sRGB, colorspace: sRGB}
+    - !<View> {name: rec709, colorspace: rec709}
+    - !<View> {name: raw, colorspace: raw}
+active_displays: [default]
+active_views: [sRGB, rec709, raw]
+
+colorspaces:
+  - !<ColorSpace>
+    name: linear
+    family: linear
+    bitdepth: 32f
+    isdata: false
+    allocation: lg2
+    allocationvars: [-8, 8]
+
+  - !<ColorSpace>
+    name: sRGB
+    family: sRGB
+    bitdepth: 32f
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<FileTransform> {src: srgb.spi1d, interpolation: linear}
+
+  - !<ColorSpace>
+    name: rec709
+    family: rec709
+    bitdepth: 32f
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<FileTransform> {src: rec709.spi1d, interpolation: linear}
+
+  - !<ColorSpace>
+    name: Cineon
+    family: Cineon
+    bitdepth: 32f
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<FileTransform> {src: cineon.spi1d, interpolation: linear}
+
+  - !<ColorSpace>
+    name: Gamma1.8
+    family: Gamma1.8
+    bitdepth: 32f
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<FileTransform> {src: gamma1.8.spi1d, interpolation: linear}
+
+  - !<ColorSpace>
+    name: Gamma2.2
+    family: Gamma2.2
+    bitdepth: 32f
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<FileTransform> {src: gamma2.2.spi1d, interpolation: linear}
+
+  - !<ColorSpace>
+    name: Panalog
+    family: Panalog
+    bitdepth: 32f
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<FileTransform> {src: panalog.spi1d, interpolation: linear}
+
+  - !<ColorSpace>
+    name: REDLog
+    family: REDLog
+    bitdepth: 32f
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<FileTransform> {src: redlog.spi1d, interpolation: linear}
+
+  - !<ColorSpace>
+    name: ViperLog
+    family: ViperLog
+    bitdepth: 32f
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<FileTransform> {src: viperlog.spi1d, interpolation: linear}
+
+  - !<ColorSpace>
+    name: REDSpace
+    family: REDSpace
+    bitdepth: 32f
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<FileTransform> {src: redspace.spi1d, interpolation: linear}
+
+  - !<ColorSpace>
+    name: raw
+    family: raw
+    bitdepth: 32f
+    isdata: true
+    allocation: uniform
+    allocationvars: [0, 1]

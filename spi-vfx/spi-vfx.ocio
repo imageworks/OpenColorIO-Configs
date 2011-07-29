@@ -1,4 +1,3 @@
----
 ocio_profile_version: 1
 
 search_path: luts
@@ -11,19 +10,21 @@ roles:
   compositing_log: lgf
   data: ncf
   default: ncf
+  matte_paint: vd8
   reference: lnf
   scene_linear: lnf
-  spi_spm: lg8
+  texture_paint: dt16
 
 displays:
   DCIP3:
-    - !<View> {name: Raw, colorspace: nc10}
-    - !<View> {name: Log, colorspace: lg10}
     - !<View> {name: Film, colorspace: p3dci8}
-  sRGB:
-    - !<View> {name: Raw, colorspace: nc10}
     - !<View> {name: Log, colorspace: lg10}
+    - !<View> {name: Raw, colorspace: nc10}
+  sRGB:
     - !<View> {name: Film, colorspace: srgb8}
+    - !<View> {name: Log, colorspace: lg10}
+    - !<View> {name: Raw, colorspace: nc10}
+
 active_displays: [sRGB, DCIP3]
 active_views: [Film, Log, Raw]
 
@@ -32,14 +33,18 @@ colorspaces:
     name: lnf
     family: ln
     bitdepth: 32f
+    description: |
+      lnf :  linear show space
     isdata: false
     allocation: lg2
-    allocationvars: [-15, 6, 0.01]
+    allocationvars: [-15, 6]
 
   - !<ColorSpace>
     name: lnh
     family: ln
     bitdepth: 16f
+    description: |
+      lnh :  linear show space
     isdata: false
     allocation: lg2
     allocationvars: [-15, 6]
@@ -48,6 +53,8 @@ colorspaces:
     name: ln16
     family: ln
     bitdepth: 16ui
+    description: |
+      ln16 : linear show space
     isdata: false
     allocation: lg2
     allocationvars: [-15, 0]
@@ -56,93 +63,51 @@ colorspaces:
     name: lg16
     family: lg
     bitdepth: 16ui
+    description: |
+      lg16 : conversion from film log 
     isdata: false
     allocation: uniform
-    allocationvars: [0, 1]
     to_reference: !<FileTransform> {src: lg16.spi1d, interpolation: nearest}
 
   - !<ColorSpace>
     name: lg10
     family: lg
     bitdepth: 10ui
+    description: |
+      lg10 : conversion from film log
     isdata: false
     allocation: uniform
-    allocationvars: [0, 1]
-    to_reference: !<FileTransform> {src: lg10.spi1d, interpolation: nearest}
-
-  - !<ColorSpace>
-    name: lg8
-    family: lg
-    bitdepth: 8ui
-    isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
     to_reference: !<FileTransform> {src: lg10.spi1d, interpolation: nearest}
 
   - !<ColorSpace>
     name: lgf
     family: lg
     bitdepth: 32f
+    description: |
+      lgf : conversion from film log
     isdata: false
     allocation: uniform
     allocationvars: [-0.25, 1.5]
     to_reference: !<FileTransform> {src: lgf.spi1d, interpolation: linear}
 
   - !<ColorSpace>
-    name: gn16
-    family: gn
-    bitdepth: 16ui
-    isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
-    to_reference: !<FileTransform> {src: gn16.spi1d, interpolation: nearest}
-
-  - !<ColorSpace>
     name: gn10
     family: gn
     bitdepth: 10ui
+    description: |
+      gn10 : The 10bit int conversion from Panalog to linear
     isdata: false
     allocation: uniform
-    allocationvars: [0, 1]
-    to_reference: !<FileTransform> {src: gn16.spi1d, interpolation: nearest}
-
-  - !<ColorSpace>
-    name: gn8
-    family: gn
-    bitdepth: 8ui
-    isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
-    to_reference: !<FileTransform> {src: gn16.spi1d, interpolation: nearest}
-
-  - !<ColorSpace>
-    name: gnf
-    family: gn
-    bitdepth: 32f
-    isdata: false
-    allocation: uniform
-    allocationvars: [-0.25, 1.5]
-    to_reference: !<FileTransform> {src: gnf.spi1d, interpolation: linear}
+    to_reference: !<FileTransform> {src: gn10.spi1d, interpolation: nearest}
 
   - !<ColorSpace>
     name: vd16
     family: vd
     bitdepth: 16ui
+    description: |
+      vd16 :conversion from a gamma 2.2 
     isdata: false
     allocation: uniform
-    allocationvars: [0, 1]
-    to_reference: !<GroupTransform>
-      children:
-        - !<FileTransform> {src: version_8_whitebalanced.spimtx, interpolation: unknown, direction: inverse}
-        - !<FileTransform> {src: vd16.spi1d, interpolation: nearest}
-
-  - !<ColorSpace>
-    name: vd8
-    family: vd
-    bitdepth: 8ui
-    isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
         - !<FileTransform> {src: version_8_whitebalanced.spimtx, interpolation: unknown, direction: inverse}
@@ -152,111 +117,108 @@ colorspaces:
     name: vd10
     family: vd
     bitdepth: 10ui
+    description: |
+      vd10 :conversion from a gamma 2.2 
     isdata: false
     allocation: uniform
-    allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
         - !<FileTransform> {src: version_8_whitebalanced.spimtx, interpolation: unknown, direction: inverse}
-        - !<FileTransform> {src: vd16.spi1d, interpolation: nearest}
+        - !<FileTransform> {src: vd10.spi1d, interpolation: nearest}
 
   - !<ColorSpace>
-    name: vdf
+    name: vd8
     family: vd
-    bitdepth: 32f
+    bitdepth: 8ui
+    description: |
+      vd8 :conversion from a gamma 2.2
     isdata: false
     allocation: uniform
-    allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<ColorSpaceTransform> {src: vd16, dst: lnf}
+        - !<FileTransform> {src: version_8_whitebalanced.spimtx, interpolation: unknown, direction: inverse}
+        - !<FileTransform> {src: vd8.spi1d, interpolation: nearest}
 
   - !<ColorSpace>
     name: hd10
     family: hd
     bitdepth: 10ui
+    description: |
+      hd10 : The simple 10bit int conversion from REC709 to linear
     isdata: false
     allocation: uniform
-    allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
         - !<FileTransform> {src: hdOffset.spimtx, interpolation: nearest, direction: inverse}
-        - !<ColorSpaceTransform> {src: vdf, dst: lnf}
-
-  - !<ColorSpace>
-    name: dt8
-    family: dt
-    bitdepth: 8ui
-    isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
-    to_reference: !<GroupTransform>
-      children:
-        - !<FileTransform> {src: diffuseTextureMultiplier.spimtx, interpolation: nearest}
-        - !<ColorSpaceTransform> {src: vdf, dst: lnf}
+        - !<ColorSpaceTransform> {src: vd16, dst: lnf}
 
   - !<ColorSpace>
     name: dt16
     family: dt
     bitdepth: 16ui
+    description: |
+      dt16 :conversion for diffuse texture
     isdata: false
     allocation: uniform
-    allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
         - !<FileTransform> {src: diffuseTextureMultiplier.spimtx, interpolation: nearest}
-        - !<ColorSpaceTransform> {src: vdf, dst: lnf}
+        - !<ColorSpaceTransform> {src: vd16, dst: lnf}
 
   - !<ColorSpace>
     name: cpf
     family: cp
     bitdepth: 32f
+    description: |
+      cpf :video like conversion used for color picking 
     isdata: false
     allocation: uniform
-    allocationvars: [0, 1]
-    to_reference: !<GroupTransform>
-      children:
-        - !<FileTransform> {src: cpf.spi1d, interpolation: linear}
+    to_reference: !<FileTransform> {src: cpf.spi1d, interpolation: linear}
 
   - !<ColorSpace>
     name: nc8
     family: nc
     bitdepth: 8ui
+    description: |
+      nc8 :nc,Non-color used to store non-color data such as depth or surface normals
     isdata: true
     allocation: uniform
-    allocationvars: [0, 1]
 
   - !<ColorSpace>
     name: nc10
     family: nc
     bitdepth: 10ui
+    description: |
+      nc10 :nc,Non-color used to store non-color data such as depth or surface normals
     isdata: true
     allocation: uniform
-    allocationvars: [0, 1]
 
   - !<ColorSpace>
     name: nc16
     family: nc
     bitdepth: 16ui
-    isdata: false
+    description: |
+      nc16 :nc,Non-color used to store non-color data such as depth or surface normals
+    isdata: true
     allocation: uniform
-    allocationvars: [0, 1]
 
   - !<ColorSpace>
     name: ncf
     family: nc
     bitdepth: 32f
+    description: |
+      ncf :nc,Non-color used to store non-color data such as depth or surface normals
     isdata: true
     allocation: uniform
-    allocationvars: [0, 1]
 
   - !<ColorSpace>
     name: srgb8
     family: srgb
     bitdepth: 8ui
+    description: |
+      srgb8 :rgb display space for the srgb standard.
     isdata: false
     allocation: uniform
-    allocationvars: [0, 1]
     from_reference: !<GroupTransform>
       children:
         - !<ColorSpaceTransform> {src: lnf, dst: lg10}
@@ -265,25 +227,12 @@ colorspaces:
   - !<ColorSpace>
     name: p3dci8
     family: p3dci
-    bitdepth: 16ui
+    bitdepth: 8ui
+    description: |
+      p3dci8 :rgb display space for gamma 2.6 P3 projection.
     isdata: false
     allocation: uniform
-    allocationvars: [0, 1]
     from_reference: !<GroupTransform>
       children:
         - !<ColorSpaceTransform> {src: lnf, dst: lg10}
         - !<FileTransform> {src: colorworks_filmlg_to_p3.3dl, interpolation: linear}
-
-  - !<ColorSpace>
-    name: xyz16
-    family: xyz
-    bitdepth: 16ui
-    isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
-    from_reference: !<GroupTransform>
-      children:
-        - !<ColorSpaceTransform> {src: lnf, dst: p3dci8}
-        - !<ExponentTransform> {value: [2.6, 2.6, 2.6, 1]}
-        - !<FileTransform> {src: p3_to_xyz16.spimtx, interpolation: unknown}
-        - !<ExponentTransform> {value: [2.6, 2.6, 2.6, 1], direction: inverse}

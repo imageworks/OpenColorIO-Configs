@@ -1,0 +1,288 @@
+ocio_profile_version: 1
+
+search_path: luts
+strictparsing: true
+luma: [0.2126, 0.7152, 0.0722]
+
+roles:
+  color_picking: cpf
+  color_timing: lm10
+  compositing_log: lmf
+  data: ncf
+  default: ncf
+  reference: lnf
+  scene_linear: lnf
+
+displays:
+  DCIP3:
+    - !<View> {name: Film, colorspace: p3dci8}
+    - !<View> {name: Raw, colorspace: nc10}
+    - !<View> {name: Log, colorspace: lm10}
+  sRGB:
+    - !<View> {name: Film, colorspace: vd16}
+    - !<View> {name: Raw, colorspace: nc10}
+    - !<View> {name: Log, colorspace: lm10}
+
+active_displays: [sRGB, DCIP3]
+active_views: [Film, Log, Raw]
+
+colorspaces:
+  - !<ColorSpace>
+    name: lnf
+    family: ln
+    bitdepth: 32f
+    description: |
+      lnf : The full float (32bit) linear show space
+    isdata: false
+    allocation: lg2
+    allocationvars: [-13, 4]
+
+  - !<ColorSpace>
+    name: lnzf
+    family: ln
+    bitdepth: 32f
+    description: |
+      lnzf : The full float (32bit) linear show space. This name is depreciated. Please do not use.
+    isdata: false
+    allocation: lg2
+    allocationvars: [-13, 4]
+
+  - !<ColorSpace>
+    name: lnh
+    family: ln
+    bitdepth: 16f
+    description: |
+      lnh : The half float (16bit) linear show space
+    isdata: false
+    allocation: lg2
+    allocationvars: [-13, 4]
+
+  - !<ColorSpace>
+    name: lm16
+    family: lm
+    bitdepth: 16ui
+    description: |
+      lm16 : Log Monitor 16bit int. this space has a log like response and srgb primaries, it is used for color grading 
+    isdata: false
+    allocation: uniform
+    to_reference: !<FileTransform> {src: lm16.spi1d, interpolation: linear}
+
+  - !<ColorSpace>
+    name: lm10
+    family: lm
+    bitdepth: 10ui
+    description: |
+      lm10 : Log Monitor 10bit int. this space has a log like response and srgb primaries, it is used for color grading 
+    isdata: false
+    allocation: uniform
+    to_reference: !<FileTransform> {src: lm10.spi1d, interpolation: linear}
+
+  - !<ColorSpace>
+    name: lm8
+    family: lm
+    bitdepth: 8ui
+    description: |
+      lm8 : Log Monitor 8bit int. this space has a log like response and srgb primaries, it is used for dailies 
+    isdata: false
+    allocation: uniform
+    to_reference: !<FileTransform> {src: lm8.spi1d, interpolation: linear}
+
+  - !<ColorSpace>
+    name: lmf
+    family: lm
+    bitdepth: 32f
+    description: |
+      lm16 : Log Monitor 32bit fullfloat. this space has a log like response and srgb primaries
+    isdata: false
+    allocation: uniform
+    allocationvars: [-0.2, 2.484]
+    to_reference: !<FileTransform> {src: lmf.spi1d, interpolation: linear}
+
+  - !<ColorSpace>
+    name: vd16
+    family: vd
+    bitdepth: 16ui
+    description: |
+      vd16 : The simple 16bit int conversion from a gamma 2.2 to linear
+    isdata: false
+    allocation: uniform
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: vd16.spi1d, interpolation: nearest}
+
+  - !<ColorSpace>
+    name: vd10
+    family: vd
+    bitdepth: 10ui
+    description: |
+      vd10 : The simple 10bit int conversion from a gamma 2.2 to linear
+    isdata: false
+    allocation: uniform
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: vd10.spi1d, interpolation: nearest}
+
+  - !<ColorSpace>
+    name: vd8
+    family: vd
+    bitdepth: 8ui
+    description: |
+      vd8 : The simple 8bit int conversion from a gamma 2.2 to linear
+    isdata: false
+    allocation: uniform
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: vd8.spi1d, interpolation: nearest}
+
+  - !<ColorSpace>
+    name: vdf
+    family: vd
+    bitdepth: 32f
+    description: |
+      vdf : The full float (32bit)conversion from a gamma 2.2 to linear
+    isdata: false
+    allocation: uniform
+    to_reference: !<ColorSpaceTransform> {src: vd16, dst: lnf}
+
+  - !<ColorSpace>
+    name: hd10
+    family: hd
+    bitdepth: 10ui
+    description: |
+      vd10 : The simple 10bit int conversion from REC709 to linear
+    isdata: false
+    allocation: uniform
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: hdOffset.spimtx, interpolation: nearest, direction: inverse}
+        - !<ColorSpaceTransform> {src: vd16, dst: lnf}
+
+  - !<ColorSpace>
+    name: dt8
+    family: dt
+    bitdepth: 8ui
+    description: |
+      dt8 : The 8 bit int conversion for diffuse texture to linear.
+    isdata: false
+    allocation: uniform
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: dt.spimtx, interpolation: nearest}
+        - !<ColorSpaceTransform> {src: vd16, dst: lnf}
+
+  - !<ColorSpace>
+    name: dt16
+    family: dt
+    bitdepth: 16ui
+    description: |
+      dt16 : The 16 bit int conversion for diffuse texture to linear.
+    isdata: false
+    allocation: uniform
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: dt.spimtx, interpolation: nearest}
+        - !<ColorSpaceTransform> {src: vd16, dst: lnf}
+
+  - !<ColorSpace>
+    name: mp8
+    family: mp
+    bitdepth: 8ui
+    description: |
+      mp8 : The 8 bit int conversion for matte painting to linear.
+    isdata: false
+    allocation: uniform
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: mp.spimtx, interpolation: nearest}
+        - !<ColorSpaceTransform> {src: vd16, dst: lnf}
+
+  - !<ColorSpace>
+    name: mp16
+    family: mp
+    bitdepth: 16ui
+    description: |
+      mp16 : The 16 bit int conversion for matte painting to linear.
+    isdata: false
+    allocation: uniform
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: mp.spimtx, interpolation: nearest}
+        - !<ColorSpaceTransform> {src: vd16, dst: lnf}
+
+  - !<ColorSpace>
+    name: cpf
+    family: cp
+    bitdepth: 32f
+    description: |
+      cpf : The full float (32bit) color picker to linear conversion. 
+    isdata: false
+    allocation: uniform
+    to_reference: !<FileTransform> {src: cpf.spi1d, interpolation: nearest}
+
+  - !<ColorSpace>
+    name: nc8
+    family: nc
+    bitdepth: 8ui
+    description: |
+      nc8 : 8bit int Non_color data space.
+    isdata: true
+    allocation: uniform
+
+  - !<ColorSpace>
+    name: nc10
+    family: nc
+    bitdepth: 10ui
+    description: |
+      nc10 : 10 bit int non color data space.
+    isdata: true
+    allocation: uniform
+
+  - !<ColorSpace>
+    name: nc16
+    family: nc
+    bitdepth: 16ui
+    description: |
+      nc16 : 16 bit int non color data space.
+    isdata: true
+    allocation: uniform
+
+  - !<ColorSpace>
+    name: ncf
+    family: nc
+    bitdepth: 32f
+    description: |
+      ncf : 32 bit floating point non color data space.
+    isdata: true
+    allocation: uniform
+
+  - !<ColorSpace>
+    name: p3dci8
+    family: p3dci
+    bitdepth: 8ui
+    description: |
+      p3dci8 : 8 Bit int rgb display space for gamma 2.6 P3 projection.
+    isdata: false
+    allocation: uniform
+    from_reference: !<GroupTransform>
+      children:
+        - !<ColorSpaceTransform> {src: lnf, dst: vd16}
+        - !<ExponentTransform> {value: [2.2, 2.2, 2.2, 1]}
+        - !<FileTransform> {src: srgb_to_p3d65.spimtx, interpolation: linear}
+        - !<FileTransform> {src: p3d65_to_pdci.spimtx, interpolation: linear}
+        - !<FileTransform> {src: htr_dlp_tweak.spimtx, interpolation: linear}
+        - !<ExponentTransform> {value: [2.6, 2.6, 2.6, 1], direction: inverse}
+        - !<FileTransform> {src: correction.spi1d, cccid: forward, interpolation: linear}
+
+  - !<ColorSpace>
+    name: xyz16
+    family: xyz
+    bitdepth: 16ui
+    description: |
+      xyz16 : 16 Bit int space for DCP creation.
+    isdata: false
+    allocation: uniform
+    from_reference: !<GroupTransform>
+      children:
+        - !<ColorSpaceTransform> {src: lnf, dst: vd16}
+        - !<FileTransform> {src: hdOffset.spimtx, interpolation: linear}
+        - !<FileTransform> {src: hd10_to_xyz16.spi3d, interpolation: linear}

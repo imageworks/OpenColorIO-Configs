@@ -1,4 +1,3 @@
----
 ocio_profile_version: 1
 
 search_path: luts
@@ -18,6 +17,7 @@ displays:
     - !<View> {name: sRGB, colorspace: sRGB}
     - !<View> {name: rec709, colorspace: rec709}
     - !<View> {name: raw, colorspace: raw}
+
 active_displays: [default]
 active_views: [sRGB, rec709, raw]
 

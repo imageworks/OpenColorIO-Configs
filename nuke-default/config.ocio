@@ -9,23 +9,28 @@ roles:
   color_timing: Cineon
   compositing_log: Cineon
   data: raw
+  default: raw
+  matte_paint: sRGB
   reference: linear
   scene_linear: linear
+  texture_paint: sRGB
 
 displays:
   default:
+    - !<View> {name: None, colorspace: raw}
     - !<View> {name: sRGB, colorspace: sRGB}
     - !<View> {name: rec709, colorspace: rec709}
-    - !<View> {name: raw, colorspace: raw}
 
 active_displays: [default]
-active_views: [sRGB, rec709, raw]
+active_views: [None]
 
 colorspaces:
   - !<ColorSpace>
     name: linear
     family: linear
     bitdepth: 32f
+    description: |
+      Scene-linear, high dynamic range. Used for rendering and compositing.
     isdata: false
     allocation: lg2
     allocationvars: [-8, 8]
@@ -34,87 +39,128 @@ colorspaces:
     name: sRGB
     family: sRGB
     bitdepth: 32f
+    description: |
+      Standard RGB Display Space
     isdata: false
     allocation: uniform
-    allocationvars: [0, 1]
+    allocationvars: [-0.125, 1.125]
     to_reference: !<FileTransform> {src: srgb.spi1d, interpolation: linear}
 
   - !<ColorSpace>
     name: rec709
     family: rec709
     bitdepth: 32f
+    description: |
+      Rec. 709 (Full Range) Display Space
     isdata: false
     allocation: uniform
-    allocationvars: [0, 1]
+    allocationvars: [-0.125, 1.125]
     to_reference: !<FileTransform> {src: rec709.spi1d, interpolation: linear}
 
   - !<ColorSpace>
     name: Cineon
     family: Cineon
     bitdepth: 32f
+    description: |
+      Cineon (Log Film Scan)
     isdata: false
     allocation: uniform
-    allocationvars: [0, 1]
+    allocationvars: [-0.125, 1.125]
     to_reference: !<FileTransform> {src: cineon.spi1d, interpolation: linear}
 
   - !<ColorSpace>
     name: Gamma1.8
     family: Gamma1.8
     bitdepth: 32f
+    description: |
+      Emulates a idealized Gamma 1.8 display device.
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
-    to_reference: !<FileTransform> {src: gamma1.8.spi1d, interpolation: linear}
+    to_reference: !<ExponentTransform> {value: [1.8, 1.8, 1.8, 1]}
 
   - !<ColorSpace>
     name: Gamma2.2
     family: Gamma2.2
     bitdepth: 32f
+    description: |
+      Emulates a idealized Gamma 2.2 display device.
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
-    to_reference: !<FileTransform> {src: gamma2.2.spi1d, interpolation: linear}
+    to_reference: !<ExponentTransform> {value: [2.2, 2.2, 2.2, 1]}
 
   - !<ColorSpace>
     name: Panalog
     family: Panalog
     bitdepth: 32f
+    description: |
+      Sony/Panavision Genesis Log Space
     isdata: false
     allocation: uniform
-    allocationvars: [0, 1]
+    allocationvars: [-0.125, 1.125]
     to_reference: !<FileTransform> {src: panalog.spi1d, interpolation: linear}
 
   - !<ColorSpace>
     name: REDLog
     family: REDLog
     bitdepth: 32f
+    description: |
+      RED Log Space
     isdata: false
     allocation: uniform
-    allocationvars: [0, 1]
+    allocationvars: [-0.125, 1.125]
     to_reference: !<FileTransform> {src: redlog.spi1d, interpolation: linear}
 
   - !<ColorSpace>
     name: ViperLog
     family: ViperLog
     bitdepth: 32f
+    description: |
+      Viper Log Space
     isdata: false
     allocation: uniform
-    allocationvars: [0, 1]
+    allocationvars: [-0.125, 1.125]
     to_reference: !<FileTransform> {src: viperlog.spi1d, interpolation: linear}
 
   - !<ColorSpace>
-    name: REDSpace
-    family: REDSpace
+    name: AlexaV3LogC
+    family: AlexaV3LogC
     bitdepth: 32f
+    description: |
+      Alexa Log C
     isdata: false
     allocation: uniform
-    allocationvars: [0, 1]
-    to_reference: !<FileTransform> {src: redspace.spi1d, interpolation: linear}
+    allocationvars: [-0.125, 1.125]
+    to_reference: !<FileTransform> {src: alexalogc.spi1d, interpolation: linear}
+
+  - !<ColorSpace>
+    name: PLogLin
+    family: PLogLin
+    bitdepth: 32f
+    description: |
+      Josh Pines style pivoted log/lin conversion. 445->0.18
+    isdata: false
+    allocation: uniform
+    allocationvars: [-0.125, 1.125]
+    to_reference: !<FileTransform> {src: ploglin.spi1d, interpolation: linear}
+
+  - !<ColorSpace>
+    name: SLog
+    family: SLog
+    bitdepth: 32f
+    description: |
+      Sony SLog
+    isdata: false
+    allocation: uniform
+    allocationvars: [-0.125, 1.125]
+    to_reference: !<FileTransform> {src: slog.spi1d, interpolation: linear}
 
   - !<ColorSpace>
     name: raw
     family: raw
     bitdepth: 32f
+    description: |
+      Raw Data. Used for normals, points, etc.
     isdata: true
     allocation: uniform
-    allocationvars: [0, 1]

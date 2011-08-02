@@ -22,7 +22,7 @@ displays:
     - !<View> {name: rec709, colorspace: rec709}
 
 active_displays: [default]
-active_views: [None]
+active_views: [sRGB]
 
 colorspaces:
   - !<ColorSpace>

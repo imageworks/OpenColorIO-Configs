@@ -28,6 +28,7 @@ colorspaces:
   - !<ColorSpace>
     name: aces
     family: aces
+    equalitygroup: 
     bitdepth: 32f
     isdata: false
     allocation: lg2
@@ -36,6 +37,7 @@ colorspaces:
   - !<ColorSpace>
     name: adx10
     family: adx
+    equalitygroup: 
     bitdepth: 10ui
     isdata: false
     allocation: uniform
@@ -54,6 +56,7 @@ colorspaces:
   - !<ColorSpace>
     name: rrt_odt_p3d60
     family: rrt_odt_p3d60
+    equalitygroup: 
     bitdepth: 32f
     isdata: false
     allocation: uniform
@@ -66,6 +69,7 @@ colorspaces:
   - !<ColorSpace>
     name: rrt_odt_r709
     family: rrt_odt_r709
+    equalitygroup: 
     bitdepth: 32f
     isdata: false
     allocation: uniform
@@ -78,6 +82,7 @@ colorspaces:
   - !<ColorSpace>
     name: raw
     family: raw
+    equalitygroup: 
     bitdepth: 32f
     isdata: true
     allocation: uniform

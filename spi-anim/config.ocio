@@ -32,9 +32,11 @@ colorspaces:
   - !<ColorSpace>
     name: lnf
     family: ln
+    equalitygroup: 
     bitdepth: 32f
     description: |
       lnf :linear show space
+      
     isdata: false
     allocation: lg2
     allocationvars: [-13, 4]
@@ -42,9 +44,11 @@ colorspaces:
   - !<ColorSpace>
     name: lnh
     family: ln
+    equalitygroup: 
     bitdepth: 16f
     description: |
       lnh :linear show space
+      
     isdata: false
     allocation: lg2
     allocationvars: [-13, 4]
@@ -52,9 +56,11 @@ colorspaces:
   - !<ColorSpace>
     name: lm16
     family: lm
+    equalitygroup: 
     bitdepth: 16ui
     description: |
       lm16 : Log Monitor this space has a log like response and srgb primaries, it is used for color grading 
+      
     isdata: false
     allocation: uniform
     to_reference: !<FileTransform> {src: lm16.spi1d, interpolation: linear}
@@ -62,9 +68,11 @@ colorspaces:
   - !<ColorSpace>
     name: lm10
     family: lm
+    equalitygroup: 
     bitdepth: 10ui
     description: |
       lm10 : Log Monitor this space has a log like response and srgb primaries, it is used for color grading 
+      
     isdata: false
     allocation: uniform
     to_reference: !<FileTransform> {src: lm10.spi1d, interpolation: linear}
@@ -72,9 +80,11 @@ colorspaces:
   - !<ColorSpace>
     name: lmf
     family: lm
+    equalitygroup: 
     bitdepth: 32f
     description: |
       lmf : Log Monitor this space has a log like response and srgb primaries, it is used as a compositing log
+      
     isdata: false
     allocation: uniform
     allocationvars: [-0.2, 2.484]
@@ -83,9 +93,11 @@ colorspaces:
   - !<ColorSpace>
     name: vd16
     family: vd
+    equalitygroup: 
     bitdepth: 16ui
     description: |
       vd16 : The simple video conversion from a gamma 2.2 srgb space
+      
     isdata: false
     allocation: uniform
     to_reference: !<GroupTransform>
@@ -95,9 +107,11 @@ colorspaces:
   - !<ColorSpace>
     name: vd10
     family: vd
+    equalitygroup: 
     bitdepth: 10ui
     description: |
       vd10 : The simple video conversion from a gamma 2.2 srgb space
+      
     isdata: false
     allocation: uniform
     to_reference: !<GroupTransform>
@@ -107,9 +121,11 @@ colorspaces:
   - !<ColorSpace>
     name: vd8
     family: vd
+    equalitygroup: 
     bitdepth: 8ui
     description: |
       vd8 : The simple video conversion from a gamma 2.2 srgb space
+      
     isdata: false
     allocation: uniform
     to_reference: !<GroupTransform>
@@ -119,9 +135,11 @@ colorspaces:
   - !<ColorSpace>
     name: hd10
     family: hd
+    equalitygroup: 
     bitdepth: 10ui
     description: |
       hd10 : The simple conversion for REC709
+      
     isdata: false
     allocation: uniform
     to_reference: !<GroupTransform>
@@ -132,9 +150,11 @@ colorspaces:
   - !<ColorSpace>
     name: dt16
     family: dt
+    equalitygroup: 
     bitdepth: 16ui
     description: |
       dt16 :diffuse texture conversion
+      
     isdata: false
     allocation: uniform
     to_reference: !<GroupTransform>
@@ -145,9 +165,11 @@ colorspaces:
   - !<ColorSpace>
     name: mp16
     family: mp
+    equalitygroup: 
     bitdepth: 16ui
     description: |
       mp16 : conversion for matte painting
+      
     isdata: false
     allocation: uniform
     to_reference: !<GroupTransform>
@@ -158,9 +180,11 @@ colorspaces:
   - !<ColorSpace>
     name: cpf
     family: cp
+    equalitygroup: 
     bitdepth: 32f
     description: |
       cpf :video like conversion used for color picking 
+      
     isdata: false
     allocation: uniform
     to_reference: !<FileTransform> {src: cpf.spi1d, interpolation: nearest}
@@ -168,45 +192,55 @@ colorspaces:
   - !<ColorSpace>
     name: nc8
     family: nc
+    equalitygroup: 
     bitdepth: 8ui
     description: |
       nc8 :nc,Non-color used to store non-color data such as depth or surface normals
+      
     isdata: true
     allocation: uniform
 
   - !<ColorSpace>
     name: nc10
     family: nc
+    equalitygroup: 
     bitdepth: 10ui
     description: |
       nc10 :nc,Non-color used to store non-color data such as depth or surface normals
+      
     isdata: true
     allocation: uniform
 
   - !<ColorSpace>
     name: nc16
     family: nc
+    equalitygroup: 
     bitdepth: 16ui
     description: |
       nc16 :nc,Non-color used to store non-color data such as depth or surface normals
+      
     isdata: true
     allocation: uniform
 
   - !<ColorSpace>
     name: ncf
     family: nc
+    equalitygroup: 
     bitdepth: 32f
     description: |
       ncf :nc,Non-color used to store non-color data such as depth or surface normals
+      
     isdata: true
     allocation: uniform
 
   - !<ColorSpace>
     name: p3dci8
     family: p3dci
+    equalitygroup: 
     bitdepth: 8ui
     description: |
       p3dci8 : 8 Bit int rgb display space for gamma 2.6 P3 projection.
+      
     isdata: false
     allocation: uniform
     from_reference: !<GroupTransform>

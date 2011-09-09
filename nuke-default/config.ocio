@@ -28,9 +28,11 @@ colorspaces:
   - !<ColorSpace>
     name: linear
     family: linear
+    equalitygroup: 
     bitdepth: 32f
     description: |
       Scene-linear, high dynamic range. Used for rendering and compositing.
+      
     isdata: false
     allocation: lg2
     allocationvars: [-8, 8]
@@ -38,9 +40,11 @@ colorspaces:
   - !<ColorSpace>
     name: sRGB
     family: sRGB
+    equalitygroup: 
     bitdepth: 32f
     description: |
       Standard RGB Display Space
+      
     isdata: false
     allocation: uniform
     allocationvars: [-0.125, 1.125]
@@ -49,9 +53,11 @@ colorspaces:
   - !<ColorSpace>
     name: rec709
     family: rec709
+    equalitygroup: 
     bitdepth: 32f
     description: |
       Rec. 709 (Full Range) Display Space
+      
     isdata: false
     allocation: uniform
     allocationvars: [-0.125, 1.125]
@@ -60,9 +66,11 @@ colorspaces:
   - !<ColorSpace>
     name: Cineon
     family: Cineon
+    equalitygroup: 
     bitdepth: 32f
     description: |
       Cineon (Log Film Scan)
+      
     isdata: false
     allocation: uniform
     allocationvars: [-0.125, 1.125]
@@ -71,9 +79,11 @@ colorspaces:
   - !<ColorSpace>
     name: Gamma1.8
     family: Gamma1.8
+    equalitygroup: 
     bitdepth: 32f
     description: |
       Emulates a idealized Gamma 1.8 display device.
+      
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
@@ -82,9 +92,11 @@ colorspaces:
   - !<ColorSpace>
     name: Gamma2.2
     family: Gamma2.2
+    equalitygroup: 
     bitdepth: 32f
     description: |
       Emulates a idealized Gamma 2.2 display device.
+      
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
@@ -93,9 +105,11 @@ colorspaces:
   - !<ColorSpace>
     name: Panalog
     family: Panalog
+    equalitygroup: 
     bitdepth: 32f
     description: |
       Sony/Panavision Genesis Log Space
+      
     isdata: false
     allocation: uniform
     allocationvars: [-0.125, 1.125]
@@ -104,9 +118,11 @@ colorspaces:
   - !<ColorSpace>
     name: REDLog
     family: REDLog
+    equalitygroup: 
     bitdepth: 32f
     description: |
       RED Log Space
+      
     isdata: false
     allocation: uniform
     allocationvars: [-0.125, 1.125]
@@ -115,9 +131,11 @@ colorspaces:
   - !<ColorSpace>
     name: ViperLog
     family: ViperLog
+    equalitygroup: 
     bitdepth: 32f
     description: |
       Viper Log Space
+      
     isdata: false
     allocation: uniform
     allocationvars: [-0.125, 1.125]
@@ -126,9 +144,11 @@ colorspaces:
   - !<ColorSpace>
     name: AlexaV3LogC
     family: AlexaV3LogC
+    equalitygroup: 
     bitdepth: 32f
     description: |
       Alexa Log C
+      
     isdata: false
     allocation: uniform
     allocationvars: [-0.125, 1.125]
@@ -137,9 +157,11 @@ colorspaces:
   - !<ColorSpace>
     name: PLogLin
     family: PLogLin
+    equalitygroup: 
     bitdepth: 32f
     description: |
       Josh Pines style pivoted log/lin conversion. 445->0.18
+      
     isdata: false
     allocation: uniform
     allocationvars: [-0.125, 1.125]
@@ -148,9 +170,11 @@ colorspaces:
   - !<ColorSpace>
     name: SLog
     family: SLog
+    equalitygroup: 
     bitdepth: 32f
     description: |
       Sony SLog
+      
     isdata: false
     allocation: uniform
     allocationvars: [-0.125, 1.125]
@@ -159,8 +183,10 @@ colorspaces:
   - !<ColorSpace>
     name: raw
     family: raw
+    equalitygroup: 
     bitdepth: 32f
     description: |
       Raw Data. Used for normals, points, etc.
+      
     isdata: true
     allocation: uniform

@@ -1,0 +1,6 @@
+To convert an ACES (linear) image into something suitable for display, you must apply
+both the rrt and device specific ODT.
+
+Example:
+
+ctlrender -ctl rrt_ut11.ctl -ctl odt_ut11_sRGB.ctl <INPUT_LATTICE_ACES_IMAGE.exr> <OUTPUT_RENDERED_IMAGE.exr>

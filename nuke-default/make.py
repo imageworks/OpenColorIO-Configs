@@ -54,7 +54,7 @@ cs = OCIO.ColorSpace(name='linear')
 cs.setDescription("Scene-linear, high dynamic range. Used for rendering and compositing.")
 cs.setBitDepth(OCIO.Constants.BIT_DEPTH_F32)
 cs.setAllocation(OCIO.Constants.ALLOCATION_LG2)
-cs.setAllocationVars([-8.0, 8.0])
+cs.setAllocationVars([-15.0, 6.0])
 config.addColorSpace(cs)
 
 

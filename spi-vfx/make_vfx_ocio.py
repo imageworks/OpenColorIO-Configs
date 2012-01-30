@@ -3,7 +3,7 @@
 
 import  math, os, sys
 import SpImport
-OCIO = SpImport.SpComp2("PyOpenColorIO",1)
+OCIO = SpImport.SpComp2("PyOpenColorIO",2)
 
 print "OCIO",OCIO.version
 

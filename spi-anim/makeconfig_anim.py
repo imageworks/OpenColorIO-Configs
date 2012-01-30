@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import SpImport, math, os, sys
-OCIO = SpImport.SpComp2("PyOpenColorIO",1)
+OCIO = SpImport.SpComp2("PyOpenColorIO",2)
 
 
 

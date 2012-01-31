@@ -7,7 +7,7 @@ OCIO = SpImport.SpComp2("PyOpenColorIO",2)
 
 print "OCIO",OCIO.version
 
-outputfilename = "spi-vfx.ocio"
+outputfilename = "config.ocio"
 
 config = OCIO.Config()
 
@@ -203,19 +203,17 @@ groupTransform.push_back(OCIO.ColorSpaceTransform(src='lnf', dst='lg10'))
 groupTransform.push_back( OCIO.FileTransform('colorworks_filmlg_to_p3.3dl',interpolation=OCIO.Constants.INTERP_LINEAR))
 cs.setTransform(groupTransform, OCIO.Constants.COLORSPACE_DIR_FROM_REFERENCE)
 config.addColorSpace(cs)
-"""
+
 cs = OCIO.ColorSpace(family='xyz',name='xyz16')
 cs.setDescription("xyz16 :Conversion for  DCP creation.")
 cs.setBitDepth(OCIO.Constants.BIT_DEPTH_UINT16)
 groupTransform = OCIO.GroupTransform()
 groupTransform.push_back(OCIO.ColorSpaceTransform(src='lnf', dst='p3dci8'))
 groupTransform.push_back(OCIO.ExponentTransform([2.6,2.6,2.6,1.0]))
-groupTransform.push_back(OCIO.FileTransform('p3_to_xyz16.spimtx'))
+groupTransform.push_back(OCIO.FileTransform('p3_to_xyz16_corrected_wp.spimtx'))
 groupTransform.push_back(OCIO.ExponentTransform([2.6,2.6,2.6,1.0],direction=OCIO.Constants.TRANSFORM_DIR_INVERSE))
 cs.setTransform(groupTransform, OCIO.Constants.COLORSPACE_DIR_FROM_REFERENCE)
 config.addColorSpace(cs)
-"""
-
 
 ## DISPLAY SPACES ##################################################################
 

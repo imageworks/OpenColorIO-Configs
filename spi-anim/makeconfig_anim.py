@@ -6,7 +6,7 @@ OCIO = SpImport.SpComp2("PyOpenColorIO",2)
 
 
 
-outputfilename = "spi-anim.ocio"
+outputfilename = "config.ocio"
 
 config = OCIO.Config() 
 
@@ -163,10 +163,10 @@ config.addColorSpace(cs)
 ## DISPLAY SPACES ##################################################################
 
 #
-# This is not as clean as would be desired
-# THere is a conversion made from srgb to P3
-# then there is a tone range correction that limits the dynamic range of the DLP to 
-# be appropaite for material created on the DreamColor display.
+# This is not as clean as would be desired.
+# There is a conversion made from srgb to P3.
+# Then there is a tone range correction that limits the dynamic range of the DLP to 
+# be appropriate for material created on the DreamColor display.
 #
 cs = OCIO.ColorSpace(family='p3dci',name='p3dci8')
 cs.setDescription("p3dci8 : 8 Bit int rgb display space for gamma 2.6 P3 projection.")
@@ -182,17 +182,17 @@ groupTransform.push_back(OCIO.FileTransform('correction.spi1d',OCIO.Constants.TR
 cs.setTransform(groupTransform, OCIO.Constants.COLORSPACE_DIR_FROM_REFERENCE)
 config.addColorSpace(cs)
 
-"""
 cs = OCIO.ColorSpace(family='xyz',name='xyz16')
 cs.setDescription("xyz16 : 16 Bit int space for DCP creation.")
 cs.setBitDepth(OCIO.Constants.BIT_DEPTH_UINT16)
 groupTransform = OCIO.GroupTransform()
-groupTransform.push_back(OCIO.ColorSpaceTransform(src='lnf',dst='vd16'))    
-groupTransform.push_back(OCIO.FileTransform('hdOffset.spimtx' ,direction= OCIO.Constants.TRANSFORM_DIR_FORWARD,interpolation=OCIO.Constants.INTERP_LINEAR))
-groupTransform.push_back(OCIO.FileTransform('hd10_to_xyz16.spi3d' ,direction=OCIO.Constants.TRANSFORM_DIR_FORWARD,interpolation=OCIO.Constants.INTERP_LINEAR))
+groupTransform.push_back(OCIO.ColorSpaceTransform(src='lnf',dst='p3dci8'))
+groupTransform.push_back(OCIO.ExponentTransform([2.6,2.6,2.6,1.0]))
+groupTransform.push_back(OCIO.FileTransform('p3_to_xyz16_corrected_wp.spimtx'))
+groupTransform.push_back(OCIO.ExponentTransform([2.6,2.6,2.6,1.0],direction=OCIO.Constants.TRANSFORM_DIR_INVERSE))
 cs.setTransform(groupTransform, OCIO.Constants.COLORSPACE_DIR_FROM_REFERENCE)
 config.addColorSpace(cs)
-"""
+
 ## DISPLAY SPACES ##################################################################
 
 for name,colorspace in [ ['Film','vd16'], ['Log','lm10'],['Raw','nc10']]:

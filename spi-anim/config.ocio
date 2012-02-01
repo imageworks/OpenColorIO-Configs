@@ -36,7 +36,6 @@ colorspaces:
     bitdepth: 32f
     description: |
       lnf :linear show space
-      
     isdata: false
     allocation: lg2
     allocationvars: [-13, 4]
@@ -48,7 +47,6 @@ colorspaces:
     bitdepth: 16f
     description: |
       lnh :linear show space
-      
     isdata: false
     allocation: lg2
     allocationvars: [-13, 4]
@@ -60,7 +58,6 @@ colorspaces:
     bitdepth: 16ui
     description: |
       lm16 : Log Monitor this space has a log like response and srgb primaries, it is used for color grading 
-      
     isdata: false
     allocation: uniform
     to_reference: !<FileTransform> {src: lm16.spi1d, interpolation: linear}
@@ -72,7 +69,6 @@ colorspaces:
     bitdepth: 10ui
     description: |
       lm10 : Log Monitor this space has a log like response and srgb primaries, it is used for color grading 
-      
     isdata: false
     allocation: uniform
     to_reference: !<FileTransform> {src: lm10.spi1d, interpolation: linear}
@@ -84,7 +80,6 @@ colorspaces:
     bitdepth: 32f
     description: |
       lmf : Log Monitor this space has a log like response and srgb primaries, it is used as a compositing log
-      
     isdata: false
     allocation: uniform
     allocationvars: [-0.2, 2.484]
@@ -97,7 +92,6 @@ colorspaces:
     bitdepth: 16ui
     description: |
       vd16 : The simple video conversion from a gamma 2.2 srgb space
-      
     isdata: false
     allocation: uniform
     to_reference: !<GroupTransform>
@@ -111,7 +105,6 @@ colorspaces:
     bitdepth: 10ui
     description: |
       vd10 : The simple video conversion from a gamma 2.2 srgb space
-      
     isdata: false
     allocation: uniform
     to_reference: !<GroupTransform>
@@ -125,7 +118,6 @@ colorspaces:
     bitdepth: 8ui
     description: |
       vd8 : The simple video conversion from a gamma 2.2 srgb space
-      
     isdata: false
     allocation: uniform
     to_reference: !<GroupTransform>
@@ -139,7 +131,6 @@ colorspaces:
     bitdepth: 10ui
     description: |
       hd10 : The simple conversion for REC709
-      
     isdata: false
     allocation: uniform
     to_reference: !<GroupTransform>
@@ -154,7 +145,6 @@ colorspaces:
     bitdepth: 16ui
     description: |
       dt16 :diffuse texture conversion
-      
     isdata: false
     allocation: uniform
     to_reference: !<GroupTransform>
@@ -169,7 +159,6 @@ colorspaces:
     bitdepth: 16ui
     description: |
       mp16 : conversion for matte painting
-      
     isdata: false
     allocation: uniform
     to_reference: !<GroupTransform>
@@ -184,7 +173,6 @@ colorspaces:
     bitdepth: 32f
     description: |
       cpf :video like conversion used for color picking 
-      
     isdata: false
     allocation: uniform
     to_reference: !<FileTransform> {src: cpf.spi1d, interpolation: nearest}
@@ -196,7 +184,6 @@ colorspaces:
     bitdepth: 8ui
     description: |
       nc8 :nc,Non-color used to store non-color data such as depth or surface normals
-      
     isdata: true
     allocation: uniform
 
@@ -207,7 +194,6 @@ colorspaces:
     bitdepth: 10ui
     description: |
       nc10 :nc,Non-color used to store non-color data such as depth or surface normals
-      
     isdata: true
     allocation: uniform
 
@@ -218,7 +204,6 @@ colorspaces:
     bitdepth: 16ui
     description: |
       nc16 :nc,Non-color used to store non-color data such as depth or surface normals
-      
     isdata: true
     allocation: uniform
 
@@ -229,7 +214,6 @@ colorspaces:
     bitdepth: 32f
     description: |
       ncf :nc,Non-color used to store non-color data such as depth or surface normals
-      
     isdata: true
     allocation: uniform
 
@@ -240,7 +224,6 @@ colorspaces:
     bitdepth: 8ui
     description: |
       p3dci8 : 8 Bit int rgb display space for gamma 2.6 P3 projection.
-      
     isdata: false
     allocation: uniform
     from_reference: !<GroupTransform>
@@ -252,3 +235,19 @@ colorspaces:
         - !<FileTransform> {src: htr_dlp_tweak.spimtx, interpolation: linear}
         - !<ExponentTransform> {value: [2.6, 2.6, 2.6, 1], direction: inverse}
         - !<FileTransform> {src: correction.spi1d, cccid: forward, interpolation: linear}
+
+  - !<ColorSpace>
+    name: xyz16
+    family: xyz
+    equalitygroup: 
+    bitdepth: 16ui
+    description: |
+      xyz16 : 16 Bit int space for DCP creation.
+    isdata: false
+    allocation: uniform
+    from_reference: !<GroupTransform>
+      children:
+        - !<ColorSpaceTransform> {src: lnf, dst: p3dci8}
+        - !<ExponentTransform> {value: [2.6, 2.6, 2.6, 1]}
+        - !<FileTransform> {src: p3_to_xyz16_corrected_wp.spimtx, interpolation: unknown}
+        - !<ExponentTransform> {value: [2.6, 2.6, 2.6, 1], direction: inverse}

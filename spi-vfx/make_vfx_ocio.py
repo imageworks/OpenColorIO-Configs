@@ -7,7 +7,7 @@ OCIO = SpImport.SpComp2("PyOpenColorIO",2)
 
 print "OCIO",OCIO.version
 
-outputfilename = "spi-vfx.ocio"
+outputfilename = "config.ocio"
 
 config = OCIO.Config()
 

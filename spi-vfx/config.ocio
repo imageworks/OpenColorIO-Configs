@@ -251,10 +251,10 @@ colorspaces:
       p3dci8 :rgb display space for gamma 2.6 P3 projection.
     isdata: false
     allocation: uniform
-#    from_reference: !<GroupTransform>
-#      children:
-#        - !<ColorSpaceTransform> {src: lnf, dst: lg10}
-#        - !<FileTransform> {src: colorworks_filmlg_to_p3.3dl, interpolation: linear}
+    from_reference: !<GroupTransform>
+      children:
+        - !<ColorSpaceTransform> {src: lnf, dst: lg10}
+        - !<FileTransform> {src: colorworks_filmlg_to_p3.3dl, interpolation: linear}
 
   - !<ColorSpace>
     name: xyz16

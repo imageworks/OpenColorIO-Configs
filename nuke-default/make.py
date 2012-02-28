@@ -96,6 +96,28 @@ cs.setTransform(t, OCIO.Constants.COLORSPACE_DIR_TO_REFERENCE)
 config.addColorSpace(cs)
 
 
+NUM_SAMPLES = 2**16+25
+RANGE = (-0.125, 4.875)
+data = []
+for i in xrange(NUM_SAMPLES):
+    x = i/(NUM_SAMPLES-1.0)
+    x = Fit(x, 0.0, 1.0, RANGE[0], RANGE[1])
+    data.append(fromSRGB(x))
+
+# Data is srgb->linear
+WriteSPI1D('luts/srgbf.spi1d', RANGE[0], RANGE[1], data)
+
+cs = OCIO.ColorSpace(name='sRGBf')
+cs.setDescription("Standard RGB Display Space, but with additional range to preserve float highlights.")
+cs.setBitDepth(OCIO.Constants.BIT_DEPTH_F32)
+cs.setAllocation(OCIO.Constants.ALLOCATION_UNIFORM)
+cs.setAllocationVars([RANGE[0], RANGE[1]])
+
+t = OCIO.FileTransform('srgbf.spi1d', interpolation=OCIO.Constants.INTERP_LINEAR)
+cs.setTransform(t, OCIO.Constants.COLORSPACE_DIR_TO_REFERENCE)
+config.addColorSpace(cs)
+
+
 ###############################################################################
 
 def toRec709(v):

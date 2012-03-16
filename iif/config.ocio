@@ -58,22 +58,39 @@ colorspaces:
     family: adx
     equalitygroup: 
     bitdepth: 10ui
+    description: |
+      Film Scan, using the 10-bit Academy Density Encoding
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: channel_dependent_offset.spimtx, interpolation: linear}
-        - !<FileTransform> {src: ten_bit_scale.spimtx, interpolation: linear}
-        - !<FileTransform> {src: channel_dependent_scalar.spimtx, interpolation: linear}
-        - !<FileTransform> {src: cdd_to_cid.spimtx, interpolation: linear}
-        - !<FileTransform> {src: rel_log_exp_scalar.spimtx, interpolation: linear}
-        - !<FileTransform> {src: refpt.spimtx, interpolation: linear}
+        - !<FileTransform> {src: adx_adx10_to_cdd.spimtx}
+        - !<FileTransform> {src: adx_cdd_to_cid.spimtx}
+        - !<FileTransform> {src: adx_cid_to_rle.spi1d, interpolation: linear}
         - !<LogTransform> {base: 10, direction: inverse}
-        - !<FileTransform> {src: exp_to_aces.spimtx, interpolation: linear}
+        - !<FileTransform> {src: adx_exp_to_aces.spimtx}
 
   - !<ColorSpace>
-    name: slog10
+    name: adx16
+    family: adx
+    equalitygroup: 
+    bitdepth: 16ui
+    description: |
+      Film Scan, using the 16-bit Academy Density Encoding
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: adx_adx16_to_cdd.spimtx}
+        - !<FileTransform> {src: adx_cdd_to_cid.spimtx}
+        - !<FileTransform> {src: adx_cid_to_rle.spi1d, interpolation: linear}
+        - !<LogTransform> {base: 10, direction: inverse}
+        - !<FileTransform> {src: adx_exp_to_aces.spimtx}
+
+  - !<ColorSpace>
+    name: slog
     family: slog
     equalitygroup: 
     bitdepth: 10ui

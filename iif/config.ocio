@@ -45,6 +45,15 @@ colorspaces:
     allocationvars: [-8.5, 5]
 
   - !<ColorSpace>
+    name: raw
+    family: raw
+    equalitygroup: 
+    bitdepth: 32f
+    isdata: true
+    allocation: uniform
+    allocationvars: [0, 1]
+
+  - !<ColorSpace>
     name: adx10
     family: adx
     equalitygroup: 
@@ -64,6 +73,22 @@ colorspaces:
         - !<FileTransform> {src: exp_to_aces.spimtx, interpolation: linear}
 
   - !<ColorSpace>
+    name: slog10
+    family: slog
+    equalitygroup: 
+    bitdepth: 10ui
+    description: |
+      Sony 10-bit S-Log/S-Gamut cameras, such as the F35.
+      
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: slog10.spi1d, interpolation: linear}
+        - !<FileTransform> {src: slog_to_aces.spimtx, interpolation: linear}
+
+  - !<ColorSpace>
     name: log
     family: log
     equalitygroup: 
@@ -81,22 +106,6 @@ colorspaces:
         - !<AllocationTransform> {allocation: lg2, vars: [-8.5, 5]}
 
   - !<ColorSpace>
-    name: slog10
-    family: slog
-    equalitygroup: 
-    bitdepth: 10ui
-    description: |
-      Sony 10-bit S-Log/S-Gamut cameras, such as the F35.
-      
-    isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
-    to_reference: !<GroupTransform>
-      children:
-        - !<FileTransform> {src: slog10.spi1d, interpolation: linear}
-        - !<FileTransform> {src: slog_to_aces.spimtx, interpolation: linear}
-
-  - !<ColorSpace>
     name: rrt_srgb
     family: rrt
     equalitygroup: 
@@ -108,6 +117,19 @@ colorspaces:
       children:
         - !<AllocationTransform> {allocation: lg2, vars: [-8.5, 5]}
         - !<FileTransform> {src: spi_32_lattice_rrtut33_sRGB.spi3d, interpolation: linear}
+
+  - !<ColorSpace>
+    name: rrt_rec709
+    family: rrt
+    equalitygroup: 
+    bitdepth: 32f
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    from_reference: !<GroupTransform>
+      children:
+        - !<AllocationTransform> {allocation: lg2, vars: [-8.5, 5]}
+        - !<FileTransform> {src: spi_32_lattice_rrtut33_rec709.spi3d, interpolation: linear}
 
   - !<ColorSpace>
     name: rrt_p3dci
@@ -123,6 +145,19 @@ colorspaces:
         - !<FileTransform> {src: spi_32_lattice_rrtut33_p3dci.spi3d, interpolation: linear}
 
   - !<ColorSpace>
+    name: rrt_p3d60
+    family: rrt
+    equalitygroup: 
+    bitdepth: 32f
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    from_reference: !<GroupTransform>
+      children:
+        - !<AllocationTransform> {allocation: lg2, vars: [-8.5, 5]}
+        - !<FileTransform> {src: spi_32_lattice_rrtut33_p3d60.spi3d, interpolation: linear}
+
+  - !<ColorSpace>
     name: rrt_xyz
     family: rrt
     equalitygroup: 
@@ -135,11 +170,3 @@ colorspaces:
         - !<AllocationTransform> {allocation: lg2, vars: [-8.5, 5]}
         - !<FileTransform> {src: spi_32_lattice_rrtut33_smpte_rp.spi3d, interpolation: linear}
 
-  - !<ColorSpace>
-    name: raw
-    family: raw
-    equalitygroup: 
-    bitdepth: 32f
-    isdata: true
-    allocation: uniform
-    allocationvars: [0, 1]

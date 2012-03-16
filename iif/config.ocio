@@ -60,6 +60,7 @@ colorspaces:
     bitdepth: 10ui
     description: |
       Film Scan, using the 10-bit Academy Density Encoding
+      
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
@@ -78,6 +79,7 @@ colorspaces:
     bitdepth: 16ui
     description: |
       Film Scan, using the 16-bit Academy Density Encoding
+      
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
@@ -104,6 +106,22 @@ colorspaces:
       children:
         - !<FileTransform> {src: slog10.spi1d, interpolation: linear}
         - !<FileTransform> {src: slog_to_aces.spimtx, interpolation: linear}
+
+  - !<ColorSpace>
+    name: logc
+    family: arri
+    equalitygroup: 
+    bitdepth: 10ui
+    description: |
+      Arri Alexa LogC, V3, Exposure Index 800
+      
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: logc800.spi1d, interpolation: linear}
+        - !<FileTransform> {src: logc_to_aces.spimtx}
 
   - !<ColorSpace>
     name: log
@@ -186,4 +204,3 @@ colorspaces:
       children:
         - !<AllocationTransform> {allocation: lg2, vars: [-8.5, 5]}
         - !<FileTransform> {src: spi_32_lattice_rrtut33_smpte_rp.spi3d, interpolation: linear}
-

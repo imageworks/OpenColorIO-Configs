@@ -1,0 +1,22 @@
+RRT VERSION: ut33
+
+https://github.com/ampas/aces-dev/tree/183dc4b71690461c6517ce10b57cfe5fb8710766
+
+# COMMANDS TO GENERATE RRT 3D LUTS
+
+# This is to pickup the log -> aces transform (the input allocation)
+setenv OCIO /path/to/ocio/iif/config.ocio
+ociolutimage --generate --colorconvert log aces --output log_aces.exr
+
+ctlrender -ctl rrt/rrt.ctl -ctl odt/p3d60/odt_p3d60.ctl log_aces.exr rrt_ut33_p3d60.exr
+ctlrender -ctl rrt/rrt.ctl -ctl odt/p3dci/odt_p3dci.ctl log_aces.exr rrt_ut33_p3dci.exr
+ctlrender -ctl rrt/rrt.ctl -ctl odt/rec709/odt_rec709.ctl log_aces.exr rrt_ut33_rec709.exr
+ctlrender -ctl rrt/rrt.ctl -ctl odt/smpte_rp/rdt_dcdm.ctl log_aces.exr rrt_ut33_dcdm.exr
+ctlrender -ctl rrt/rrt.ctl -ctl odt/sRGB/odt_sRGB.ctl log_aces.exr rrt_ut33_sRGB.exr
+
+ociolutimage --extract --input rrt_ut33_p3d60.exr --output rrt_ut33_p3d60.spi3d
+ociolutimage --extract --input rrt_ut33_p3dci.exr --output rrt_ut33_p3dci.spi3d
+ociolutimage --extract --input rrt_ut33_rec709.exr --output rrt_ut33_rec709.spi3d
+ociolutimage --extract --input rrt_ut33_dcdm.exr --output rrt_ut33_dcdm.spi3d
+ociolutimage --extract --input rrt_ut33_sRGB.exr --output rrt_ut33_sRGB.spi3d
+

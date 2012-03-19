@@ -151,7 +151,7 @@ colorspaces:
     from_reference: !<GroupTransform>
       children:
         - !<AllocationTransform> {allocation: lg2, vars: [-8.5, 5]}
-        - !<FileTransform> {src: spi_32_lattice_rrtut33_sRGB.spi3d, interpolation: linear}
+        - !<FileTransform> {src: rrt_ut33_sRGB.spi3d, interpolation: linear}
 
   - !<ColorSpace>
     name: rrt_rec709
@@ -164,7 +164,7 @@ colorspaces:
     from_reference: !<GroupTransform>
       children:
         - !<AllocationTransform> {allocation: lg2, vars: [-8.5, 5]}
-        - !<FileTransform> {src: spi_32_lattice_rrtut33_rec709.spi3d, interpolation: linear}
+        - !<FileTransform> {src: rrt_ut33_rec709.spi3d, interpolation: linear}
 
   - !<ColorSpace>
     name: rrt_p3dci
@@ -177,7 +177,7 @@ colorspaces:
     from_reference: !<GroupTransform>
       children:
         - !<AllocationTransform> {allocation: lg2, vars: [-8.5, 5]}
-        - !<FileTransform> {src: spi_32_lattice_rrtut33_p3dci.spi3d, interpolation: linear}
+        - !<FileTransform> {src: rrt_ut33_p3dci.spi3d, interpolation: linear}
 
   - !<ColorSpace>
     name: rrt_p3d60
@@ -190,7 +190,7 @@ colorspaces:
     from_reference: !<GroupTransform>
       children:
         - !<AllocationTransform> {allocation: lg2, vars: [-8.5, 5]}
-        - !<FileTransform> {src: spi_32_lattice_rrtut33_p3d60.spi3d, interpolation: linear}
+        - !<FileTransform> {src: rrt_ut33_p3d60.spi3d, interpolation: linear}
 
   - !<ColorSpace>
     name: rrt_xyz
@@ -203,4 +203,4 @@ colorspaces:
     from_reference: !<GroupTransform>
       children:
         - !<AllocationTransform> {allocation: lg2, vars: [-8.5, 5]}
-        - !<FileTransform> {src: spi_32_lattice_rrtut33_smpte_rp.spi3d, interpolation: linear}
+        - !<FileTransform> {src: rrt_ut33_dcdm.spi3d, interpolation: linear}

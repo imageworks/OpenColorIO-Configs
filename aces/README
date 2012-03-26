@@ -1,11 +1,11 @@
 RRT VERSION: ut33
 
-https://github.com/ampas/aces-dev/tree/183dc4b71690461c6517ce10b57cfe5fb8710766
+https://github.com/ampas/aces-dev/tree/22d282997f92deef76b641b2148af25df8027f64
 
 # COMMANDS TO GENERATE RRT 3D LUTS
-
 # This is to pickup the log -> aces transform (the input allocation)
 setenv OCIO /path/to/ocio/aces/config.ocio
+
 ociolutimage --generate --colorconvert log aces --output log_aces.exr
 
 ctlrender -ctl rrt/rrt.ctl -ctl odt/p3d60/odt_p3d60.ctl log_aces.exr rrt_ut33_p3d60.exr

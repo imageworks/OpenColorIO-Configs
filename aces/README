@@ -2,6 +2,15 @@ RRT VERSION: ut33
 
 https://github.com/ampas/aces-dev/tree/22d282997f92deef76b641b2148af25df8027f64
 
+config_1_0_3.ocio:  requires OCIO 1.0.3+.
+- specifies the use of tetrahedral interpolation on the RRTs
+
+config.ocio:  requires OCIO 1.0.0+.
+
+
+
+
+
 # COMMANDS TO GENERATE RRT 3D LUTS
 # This is to pickup the log -> aces transform (the input allocation)
 setenv OCIO /path/to/ocio/aces/config.ocio

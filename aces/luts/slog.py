@@ -37,14 +37,14 @@ def Fit(value, fromMin, fromMax, toMin, toMax):
 #	#{ 0.133697046,  1.005410934,  0.004508563 },
 #	{ 0.111968437, -0.026610548,  1.005253201 }
 
-NUM_SAMPLES = 2**11
+NUM_SAMPLES = 2**14
 RANGE = (-0.125, 1.125)
 data = []
 for i in xrange(NUM_SAMPLES):
     x = i/(NUM_SAMPLES-1.0)
     x = Fit(x, 0.0, 1.0, RANGE[0], RANGE[1])
     data.append(SLog10_to_lin(x))
-WriteSPI1D('slog10.spi1d', RANGE[0], RANGE[1], data)
+WriteSPI1D('slog.spi1d', RANGE[0], RANGE[1], data)
 
 """
 NUM_SAMPLES = 2**13

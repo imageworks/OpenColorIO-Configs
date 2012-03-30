@@ -97,14 +97,14 @@ colorspaces:
     equalitygroup: 
     bitdepth: 10ui
     description: |
-      Sony 10-bit S-Log, with f35 color primaries
+      Sony S-Log, with f35 color primaries
       
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: slog10.spi1d, interpolation: linear}
+        - !<FileTransform> {src: slog.spi1d, interpolation: linear}
         - !<FileTransform> {src: slogf35_to_aces.spimtx, interpolation: linear}
 
   - !<ColorSpace>
@@ -113,14 +113,14 @@ colorspaces:
     equalitygroup: 
     bitdepth: 10ui
     description: |
-      Sony 10-bit S-Log, with f65 color primaries
+      Sony S-Log, with f65 color primaries at 3200K
       
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: slog10.spi1d, interpolation: linear}
+        - !<FileTransform> {src: slog.spi1d, interpolation: linear}
         - !<FileTransform> {src: slogf65_to_aces_3200.spimtx, interpolation: linear}
 
   - !<ColorSpace>
@@ -129,14 +129,46 @@ colorspaces:
     equalitygroup: 
     bitdepth: 10ui
     description: |
-      Sony 10-bit S-Log, with f65 color primaries
+      Sony S-Log, with f65 color primaries at 5500K
       
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: slog10.spi1d, interpolation: linear}
+        - !<FileTransform> {src: slog.spi1d, interpolation: linear}
+        - !<FileTransform> {src: slogf65_to_aces_5500.spimtx, interpolation: linear}
+
+  - !<ColorSpace>
+    name: slog2f65_3200
+    family: sony
+    equalitygroup: 
+    bitdepth: 10ui
+    description: |
+      Sony S-Log 2, with f65 color primaries at 3200K
+      
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: slog2.spi1d, interpolation: linear}
+        - !<FileTransform> {src: slogf65_to_aces_3200.spimtx, interpolation: linear}
+
+  - !<ColorSpace>
+    name: slog2f65_5500
+    family: sony
+    equalitygroup: 
+    bitdepth: 10ui
+    description: |
+      Sony S-Log 2, with f65 color primaries at 5500K
+      
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: slog2.spi1d, interpolation: linear}
         - !<FileTransform> {src: slogf65_to_aces_5500.spimtx, interpolation: linear}
 
   - !<ColorSpace>

@@ -104,8 +104,8 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: slog10.spi1d, interpolation: linear}
-        - !<FileTransform> {src: slogf35_to_aces.spimtx, interpolation: linear}
+        - !<FileTransform> {src: sony/slog1_10.spi1d, interpolation: linear}
+        - !<FileTransform> {src: sony/slogf35_to_aces.spimtx, interpolation: linear}
 
   - !<ColorSpace>
     name: slogf65_3200
@@ -120,8 +120,8 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: slog10.spi1d, interpolation: linear}
-        - !<FileTransform> {src: slogf65_to_aces_3200.spimtx, interpolation: linear}
+        - !<FileTransform> {src: sony/slog2_10.spi1d, interpolation: linear}
+        - !<FileTransform> {src: sony/slogf65_to_aces_3200.spimtx, interpolation: linear}
 
   - !<ColorSpace>
     name: slogf65_5500
@@ -136,8 +136,8 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: slog10.spi1d, interpolation: linear}
-        - !<FileTransform> {src: slogf65_to_aces_5500.spimtx, interpolation: linear}
+        - !<FileTransform> {src: sony/slog2_10.spi1d, interpolation: linear}
+        - !<FileTransform> {src: sony/slogf65_to_aces_5500.spimtx, interpolation: linear}
 
   - !<ColorSpace>
     name: logc

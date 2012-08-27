@@ -66,11 +66,11 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: adx_adx10_to_cdd.spimtx}
-        - !<FileTransform> {src: adx_cdd_to_cid.spimtx}
-        - !<FileTransform> {src: adx_cid_to_rle.spi1d, interpolation: linear}
+        - !<FileTransform> {src: unbuild/adx_adx10_to_cdd.spimtx}
+        - !<FileTransform> {src: unbuild/adx_cdd_to_cid.spimtx}
+        - !<FileTransform> {src: unbuild/adx_cid_to_rle.spi1d, interpolation: linear}
         - !<LogTransform> {base: 10, direction: inverse}
-        - !<FileTransform> {src: adx_exp_to_aces.spimtx}
+        - !<FileTransform> {src: unbuild/adx_exp_to_aces.spimtx}
 
   - !<ColorSpace>
     name: adx16
@@ -85,11 +85,11 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: adx_adx16_to_cdd.spimtx}
-        - !<FileTransform> {src: adx_cdd_to_cid.spimtx}
-        - !<FileTransform> {src: adx_cid_to_rle.spi1d, interpolation: linear}
+        - !<FileTransform> {src: unbuild/adx_adx16_to_cdd.spimtx}
+        - !<FileTransform> {src: unbuild/adx_cdd_to_cid.spimtx}
+        - !<FileTransform> {src: unbuild/adx_cid_to_rle.spi1d, interpolation: linear}
         - !<LogTransform> {base: 10, direction: inverse}
-        - !<FileTransform> {src: adx_exp_to_aces.spimtx}
+        - !<FileTransform> {src: unbuild/adx_exp_to_aces.spimtx}
 
   - !<ColorSpace>
     name: slogf35

@@ -152,8 +152,8 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: logc800.spi1d, interpolation: linear}
-        - !<FileTransform> {src: logc_to_aces.spimtx}
+        - !<FileTransform> {src: arri/logc800.spi1d, interpolation: linear}
+        - !<FileTransform> {src: arri/logc_to_aces.spimtx}
 
   - !<ColorSpace>
     name: log

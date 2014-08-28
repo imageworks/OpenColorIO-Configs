@@ -20,6 +20,7 @@ displays:
     - !<View> {name: None, colorspace: raw}
     - !<View> {name: sRGB, colorspace: sRGB}
     - !<View> {name: rec709, colorspace: rec709}
+    - !<View> {name: rec1886, colorspace: Gamma2.4}
 
 active_displays: [default]
 active_views: [sRGB]
@@ -47,18 +48,6 @@ colorspaces:
     allocation: uniform
     allocationvars: [-0.125, 1.125]
     to_reference: !<FileTransform> {src: srgb.spi1d, interpolation: linear}
-
-  - !<ColorSpace>
-    name: sRGBf
-    family: ""
-    equalitygroup: ""
-    bitdepth: 32f
-    description: |
-      Standard RGB Display Space, but with additional range to preserve float highlights.
-    isdata: false
-    allocation: uniform
-    allocationvars: [-0.125, 4.875]
-    to_reference: !<FileTransform> {src: srgbf.spi1d, interpolation: linear}
 
   - !<ColorSpace>
     name: rec709
@@ -107,6 +96,18 @@ colorspaces:
     allocation: uniform
     allocationvars: [0, 1]
     to_reference: !<ExponentTransform> {value: [2.2, 2.2, 2.2, 1]}
+
+  - !<ColorSpace>
+    name: Gamma2.4
+    family: ""
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      Emulates a idealized Gamma 2.4 display device.
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<ExponentTransform> {value: [2.4, 2.4, 2.4, 1]}
 
   - !<ColorSpace>
     name: Panalog
@@ -179,6 +180,54 @@ colorspaces:
     allocation: uniform
     allocationvars: [-0.125, 1.125]
     to_reference: !<FileTransform> {src: slog.spi1d, interpolation: linear}
+
+  - !<ColorSpace>
+    name: SLog1
+    family: ""
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      Sony SLog1
+    isdata: false
+    allocation: uniform
+    allocationvars: [-0.125, 1.125]
+    to_reference: !<FileTransform> {src: slog1.spi1d, interpolation: linear}
+
+  - !<ColorSpace>
+    name: SLog2
+    family: ""
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      Sony SLog2
+    isdata: false
+    allocation: uniform
+    allocationvars: [-0.125, 1.125]
+    to_reference: !<FileTransform> {src: slog2.spi1d, interpolation: linear}
+
+  - !<ColorSpace>
+    name: SLog3
+    family: ""
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      Sony SLog3
+    isdata: false
+    allocation: uniform
+    allocationvars: [-0.125, 1.125]
+    to_reference: !<FileTransform> {src: slog3.spi1d, interpolation: linear}
+
+  - !<ColorSpace>
+    name: CLog
+    family: ""
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      Canon CLog
+    isdata: false
+    allocation: uniform
+    allocationvars: [-0.125, 1.125]
+    to_reference: !<FileTransform> {src: clog.spi1d, interpolation: linear}
 
   - !<ColorSpace>
     name: raw

@@ -14,6 +14,11 @@ ACES CTL code used as source for configuration can be found here
 Transforms
 ----------
 Transforms generated based on the following sources
+
+ACES2065, ACEScc, ACESproxy, ACEScg
+Ouput Transforms (RRT/ODTs), LMTs
+- https://github.com/ampas/aces-dev/tree/v1.0/transforms/ctl
+
 ARRI
 - https://github.com/ampas/aces-dev/tree/v1.0/transforms/ctl/idt/vendorSupplied/arri/alexa
 - Conversations with Joseph Goldstone of ARRI
@@ -44,6 +49,7 @@ The script used to generate these transforms and the transforms themselves were 
 
 Steve Agland
 Joe Bogacz
+Scott Dyer
 Alex Fry
 Alex Forsythe
 Joseph Goldstone

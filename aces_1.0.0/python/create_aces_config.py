@@ -587,9 +587,14 @@ def generateLUTs(odtInfo, lmtInfo, shaperName, acesCTLReleaseDir, lutDir, lutRes
     configData['colorSpaces'] = []
 
     # Matrix converting ACES AP1 primaries to AP0
-    acesAP1toAP0 = [0.6954522414, 0.1406786965, 0.1638690622,
-                    0.0447945634, 0.8596711185, 0.0955343182,
+    acesAP1toAP0 = [ 0.6954522414, 0.1406786965, 0.1638690622,
+                     0.0447945634, 0.8596711185, 0.0955343182,
                     -0.0055258826, 0.0040252103, 1.0015006723]
+
+    # Matrix converting ACES AP0 primaries to XYZ
+    acesAP0toXYZ = [0.9525523959,  0.0000000000,  0.0000936786,
+                    0.3439664498,  0.7281660966, -0.0721325464,
+                    0.0000000000,  0.0000000000,  1.0088251844]
 
     #
     # ACEScc
@@ -604,7 +609,7 @@ def generateLUTs(odtInfo, lmtInfo, shaperName, acesCTLReleaseDir, lutDir, lutRes
         ctls = [
             '%s/ACEScc/ACEScsc.ACEScc_to_ACES.a1.0.0.ctl' % acesCTLReleaseDir,
             # This transform gets back to the AP1 primaries
-            # Useful to the 1d LUT is only covering the transfer function
+            # Useful as the 1d LUT is only covering the transfer function
             # The primaries switch is covered by the matrix below
             '%s/ACEScg/ACEScsc.ACES_to_ACEScg.a1.0.0.ctl' % acesCTLReleaseDir
         ]
@@ -655,7 +660,7 @@ def generateLUTs(odtInfo, lmtInfo, shaperName, acesCTLReleaseDir, lutDir, lutRes
         ctls = [
             '%s/ACESproxy/ACEScsc.ACESproxy10i_to_ACES.a1.0.0.ctl' % acesCTLReleaseDir,
             # This transform gets back to the AP1 primaries
-            # Useful to the 1d LUT is only covering the transfer function
+            # Useful as the 1d LUT is only covering the transfer function
             # The primaries switch is covered by the matrix below
             '%s/ACEScg/ACEScsc.ACES_to_ACEScg.a1.0.0.ctl' % acesCTLReleaseDir
         ]
@@ -1575,7 +1580,7 @@ def generateLUTs(odtInfo, lmtInfo, shaperName, acesCTLReleaseDir, lutDir, lutRes
     lmtLutResolution3d = max(65, lutResolution3d)
 
     # Log 2 shaper
-    lmtShaperName = 'lmtShaper'
+    lmtShaperName = 'LMT Shaper'
     lmtParams = {
         'middleGrey'  : 0.18,
         'minExposure' : -10.0,
@@ -1806,7 +1811,7 @@ def generateLUTs(odtInfo, lmtInfo, shaperName, acesCTLReleaseDir, lutDir, lutRes
         middleGrey=log2Params['middleGrey'], 
         minExposure=log2Params['minExposure'], 
         maxExposure=log2Params['maxExposure'])
-    log2ShaperAP1.name = "%s AP1" % log2ShaperAP1.name
+    log2ShaperAP1.name = "%s - AP1" % log2ShaperAP1.name
     # AP1 primaries to AP0 primaries
     log2ShaperAP1.toReferenceTransforms.append( {
         'type':'matrix',
@@ -1892,6 +1897,41 @@ def generateLUTs(odtInfo, lmtInfo, shaperName, acesCTLReleaseDir, lutDir, lutRes
                 'Log':ACEScc, 
                 'Output Transform':csFull }
 
+    #
+    # Generic Matrix transform
+    #
+    def createGenericMatrix(name='matrix', 
+        fromReferenceValues=[],
+        toReferenceValues=[]):
+        cs = ColorSpace(name)
+        cs.description = "The %s color space" % name
+        cs.equalityGroup = name
+        cs.family = 'Utility'
+        cs.isData=False
+
+        cs.toReferenceTransforms = []
+        if toReferenceValues != []:
+            cs.toReferenceTransforms.append( {
+                'type':'matrix',
+                'matrix':mat44FromMat33(toReferenceValues),
+                'direction':'forward'
+            })
+
+        cs.fromReferenceTransforms = []
+        if fromReferenceValues != []:
+            cs.fromReferenceTransforms.append( {
+                'type':'matrix',
+                'matrix':mat44FromMat33(fromReferenceValues),
+                'direction':'forward'
+            })
+
+        return cs
+
+    cs = createGenericMatrix('XYZ', fromReferenceValues=acesAP0toXYZ)
+    configData['colorSpaces'].append(cs)   
+
+    cs = createGenericMatrix('Linear - AP1', toReferenceValues=acesAP1toAP0)
+    configData['colorSpaces'].append(cs)   
 
     print( "generateLUTs - end" )
     return configData
@@ -1954,7 +1994,7 @@ def generateBakedLUTs(odtInfo, shaperName, bakedDir, configPath, lutResolution1d
             args += ["--outputspace", "%s" % odtName ]
             args += ["--description", "%s - %s for %s data" % (odtPrefix, odtName, inputspace) ]
             if inputspace == 'ACEScg':
-                linShaperName = "%s AP1" % shaperName 
+                linShaperName = "%s - AP1" % shaperName 
             else:
                 linShaperName = shaperName
             args += ["--shaperspace", linShaperName, "--shapersize", str(lutResolutionShaper) ] 
@@ -2153,7 +2193,7 @@ def createACESConfig(acesCTLReleaseDir,
 
     # Generate config data and LUTs for different transforms
     lutDir = "%s/luts" % configDir
-    shaperName = 'outputShaper'
+    shaperName = 'Output Shaper'
     configData = generateLUTs(odtInfo, lmtInfo, shaperName, acesCTLReleaseDir, lutDir, lutResolution1d, lutResolution3d, cleanup)
     
     # Create the config using the generated LUTs

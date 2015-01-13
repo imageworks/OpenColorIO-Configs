@@ -160,6 +160,21 @@ colorspaces:
         - !<MatrixTransform> {matrix: [0.532279, 0.376648, 0.091073, 0, 0.046344, 0.974513, -0.02086, 0, -0.053976, -0.00032, 1.05427, 0, 0, 0, 0, 1]}
 
   - !<ColorSpace>
+    name: REDlogFilm - DRAGONcolor2
+    family: RED
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      REDlogFilm - DRAGONcolor2
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: CineonLog_to_linear.spi1d, interpolation: linear}
+        - !<MatrixTransform> {matrix: [0.468452, 0.331484, 0.200064, 0, 0.040787, 0.857658, 0.101553, 0, -0.047504, -0.000282, 1.04776, 0, 0, 0, 0, 1]}
+
+  - !<ColorSpace>
     name: REDlogFilm - REDcolor2
     family: RED
     equalitygroup: ""
@@ -190,6 +205,21 @@ colorspaces:
         - !<MatrixTransform> {matrix: [0.512136, 0.36037, 0.127494, 0, 0.070377, 0.903884, 0.025737, 0, -0.020824, 0.017671, 1.00312, 0, 0, 0, 0, 1]}
 
   - !<ColorSpace>
+    name: REDlogFilm - REDcolor4
+    family: RED
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      REDlogFilm - REDcolor4
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: CineonLog_to_linear.spi1d, interpolation: linear}
+        - !<MatrixTransform> {matrix: [0.474202, 0.333677, 0.192121, 0, 0.065164, 0.836932, 0.097901, 0, -0.019281, 0.016362, 1.00289, 0, 0, 0, 0, 1]}
+
+  - !<ColorSpace>
     name: REDlogFilm
     family: RED
     equalitygroup: ""
@@ -214,6 +244,18 @@ colorspaces:
     to_reference: !<MatrixTransform> {matrix: [0.532279, 0.376648, 0.091073, 0, 0.046344, 0.974513, -0.02086, 0, -0.053976, -0.00032, 1.05427, 0, 0, 0, 0, 1]}
 
   - !<ColorSpace>
+    name: Linear - DRAGONcolor2
+    family: RED
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      Linear - DRAGONcolor2
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<MatrixTransform> {matrix: [0.468452, 0.331484, 0.200064, 0, 0.040787, 0.857658, 0.101553, 0, -0.047504, -0.000282, 1.04776, 0, 0, 0, 0, 1]}
+
+  - !<ColorSpace>
     name: Linear - REDcolor2
     family: RED
     equalitygroup: ""
@@ -236,6 +278,18 @@ colorspaces:
     allocation: uniform
     allocationvars: [0, 1]
     to_reference: !<MatrixTransform> {matrix: [0.512136, 0.36037, 0.127494, 0, 0.070377, 0.903884, 0.025737, 0, -0.020824, 0.017671, 1.00312, 0, 0, 0, 0, 1]}
+
+  - !<ColorSpace>
+    name: Linear - REDcolor4
+    family: RED
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      Linear - REDcolor4
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<MatrixTransform> {matrix: [0.474202, 0.333677, 0.192121, 0, 0.065164, 0.836932, 0.097901, 0, -0.019281, 0.016362, 1.00289, 0, 0, 0, 0, 1]}
 
   - !<ColorSpace>
     name: Canon-Log - Rec. 709 Daylight
@@ -1200,3 +1254,63 @@ colorspaces:
     allocation: uniform
     allocationvars: [0, 1]
     to_reference: !<MatrixTransform> {matrix: [0.695452, 0.140679, 0.163869, 0, 0.0447946, 0.859671, 0.0955343, 0, -0.00552588, 0.00402521, 1.0015, 0, 0, 0, 0, 1]}
+
+  - !<ColorSpace>
+    name: Linear - P3-D60
+    family: Utility
+    equalitygroup: Linear - P3-D60
+    bitdepth: 32f
+    description: |
+      The Linear - P3-D60 color space
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    from_reference: !<GroupTransform>
+      children:
+        - !<MatrixTransform> {matrix: [0.952552, 0, 9.36786e-05, 0, 0.343966, 0.728166, -0.0721325, 0, 0, 0, 1.00883, 0, 0, 0, 0, 1]}
+        - !<MatrixTransform> {matrix: [2.40274, -0.897484, -0.388053, 0, -0.83258, 1.76923, 0.0237127, 0, 0.0388234, -0.0824997, 1.03637, 0, 0, 0, 0, 1]}
+
+  - !<ColorSpace>
+    name: Linear - P3-DCI
+    family: Utility
+    equalitygroup: Linear - P3-DCI
+    bitdepth: 32f
+    description: |
+      The Linear - P3-DCI color space
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    from_reference: !<GroupTransform>
+      children:
+        - !<MatrixTransform> {matrix: [0.952552, 0, 9.36786e-05, 0, 0.343966, 0.728166, -0.0721325, 0, 0, 0, 1.00883, 0, 0, 0, 0, 1]}
+        - !<MatrixTransform> {matrix: [2.72539, -1.018, -0.440163, 0, -0.795168, 1.68973, 0.0226472, 0, 0.0412419, -0.087639, 1.10093, 0, 0, 0, 0, 1]}
+
+  - !<ColorSpace>
+    name: Linear - Rec.709
+    family: Utility
+    equalitygroup: Linear - Rec.709
+    bitdepth: 32f
+    description: |
+      The Linear - Rec.709 color space
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    from_reference: !<GroupTransform>
+      children:
+        - !<MatrixTransform> {matrix: [0.952552, 0, 9.36786e-05, 0, 0.343966, 0.728166, -0.0721325, 0, 0, 0, 1.00883, 0, 0, 0, 0, 1]}
+        - !<MatrixTransform> {matrix: [3.24097, -1.53738, -0.498611, 0, -0.969244, 1.87597, 0.0415551, 0, 0.0556301, -0.203977, 1.05697, 0, 0, 0, 0, 1]}
+
+  - !<ColorSpace>
+    name: Linear - Rec.2020
+    family: Utility
+    equalitygroup: Linear - Rec.2020
+    bitdepth: 32f
+    description: |
+      The Linear - Rec.2020 color space
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    from_reference: !<GroupTransform>
+      children:
+        - !<MatrixTransform> {matrix: [0.952552, 0, 9.36786e-05, 0, 0.343966, 0.728166, -0.0721325, 0, 0, 0, 1.00883, 0, 0, 0, 0, 1]}
+        - !<MatrixTransform> {matrix: [1.71665, -0.355671, -0.253366, 0, -0.666684, 1.61648, 0.0157685, 0, 0.0176399, -0.0427706, 0.942103, 0, 0, 0, 0, 1]}

@@ -905,17 +905,17 @@ def generateLUTs(odtInfo, lmtInfo, shaperName, acesCTLReleaseDir, lutDir, lutRes
         if gamut == 'DRAGONcolor':
             cs.toReferenceTransforms.append( {
                 'type':'matrix',
-                'matrix':mat44FromMat33([0.532279, 0.376648, 0.091073, 
-                                        0.046344, 0.974513, -0.020860, 
+                'matrix':mat44FromMat33([0.532279,  0.376648,  0.091073, 
+                                         0.046344,  0.974513, -0.020860, 
                                         -0.053976, -0.000320, 1.054267]),
                 'direction':'forward'
             })
-        elif gamut == 'REDcolor3':
+        elif gamut == 'DRAGONcolor2':
             cs.toReferenceTransforms.append( {
                 'type':'matrix',
-                'matrix':mat44FromMat33([0.512136, 0.360370, 0.127494, 
-                                        0.070377, 0.903884, 0.025737, 
-                                        -0.020824, 0.017671, 1.003123]),
+                'matrix':mat44FromMat33([0.468452,  0.331484,  0.200064, 
+                                         0.040787,  0.857658,  0.101553, 
+                                        -0.047504, -0.000282, 1.047756]),
                 'direction':'forward'
             })
         elif gamut == 'REDcolor2':
@@ -926,6 +926,22 @@ def generateLUTs(odtInfo, lmtInfo, shaperName, acesCTLReleaseDir, lutDir, lutRes
                                         -0.105257, 0.025320, 1.079907]),
                 'direction':'forward'
             })
+        elif gamut == 'REDcolor3':
+            cs.toReferenceTransforms.append( {
+                'type':'matrix',
+                'matrix':mat44FromMat33([0.512136, 0.360370, 0.127494, 
+                                         0.070377, 0.903884, 0.025737, 
+                                        -0.020824, 0.017671, 1.003123]),
+                'direction':'forward'
+            })
+        elif gamut == 'REDcolor4':
+            cs.toReferenceTransforms.append( {
+                'type':'matrix',
+                'matrix':mat44FromMat33([0.474202, 0.333677, 0.192121, 
+                                         0.065164, 0.836932, 0.097901, 
+                                        -0.019281, 0.016362, 1.002889]),
+                'direction':'forward'
+            })
 
         cs.fromReferenceTransforms = []
         return cs
@@ -934,11 +950,17 @@ def generateLUTs(odtInfo, lmtInfo, shaperName, acesCTLReleaseDir, lutDir, lutRes
     REDlogFilmDRAGON = createREDlogFilm("DRAGONcolor", "REDlogFilm", name="REDlogFilm")
     configData['colorSpaces'].append(REDlogFilmDRAGON)
 
+    REDlogFilmDRAGON2 = createREDlogFilm("DRAGONcolor2", "REDlogFilm", name="REDlogFilm")
+    configData['colorSpaces'].append(REDlogFilmDRAGON2)
+
     REDlogFilmREDcolor2 = createREDlogFilm("REDcolor2", "REDlogFilm", name="REDlogFilm")
     configData['colorSpaces'].append(REDlogFilmREDcolor2)
 
     REDlogFilmREDcolor3 = createREDlogFilm("REDcolor3", "REDlogFilm", name="REDlogFilm")
     configData['colorSpaces'].append(REDlogFilmREDcolor3)
+
+    REDlogFilmREDcolor4 = createREDlogFilm("REDcolor4", "REDlogFilm", name="REDlogFilm")
+    configData['colorSpaces'].append(REDlogFilmREDcolor4)
 
     # Linearization only
     REDlogFilmDRAGON = createREDlogFilm("", "REDlogFilm", name="REDlogFilm")
@@ -948,11 +970,17 @@ def generateLUTs(odtInfo, lmtInfo, shaperName, acesCTLReleaseDir, lutDir, lutRes
     REDlogFilmDRAGON = createREDlogFilm("DRAGONcolor", "", name="REDlogFilm")
     configData['colorSpaces'].append(REDlogFilmDRAGON)
 
+    REDlogFilmDRAGON2 = createREDlogFilm("DRAGONcolor2", "", name="REDlogFilm")
+    configData['colorSpaces'].append(REDlogFilmDRAGON2)
+
     REDlogFilmREDcolor2 = createREDlogFilm("REDcolor2", "", name="REDlogFilm")
     configData['colorSpaces'].append(REDlogFilmREDcolor2)
 
     REDlogFilmREDcolor3 = createREDlogFilm("REDcolor3", "", name="REDlogFilm")
     configData['colorSpaces'].append(REDlogFilmREDcolor3)
+
+    REDlogFilmREDcolor4 = createREDlogFilm("REDcolor4", "", name="REDlogFilm")
+    configData['colorSpaces'].append(REDlogFilmREDcolor4)
 
     #
     # Canon-Log to ACES
@@ -1911,26 +1939,60 @@ def generateLUTs(odtInfo, lmtInfo, shaperName, acesCTLReleaseDir, lutDir, lutRes
 
         cs.toReferenceTransforms = []
         if toReferenceValues != []:
-            cs.toReferenceTransforms.append( {
-                'type':'matrix',
-                'matrix':mat44FromMat33(toReferenceValues),
-                'direction':'forward'
-            })
+            for matrix in toReferenceValues:
+                cs.toReferenceTransforms.append( {
+                    'type':'matrix',
+                    'matrix':mat44FromMat33(matrix),
+                    'direction':'forward'
+                })
 
         cs.fromReferenceTransforms = []
         if fromReferenceValues != []:
-            cs.fromReferenceTransforms.append( {
-                'type':'matrix',
-                'matrix':mat44FromMat33(fromReferenceValues),
-                'direction':'forward'
-            })
+            for matrix in fromReferenceValues:
+                cs.fromReferenceTransforms.append( {
+                    'type':'matrix',
+                    'matrix':mat44FromMat33(matrix),
+                    'direction':'forward'
+                })
 
         return cs
 
-    cs = createGenericMatrix('XYZ', fromReferenceValues=acesAP0toXYZ)
+    cs = createGenericMatrix('XYZ', fromReferenceValues=[acesAP0toXYZ])
     configData['colorSpaces'].append(cs)   
 
-    cs = createGenericMatrix('Linear - AP1', toReferenceValues=acesAP1toAP0)
+    cs = createGenericMatrix('Linear - AP1', toReferenceValues=[acesAP1toAP0])
+    configData['colorSpaces'].append(cs)   
+
+    # ACES to Linear, P3D60 primaries
+    xyzToP3D60 = [ 2.4027414142, -0.8974841639, -0.3880533700,
+                  -0.8325796487,  1.7692317536,  0.0237127115,
+                   0.0388233815, -0.0824996856,  1.0363685997]
+
+    cs = createGenericMatrix('Linear - P3-D60', fromReferenceValues=[acesAP0toXYZ, xyzToP3D60])
+    configData['colorSpaces'].append(cs)   
+
+    # ACES to Linear, P3D60 primaries
+    xyzToP3DCI = [ 2.7253940305, -1.0180030062, -0.4401631952,
+                  -0.7951680258,  1.6897320548,  0.0226471906,
+                   0.0412418914, -0.0876390192,  1.1009293786]
+
+    cs = createGenericMatrix('Linear - P3-DCI', fromReferenceValues=[acesAP0toXYZ, xyzToP3DCI])
+    configData['colorSpaces'].append(cs)   
+
+    # ACES to Linear, Rec 709 primaries
+    xyzToRec709 = [ 3.2409699419, -1.5373831776, -0.4986107603,
+                   -0.9692436363,  1.8759675015,  0.0415550574,
+                    0.0556300797, -0.2039769589,  1.0569715142]
+
+    cs = createGenericMatrix('Linear - Rec.709', fromReferenceValues=[acesAP0toXYZ, xyzToRec709])
+    configData['colorSpaces'].append(cs)   
+
+    # ACES to Linear, Rec 2020 primaries
+    xyzToRec2020 = [ 1.7166511880, -0.3556707838, -0.2533662814,
+                    -0.6666843518,  1.6164812366,  0.0157685458,
+                     0.0176398574, -0.0427706133,  0.9421031212]
+
+    cs = createGenericMatrix('Linear - Rec.2020', fromReferenceValues=[acesAP0toXYZ, xyzToRec2020])
     configData['colorSpaces'].append(cs)   
 
     print( "generateLUTs - end" )

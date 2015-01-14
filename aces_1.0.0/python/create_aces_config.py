@@ -335,6 +335,10 @@ def generateLUTs(odtInfo, lmtInfo, shaperName, acesCTLReleaseDir, lutDir, lutRes
             '%s/ACEScg/ACEScsc.ACES_to_ACEScg.a1.0.0.ctl' % acesCTLReleaseDir
         ]
         lut = "%s_to_ACES.spi1d" % name
+
+        # Remove spaces and parentheses
+        lut = lut.replace(' ', '_').replace(')', '_').replace('(', '_')
+
         genlut.generate1dLUTFromCTL( lutDir + "/" + lut, 
             ctls, 
             lutResolution1d, 
@@ -386,6 +390,10 @@ def generateLUTs(odtInfo, lmtInfo, shaperName, acesCTLReleaseDir, lutDir, lutRes
             '%s/ACEScg/ACEScsc.ACES_to_ACEScg.a1.0.0.ctl' % acesCTLReleaseDir
         ]
         lut = "%s_to_aces.spi1d" % name
+
+        # Remove spaces and parentheses
+        lut = lut.replace(' ', '_').replace(')', '_').replace('(', '_')
+
         genlut.generate1dLUTFromCTL( lutDir + "/" + lut, 
             ctls, 
             lutResolution1d, 
@@ -624,6 +632,9 @@ def generateLUTs(odtInfo, lmtInfo, shaperName, acesCTLReleaseDir, lutDir, lutRes
         ]
         lut = "%s_to_aces.spi1d" % name
 
+        # Remove spaces and parentheses
+        lut = lut.replace(' ', '_').replace(')', '_').replace('(', '_')
+
         genlut.generate1dLUTFromCTL( lutDir + "/" + lut, 
             ctls, 
             lutResolution1d, 
@@ -679,6 +690,10 @@ def generateLUTs(odtInfo, lmtInfo, shaperName, acesCTLReleaseDir, lutDir, lutRes
             ctls = [
                 shaperToACESCTL % acesCTLReleaseDir
             ]
+            
+            # Remove spaces and parentheses
+            shaperLut = shaperLut.replace(' ', '_').replace(')', '_').replace('(', '_')
+
             genlut.generate1dLUTFromCTL( lutDir + "/" + shaperLut, 
                 ctls, 
                 lutResolution1d, 
@@ -707,6 +722,9 @@ def generateLUTs(odtInfo, lmtInfo, shaperName, acesCTLReleaseDir, lutDir, lutRes
                 '%s/%s' % (acesCTLReleaseDir, lmtValues['transformCTL'])
             ]
             lut = "%s.%s.spi3d" % (shaperName, lmtName)
+
+            # Remove spaces and parentheses
+            lut = lut.replace(' ', '_').replace(')', '_').replace('(', '_')
 
             genlut.generate3dLUTFromCTL( lutDir + "/" + lut, 
                 ctls, 
@@ -737,6 +755,9 @@ def generateLUTs(odtInfo, lmtInfo, shaperName, acesCTLReleaseDir, lutDir, lutRes
                 shaperFromACESCTL % acesCTLReleaseDir
             ]
             lut = "Inverse.%s.%s.spi3d" % (odtName, shaperName)
+
+            # Remove spaces and parentheses
+            lut = lut.replace(' ', '_').replace(')', '_').replace('(', '_')
 
             genlut.generate3dLUTFromCTL( lutDir + "/" + lut, 
                 ctls, 
@@ -840,6 +861,10 @@ def generateLUTs(odtInfo, lmtInfo, shaperName, acesCTLReleaseDir, lutDir, lutRes
             ctls = [
                 shaperToACESCTL % acesCTLReleaseDir
             ]
+
+            # Remove spaces and parentheses
+            shaperLut = shaperLut.replace(' ', '_').replace(')', '_').replace('(', '_')
+
             genlut.generate1dLUTFromCTL( lutDir + "/" + shaperLut, 
                 ctls, 
                 lutResolution1d, 
@@ -884,6 +909,9 @@ def generateLUTs(odtInfo, lmtInfo, shaperName, acesCTLReleaseDir, lutDir, lutRes
                 '%s/odt/%s' % (acesCTLReleaseDir, odtValues['transformCTL'])
             ]
             lut = "%s.RRT.a1.0.0.%s.spi3d" % (shaperName, odtName)
+
+            # Remove spaces and parentheses
+            lut = lut.replace(' ', '_').replace(')', '_').replace('(', '_')
 
             genlut.generate3dLUTFromCTL( lutDir + "/" + lut, 
                 #shaperLUT,
@@ -932,6 +960,9 @@ def generateLUTs(odtInfo, lmtInfo, shaperName, acesCTLReleaseDir, lutDir, lutRes
                 shaperFromACESCTL % acesCTLReleaseDir
             ]
             lut = "InvRRT.a1.0.0.%s.%s.spi3d" % (odtName, shaperName)
+
+            # Remove spaces and parentheses
+            lut = lut.replace(' ', '_').replace(')', '_').replace('(', '_')
 
             genlut.generate3dLUTFromCTL( lutDir + "/" + lut, 
                 #None,

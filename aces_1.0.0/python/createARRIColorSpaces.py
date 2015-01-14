@@ -85,6 +85,10 @@ def createLogC(gamut, transferFunction, exposureIndex, name, lutDir, lutResoluti
             data[c] = logCtoLinear(1023.0*c/(lutResolution1d-1), int(exposureIndex))
 
         lut = "%s_to_linear.spi1d" % ("%s_%s" % (transferFunction, exposureIndex))
+
+        # Remove spaces and parentheses
+        lut = lut.replace(' ', '_').replace(')', '_').replace('(', '_')
+
         genlut.writeSPI1D(lutDir + "/" + lut, 0.0, 1.0, data, lutResolution1d, 1)
 
         #print( "Writing %s" % lut)

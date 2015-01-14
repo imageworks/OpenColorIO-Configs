@@ -663,7 +663,7 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: V3 LogC_160_to_linear.spi1d, interpolation: linear}
+        - !<FileTransform> {src: V3_LogC_160_to_linear.spi1d, interpolation: linear}
         - !<MatrixTransform> {matrix: [0.680206, 0.236137, 0.083658, 0, 0.085415, 1.01747, -0.102886, 0, 0.002057, -0.062563, 1.06051, 0, 0, 0, 0, 1]}
 
   - !<ColorSpace>
@@ -678,7 +678,7 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: V3 LogC_200_to_linear.spi1d, interpolation: linear}
+        - !<FileTransform> {src: V3_LogC_200_to_linear.spi1d, interpolation: linear}
         - !<MatrixTransform> {matrix: [0.680206, 0.236137, 0.083658, 0, 0.085415, 1.01747, -0.102886, 0, 0.002057, -0.062563, 1.06051, 0, 0, 0, 0, 1]}
 
   - !<ColorSpace>
@@ -693,7 +693,7 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: V3 LogC_250_to_linear.spi1d, interpolation: linear}
+        - !<FileTransform> {src: V3_LogC_250_to_linear.spi1d, interpolation: linear}
         - !<MatrixTransform> {matrix: [0.680206, 0.236137, 0.083658, 0, 0.085415, 1.01747, -0.102886, 0, 0.002057, -0.062563, 1.06051, 0, 0, 0, 0, 1]}
 
   - !<ColorSpace>
@@ -708,7 +708,7 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: V3 LogC_320_to_linear.spi1d, interpolation: linear}
+        - !<FileTransform> {src: V3_LogC_320_to_linear.spi1d, interpolation: linear}
         - !<MatrixTransform> {matrix: [0.680206, 0.236137, 0.083658, 0, 0.085415, 1.01747, -0.102886, 0, 0.002057, -0.062563, 1.06051, 0, 0, 0, 0, 1]}
 
   - !<ColorSpace>
@@ -723,7 +723,7 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: V3 LogC_400_to_linear.spi1d, interpolation: linear}
+        - !<FileTransform> {src: V3_LogC_400_to_linear.spi1d, interpolation: linear}
         - !<MatrixTransform> {matrix: [0.680206, 0.236137, 0.083658, 0, 0.085415, 1.01747, -0.102886, 0, 0.002057, -0.062563, 1.06051, 0, 0, 0, 0, 1]}
 
   - !<ColorSpace>
@@ -738,7 +738,7 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: V3 LogC_500_to_linear.spi1d, interpolation: linear}
+        - !<FileTransform> {src: V3_LogC_500_to_linear.spi1d, interpolation: linear}
         - !<MatrixTransform> {matrix: [0.680206, 0.236137, 0.083658, 0, 0.085415, 1.01747, -0.102886, 0, 0.002057, -0.062563, 1.06051, 0, 0, 0, 0, 1]}
 
   - !<ColorSpace>
@@ -753,7 +753,7 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: V3 LogC_640_to_linear.spi1d, interpolation: linear}
+        - !<FileTransform> {src: V3_LogC_640_to_linear.spi1d, interpolation: linear}
         - !<MatrixTransform> {matrix: [0.680206, 0.236137, 0.083658, 0, 0.085415, 1.01747, -0.102886, 0, 0.002057, -0.062563, 1.06051, 0, 0, 0, 0, 1]}
 
   - !<ColorSpace>
@@ -768,7 +768,7 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: V3 LogC_800_to_linear.spi1d, interpolation: linear}
+        - !<FileTransform> {src: V3_LogC_800_to_linear.spi1d, interpolation: linear}
         - !<MatrixTransform> {matrix: [0.680206, 0.236137, 0.083658, 0, 0.085415, 1.01747, -0.102886, 0, 0.002057, -0.062563, 1.06051, 0, 0, 0, 0, 1]}
 
   - !<ColorSpace>
@@ -783,7 +783,7 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: V3 LogC_1000_to_linear.spi1d, interpolation: linear}
+        - !<FileTransform> {src: V3_LogC_1000_to_linear.spi1d, interpolation: linear}
         - !<MatrixTransform> {matrix: [0.680206, 0.236137, 0.083658, 0, 0.085415, 1.01747, -0.102886, 0, 0.002057, -0.062563, 1.06051, 0, 0, 0, 0, 1]}
 
   - !<ColorSpace>
@@ -798,7 +798,7 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: V3 LogC_1280_to_linear.spi1d, interpolation: linear}
+        - !<FileTransform> {src: V3_LogC_1280_to_linear.spi1d, interpolation: linear}
         - !<MatrixTransform> {matrix: [0.680206, 0.236137, 0.083658, 0, 0.085415, 1.01747, -0.102886, 0, 0.002057, -0.062563, 1.06051, 0, 0, 0, 0, 1]}
 
   - !<ColorSpace>
@@ -813,7 +813,7 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: V3 LogC_1600_to_linear.spi1d, interpolation: linear}
+        - !<FileTransform> {src: V3_LogC_1600_to_linear.spi1d, interpolation: linear}
         - !<MatrixTransform> {matrix: [0.680206, 0.236137, 0.083658, 0, 0.085415, 1.01747, -0.102886, 0, 0.002057, -0.062563, 1.06051, 0, 0, 0, 0, 1]}
 
   - !<ColorSpace>
@@ -828,7 +828,7 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: V3 LogC_2000_to_linear.spi1d, interpolation: linear}
+        - !<FileTransform> {src: V3_LogC_2000_to_linear.spi1d, interpolation: linear}
         - !<MatrixTransform> {matrix: [0.680206, 0.236137, 0.083658, 0, 0.085415, 1.01747, -0.102886, 0, 0.002057, -0.062563, 1.06051, 0, 0, 0, 0, 1]}
 
   - !<ColorSpace>
@@ -843,7 +843,7 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: V3 LogC_2560_to_linear.spi1d, interpolation: linear}
+        - !<FileTransform> {src: V3_LogC_2560_to_linear.spi1d, interpolation: linear}
         - !<MatrixTransform> {matrix: [0.680206, 0.236137, 0.083658, 0, 0.085415, 1.01747, -0.102886, 0, 0.002057, -0.062563, 1.06051, 0, 0, 0, 0, 1]}
 
   - !<ColorSpace>
@@ -858,7 +858,7 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: V3 LogC_3200_to_linear.spi1d, interpolation: linear}
+        - !<FileTransform> {src: V3_LogC_3200_to_linear.spi1d, interpolation: linear}
         - !<MatrixTransform> {matrix: [0.680206, 0.236137, 0.083658, 0, 0.085415, 1.01747, -0.102886, 0, 0.002057, -0.062563, 1.06051, 0, 0, 0, 0, 1]}
 
   - !<ColorSpace>
@@ -871,7 +871,7 @@ colorspaces:
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
-    to_reference: !<FileTransform> {src: V3 LogC_800_to_linear.spi1d, interpolation: linear}
+    to_reference: !<FileTransform> {src: V3_LogC_800_to_linear.spi1d, interpolation: linear}
 
   - !<ColorSpace>
     name: Linear - Wide Gamut
@@ -895,7 +895,7 @@ colorspaces:
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
-    to_reference: !<FileTransform> {src: LMT Shaper_to_aces.spi1d, interpolation: linear}
+    to_reference: !<FileTransform> {src: LMT_Shaper_to_aces.spi1d, interpolation: linear}
 
   - !<ColorSpace>
     name: ACES 1.0 to 0.1 emulation
@@ -909,8 +909,8 @@ colorspaces:
     allocationvars: [0, 1]
     from_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: LMT Shaper_to_aces.spi1d, interpolation: linear, direction: inverse}
-        - !<FileTransform> {src: LMT Shaper.ACES 1.0 to 0.1 emulation.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: LMT_Shaper_to_aces.spi1d, interpolation: linear, direction: inverse}
+        - !<FileTransform> {src: LMT_Shaper.ACES_1.0_to_0.1_emulation.spi3d, interpolation: tetrahedral}
 
   - !<ColorSpace>
     name: ACES 1.0 to 0.2 emulation
@@ -924,8 +924,8 @@ colorspaces:
     allocationvars: [0, 1]
     from_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: LMT Shaper_to_aces.spi1d, interpolation: linear, direction: inverse}
-        - !<FileTransform> {src: LMT Shaper.ACES 1.0 to 0.2 emulation.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: LMT_Shaper_to_aces.spi1d, interpolation: linear, direction: inverse}
+        - !<FileTransform> {src: LMT_Shaper.ACES_1.0_to_0.2_emulation.spi3d, interpolation: tetrahedral}
 
   - !<ColorSpace>
     name: ACES 1.0 to 0.7 emulation
@@ -939,8 +939,8 @@ colorspaces:
     allocationvars: [0, 1]
     from_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: LMT Shaper_to_aces.spi1d, interpolation: linear, direction: inverse}
-        - !<FileTransform> {src: LMT Shaper.ACES 1.0 to 0.7 emulation.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: LMT_Shaper_to_aces.spi1d, interpolation: linear, direction: inverse}
+        - !<FileTransform> {src: LMT_Shaper.ACES_1.0_to_0.7_emulation.spi3d, interpolation: tetrahedral}
 
   - !<ColorSpace>
     name: Output Shaper
@@ -952,7 +952,7 @@ colorspaces:
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
-    to_reference: !<FileTransform> {src: Output Shaper_to_aces.spi1d, interpolation: linear}
+    to_reference: !<FileTransform> {src: Output_Shaper_to_aces.spi1d, interpolation: linear}
 
   - !<ColorSpace>
     name: Output Shaper - AP1
@@ -966,7 +966,7 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: Output Shaper_to_aces.spi1d, interpolation: linear}
+        - !<FileTransform> {src: Output_Shaper_to_aces.spi1d, interpolation: linear}
         - !<MatrixTransform> {matrix: [0.695452, 0.140679, 0.163869, 0, 0.0447946, 0.859671, 0.0955343, 0, -0.00552588, 0.00402521, 1.0015, 0, 0, 0, 0, 1]}
 
   - !<ColorSpace>
@@ -981,8 +981,8 @@ colorspaces:
     allocationvars: [0, 1]
     from_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: Output Shaper_to_aces.spi1d, interpolation: linear, direction: inverse}
-        - !<FileTransform> {src: Output Shaper.RRT.a1.0.0.DCDM (P3 gamut clip).spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Output_Shaper_to_aces.spi1d, interpolation: linear, direction: inverse}
+        - !<FileTransform> {src: Output_Shaper.RRT.a1.0.0.DCDM__P3_gamut_clip_.spi3d, interpolation: tetrahedral}
 
   - !<ColorSpace>
     name: DCDM
@@ -996,12 +996,12 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: InvRRT.a1.0.0.DCDM.Output Shaper.spi3d, interpolation: tetrahedral}
-        - !<FileTransform> {src: Output Shaper_to_aces.spi1d, interpolation: linear}
+        - !<FileTransform> {src: InvRRT.a1.0.0.DCDM.Output_Shaper.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Output_Shaper_to_aces.spi1d, interpolation: linear}
     from_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: Output Shaper_to_aces.spi1d, interpolation: linear, direction: inverse}
-        - !<FileTransform> {src: Output Shaper.RRT.a1.0.0.DCDM.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Output_Shaper_to_aces.spi1d, interpolation: linear, direction: inverse}
+        - !<FileTransform> {src: Output_Shaper.RRT.a1.0.0.DCDM.spi3d, interpolation: tetrahedral}
 
   - !<ColorSpace>
     name: P3-D60 PQ (1000 nits)
@@ -1015,12 +1015,12 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: InvRRT.a1.0.0.P3-D60 PQ (1000 nits).Output Shaper.spi3d, interpolation: tetrahedral}
-        - !<FileTransform> {src: Output Shaper_to_aces.spi1d, interpolation: linear}
+        - !<FileTransform> {src: InvRRT.a1.0.0.P3-D60_PQ__1000_nits_.Output_Shaper.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Output_Shaper_to_aces.spi1d, interpolation: linear}
     from_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: Output Shaper_to_aces.spi1d, interpolation: linear, direction: inverse}
-        - !<FileTransform> {src: Output Shaper.RRT.a1.0.0.P3-D60 PQ (1000 nits).spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Output_Shaper_to_aces.spi1d, interpolation: linear, direction: inverse}
+        - !<FileTransform> {src: Output_Shaper.RRT.a1.0.0.P3-D60_PQ__1000_nits_.spi3d, interpolation: tetrahedral}
 
   - !<ColorSpace>
     name: P3-D60 PQ (2000 nits)
@@ -1034,12 +1034,12 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: InvRRT.a1.0.0.P3-D60 PQ (2000 nits).Output Shaper.spi3d, interpolation: tetrahedral}
-        - !<FileTransform> {src: Output Shaper_to_aces.spi1d, interpolation: linear}
+        - !<FileTransform> {src: InvRRT.a1.0.0.P3-D60_PQ__2000_nits_.Output_Shaper.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Output_Shaper_to_aces.spi1d, interpolation: linear}
     from_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: Output Shaper_to_aces.spi1d, interpolation: linear, direction: inverse}
-        - !<FileTransform> {src: Output Shaper.RRT.a1.0.0.P3-D60 PQ (2000 nits).spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Output_Shaper_to_aces.spi1d, interpolation: linear, direction: inverse}
+        - !<FileTransform> {src: Output_Shaper.RRT.a1.0.0.P3-D60_PQ__2000_nits_.spi3d, interpolation: tetrahedral}
 
   - !<ColorSpace>
     name: P3-D60 PQ (4000 nits)
@@ -1053,12 +1053,12 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: InvRRT.a1.0.0.P3-D60 PQ (4000 nits).Output Shaper.spi3d, interpolation: tetrahedral}
-        - !<FileTransform> {src: Output Shaper_to_aces.spi1d, interpolation: linear}
+        - !<FileTransform> {src: InvRRT.a1.0.0.P3-D60_PQ__4000_nits_.Output_Shaper.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Output_Shaper_to_aces.spi1d, interpolation: linear}
     from_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: Output Shaper_to_aces.spi1d, interpolation: linear, direction: inverse}
-        - !<FileTransform> {src: Output Shaper.RRT.a1.0.0.P3-D60 PQ (4000 nits).spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Output_Shaper_to_aces.spi1d, interpolation: linear, direction: inverse}
+        - !<FileTransform> {src: Output_Shaper.RRT.a1.0.0.P3-D60_PQ__4000_nits_.spi3d, interpolation: tetrahedral}
 
   - !<ColorSpace>
     name: P3-D60
@@ -1072,12 +1072,12 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: InvRRT.a1.0.0.P3-D60.Output Shaper.spi3d, interpolation: tetrahedral}
-        - !<FileTransform> {src: Output Shaper_to_aces.spi1d, interpolation: linear}
+        - !<FileTransform> {src: InvRRT.a1.0.0.P3-D60.Output_Shaper.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Output_Shaper_to_aces.spi1d, interpolation: linear}
     from_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: Output Shaper_to_aces.spi1d, interpolation: linear, direction: inverse}
-        - !<FileTransform> {src: Output Shaper.RRT.a1.0.0.P3-D60.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Output_Shaper_to_aces.spi1d, interpolation: linear, direction: inverse}
+        - !<FileTransform> {src: Output_Shaper.RRT.a1.0.0.P3-D60.spi3d, interpolation: tetrahedral}
 
   - !<ColorSpace>
     name: P3-DCI
@@ -1091,12 +1091,12 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: InvRRT.a1.0.0.P3-DCI.Output Shaper.spi3d, interpolation: tetrahedral}
-        - !<FileTransform> {src: Output Shaper_to_aces.spi1d, interpolation: linear}
+        - !<FileTransform> {src: InvRRT.a1.0.0.P3-DCI.Output_Shaper.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Output_Shaper_to_aces.spi1d, interpolation: linear}
     from_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: Output Shaper_to_aces.spi1d, interpolation: linear, direction: inverse}
-        - !<FileTransform> {src: Output Shaper.RRT.a1.0.0.P3-DCI.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Output_Shaper_to_aces.spi1d, interpolation: linear, direction: inverse}
+        - !<FileTransform> {src: Output_Shaper.RRT.a1.0.0.P3-DCI.spi3d, interpolation: tetrahedral}
 
   - !<ColorSpace>
     name: Rec.2020 - Legal
@@ -1110,50 +1110,12 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: InvRRT.a1.0.0.Rec.2020 - Legal.Output Shaper.spi3d, interpolation: tetrahedral}
-        - !<FileTransform> {src: Output Shaper_to_aces.spi1d, interpolation: linear}
+        - !<FileTransform> {src: InvRRT.a1.0.0.Rec.2020_-_Legal.Output_Shaper.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Output_Shaper_to_aces.spi1d, interpolation: linear}
     from_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: Output Shaper_to_aces.spi1d, interpolation: linear, direction: inverse}
-        - !<FileTransform> {src: Output Shaper.RRT.a1.0.0.Rec.2020 - Legal.spi3d, interpolation: tetrahedral}
-
-  - !<ColorSpace>
-    name: Rec.2020 - Full
-    family: Output
-    equalitygroup: ""
-    bitdepth: 32f
-    description: |
-      ACES 1.0 Output - Rec.2020 - Full Output Transform
-    isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
-    to_reference: !<GroupTransform>
-      children:
-        - !<FileTransform> {src: InvRRT.a1.0.0.Rec.2020 - Full.Output Shaper.spi3d, interpolation: tetrahedral}
-        - !<FileTransform> {src: Output Shaper_to_aces.spi1d, interpolation: linear}
-    from_reference: !<GroupTransform>
-      children:
-        - !<FileTransform> {src: Output Shaper_to_aces.spi1d, interpolation: linear, direction: inverse}
-        - !<FileTransform> {src: Output Shaper.RRT.a1.0.0.Rec.2020 - Full.spi3d, interpolation: tetrahedral}
-
-  - !<ColorSpace>
-    name: Rec.709 - Legal
-    family: Output
-    equalitygroup: ""
-    bitdepth: 32f
-    description: |
-      ACES 1.0 Output - Rec.709 - Legal Output Transform
-    isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
-    to_reference: !<GroupTransform>
-      children:
-        - !<FileTransform> {src: InvRRT.a1.0.0.Rec.709 - Legal.Output Shaper.spi3d, interpolation: tetrahedral}
-        - !<FileTransform> {src: Output Shaper_to_aces.spi1d, interpolation: linear}
-    from_reference: !<GroupTransform>
-      children:
-        - !<FileTransform> {src: Output Shaper_to_aces.spi1d, interpolation: linear, direction: inverse}
-        - !<FileTransform> {src: Output Shaper.RRT.a1.0.0.Rec.709 - Legal.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Output_Shaper_to_aces.spi1d, interpolation: linear, direction: inverse}
+        - !<FileTransform> {src: Output_Shaper.RRT.a1.0.0.Rec.2020_-_Legal.spi3d, interpolation: tetrahedral}
 
   - !<ColorSpace>
     name: Rec.709 - Full
@@ -1167,12 +1129,50 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: InvRRT.a1.0.0.Rec.709 - Full.Output Shaper.spi3d, interpolation: tetrahedral}
-        - !<FileTransform> {src: Output Shaper_to_aces.spi1d, interpolation: linear}
+        - !<FileTransform> {src: InvRRT.a1.0.0.Rec.709_-_Full.Output_Shaper.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Output_Shaper_to_aces.spi1d, interpolation: linear}
     from_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: Output Shaper_to_aces.spi1d, interpolation: linear, direction: inverse}
-        - !<FileTransform> {src: Output Shaper.RRT.a1.0.0.Rec.709 - Full.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Output_Shaper_to_aces.spi1d, interpolation: linear, direction: inverse}
+        - !<FileTransform> {src: Output_Shaper.RRT.a1.0.0.Rec.709_-_Full.spi3d, interpolation: tetrahedral}
+
+  - !<ColorSpace>
+    name: Rec.2020 - Full
+    family: Output
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      ACES 1.0 Output - Rec.2020 - Full Output Transform
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: InvRRT.a1.0.0.Rec.2020_-_Full.Output_Shaper.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Output_Shaper_to_aces.spi1d, interpolation: linear}
+    from_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: Output_Shaper_to_aces.spi1d, interpolation: linear, direction: inverse}
+        - !<FileTransform> {src: Output_Shaper.RRT.a1.0.0.Rec.2020_-_Full.spi3d, interpolation: tetrahedral}
+
+  - !<ColorSpace>
+    name: Rec.709 - Legal
+    family: Output
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      ACES 1.0 Output - Rec.709 - Legal Output Transform
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: InvRRT.a1.0.0.Rec.709_-_Legal.Output_Shaper.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Output_Shaper_to_aces.spi1d, interpolation: linear}
+    from_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: Output_Shaper_to_aces.spi1d, interpolation: linear, direction: inverse}
+        - !<FileTransform> {src: Output_Shaper.RRT.a1.0.0.Rec.709_-_Legal.spi3d, interpolation: tetrahedral}
 
   - !<ColorSpace>
     name: Rec.709 (D60 sim.) - Legal
@@ -1186,12 +1186,24 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: InvRRT.a1.0.0.Rec.709 (D60 sim.) - Legal.Output Shaper.spi3d, interpolation: tetrahedral}
-        - !<FileTransform> {src: Output Shaper_to_aces.spi1d, interpolation: linear}
+        - !<FileTransform> {src: InvRRT.a1.0.0.Rec.709__D60_sim.__-_Legal.Output_Shaper.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Output_Shaper_to_aces.spi1d, interpolation: linear}
     from_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: Output Shaper_to_aces.spi1d, interpolation: linear, direction: inverse}
-        - !<FileTransform> {src: Output Shaper.RRT.a1.0.0.Rec.709 (D60 sim.) - Legal.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Output_Shaper_to_aces.spi1d, interpolation: linear, direction: inverse}
+        - !<FileTransform> {src: Output_Shaper.RRT.a1.0.0.Rec.709__D60_sim.__-_Legal.spi3d, interpolation: tetrahedral}
+
+  - !<ColorSpace>
+    name: Linear - AP1
+    family: Utility
+    equalitygroup: Linear - AP1
+    bitdepth: 32f
+    description: |
+      The Linear - AP1 color space
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<MatrixTransform> {matrix: [0.695452, 0.140679, 0.163869, 0, 0.0447946, 0.859671, 0.0955343, 0, -0.00552588, 0.00402521, 1.0015, 0, 0, 0, 0, 1]}
 
   - !<ColorSpace>
     name: Rec.709 (D60 sim.) - Full
@@ -1205,12 +1217,12 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: InvRRT.a1.0.0.Rec.709 (D60 sim.) - Full.Output Shaper.spi3d, interpolation: tetrahedral}
-        - !<FileTransform> {src: Output Shaper_to_aces.spi1d, interpolation: linear}
+        - !<FileTransform> {src: InvRRT.a1.0.0.Rec.709__D60_sim.__-_Full.Output_Shaper.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Output_Shaper_to_aces.spi1d, interpolation: linear}
     from_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: Output Shaper_to_aces.spi1d, interpolation: linear, direction: inverse}
-        - !<FileTransform> {src: Output Shaper.RRT.a1.0.0.Rec.709 (D60 sim.) - Full.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Output_Shaper_to_aces.spi1d, interpolation: linear, direction: inverse}
+        - !<FileTransform> {src: Output_Shaper.RRT.a1.0.0.Rec.709__D60_sim.__-_Full.spi3d, interpolation: tetrahedral}
 
   - !<ColorSpace>
     name: sRGB (D60 sim.)
@@ -1224,12 +1236,12 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: InvRRT.a1.0.0.sRGB (D60 sim.).Output Shaper.spi3d, interpolation: tetrahedral}
-        - !<FileTransform> {src: Output Shaper_to_aces.spi1d, interpolation: linear}
+        - !<FileTransform> {src: InvRRT.a1.0.0.sRGB__D60_sim._.Output_Shaper.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Output_Shaper_to_aces.spi1d, interpolation: linear}
     from_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: Output Shaper_to_aces.spi1d, interpolation: linear, direction: inverse}
-        - !<FileTransform> {src: Output Shaper.RRT.a1.0.0.sRGB (D60 sim.).spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Output_Shaper_to_aces.spi1d, interpolation: linear, direction: inverse}
+        - !<FileTransform> {src: Output_Shaper.RRT.a1.0.0.sRGB__D60_sim._.spi3d, interpolation: tetrahedral}
 
   - !<ColorSpace>
     name: XYZ
@@ -1242,18 +1254,6 @@ colorspaces:
     allocation: uniform
     allocationvars: [0, 1]
     from_reference: !<MatrixTransform> {matrix: [0.952552, 0, 9.36786e-05, 0, 0.343966, 0.728166, -0.0721325, 0, 0, 0, 1.00883, 0, 0, 0, 0, 1]}
-
-  - !<ColorSpace>
-    name: Linear - AP1
-    family: Utility
-    equalitygroup: Linear - AP1
-    bitdepth: 32f
-    description: |
-      The Linear - AP1 color space
-    isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
-    to_reference: !<MatrixTransform> {matrix: [0.695452, 0.140679, 0.163869, 0, 0.0447946, 0.859671, 0.0955343, 0, -0.00552588, 0.00402521, 1.0015, 0, 0, 0, 0, 1]}
 
   - !<ColorSpace>
     name: Linear - P3-D60

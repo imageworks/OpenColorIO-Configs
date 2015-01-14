@@ -189,9 +189,6 @@ def createConfig(configData, nuke=False):
     #
     # Create the rest of the color spaces
     #
-    #sortedColorspaces = sorted(configData['colorSpaces'], key=lambda x: x.name)
-    #print( sortedColorspaces )
-    #for colorspace in sortedColorspaces:
     for colorspace in sorted(configData['colorSpaces']):
         print( "Creating new color space : %s" % colorspace.name)
 
@@ -623,7 +620,6 @@ def generateLUTs(odtInfo, lmtInfo, shaperName, acesCTLReleaseDir, lutDir, lutRes
         cs.isData=False
 
         ctls = [
-            #'%s/logShaper/logShaper16i_to_aces_param.ctl' % acesCTLReleaseDir
             '%s/utilities/ACESlib.OCIO_shaper_log2_to_lin_param.a1.0.0.ctl' % acesCTLReleaseDir
         ]
         lut = "%s_to_aces.spi1d" % name
@@ -793,8 +789,6 @@ def generateLUTs(odtInfo, lmtInfo, shaperName, acesCTLReleaseDir, lutDir, lutRes
         lmtShaperName, 
         '%s/utilities/ACESlib.OCIO_shaper_log2_to_lin_param.a1.0.0.ctl',
         '%s/utilities/ACESlib.OCIO_shaper_lin_to_log2_param.a1.0.0.ctl',
-        #'%s/logShaper/logShaper16i_to_aces_param.ctl',
-        #'%s/logShaper/aces_to_logShaper16i_param.ctl',
         shaperInputScale_genericLog2,
         lmtParams
     ]
@@ -988,8 +982,6 @@ def generateLUTs(odtInfo, lmtInfo, shaperName, acesCTLReleaseDir, lutDir, lutRes
         log2ShaperName, 
         '%s/utilities/ACESlib.OCIO_shaper_log2_to_lin_param.a1.0.0.ctl',
         '%s/utilities/ACESlib.OCIO_shaper_lin_to_log2_param.a1.0.0.ctl',
-        #'%s/logShaper/logShaper16i_to_aces_param.ctl',
-        #'%s/logShaper/aces_to_logShaper16i_param.ctl',
         shaperInputScale_genericLog2,
         log2Params
     ]
@@ -1016,24 +1008,12 @@ def generateLUTs(odtInfo, lmtInfo, shaperName, acesCTLReleaseDir, lutDir, lutRes
     #
     # Choose your shaper
     #
-    # XXX
-    # Shaper name. Should really be automated or made a user choice
-    #
-    # Options: aceslogShaper, aceslogScaledShaper, log2Shaper
-    #shaperName = 'log2Shaper'
-
-    #if shaperName in shaperData:
-    #    rrtShaperName = shaperName
-    #    rrtShaper = shaperData[shaperName]
-    #else:
-
     rrtShaperName = log2ShaperName
     rrtShaper = log2ShaperData
 
     #
     # RRT + ODT Combinations
     #
-    #for odtName, odtValues in odtInfo.iteritems():
     sortedOdts = sorted(odtInfo.iteritems(), key=lambda x: x[1])
     print( sortedOdts )
     for odt in sortedOdts:

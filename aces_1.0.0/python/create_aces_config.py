@@ -49,6 +49,7 @@ import OpenImageIO as oiio
 import PyOpenColorIO as OCIO
 
 import process
+import generateLUT as genlut
 
 #
 # Utility functions
@@ -74,8 +75,6 @@ def setConfigDefaultRoles( config,
     if reference: config.setRole( OCIO.Constants.ROLE_REFERENCE, reference )
     if scene_linear: config.setRole( OCIO.Constants.ROLE_SCENE_LINEAR, scene_linear )
     if texture_paint: config.setRole( OCIO.Constants.ROLE_TEXTURE_PAINT, texture_paint )
-    
-    
 
 # Write config to disk
 def writeConfig( config, configPath, sanityCheck=True ):
@@ -91,254 +90,6 @@ def writeConfig( config, configPath, sanityCheck=True ):
     fileHandle = open( configPath, mode='w' )
     fileHandle.write( config.serialize() )
     fileHandle.close()
-
-#
-# Functions used to generate LUTs using CTL transforms
-#
-def generate1dLUTImage(ramp1dPath, resolution=1024, minValue=0.0, maxValue=1.0):
-    #print( "Generate 1d LUT image - %s" % ramp1dPath)
-
-    # open image
-    format = os.path.splitext(ramp1dPath)[1]
-    ramp = oiio.ImageOutput.create(ramp1dPath)
-
-    # set image specs
-    spec = oiio.ImageSpec()
-    spec.set_format( oiio.FLOAT )
-    #spec.format.basetype = oiio.FLOAT
-    spec.width = resolution
-    spec.height = 1
-    spec.nchannels = 3
-
-    ramp.open (ramp1dPath, spec, oiio.Create)
-
-    data = array.array("f", "\0" * spec.width * spec.height * spec.nchannels * 4)
-    for i in range(resolution):
-        value = float(i)/(resolution-1) * (maxValue - minValue) + minValue
-        data[i*spec.nchannels +0] = value
-        data[i*spec.nchannels +1] = value
-        data[i*spec.nchannels +2] = value
-
-    ramp.write_image(spec.format, data)
-    ramp.close()
-
-# Credit to Alex Fry for the original single channel version of the spi1d writer
-def WriteSPI1D(filename, fromMin, fromMax, data, entries, channels):
-    f = file(filename,'w')
-    f.write("Version 1\n")
-    f.write("From %f %f\n" % (fromMin, fromMax))
-    f.write("Length %d\n" % entries)
-    f.write("Components %d\n" % (min(3, channels)) )
-    f.write("{\n")
-    for i in range(0, entries):
-        entry = ""
-        for j in range(0, min(3, channels)):
-            entry = "%s %s" % (entry, data[i*channels + j])
-        f.write("        %s\n" % entry)
-    f.write("}\n")
-    f.close()
-
-def generate1dLUTFromImage(ramp1dPath, outputPath=None, minValue=0.0, maxValue=1.0):
-    if outputPath == None:
-        outputPath = ramp1dPath + ".spi1d"
-
-    # open image
-    ramp = oiio.ImageInput.open( ramp1dPath )
-
-    # get image specs
-    spec = ramp.spec()
-    type = spec.format.basetype
-    width = spec.width
-    height = spec.height
-    channels = spec.nchannels
-
-    # get data
-    # Force data to be read as float. The Python API doesn't handle half-floats well yet.
-    type = oiio.FLOAT
-    data = ramp.read_image(type)
-
-    WriteSPI1D(outputPath, minValue, maxValue, data, width, channels)
-
-def generate3dLUTImage(ramp3dPath, resolution=32):
-    args = ["--generate", "--cubesize", str(resolution), "--maxwidth", str(resolution*resolution), "--output", ramp3dPath]
-    lutExtract = process.Process(description="generate a 3d LUT image", cmd="ociolutimage", args=args)
-    lutExtract.execute()    
-
-def generate3dLUTFromImage(ramp3dPath, outputPath=None, resolution=32):
-    if outputPath == None:
-        outputPath = ramp3dPath + ".spi3d"
-
-    args = ["--extract", "--cubesize", str(resolution), "--maxwidth", str(resolution*resolution), "--input", ramp3dPath, "--output", outputPath]
-    lutExtract = process.Process(description="extract a 3d LUT", cmd="ociolutimage", args=args)
-    lutExtract.execute()    
-
-def applyCTLToImage(inputImage, 
-    outputImage, 
-    ctlPaths=[], 
-    inputScale=1.0, 
-    outputScale=1.0, 
-    globalParams={},
-    acesCTLReleaseDir=None):
-    if len(ctlPaths) > 0:
-        ctlenv = os.environ
-        if acesCTLReleaseDir != None:
-            ctlModulePath = "%s/utilities" % acesCTLReleaseDir
-            ctlenv['CTL_MODULE_PATH'] = ctlModulePath
-
-        args = []
-        for ctl in ctlPaths:
-            args += ['-ctl', ctl]
-        args += ["-force"]
-        #args += ["-verbose"]
-        args += ["-input_scale", str(inputScale)]
-        args += ["-output_scale", str(outputScale)]
-        args += ["-global_param1", "aIn", "1.0"]
-        for key, value in globalParams.iteritems():
-            args += ["-global_param1", key, str(value)]
-        args += [inputImage]
-        args += [outputImage]
-
-        #print( "args : %s" % args )
-
-        ctlp = process.Process(description="a ctlrender process", cmd="ctlrender", args=args, env=ctlenv )
-
-        ctlp.execute()
-
-def convertBitDepth(inputImage, outputImage, depth):
-    args = [inputImage, "-d", depth, "-o", outputImage]
-    convert = process.Process(description="convert image bit depth", cmd="oiiotool", args=args)
-    convert.execute()    
-
-def generate1dLUTFromCTL(lutPath, 
-    ctlPaths, 
-    lutResolution=1024, 
-    identityLutBitDepth='half', 
-    inputScale=1.0, 
-    outputScale=1.0,
-    globalParams={},
-    cleanup=True,
-    acesCTLReleaseDir=None,
-    minValue=0.0,
-    maxValue=1.0):
-    #print( lutPath )
-    #print( ctlPaths )
-
-    lutPathBase = os.path.splitext(lutPath)[0]
-
-    identityLUTImageFloat = lutPathBase + ".float.tiff"
-    generate1dLUTImage(identityLUTImageFloat, lutResolution, minValue, maxValue)
-
-    if identityLutBitDepth != 'half':
-        identityLUTImage = lutPathBase + ".uint16.tiff"
-        convertBitDepth(identityLUTImageFloat, identityLUTImage, identityLutBitDepth)
-    else:
-        identityLUTImage = identityLUTImageFloat
-
-    transformedLUTImage = lutPathBase + ".transformed.exr"
-    applyCTLToImage(identityLUTImage, transformedLUTImage, ctlPaths, inputScale, outputScale, globalParams, acesCTLReleaseDir)
-
-    generate1dLUTFromImage(transformedLUTImage, lutPath, minValue, maxValue)
-
-    if cleanup:
-        os.remove(identityLUTImage)
-        if identityLUTImage != identityLUTImageFloat:
-            os.remove(identityLUTImageFloat)
-        os.remove(transformedLUTImage)
-
-def correctLUTImage(transformedLUTImage, correctedLUTImage, lutResolution):
-    # open image
-    transformed = oiio.ImageInput.open( transformedLUTImage )
-
-    # get image specs
-    transformedSpec = transformed.spec()
-    type = transformedSpec.format.basetype
-    width = transformedSpec.width
-    height = transformedSpec.height
-    channels = transformedSpec.nchannels
-
-    # rotate or not
-    if width != lutResolution * lutResolution or height != lutResolution:
-        print( "Correcting image as resolution is off. Found %d x %d. Expected %d x %d" % (width, height, lutResolution * lutResolution, lutResolution) )
-        print( "Generating %s" % correctedLUTImage)
-
-        #
-        # We're going to generate a new correct image
-        #
-
-        # Get the source data
-        # Force data to be read as float. The Python API doesn't handle half-floats well yet.
-        type = oiio.FLOAT
-        sourceData = transformed.read_image(type)
-
-        format = os.path.splitext(correctedLUTImage)[1]
-        correct = oiio.ImageOutput.create(correctedLUTImage)
-
-        # set image specs
-        correctSpec = oiio.ImageSpec()
-        correctSpec.set_format( oiio.FLOAT )
-        correctSpec.width = height
-        correctSpec.height = width
-        correctSpec.nchannels = channels
-
-        correct.open (correctedLUTImage, correctSpec, oiio.Create)
-
-        destData = array.array("f", "\0" * correctSpec.width * correctSpec.height * correctSpec.nchannels * 4)
-        for j in range(0, correctSpec.height):
-            for i in range(0, correctSpec.width):
-                for c in range(0, correctSpec.nchannels):
-                    #print( i, j, c )
-                    destData[correctSpec.nchannels*correctSpec.width*j + correctSpec.nchannels*i + c] = sourceData[correctSpec.nchannels*correctSpec.width*j + correctSpec.nchannels*i + c]
-
-        correct.write_image(correctSpec.format, destData)
-        correct.close()
-    else:
-        #shutil.copy(transformedLUTImage, correctedLUTImage)
-        correctedLUTImage = transformedLUTImage
-
-    transformed.close()
-
-    return correctedLUTImage
-
-def generate3dLUTFromCTL(lutPath, 
-    ctlPaths, 
-    lutResolution=64, 
-    identityLutBitDepth='half', 
-    inputScale=1.0,
-    outputScale=1.0, 
-    globalParams={},
-    cleanup=True,
-    acesCTLReleaseDir=None):
-    #print( lutPath )
-    #print( ctlPaths )
-
-    lutPathBase = os.path.splitext(lutPath)[0]
-
-    identityLUTImageFloat = lutPathBase + ".float.tiff"
-    generate3dLUTImage(identityLUTImageFloat, lutResolution)
-
-
-    if identityLutBitDepth != 'half':
-        identityLUTImage = lutPathBase + "." + identityLutBitDepth + ".tiff"
-        convertBitDepth(identityLUTImageFloat, identityLUTImage, identityLutBitDepth)
-    else:
-        identityLUTImage = identityLUTImageFloat
-
-    transformedLUTImage = lutPathBase + ".transformed.exr"
-    applyCTLToImage(identityLUTImage, transformedLUTImage, ctlPaths, inputScale, outputScale, globalParams, acesCTLReleaseDir)
-
-    correctedLUTImage = lutPathBase + ".correct.exr"
-    correctedLUTImage = correctLUTImage(transformedLUTImage, correctedLUTImage, lutResolution)    
-
-    generate3dLUTFromImage(correctedLUTImage, lutPath, lutResolution)
-
-    if cleanup:
-        os.remove(identityLUTImage)
-        if identityLUTImage != identityLUTImageFloat:
-            os.remove(identityLUTImageFloat)
-        os.remove(transformedLUTImage)
-        if correctedLUTImage != transformedLUTImage:
-            os.remove(correctedLUTImage)
-        #os.remove(correctedLUTImage)
 
 def generateOCIOTransform(transforms):
     #print( "Generating transforms")
@@ -614,7 +365,7 @@ def generateLUTs(odtInfo, lmtInfo, shaperName, acesCTLReleaseDir, lutDir, lutRes
             '%s/ACEScg/ACEScsc.ACES_to_ACEScg.a1.0.0.ctl' % acesCTLReleaseDir
         ]
         lut = "%s_to_ACES.spi1d" % name
-        generate1dLUTFromCTL( lutDir + "/" + lut, 
+        genlut.generate1dLUTFromCTL( lutDir + "/" + lut, 
             ctls, 
             lutResolution1d, 
             'float', 
@@ -665,7 +416,7 @@ def generateLUTs(odtInfo, lmtInfo, shaperName, acesCTLReleaseDir, lutDir, lutRes
             '%s/ACEScg/ACEScsc.ACES_to_ACEScg.a1.0.0.ctl' % acesCTLReleaseDir
         ]
         lut = "%s_to_aces.spi1d" % name
-        generate1dLUTFromCTL( lutDir + "/" + lut, 
+        genlut.generate1dLUTFromCTL( lutDir + "/" + lut, 
             ctls, 
             lutResolution1d, 
             'uint16', 
@@ -818,7 +569,7 @@ def generateLUTs(odtInfo, lmtInfo, shaperName, acesCTLReleaseDir, lutDir, lutRes
                 data.append(cid_to_rle(x))
 
             lut = 'ADX_CID_to_RLE.spi1d'
-            WriteSPI1D(lutDir + "/" + lut, RANGE[0], RANGE[1], data, NUM_SAMPLES, 1)
+            genlut.writeSPI1D(lutDir + "/" + lut, RANGE[0], RANGE[1], data, NUM_SAMPLES, 1)
 
             return lut
 
@@ -893,7 +644,7 @@ def generateLUTs(odtInfo, lmtInfo, shaperName, acesCTLReleaseDir, lutDir, lutRes
                 data[c] = cineonToLinear(1023.0*c/(lutResolution1d-1))
 
             lut = "CineonLog_to_linear.spi1d"
-            WriteSPI1D(lutDir + "/" + lut, 0.0, 1.0, data, lutResolution1d, 1)
+            genlut.writeSPI1D(lutDir + "/" + lut, 0.0, 1.0, data, lutResolution1d, 1)
 
             cs.toReferenceTransforms.append( {
                 'type':'lutFile', 
@@ -1021,7 +772,7 @@ def generateLUTs(odtInfo, lmtInfo, shaperName, acesCTLReleaseDir, lutDir, lutRes
                 data[c] = canonLogToLinear(1023.0*c/(lutResolution1d-1))
 
             lut = "%s_to_linear.spi1d" % transferFunction
-            WriteSPI1D(lutDir + "/" + lut, 0.0, 1.0, data, lutResolution1d, 1)
+            genlut.writeSPI1D(lutDir + "/" + lut, 0.0, 1.0, data, lutResolution1d, 1)
 
             cs.toReferenceTransforms.append( {
                 'type':'lutFile', 
@@ -1184,7 +935,7 @@ def generateLUTs(odtInfo, lmtInfo, shaperName, acesCTLReleaseDir, lutDir, lutRes
                 data[c] = sLog1ToLinear(1023.0*c/(lutResolution1d-1))
 
             lut = "%s_to_linear.spi1d" % transferFunction
-            WriteSPI1D(lutDir + "/" + lut, 0.0, 1.0, data, lutResolution1d, 1)
+            genlut.writeSPI1D(lutDir + "/" + lut, 0.0, 1.0, data, lutResolution1d, 1)
 
             #print( "Writing %s" % lut)
 
@@ -1200,7 +951,7 @@ def generateLUTs(odtInfo, lmtInfo, shaperName, acesCTLReleaseDir, lutDir, lutRes
                 data[c] = sLog2ToLinear(1023.0*c/(lutResolution1d-1))
 
             lut = "%s_to_linear.spi1d" % transferFunction
-            WriteSPI1D(lutDir + "/" + lut, 0.0, 1.0, data, lutResolution1d, 1)
+            genlut.writeSPI1D(lutDir + "/" + lut, 0.0, 1.0, data, lutResolution1d, 1)
 
             #print( "Writing %s" % lut)
 
@@ -1216,7 +967,7 @@ def generateLUTs(odtInfo, lmtInfo, shaperName, acesCTLReleaseDir, lutDir, lutRes
                 data[c] = sLog3ToLinear(1023.0*c/(lutResolution1d-1))
 
             lut = "%s_to_linear.spi1d" % transferFunction
-            WriteSPI1D(lutDir + "/" + lut, 0.0, 1.0, data, lutResolution1d, 1)
+            genlut.writeSPI1D(lutDir + "/" + lut, 0.0, 1.0, data, lutResolution1d, 1)
 
             #print( "Writing %s" % lut)
 
@@ -1398,7 +1149,7 @@ def generateLUTs(odtInfo, lmtInfo, shaperName, acesCTLReleaseDir, lutDir, lutRes
                 data[c] = logCtoLinear(1023.0*c/(lutResolution1d-1), int(exposureIndex))
 
             lut = "%s_to_linear.spi1d" % ("%s_%s" % (transferFunction, exposureIndex))
-            WriteSPI1D(lutDir + "/" + lut, 0.0, 1.0, data, lutResolution1d, 1)
+            genlut.writeSPI1D(lutDir + "/" + lut, 0.0, 1.0, data, lutResolution1d, 1)
 
             #print( "Writing %s" % lut)
             cs.toReferenceTransforms.append( {
@@ -1463,7 +1214,7 @@ def generateLUTs(odtInfo, lmtInfo, shaperName, acesCTLReleaseDir, lutDir, lutRes
         ]
         lut = "%s_to_aces.spi1d" % name
 
-        generate1dLUTFromCTL( lutDir + "/" + lut, 
+        genlut.generate1dLUTFromCTL( lutDir + "/" + lut, 
             ctls, 
             lutResolution1d, 
             'float', 
@@ -1518,7 +1269,7 @@ def generateLUTs(odtInfo, lmtInfo, shaperName, acesCTLReleaseDir, lutDir, lutRes
             ctls = [
                 shaperToACESCTL % acesCTLReleaseDir
             ]
-            generate1dLUTFromCTL( lutDir + "/" + shaperLut, 
+            genlut.generate1dLUTFromCTL( lutDir + "/" + shaperLut, 
                 ctls, 
                 lutResolution1d, 
                 'float', 
@@ -1547,7 +1298,7 @@ def generateLUTs(odtInfo, lmtInfo, shaperName, acesCTLReleaseDir, lutDir, lutRes
             ]
             lut = "%s.%s.spi3d" % (shaperName, lmtName)
 
-            generate3dLUTFromCTL( lutDir + "/" + lut, 
+            genlut.generate3dLUTFromCTL( lutDir + "/" + lut, 
                 ctls, 
                 lutResolution3d, 
                 'float', 
@@ -1577,7 +1328,7 @@ def generateLUTs(odtInfo, lmtInfo, shaperName, acesCTLReleaseDir, lutDir, lutRes
             ]
             lut = "Inverse.%s.%s.spi3d" % (odtName, shaperName)
 
-            generate3dLUTFromCTL( lutDir + "/" + lut, 
+            genlut.generate3dLUTFromCTL( lutDir + "/" + lut, 
                 ctls, 
                 lutResolution3d, 
                 'half', 
@@ -1681,7 +1432,7 @@ def generateLUTs(odtInfo, lmtInfo, shaperName, acesCTLReleaseDir, lutDir, lutRes
             ctls = [
                 shaperToACESCTL % acesCTLReleaseDir
             ]
-            generate1dLUTFromCTL( lutDir + "/" + shaperLut, 
+            genlut.generate1dLUTFromCTL( lutDir + "/" + shaperLut, 
                 ctls, 
                 lutResolution1d, 
                 'float', 
@@ -1726,7 +1477,7 @@ def generateLUTs(odtInfo, lmtInfo, shaperName, acesCTLReleaseDir, lutDir, lutRes
             ]
             lut = "%s.RRT.a1.0.0.%s.spi3d" % (shaperName, odtName)
 
-            generate3dLUTFromCTL( lutDir + "/" + lut, 
+            genlut.generate3dLUTFromCTL( lutDir + "/" + lut, 
                 #shaperLUT,
                 ctls, 
                 lutResolution3d, 
@@ -1774,7 +1525,7 @@ def generateLUTs(odtInfo, lmtInfo, shaperName, acesCTLReleaseDir, lutDir, lutRes
             ]
             lut = "InvRRT.a1.0.0.%s.%s.spi3d" % (odtName, shaperName)
 
-            generate3dLUTFromCTL( lutDir + "/" + lut, 
+            genlut.generate3dLUTFromCTL( lutDir + "/" + lut, 
                 #None,
                 ctls, 
                 lutResolution3d, 

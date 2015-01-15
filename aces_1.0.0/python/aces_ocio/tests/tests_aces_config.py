@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Defines unit tests for the generated *ACES* configuration.
+Defines unit tests for *ACES* configuration.
 """
 
 import hashlib
@@ -42,6 +42,7 @@ UNHASHABLE_TEST_PATTERNS = ('\.icc', '\.ocio')
 
 class TestACESConfig(unittest.TestCase):
     """
+    Performs tests on the *ACES* configuration.
     """
 
     def setUp(self):
@@ -71,8 +72,28 @@ class TestACESConfig(unittest.TestCase):
         shutil.rmtree(self.__temporary_directory)
 
     @staticmethod
-    def directory_hashes(directory, filters_in=None, filters_out=None):
+    def directory_hashes(directory,
+                         filters_in=None,
+                         filters_out=None,
+                         flags=0):
         """
+        Recursively computes the hashes from the file within given directory.
+
+        Parameters
+        ----------
+        directory : str or unicode
+            Directory to compute the file hashes.
+        filters_in : array_like
+            Included patterns.
+        filters_out : array_like
+            Excluded patterns.
+        flags : int
+            Regex flags.
+
+        Returns
+        -------
+        dict
+             Directory file hashes.
         """
 
         hashes = {}
@@ -87,6 +108,8 @@ class TestACESConfig(unittest.TestCase):
 
     def test_ACES_config(self):
         """
+        Performs tests on the *ACES* configuration by computing hashes on the
+        generated configuration and comparing them to the existing one.
         """
 
         self.assertTrue(createACESConfig(self.__aces_ocio_ctl_directory,

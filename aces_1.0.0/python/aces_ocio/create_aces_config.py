@@ -2,18 +2,18 @@
 # -*- coding: utf-8 -*-
 
 """
-usage from python
+usage from python:
 
-import sys
-sys.path.append("/path/to/script")
-import create_aces_config as cac
-acesReleaseCTLDir = "/path/to/github/checkout/releases/v0.7.1/transforms/ctl"
-configDir = "/path/to/config/dir"
-cac.createACESConfig(acesReleaseCTLDir, configDir, 1024, 33, True)
+>>> import sys
+>>> sys.path.append("/path/to/script")
+>>> import create_aces_config as cac
+>>> acesReleaseCTLDir = "/path/to/github/checkout/releases/v0.7.1/transforms/ctl"
+>>> configDir = "/path/to/config/dir"
+>>> cac.createACESConfig(acesReleaseCTLDir, configDir, 1024, 33, True)
 
-usage from command line, from the directory with 'create_aces_config.py'
-python create_aces_config.py -a "/path/to/github/checkout/releases/v0.7.1/transforms/ctl" -c "/path/to/config/dir" --lutResolution1d 1024 --lutResolution3d 33 --keepTempImages
+usage from command line, from the directory with 'create_aces_config.py':
 
+$ python create_aces_config.py -a "/path/to/github/checkout/releases/v0.7.1/transforms/ctl" -c "/path/to/config/dir" --lutResolution1d 1024 --lutResolution3d 33 --keepTempImages
 
 
 build instructions for osx for needed packages.
@@ -86,9 +86,7 @@ __all__ = ['ACES_OCIO_CTL_DIRECTORY_ENVIRON',
 ACES_OCIO_CTL_DIRECTORY_ENVIRON = 'ACES_OCIO_CTL_DIRECTORY'
 ACES_OCIO_CONFIGURATION_DIRECTORY_ENVIRON = 'ACES_OCIO_CONFIGURATION_DIRECTORY'
 
-#
-# Utility functions
-#
+
 def setConfigDefaultRoles(config,
                           color_picking="",
                           color_timing="",
@@ -99,7 +97,38 @@ def setConfigDefaultRoles(config,
                           reference="",
                           scene_linear="",
                           texture_paint=""):
-    # Add Roles
+    """
+    Sets given *OCIO* configuration default roles.
+
+    Parameters
+    ----------
+    config : config
+        *OCIO* configuration.
+    color_picking : str or unicode
+        Color picking role title.
+    color_timing : str or unicode
+        Color timing role title.
+    compositing_log : str or unicode
+        Compositing log role title.
+    data : str or unicode
+        Data role title.
+    default : str or unicode
+        Default role title.
+    matte_paint : str or unicode
+        Matte painting role title.
+    reference : str or unicode
+        Reference role title.
+    scene_linear : str or unicode
+        Scene linear role title.
+    texture_paint : str or unicode
+        Texture painting role title.
+
+    Returns
+    -------
+    bool
+         Definition success.
+    """
+
     if color_picking:
         config.setRole(OCIO.Constants.ROLE_COLOR_PICKING, color_picking)
     if color_timing:
@@ -119,9 +148,24 @@ def setConfigDefaultRoles(config,
     if texture_paint:
         config.setRole(OCIO.Constants.ROLE_TEXTURE_PAINT, texture_paint)
 
+    return True
 
-# Write config to disk
+
 def writeConfig(config, configPath, sanityCheck=True):
+    """
+    Writes the configuration to given path.
+
+    Parameters
+    ----------
+    parameter : type
+        Parameter description.
+
+    Returns
+    -------
+    type
+         Return value description.
+    """
+
     if sanityCheck:
         try:
             config.sanityCheck()
@@ -137,6 +181,20 @@ def writeConfig(config, configPath, sanityCheck=True):
 
 
 def generateOCIOTransform(transforms):
+    """
+    Object description.
+
+    Parameters
+    ----------
+    parameter : type
+        Parameter description.
+
+    Returns
+    -------
+    type
+         Return value description.
+    """
+
     # print("Generating transforms")
 
     interpolationOptions = {
@@ -200,6 +258,20 @@ def generateOCIOTransform(transforms):
 
 
 def createConfig(configData, nuke=False):
+    """
+    Object description.
+
+    Parameters
+    ----------
+    parameter : type
+        Parameter description.
+
+    Returns
+    -------
+    type
+         Return value description.
+    """
+
     # Create the config
     config = OCIO.Config()
 
@@ -326,13 +398,6 @@ def createConfig(configData, nuke=False):
     return config
 
 
-#
-# Functions to generate color space definitions and LUTs for transforms for a
-# specific ACES release.
-#
-
-# Output is a list of colorspaces and transforms that convert between those
-# colorspaces and reference color space, ACES
 def generateLUTs(odtInfo,
                  lmtInfo,
                  shaperName,
@@ -341,6 +406,21 @@ def generateLUTs(odtInfo,
                  lutResolution1d=4096,
                  lutResolution3d=64,
                  cleanup=True):
+    """
+    Object description.
+
+    Parameters
+    ----------
+    parameter : type
+        Parameter description.
+
+    Returns
+    -------
+    dict
+         Colorspaces and transforms converting between those colorspaces and
+         the reference colorspace, *ACES*.
+    """
+
     print("generateLUTs - begin")
     configData = {}
 
@@ -1279,6 +1359,20 @@ def generateBakedLUTs(odtInfo,
                       lutResolution1d,
                       lutResolution3d,
                       lutResolutionShaper=1024):
+    """
+    Object description.
+
+    Parameters
+    ----------
+    parameter : type
+        Parameter description.
+
+    Returns
+    -------
+    type
+         Return value description.
+    """
+
     # Add the legal and full variations into this list
     odtInfoC = dict(odtInfo)
     for odtCTLName, odtValues in odtInfo.iteritems():
@@ -1369,6 +1463,20 @@ def generateBakedLUTs(odtInfo,
 
 
 def createConfigDir(configDir, bakeSecondaryLUTs):
+    """
+    Object description.
+
+    Parameters
+    ----------
+    parameter : type
+        Parameter description.
+
+    Returns
+    -------
+    type
+         Return value description.
+    """
+
     dirs = [configDir, "%s/luts" % configDir]
     if bakeSecondaryLUTs:
         dirs.extend(["%s/baked" % configDir,
@@ -1384,6 +1492,20 @@ def createConfigDir(configDir, bakeSecondaryLUTs):
 
 
 def getTransformInfo(ctlTransform):
+    """
+    Object description.
+
+    Parameters
+    ----------
+    parameter : type
+        Parameter description.
+
+    Returns
+    -------
+    type
+         Return value description.
+    """
+
     fp = open(ctlTransform, 'rb')
 
     # Read lines
@@ -1404,8 +1526,23 @@ def getTransformInfo(ctlTransform):
     return transformID, transformUserName, transformUserNamePrefix
 
 
-# For versions after WGR9
 def getODTInfo(acesCTLReleaseDir):
+    """
+    Object description.
+
+    For versions after WGR9.
+
+    Parameters
+    ----------
+    parameter : type
+        Parameter description.
+
+    Returns
+    -------
+    type
+         Return value description.
+    """
+
     # Credit to Alex Fry for the original approach here
     odtDir = os.path.join(acesCTLReleaseDir, "odt")
     allodt = []
@@ -1478,8 +1615,23 @@ def getODTInfo(acesCTLReleaseDir):
     return odts
 
 
-# For versions after WGR9
 def getLMTInfo(acesCTLReleaseDir):
+    """
+    Object description.
+
+    For versions after WGR9.
+
+    Parameters
+    ----------
+    parameter : type
+        Parameter description.
+
+    Returns
+    -------
+    type
+         Return value description.
+    """
+
     # Credit to Alex Fry for the original approach here
     lmtDir = os.path.join(acesCTLReleaseDir, "lmt")
     alllmt = []
@@ -1553,15 +1705,26 @@ def getLMTInfo(acesCTLReleaseDir):
     return lmts
 
 
-#
-# Create the ACES config
-#
 def createACESConfig(acesCTLReleaseDir,
                      configDir,
                      lutResolution1d=4096,
                      lutResolution3d=64,
                      bakeSecondaryLUTs=True,
                      cleanup=True):
+    """
+    Creates the ACES configuration.
+
+    Parameters
+    ----------
+    parameter : type
+        Parameter description.
+
+    Returns
+    -------
+    type
+         Return value description.
+    """
+
     # Get ODT names and CTL paths
     odtInfo = getODTInfo(acesCTLReleaseDir)
 
@@ -1613,10 +1776,21 @@ def createACESConfig(acesCTLReleaseDir,
     return True
 
 
-#
-# Main
-#
 def main():
+    """
+    Object description.
+
+    Parameters
+    ----------
+    parameter : type
+        Parameter description.
+
+    Returns
+    -------
+    type
+         Return value description.
+    """
+
     import optparse
 
     p = optparse.OptionParser(description='An OCIO config generation script',
@@ -1636,7 +1810,7 @@ def main():
 
     #
     # Get options
-    # 
+    #
     acesCTLDir = options.acesCTLDir
     configDir = options.configDir
     lutResolution1d = int(options.lutResolution1d)
@@ -1670,7 +1844,6 @@ def main():
                             bakeSecondaryLUTs,
                             cleanupTempImages)
 
-# main
 
 if __name__ == '__main__':
     main()

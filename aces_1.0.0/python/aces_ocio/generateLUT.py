@@ -52,13 +52,25 @@ __all__ = ['generate1dLUTImage',
            'generate3dLUTFromCTL',
            'main']
 
-#
-# Functions used to generate LUTs using CTL transforms
-#
+
 def generate1dLUTImage(ramp1dPath,
                        resolution=1024,
                        minValue=0.0,
                        maxValue=1.0):
+    """
+    Object description.
+
+    Parameters
+    ----------
+    parameter : type
+        Parameter description.
+
+    Returns
+    -------
+    type
+         Return value description.
+    """
+
     # print("Generate 1d LUT image - %s" % ramp1dPath)
 
     # open image
@@ -87,9 +99,24 @@ def generate1dLUTImage(ramp1dPath,
     ramp.close()
 
 
-# Credit to Alex Fry for the original single channel version of the spi1d
-# writer
 def writeSPI1D(filename, fromMin, fromMax, data, entries, channels):
+    """
+    Object description.
+
+    Credit to *Alex Fry* for the original single channel version of the spi1d
+    writer.
+
+    Parameters
+    ----------
+    parameter : type
+        Parameter description.
+
+    Returns
+    -------
+    type
+         Return value description.
+    """
+
     f = file(filename, 'w')
     f.write("Version 1\n")
     f.write("From %f %f\n" % (fromMin, fromMax))
@@ -109,6 +136,20 @@ def generate1dLUTFromImage(ramp1dPath,
                            outputPath=None,
                            minValue=0.0,
                            maxValue=1.0):
+    """
+    Object description.
+
+    Parameters
+    ----------
+    parameter : type
+        Parameter description.
+
+    Returns
+    -------
+    type
+         Return value description.
+    """
+
     if outputPath == None:
         outputPath = ramp1dPath + ".spi1d"
 
@@ -132,6 +173,20 @@ def generate1dLUTFromImage(ramp1dPath,
 
 
 def generate3dLUTImage(ramp3dPath, resolution=32):
+    """
+    Object description.
+
+    Parameters
+    ----------
+    parameter : type
+        Parameter description.
+
+    Returns
+    -------
+    type
+         Return value description.
+    """
+
     args = ["--generate",
             "--cubesize",
             str(resolution),
@@ -146,6 +201,20 @@ def generate3dLUTImage(ramp3dPath, resolution=32):
 
 
 def generate3dLUTFromImage(ramp3dPath, outputPath=None, resolution=32):
+    """
+    Object description.
+
+    Parameters
+    ----------
+    parameter : type
+        Parameter description.
+
+    Returns
+    -------
+    type
+         Return value description.
+    """
+
     if outputPath == None:
         outputPath = ramp3dPath + ".spi3d"
 
@@ -171,6 +240,20 @@ def applyCTLToImage(inputImage,
                     outputScale=1.0,
                     globalParams={},
                     acesCTLReleaseDir=None):
+    """
+    Object description.
+
+    Parameters
+    ----------
+    parameter : type
+        Parameter description.
+
+    Returns
+    -------
+    type
+         Return value description.
+    """
+
     if len(ctlPaths) > 0:
         ctlenv = os.environ
         if acesCTLReleaseDir != None:
@@ -203,6 +286,20 @@ def applyCTLToImage(inputImage,
 
 
 def convertBitDepth(inputImage, outputImage, depth):
+    """
+    Object description.
+
+    Parameters
+    ----------
+    parameter : type
+        Parameter description.
+
+    Returns
+    -------
+    type
+         Return value description.
+    """
+
     args = [inputImage,
             "-d",
             depth,
@@ -225,6 +322,20 @@ def generate1dLUTFromCTL(lutPath,
                          acesCTLReleaseDir=None,
                          minValue=0.0,
                          maxValue=1.0):
+    """
+    Object description.
+
+    Parameters
+    ----------
+    parameter : type
+        Parameter description.
+
+    Returns
+    -------
+    type
+         Return value description.
+    """
+
     # print(lutPath)
     # print(ctlPaths)
 
@@ -263,6 +374,20 @@ def generate1dLUTFromCTL(lutPath,
 
 
 def correctLUTImage(transformedLUTImage, correctedLUTImage, lutResolution):
+    """
+    Object description.
+
+    Parameters
+    ----------
+    parameter : type
+        Parameter description.
+
+    Returns
+    -------
+    type
+         Return value description.
+    """
+
     # open image
     transformed = oiio.ImageInput.open(transformedLUTImage)
 
@@ -337,6 +462,20 @@ def generate3dLUTFromCTL(lutPath,
                          globalParams={},
                          cleanup=True,
                          acesCTLReleaseDir=None):
+    """
+    Object description.
+
+    Parameters
+    ----------
+    parameter : type
+        Parameter description.
+
+    Returns
+    -------
+    type
+         Return value description.
+    """
+
     # print(lutPath)
     # print(ctlPaths)
 
@@ -380,6 +519,20 @@ def generate3dLUTFromCTL(lutPath,
 
 
 def main():
+    """
+    Object description.
+
+    Parameters
+    ----------
+    parameter : type
+        Parameter description.
+
+    Returns
+    -------
+    type
+         Return value description.
+    """
+
     import optparse
 
     p = optparse.OptionParser(

@@ -25,6 +25,20 @@ __all__ = ['readText',
 
 
 def readText(textFile):
+    """
+    Object description.
+
+    Parameters
+    ----------
+    parameter : type
+        Parameter description.
+
+    Returns
+    -------
+    type
+         Return value description.
+    """
+
     if (textFile != ""):
         fp = open(textFile, 'rb')
         # Create a text/plain message
@@ -33,9 +47,21 @@ def readText(textFile):
     return text
 
 
-# readText
-
 def writeText(text, textFile):
+    """
+    Object description.
+
+    Parameters
+    ----------
+    parameter : type
+        Parameter description.
+
+    Returns
+    -------
+    type
+         Return value description.
+    """
+
     if (textFile != ""):
         fp = open(textFile, 'wb')
         # Create a text/plain message
@@ -44,11 +70,9 @@ def writeText(text, textFile):
     return text
 
 
-# readText
-
 class Process:
     """
-    A process with logged output
+    A process with logged output.
     """
 
     def __init__(self,
@@ -58,7 +82,20 @@ class Process:
                  cwd=None,
                  env=None,
                  batchWrapper=False):
-        """Initialize the standard class variables"""
+        """
+        Initialize the standard class variables.
+
+        Parameters
+        ----------
+        parameter : type
+            Parameter description.
+
+        Returns
+        -------
+        type
+             Return value description.
+        """
+
         self.cmd = cmd
         if not description:
             self.description = cmd
@@ -75,9 +112,21 @@ class Process:
         self.batchWrapper = batchWrapper
         self.processKeys = []
 
-    # __init__
-
     def getElapsedSeconds(self):
+        """
+        Object description.
+
+        Parameters
+        ----------
+        parameter : type
+            Parameter description.
+
+        Returns
+        -------
+        type
+             Return value description.
+        """
+
         import math
 
         if self.end and self.start:
@@ -88,10 +137,21 @@ class Process:
             formatted = None
         return formatted
 
-    # getElapsedtime
-
     def writeKey(self, writeDict, key=None, value=None, startStop=None):
-        "Write a key, value pair in a supported format"
+        """
+        Writes a key / value pair in a supported format.
+
+        Parameters
+        ----------
+        parameter : type
+            Parameter description.
+
+        Returns
+        -------
+        type
+             Return value description.
+        """
+
         if key != None and (value != None or startStop != None):
             indent = '\t' * writeDict['indentationLevel']
             if writeDict['format'] == 'xml':
@@ -107,6 +167,20 @@ class Process:
                     "%s%40s : %s\n" % (indent, key, value))
 
     def writeLogHeader(self, writeDict):
+        """
+        Object description.
+
+        Parameters
+        ----------
+        parameter : type
+            Parameter description.
+
+        Returns
+        -------
+        type
+             Return value description.
+        """
+
         import platform
 
         # Retrieve operating environment information
@@ -137,7 +211,8 @@ class Process:
 
         self.writeKey(writeDict, 'description', self.description)
         self.writeKey(writeDict, 'cmd', self.cmd)
-        if self.args: self.writeKey(writeDict, 'args', ' '.join(self.args))
+        if self.args:
+            self.writeKey(writeDict, 'args', ' '.join(self.args))
         self.writeKey(writeDict, 'start', self.start)
         self.writeKey(writeDict, 'end', self.end)
         self.writeKey(writeDict, 'elapsed', self.getElapsedSeconds())
@@ -161,17 +236,37 @@ class Process:
 
         self.writeKey(writeDict, 'status', self.status)
 
-    # writeLogHeader
-
     def writeLogFooter(self, writeDict):
+        """
+        Object description.
+
+        Parameters
+        ----------
+        parameter : type
+            Parameter description.
+
+        Returns
+        -------
+        type
+             Return value description.
+        """
+
         writeDict['indentationLevel'] -= 1
         self.writeKey(writeDict, 'process', None, 'stop')
 
-    # writeLogFooter
-
     def writeLog(self, logHandle=sys.stdout, indentationLevel=0, format='xml'):
         """
-        Write logging information to the specified handle
+        Writes logging information to the specified handle.
+
+        Parameters
+        ----------
+        parameter : type
+            Parameter description.
+
+        Returns
+        -------
+        type
+             Return value description.
         """
 
         writeDict = {}
@@ -194,9 +289,21 @@ class Process:
 
             self.writeLogFooter(writeDict)
 
-    # writeLog
-
     def writeLogToDisk(self, logFilename=None, format='xml', header=None):
+        """
+        Object description.
+
+        Parameters
+        ----------
+        parameter : type
+            Parameter description.
+
+        Returns
+        -------
+        type
+             Return value description.
+        """
+
         if logFilename:
             try:
                 # This also doesn't seem like the best structure...
@@ -220,21 +327,40 @@ class Process:
             self.writeLog(logHandle)
             logHandle.close()
 
-    # writeLogToDisk
-
     def logLine(self, line):
-        "Add a line of text to the log"
+        """
+        Adds a line of text to the log.
+
+        Parameters
+        ----------
+        parameter : type
+            Parameter description.
+
+        Returns
+        -------
+        type
+             Return value description.
+        """
+
         self.log.append(line.rstrip())
         if self.echo:
             print("%s" % line.rstrip())
 
-    # logLine
-
     def execute(self):
         """
-        Execute this process
+        Executes the current process.
+
+        Parameters
+        ----------
+        parameter : type
+            Parameter description.
+
+        Returns
+        -------
+        type
+             Return value description.
         """
-        import re
+
         import datetime
         import traceback
 
@@ -363,28 +489,48 @@ class Process:
             self.status = exitCode
 
         self.end = datetime.datetime.now()
-        # execute
 
-
-# Process
 
 class ProcessList(Process):
     """
-    A list of processes with logged output
+    A list of processes with logged output.
     """
 
     def __init__(self, description, blocking=True, cwd=None, env=None):
+        """
+        Object description.
+
+        Parameters
+        ----------
+        parameter : type
+            Parameter description.
+
+        Returns
+        -------
+        type
+             Return value description.
+        """
+
         Process.__init__(self, description, None, None, cwd, env)
         "Initialize the standard class variables"
         self.processes = []
         self.blocking = blocking
 
-    # __init__
-
     def generateReport(self, writeDict):
         """
-        Generate a log based on the success of the child processes
+        Generates a log based on the success of the child processes.
+
+        Parameters
+        ----------
+        parameter : type
+            Parameter description.
+
+        Returns
+        -------
+        type
+             Return value description.
         """
+
         if self.processes:
             _status = True
             indent = '\t' * (writeDict['indentationLevel'] + 1)
@@ -417,6 +563,20 @@ class ProcessList(Process):
             self.status = -1
 
     def writeLogHeader(self, writeDict):
+        """
+        Object description.
+
+        Parameters
+        ----------
+        parameter : type
+            Parameter description.
+
+        Returns
+        -------
+        type
+             Return value description.
+        """
+
         self.writeKey(writeDict, 'processList', None, 'start')
         writeDict['indentationLevel'] += 1
 
@@ -429,17 +589,37 @@ class ProcessList(Process):
 
         self.writeKey(writeDict, 'status', self.status)
 
-    # writeLogHeader
-
     def writeLogFooter(self, writeDict):
+        """
+        Object description.
+
+        Parameters
+        ----------
+        parameter : type
+            Parameter description.
+
+        Returns
+        -------
+        type
+             Return value description.
+        """
+
         writeDict['indentationLevel'] -= 1
         self.writeKey(writeDict, 'processList', None, 'stop')
 
-    # writeLogFooter
-
     def writeLog(self, logHandle=sys.stdout, indentationLevel=0, format='xml'):
         """
-        Write logging information to the specified handle
+        Writes logging information to the specified handle.
+
+        Parameters
+        ----------
+        parameter : type
+            Parameter description.
+
+        Returns
+        -------
+        type
+             Return value description.
         """
 
         writeDict = {}
@@ -464,12 +644,21 @@ class ProcessList(Process):
 
             self.writeLogFooter(writeDict)
 
-    # writeLog
-
     def execute(self):
         """
-        Execute this list of processes
+        Executes the list of processes.
+
+        Parameters
+        ----------
+        parameter : type
+            Parameter description.
+
+        Returns
+        -------
+        type
+             Return value description.
         """
+
         import datetime
 
         self.start = datetime.datetime.now()
@@ -493,12 +682,23 @@ class ProcessList(Process):
                         break
 
         self.end = datetime.datetime.now()
-        # execute
 
-
-# ProcessList
 
 def main():
+    """
+    Object description.
+
+    Parameters
+    ----------
+    parameter : type
+        Parameter description.
+
+    Returns
+    -------
+    type
+         Return value description.
+    """
+
     import optparse
 
     p = optparse.OptionParser(description='A process logging script',

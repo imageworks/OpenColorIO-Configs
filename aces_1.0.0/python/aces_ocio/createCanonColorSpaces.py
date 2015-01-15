@@ -16,10 +16,24 @@ __status__ = 'Production'
 __all__ = ['createCanonLog',
            'createColorSpaces']
 
-#
-# Canon-Log to ACES
-#
+
 def createCanonLog(gamut, transferFunction, name, lutDir, lutResolution1d):
+    """
+    Object description.
+
+    Canon-Log to ACES.
+
+    Parameters
+    ----------
+    parameter : type
+        Parameter description.
+
+    Returns
+    -------
+    type
+         Return value description.
+    """
+
     name = "%s - %s" % (transferFunction, gamut)
     if transferFunction == "":
         name = "Linear - %s" % gamut
@@ -128,8 +142,21 @@ def createCanonLog(gamut, transferFunction, name, lutDir, lutResolution1d):
     return cs
 
 
-# Generate all color spaces conversion
 def createColorSpaces(lutDir, lutResolution1d):
+    """
+    Generates the colorspace conversions.
+
+    Parameters
+    ----------
+    parameter : type
+        Parameter description.
+
+    Returns
+    -------
+    type
+         Return value description.
+    """
+
     colorspaces = []
 
     # Full conversion

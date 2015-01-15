@@ -18,15 +18,29 @@ __status__ = 'Production'
 __all__ = ['createLogC',
            'createColorSpaces']
 
-#
-# LogC to ACES
-#
+
 def createLogC(gamut,
                transferFunction,
                exposureIndex,
                name,
                lutDir,
                lutResolution1d):
+    """
+    Object description.
+
+    LogC to ACES.
+
+    Parameters
+    ----------
+    parameter : type
+        Parameter description.
+
+    Returns
+    -------
+    type
+         Return value description.
+    """
+
     name = "%s (EI%s) - %s" % (transferFunction, exposureIndex, gamut)
     if transferFunction == "":
         name = "Linear - %s" % gamut
@@ -140,6 +154,20 @@ def createLogC(gamut,
 
 
 def createColorSpaces(lutDir, lutResolution1d):
+    """
+    Generates the colorspace conversions.
+
+    Parameters
+    ----------
+    parameter : type
+        Parameter description.
+
+    Returns
+    -------
+    type
+         Return value description.
+    """
+
     colorspaces = []
 
     transferFunction = "V3 LogC"

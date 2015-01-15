@@ -16,10 +16,24 @@ __status__ = 'Production'
 __all__ = ['createREDlogFilm',
            'createColorSpaces']
 
-#
-# RED color spaces to ACES
-#
+
 def createREDlogFilm(gamut, transferFunction, name, lutDir, lutResolution1d):
+    """
+    Object description.
+
+    RED colorspaces to ACES.
+
+    Parameters
+    ----------
+    parameter : type
+        Parameter description.
+
+    Returns
+    -------
+    type
+         Return value description.
+    """
+
     name = "%s - %s" % (transferFunction, gamut)
     if transferFunction == "":
         name = "Linear - %s" % gamut
@@ -112,8 +126,21 @@ def createREDlogFilm(gamut, transferFunction, name, lutDir, lutResolution1d):
     return cs
 
 
-# Generate all color spaces conversion
 def createColorSpaces(lutDir, lutResolution1d):
+    """
+    Generates the colorspace conversions.
+
+    Parameters
+    ----------
+    parameter : type
+        Parameter description.
+
+    Returns
+    -------
+    type
+         Return value description.
+    """
+
     colorspaces = []
 
     # Full conversion

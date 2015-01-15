@@ -39,8 +39,19 @@ class ColorSpace:
                  allocationType=OCIO.Constants.ALLOCATION_UNIFORM,
                  allocationVars=[0.0, 1.0]):
         """
-        Initialize the standard class variables
+        Object description.
+
+        Parameters
+        ----------
+        parameter : type
+            Parameter description.
+
+        Returns
+        -------
+        type
+             Return value description.
         """
+
         self.name = name
         self.bitDepth = bitDepth
         self.description = description
@@ -53,17 +64,40 @@ class ColorSpace:
         self.allocationVars = allocationVars
 
 
-# Create a 4x4 matrix (list) based on a 3x3 matrix (list) input
 def mat44FromMat33(mat33):
+    """
+    Creates a 4x4 matrix from given 3x3 matrix.
+
+    Parameters
+    ----------
+    parameter : type
+        Parameter description.
+
+    Returns
+    -------
+    type
+         Return value description.
+    """
+
     return [mat33[0], mat33[1], mat33[2], 0.0,
             mat33[3], mat33[4], mat33[5], 0.0,
             mat33[6], mat33[7], mat33[8], 0.0,
             0, 0, 0, 1.0]
 
 
-# TODO: Worth moving to *util.py*.
 def filter_words(words, filters_in=None, filters_out=None, flags=0):
     """
+    Object description.
+
+    Parameters
+    ----------
+    parameter : type
+        Parameter description.
+
+    Returns
+    -------
+    type
+         Return value description.
     """
 
     filtered_words = []
@@ -91,6 +125,17 @@ def filter_words(words, filters_in=None, filters_out=None, flags=0):
 
 def files_walker(directory, filters_in=None, filters_out=None, flags=0):
     """
+    Object description.
+
+    Parameters
+    ----------
+    parameter : type
+        Parameter description.
+
+    Returns
+    -------
+    type
+         Return value description.
     """
 
     for parent_directory, directories, files in os.walk(directory,
@@ -103,7 +148,3 @@ def files_walker(directory, filters_in=None, filters_out=None, flags=0):
                     continue
 
                 yield path
-
-
-
-

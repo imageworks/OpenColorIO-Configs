@@ -16,10 +16,24 @@ __status__ = 'Production'
 __all__ = ['createSlog',
            'createColorSpaces']
 
-#
-# SLog to ACES
-#
+
 def createSlog(gamut, transferFunction, name, lutDir, lutResolution1d):
+    """
+    Object description.
+
+    SLog to ACES.
+
+    Parameters
+    ----------
+    parameter : type
+        Parameter description.
+
+    Returns
+    -------
+    type
+         Return value description.
+    """
+
     name = "%s - %s" % (transferFunction, gamut)
     if transferFunction == "":
         name = "Linear - %s" % gamut
@@ -190,6 +204,20 @@ def createSlog(gamut, transferFunction, name, lutDir, lutResolution1d):
 
 
 def createColorSpaces(lutDir, lutResolution1d):
+    """
+    Generates the colorspace conversions.
+
+    Parameters
+    ----------
+    parameter : type
+        Parameter description.
+
+    Returns
+    -------
+    type
+         Return value description.
+    """
+
     colorspaces = []
 
     # SLog1

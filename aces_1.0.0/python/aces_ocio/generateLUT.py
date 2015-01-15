@@ -27,8 +27,8 @@ import os
 import array
 
 import OpenImageIO as oiio
+from aces_ocio.process import Process
 
-import process
 
 #
 # Functions used to generate LUTs using CTL transforms
@@ -99,7 +99,7 @@ def generate1dLUTFromImage(ramp1dPath, outputPath=None, minValue=0.0, maxValue=1
 
 def generate3dLUTImage(ramp3dPath, resolution=32):
     args = ["--generate", "--cubesize", str(resolution), "--maxwidth", str(resolution*resolution), "--output", ramp3dPath]
-    lutExtract = process.Process(description="generate a 3d LUT image", cmd="ociolutimage", args=args)
+    lutExtract = Process(description="generate a 3d LUT image", cmd="ociolutimage", args=args)
     lutExtract.execute()    
 
 def generate3dLUTFromImage(ramp3dPath, outputPath=None, resolution=32):
@@ -107,7 +107,7 @@ def generate3dLUTFromImage(ramp3dPath, outputPath=None, resolution=32):
         outputPath = ramp3dPath + ".spi3d"
 
     args = ["--extract", "--cubesize", str(resolution), "--maxwidth", str(resolution*resolution), "--input", ramp3dPath, "--output", outputPath]
-    lutExtract = process.Process(description="extract a 3d LUT", cmd="ociolutimage", args=args)
+    lutExtract = Process(description="extract a 3d LUT", cmd="ociolutimage", args=args)
     lutExtract.execute()    
 
 def applyCTLToImage(inputImage, 
@@ -141,13 +141,13 @@ def applyCTLToImage(inputImage,
 
         #print( "args : %s" % args )
 
-        ctlp = process.Process(description="a ctlrender process", cmd="ctlrender", args=args, env=ctlenv )
+        ctlp = Process(description="a ctlrender process", cmd="ctlrender", args=args, env=ctlenv )
 
         ctlp.execute()
 
 def convertBitDepth(inputImage, outputImage, depth):
     args = [inputImage, "-d", depth, "-o", outputImage]
-    convert = process.Process(description="convert image bit depth", cmd="oiiotool", args=args)
+    convert = Process(description="convert image bit depth", cmd="oiiotool", args=args)
     convert.execute()    
 
 def generate1dLUTFromCTL(lutPath, 

@@ -1,8 +1,9 @@
 import math
 import array
 
-from util import *
-import generateLUT as genlut
+import aces_ocio.generateLUT as genlut
+from aces_ocio.util import ColorSpace, mat44FromMat33
+
 
 
 #

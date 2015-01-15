@@ -1491,10 +1491,13 @@ def main():
 
     print( "command line : \n%s\n" % " ".join(sys.argv) )
 
-    if configDir == None:
+    if not acesCTLDir:
         print( "process: No ACES CTL directory specified" )
         return
- 
+
+    if not configDir:
+        print( "process: No configuration directory specified" )
+        return
     #
     # Generate the configuration
     #

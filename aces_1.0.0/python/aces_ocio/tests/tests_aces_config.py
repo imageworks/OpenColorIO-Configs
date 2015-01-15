@@ -17,12 +17,12 @@ from aces_ocio.create_aces_config import (
     ACES_OCIO_CTL_DIRECTORY_ENVIRON,
     createACESConfig)
 
-__author__ = ''
-__copyright__ = ''
+__author__ = 'ACES Developers'
+__copyright__ = 'Copyright (C) 2014 - 2015 - ACES Developers'
 __license__ = ''
-__maintainer__ = ''
-__email__ = ''
-__status__ = ''
+__maintainer__ = 'ACES Developers'
+__email__ = 'aces@oscars.org'
+__status__ = 'Production'
 
 __all__ = ['REFERENCE_CONFIG_ROOT_DIRECTORY',
            'HASH_TEST_PATTERNS',

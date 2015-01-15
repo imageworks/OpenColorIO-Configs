@@ -6,6 +6,16 @@ import array
 import aces_ocio.generateLUT as genlut
 from aces_ocio.util import ColorSpace
 
+__author__ = 'ACES Developers'
+__copyright__ = 'Copyright (C) 2014 - 2015 - ACES Developers'
+__license__ = ''
+__maintainer__ = 'ACES Developers'
+__email__ = 'aces@oscars.org'
+__status__ = 'Production'
+
+__all__ = ['createCanonLog',
+           'createColorSpaces']
+
 #
 # Canon-Log to ACES
 #

@@ -6,9 +6,22 @@ import re
 
 import PyOpenColorIO as OCIO
 
+__author__ = 'ACES Developers'
+__copyright__ = 'Copyright (C) 2014 - 2015 - ACES Developers'
+__license__ = ''
+__maintainer__ = 'ACES Developers'
+__email__ = 'aces@oscars.org'
+__status__ = 'Production'
+
+__all__ = ['ColorSpace',
+           'mat44FromMat33',
+           'filter_words',
+           'files_walker']
+
 #
 # Utility classes and functions
 #
+
 class ColorSpace:
     """
     A container for data needed to define an OCIO 'Color Space'

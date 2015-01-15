@@ -33,6 +33,24 @@ import OpenImageIO as oiio
 
 from aces_ocio.process import Process
 
+__author__ = 'ACES Developers'
+__copyright__ = 'Copyright (C) 2014 - 2015 - ACES Developers'
+__license__ = ''
+__maintainer__ = 'ACES Developers'
+__email__ = 'aces@oscars.org'
+__status__ = 'Production'
+
+__all__ = ['generate1dLUTImage',
+           'writeSPI1D',
+           'generate1dLUTFromImage',
+           'generate3dLUTImage',
+           'generate3dLUTFromImage',
+           'applyCTLToImage',
+           'convertBitDepth',
+           'generate1dLUTFromCTL',
+           'correctLUTImage',
+           'generate3dLUTFromCTL',
+           'main']
 
 #
 # Functions used to generate LUTs using CTL transforms

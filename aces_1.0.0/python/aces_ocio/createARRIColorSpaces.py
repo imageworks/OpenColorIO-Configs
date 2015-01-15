@@ -8,6 +8,16 @@ import aces_ocio.generateLUT as genlut
 from aces_ocio.util import ColorSpace, mat44FromMat33
 
 
+__author__ = 'ACES Developers'
+__copyright__ = 'Copyright (C) 2014 - 2015 - ACES Developers'
+__license__ = ''
+__maintainer__ = 'ACES Developers'
+__email__ = 'aces@oscars.org'
+__status__ = 'Production'
+
+__all__ = ['createLogC',
+           'createColorSpaces']
+
 #
 # LogC to ACES
 #

@@ -10,6 +10,19 @@ import os
 import sys
 import traceback
 
+__author__ = 'ACES Developers'
+__copyright__ = 'Copyright (C) 2014 - 2015 - ACES Developers'
+__license__ = ''
+__maintainer__ = 'ACES Developers'
+__email__ = 'aces@oscars.org'
+__status__ = 'Production'
+
+__all__ = ['readText',
+           'writeText',
+           'Process',
+           'ProcessList',
+           'main']
+
 
 def readText(textFile):
     if (textFile != ""):

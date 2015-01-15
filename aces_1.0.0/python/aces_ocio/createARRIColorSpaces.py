@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""
+Implements support for *ARRI* colorspaces conversions and transfer functions.
+"""
+
 import array
 import math
 

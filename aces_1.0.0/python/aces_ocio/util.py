@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""
+Defines various package utilities objects.
+"""
+
 import os
 import re
 

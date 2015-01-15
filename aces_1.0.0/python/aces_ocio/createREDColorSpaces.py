@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""
+Implements support for *RED* colorspaces conversions and transfer functions.
+"""
+
 import array
 
 import aces_ocio.generateLUT as genlut

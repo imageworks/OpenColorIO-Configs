@@ -2,41 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-usage from python:
-
->>> import sys
->>> sys.path.append("/path/to/script")
->>> import create_aces_config as cac
->>> acesReleaseCTLDir = "/path/to/github/checkout/releases/v0.7.1/transforms/ctl"
->>> configDir = "/path/to/config/dir"
->>> cac.createACESConfig(acesReleaseCTLDir, configDir, 1024, 33, True)
-
-usage from command line, from the directory with 'create_aces_config.py':
-
-$ python create_aces_config.py -a "/path/to/github/checkout/releases/v0.7.1/transforms/ctl" -c "/path/to/config/dir" --lutResolution1d 1024 --lutResolution3d 33 --keepTempImages
-
-
-build instructions for osx for needed packages.
-
-#opencolorio
-brew install -vd opencolorio --with-python
-
-#openimageio
-brew tap homebrew/science
-
-# optional installs
-brew install -vd libRaw
-brew install -vd OpenCV
-
-brew install -vd openimageio --with-python
-
-#ctl
-brew install -vd CTL
-
-#opencolorio - again.
-# this time, 'ociolutimage' will build because openimageio is installed
-brew uninstall -vd opencolorio
-brew install -vd opencolorio --with-python
+Defines objects creating the *ACES* configuration.
 """
 
 import math

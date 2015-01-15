@@ -2,27 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-build instructions for osx for needed packages.
-
-#opencolorio
-brew install -vd opencolorio --with-python
-
-#openimageio
-brew tap homebrew/science
-
-# optional installs
-brew install -vd libRaw
-brew install -vd OpenCV
-
-brew install -vd openimageio --with-python
-
-#ctl
-brew install -vd CTL
-
-#opencolorio - again.
-# this time, 'ociolutimage' will build because openimageio is installed
-brew uninstall -vd opencolorio
-brew install -vd opencolorio --with-python
+Defines objects to generate various kind of 1d, 2d and 3d LUTs in various file
+formats.
 """
 
 import array

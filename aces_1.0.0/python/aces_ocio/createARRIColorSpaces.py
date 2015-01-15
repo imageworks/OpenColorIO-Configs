@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import math
 import array
+import math
 
 import aces_ocio.generateLUT as genlut
 from aces_ocio.util import ColorSpace, mat44FromMat33
-
 
 
 #

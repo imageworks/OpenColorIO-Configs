@@ -39,6 +39,7 @@ brew uninstall -vd opencolorio
 brew install -vd opencolorio --with-python
 '''
 
+
 import math
 import numpy
 import os

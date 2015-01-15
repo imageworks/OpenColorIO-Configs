@@ -25,11 +25,12 @@ brew uninstall -vd opencolorio
 brew install -vd opencolorio --with-python
 '''
 
-import sys
-import os
 import array
+import os
+import sys
 
 import OpenImageIO as oiio
+
 from aces_ocio.process import Process
 
 

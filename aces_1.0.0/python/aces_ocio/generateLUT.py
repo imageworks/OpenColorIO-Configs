@@ -131,7 +131,7 @@ def generate1dLUTFromImage(ramp1dPath,
          Return value description.
     """
 
-    if outputPath == None:
+    if outputPath is None:
         outputPath = ramp1dPath + ".spi1d"
 
     # open image
@@ -196,7 +196,7 @@ def generate3dLUTFromImage(ramp3dPath, outputPath=None, resolution=32):
          Return value description.
     """
 
-    if outputPath == None:
+    if outputPath is None:
         outputPath = ramp3dPath + ".spi3d"
 
     args = ["--extract",

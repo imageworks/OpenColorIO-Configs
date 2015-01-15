@@ -190,7 +190,7 @@ class Process:
         except:
             try:
                 user = os.getenv("USERNAME")
-                if user == None:
+                if user is None:
                     user = os.getenv("USER")
             except:
                 user = "unknown_user"
@@ -438,7 +438,7 @@ class Process:
 
                     # This is now used to ensure that the process has finished
                     line = ""
-                    while line != None and process.poll() == None:
+                    while line != None and process.poll() is None:
                         try:
                             line = process.stdout.readline()
                         except:
@@ -724,7 +724,7 @@ def main():
         argsStart = len(sys.argv) + 1
         args = []
 
-    if cmd == None:
+    if cmd is None:
         print("process: No command specified")
 
     #

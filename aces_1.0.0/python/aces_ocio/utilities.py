@@ -18,7 +18,7 @@ __email__ = 'aces@oscars.org'
 __status__ = 'Production'
 
 __all__ = ['ColorSpace',
-           'mat44FromMat33',
+           'mat44_from_mat33',
            'filter_words',
            'files_walker']
 
@@ -26,22 +26,22 @@ __all__ = ['ColorSpace',
 # Utility classes and functions
 #
 
-class ColorSpace:
+class ColorSpace(object):
     """
-    A container for data needed to define an OCIO 'Color Space'
+    A container for data needed to define an *OCIO* *ColorSpace*.
     """
 
     def __init__(self,
                  name,
                  description=None,
-                 bitDepth=OCIO.Constants.BIT_DEPTH_F32,
-                 equalityGroup=None,
+                 bit_depth=OCIO.Constants.BIT_DEPTH_F32,
+                 equality_group=None,
                  family=None,
-                 isData=False,
-                 toReferenceTransforms=[],
-                 fromReferenceTransforms=[],
-                 allocationType=OCIO.Constants.ALLOCATION_UNIFORM,
-                 allocationVars=[0.0, 1.0]):
+                 is_data=False,
+                 to_reference_transforms=[],
+                 from_reference_transforms=[],
+                 allocation_type=OCIO.Constants.ALLOCATION_UNIFORM,
+                 allocation_vars=[0.0, 1.0]):
         """
         Object description.
 
@@ -57,18 +57,18 @@ class ColorSpace:
         """
 
         self.name = name
-        self.bitDepth = bitDepth
+        self.bit_depth = bit_depth
         self.description = description
-        self.equalityGroup = equalityGroup
+        self.equality_group = equality_group
         self.family = family
-        self.isData = isData
-        self.toReferenceTransforms = toReferenceTransforms
-        self.fromReferenceTransforms = fromReferenceTransforms
-        self.allocationType = allocationType
-        self.allocationVars = allocationVars
+        self.is_data = is_data
+        self.to_reference_transforms = to_reference_transforms
+        self.from_reference_transforms = from_reference_transforms
+        self.allocation_type = allocation_type
+        self.allocation_vars = allocation_vars
 
 
-def mat44FromMat33(mat33):
+def mat44_from_mat33(mat33):
     """
     Creates a 4x4 matrix from given 3x3 matrix.
 

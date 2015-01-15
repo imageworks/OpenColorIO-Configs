@@ -8,6 +8,7 @@ Defines objects creating the *ACES* configuration.
 import math
 import numpy
 import os
+import pprint
 import shutil
 import string
 import sys
@@ -19,13 +20,16 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 import PyOpenColorIO as OCIO
 
-import aces_ocio.createARRIColorSpaces as arri
-import aces_ocio.createCanonColorSpaces as canon
-import aces_ocio.createREDColorSpaces as red
-import aces_ocio.createSonyColorSpaces as sony
-import aces_ocio.generateLUT as genlut
+import aces_ocio.create_arri_colorspaces as arri
+import aces_ocio.create_canon_colorspaces as canon
+import aces_ocio.create_red_colorspaces as red
+import aces_ocio.create_sony_colorspaces as sony
+from aces_ocio.generate_lut import (
+    generate_1d_LUT_from_CTL,
+    generate_3d_LUT_from_CTL,
+    write_SPI_1d)
 from aces_ocio.process import Process
-from aces_ocio.util import ColorSpace, mat44FromMat33
+from aces_ocio.utilities import ColorSpace, mat44_from_mat33
 
 __author__ = 'ACES Developers'
 __copyright__ = 'Copyright (C) 2014 - 2015 - ACES Developers'
@@ -36,33 +40,33 @@ __status__ = 'Production'
 
 __all__ = ['ACES_OCIO_CTL_DIRECTORY_ENVIRON',
            'ACES_OCIO_CONFIGURATION_DIRECTORY_ENVIRON',
-           'setConfigDefaultRoles',
-           'writeConfig',
-           'generateOCIOTransform',
-           'createConfig',
-           'generateLUTs',
-           'generateBakedLUTs',
-           'createConfigDir',
-           'getTransformInfo',
-           'getODTInfo',
-           'getLMTInfo',
-           'createACESConfig',
+           'set_config_default_roles',
+           'write_config',
+           'generate_OCIO_transform',
+           'create_config',
+           'generate_LUTs',
+           'generate_baked_LUTs',
+           'create_config_dir',
+           'get_transform_info',
+           'get_ODT_info',
+           'get_LMT_info',
+           'create_ACES_config',
            'main']
 
 ACES_OCIO_CTL_DIRECTORY_ENVIRON = 'ACES_OCIO_CTL_DIRECTORY'
 ACES_OCIO_CONFIGURATION_DIRECTORY_ENVIRON = 'ACES_OCIO_CONFIGURATION_DIRECTORY'
 
 
-def setConfigDefaultRoles(config,
-                          color_picking="",
-                          color_timing="",
-                          compositing_log="",
-                          data="",
-                          default="",
-                          matte_paint="",
-                          reference="",
-                          scene_linear="",
-                          texture_paint=""):
+def set_config_default_roles(config,
+                             color_picking="",
+                             color_timing="",
+                             compositing_log="",
+                             data="",
+                             default="",
+                             matte_paint="",
+                             reference="",
+                             scene_linear="",
+                             texture_paint=""):
     """
     Sets given *OCIO* configuration default roles.
 
@@ -117,7 +121,7 @@ def setConfigDefaultRoles(config,
     return True
 
 
-def writeConfig(config, configPath, sanityCheck=True):
+def write_config(config, config_path, sanity_check=True):
     """
     Writes the configuration to given path.
 
@@ -132,7 +136,7 @@ def writeConfig(config, configPath, sanityCheck=True):
          Return value description.
     """
 
-    if sanityCheck:
+    if sanity_check:
         try:
             config.sanityCheck()
         except Exception, e:
@@ -141,12 +145,12 @@ def writeConfig(config, configPath, sanityCheck=True):
             return
             # sys.exit()
 
-    fileHandle = open(configPath, mode='w')
-    fileHandle.write(config.serialize())
-    fileHandle.close()
+    file_handle = open(config_path, mode='w')
+    file_handle.write(config.serialize())
+    file_handle.close()
 
 
-def generateOCIOTransform(transforms):
+def generate_OCIO_transform(transforms):
     """
     Object description.
 
@@ -163,67 +167,68 @@ def generateOCIOTransform(transforms):
 
     # print("Generating transforms")
 
-    interpolationOptions = {
+    interpolation_options = {
         'linear': OCIO.Constants.INTERP_LINEAR,
         'nearest': OCIO.Constants.INTERP_NEAREST,
         'tetrahedral': OCIO.Constants.INTERP_TETRAHEDRAL
     }
-    directionOptions = {
+    direction_options = {
         'forward': OCIO.Constants.TRANSFORM_DIR_FORWARD,
         'inverse': OCIO.Constants.TRANSFORM_DIR_INVERSE
     }
 
-    ocioTransforms = []
+    ocio_transforms = []
 
     for transform in transforms:
         if transform['type'] == 'lutFile':
-            ocioTransform = OCIO.FileTransform(
+            ocio_transform = OCIO.FileTransform(
                 src=transform['path'],
-                interpolation=interpolationOptions[transform['interpolation']],
-                direction=directionOptions[transform['direction']])
-            ocioTransforms.append(ocioTransform)
+                interpolation=interpolation_options[
+                    transform['interpolation']],
+                direction=direction_options[transform['direction']])
+            ocio_transforms.append(ocio_transform)
         elif transform['type'] == 'matrix':
-            ocioTransform = OCIO.MatrixTransform()
+            ocio_transform = OCIO.MatrixTransform()
             # MatrixTransform member variables can't be initialized directly.
             # Each must be set individually.
-            ocioTransform.setMatrix(transform['matrix'])
+            ocio_transform.setMatrix(transform['matrix'])
 
             if 'offset' in transform:
-                ocioTransform.setOffset(transform['offset'])
+                ocio_transform.setOffset(transform['offset'])
 
             if 'direction' in transform:
-                ocioTransform.setDirection(
-                    directionOptions[transform['direction']])
+                ocio_transform.setDirection(
+                    direction_options[transform['direction']])
 
-            ocioTransforms.append(ocioTransform)
+            ocio_transforms.append(ocio_transform)
         elif transform['type'] == 'exponent':
-            ocioTransform = OCIO.ExponentTransform()
-            ocioTransform.setValue(transform['value'])
-            ocioTransforms.append(ocioTransform)
+            ocio_transform = OCIO.ExponentTransform()
+            ocio_transform.setValue(transform['value'])
+            ocio_transforms.append(ocio_transform)
         elif transform['type'] == 'log':
-            ocioTransform = OCIO.LogTransform(
+            ocio_transform = OCIO.LogTransform(
                 base=transform['base'],
-                direction=directionOptions[transform['direction']])
+                direction=direction_options[transform['direction']])
 
-            ocioTransforms.append(ocioTransform)
+            ocio_transforms.append(ocio_transform)
         else:
             print("Ignoring unknown transform type : %s" % transform['type'])
 
     # Build a group transform if necessary
-    if len(ocioTransforms) > 1:
-        transformG = OCIO.GroupTransform()
-        for transform in ocioTransforms:
-            transformG.push_back(transform)
-        transform = transformG
+    if len(ocio_transforms) > 1:
+        transform_G = OCIO.GroupTransform()
+        for transform in ocio_transforms:
+            transform_G.push_back(transform)
+        transform = transform_G
 
     # Or take the first transform from the list
     else:
-        transform = ocioTransforms[0]
+        transform = ocio_transforms[0]
 
     return transform
 
 
-def createConfig(configData, nuke=False):
+def create_config(config_data, nuke=False):
     """
     Object description.
 
@@ -250,19 +255,19 @@ def createConfig(configData, nuke=False):
     #
     # Define the reference color space
     #
-    referenceData = configData['referenceColorSpace']
-    print("Adding the reference color space : %s" % referenceData.name)
+    reference_data = config_data['referenceColorSpace']
+    print("Adding the reference color space : %s" % reference_data.name)
 
     # Create a color space
     reference = OCIO.ColorSpace(
-        name=referenceData.name,
-        bitDepth=referenceData.bitDepth,
-        description=referenceData.description,
-        equalityGroup=referenceData.equalityGroup,
-        family=referenceData.family,
-        isData=referenceData.isData,
-        allocation=referenceData.allocationType,
-        allocationVars=referenceData.allocationVars)
+        name=reference_data.name,
+        bitDepth=reference_data.bit_depth,
+        description=reference_data.description,
+        equalityGroup=reference_data.equality_group,
+        family=reference_data.family,
+        isData=reference_data.is_data,
+        allocation=reference_data.allocation_type,
+        allocationVars=reference_data.allocation_vars)
 
     # Add to config
     config.addColorSpace(reference)
@@ -270,36 +275,36 @@ def createConfig(configData, nuke=False):
     #
     # Create the rest of the color spaces
     #
-    for colorspace in sorted(configData['colorSpaces']):
+    for colorspace in sorted(config_data['colorSpaces']):
         print("Creating new color space : %s" % colorspace.name)
 
-        ocioColorspace = OCIO.ColorSpace(
+        ocio_colorspace = OCIO.ColorSpace(
             name=colorspace.name,
-            bitDepth=colorspace.bitDepth,
+            bitDepth=colorspace.bit_depth,
             description=colorspace.description,
-            equalityGroup=colorspace.equalityGroup,
+            equalityGroup=colorspace.equality_group,
             family=colorspace.family,
-            isData=colorspace.isData,
-            allocation=colorspace.allocationType,
-            allocationVars=colorspace.allocationVars)
+            isData=colorspace.is_data,
+            allocation=colorspace.allocation_type,
+            allocationVars=colorspace.allocation_vars)
 
-        if colorspace.toReferenceTransforms != []:
+        if colorspace.to_reference_transforms != []:
             print("Generating To-Reference transforms")
-            ocioTransform = generateOCIOTransform(
-                colorspace.toReferenceTransforms)
-            ocioColorspace.setTransform(
-                ocioTransform,
+            ocio_transform = generate_OCIO_transform(
+                colorspace.to_reference_transforms)
+            ocio_colorspace.setTransform(
+                ocio_transform,
                 OCIO.Constants.COLORSPACE_DIR_TO_REFERENCE)
 
-        if colorspace.fromReferenceTransforms != []:
+        if colorspace.from_reference_transforms != []:
             print("Generating From-Reference transforms")
-            ocioTransform = generateOCIOTransform(
-                colorspace.fromReferenceTransforms)
-            ocioColorspace.setTransform(
-                ocioTransform,
+            ocio_transform = generate_OCIO_transform(
+                colorspace.from_reference_transforms)
+            ocio_colorspace.setTransform(
+                ocio_transform,
                 OCIO.Constants.COLORSPACE_DIR_FROM_REFERENCE)
 
-        config.addColorSpace(ocioColorspace)
+        config.addColorSpace(ocio_colorspace)
 
         print("")
 
@@ -311,11 +316,11 @@ def createConfig(configData, nuke=False):
 
     # Generic display and view setup
     if not nuke:
-        for display, viewList in configData['displays'].iteritems():
-            for viewName, colorspace in viewList.iteritems():
-                config.addDisplay(display, viewName, colorspace.name)
-                if not (viewName in views):
-                    views.append(viewName)
+        for display, view_list in config_data['displays'].iteritems():
+            for view_name, colorspace in view_list.iteritems():
+                config.addDisplay(display, view_name, colorspace.name)
+                if not (view_name in views):
+                    views.append(view_name)
             displays.append(display)
     # A Nuke specific set of views and displays
     #
@@ -324,13 +329,13 @@ def createConfig(configData, nuke=False):
     # Would be better to automate.
     #
     else:
-        for display, viewList in configData['displays'].iteritems():
-            for viewName, colorspace in viewList.iteritems():
-                if (viewName == 'Output Transform'):
-                    viewName = 'View'
-                    config.addDisplay(display, viewName, colorspace.name)
-                    if not (viewName in views):
-                        views.append(viewName)
+        for display, view_list in config_data['displays'].iteritems():
+            for view_name, colorspace in view_list.iteritems():
+                if (view_name == 'Output Transform'):
+                    view_name = 'View'
+                    config.addDisplay(display, view_name, colorspace.name)
+                    if not (view_name in views):
+                        views.append(view_name)
             displays.append(display)
 
         config.addDisplay('linear', 'View', 'ACES2065-1')
@@ -347,16 +352,17 @@ def createConfig(configData, nuke=False):
     #
 
     # Add Default Roles
-    setConfigDefaultRoles(config,
-                          color_picking=reference.getName(),
-                          color_timing=reference.getName(),
-                          compositing_log=reference.getName(),
-                          data=reference.getName(),
-                          default=reference.getName(),
-                          matte_paint=reference.getName(),
-                          reference=reference.getName(),
-                          scene_linear=reference.getName(),
-                          texture_paint=reference.getName())
+    set_config_default_roles(
+        config,
+        color_picking=reference.getName(),
+        color_timing=reference.getName(),
+        compositing_log=reference.getName(),
+        data=reference.getName(),
+        default=reference.getName(),
+        matte_paint=reference.getName(),
+        reference=reference.getName(),
+        scene_linear=reference.getName(),
+        texture_paint=reference.getName())
 
     # Check to make sure we didn't screw something up
     config.sanityCheck()
@@ -364,14 +370,14 @@ def createConfig(configData, nuke=False):
     return config
 
 
-def generateLUTs(odtInfo,
-                 lmtInfo,
-                 shaperName,
-                 acesCTLReleaseDir,
-                 lutDir,
-                 lutResolution1d=4096,
-                 lutResolution3d=64,
-                 cleanup=True):
+def generate_LUTs(odt_info,
+                  lmt_info,
+                  shaper_name,
+                  aces_CTL_directory,
+                  lut_directory,
+                  lut_resolution_1d=4096,
+                  lut_resolution_3d=64,
+                  cleanup=True):
     """
     Object description.
 
@@ -388,7 +394,7 @@ def generateLUTs(odtInfo,
     """
 
     print("generateLUTs - begin")
-    configData = {}
+    config_data = {}
 
     #
     # Define the reference color space
@@ -396,74 +402,74 @@ def generateLUTs(odtInfo,
     ACES = ColorSpace('ACES2065-1')
     ACES.description = (
         'The Academy Color Encoding System reference color space')
-    ACES.equalityGroup = ''
+    ACES.equality_group = ''
     ACES.family = 'ACES'
-    ACES.isData = False
-    ACES.allocationType = OCIO.Constants.ALLOCATION_LG2
-    ACES.allocationVars = [-15, 6]
+    ACES.is_data = False
+    ACES.allocation_type = OCIO.Constants.ALLOCATION_LG2
+    ACES.allocation_vars = [-15, 6]
 
-    configData['referenceColorSpace'] = ACES
+    config_data['referenceColorSpace'] = ACES
 
     #
     # Define the displays
     #
-    configData['displays'] = {}
+    config_data['displays'] = {}
 
     #
     # Define the other color spaces
     #
-    configData['colorSpaces'] = []
+    config_data['colorSpaces'] = []
 
     # Matrix converting ACES AP1 primaries to AP0
-    acesAP1toAP0 = [0.6954522414, 0.1406786965, 0.1638690622,
-                    0.0447945634, 0.8596711185, 0.0955343182,
-                    -0.0055258826, 0.0040252103, 1.0015006723]
+    ACES_AP1_to_AP0 = [0.6954522414, 0.1406786965, 0.1638690622,
+                       0.0447945634, 0.8596711185, 0.0955343182,
+                       -0.0055258826, 0.0040252103, 1.0015006723]
 
     # Matrix converting ACES AP0 primaries to XYZ
-    acesAP0toXYZ = [0.9525523959, 0.0000000000, 0.0000936786,
-                    0.3439664498, 0.7281660966, -0.0721325464,
-                    0.0000000000, 0.0000000000, 1.0088251844]
+    ACES_AP0_to_XYZ = [0.9525523959, 0.0000000000, 0.0000936786,
+                       0.3439664498, 0.7281660966, -0.0721325464,
+                       0.0000000000, 0.0000000000, 1.0088251844]
 
     #
     # ACEScc
     #
-    def createACEScc(name='ACEScc',
-                     minValue=0.0,
-                     maxValue=1.0,
-                     inputScale=1.0):
+    def create_ACEScc(name='ACEScc',
+                      min_value=0.0,
+                      max_value=1.0,
+                      input_scale=1.0):
         cs = ColorSpace(name)
         cs.description = "The %s color space" % name
-        cs.equalityGroup = ''
+        cs.equality_group = ''
         cs.family = 'ACES'
-        cs.isData = False
+        cs.is_data = False
 
         ctls = [
-            '%s/ACEScc/ACEScsc.ACEScc_to_ACES.a1.0.0.ctl' % acesCTLReleaseDir,
+            '%s/ACEScc/ACEScsc.ACEScc_to_ACES.a1.0.0.ctl' % aces_CTL_directory,
             # This transform gets back to the AP1 primaries
             # Useful as the 1d LUT is only covering the transfer function
             # The primaries switch is covered by the matrix below
-            '%s/ACEScg/ACEScsc.ACES_to_ACEScg.a1.0.0.ctl' % acesCTLReleaseDir
+            '%s/ACEScg/ACEScsc.ACES_to_ACEScg.a1.0.0.ctl' % aces_CTL_directory
         ]
         lut = "%s_to_ACES.spi1d" % name
 
         # Remove spaces and parentheses
         lut = lut.replace(' ', '_').replace(')', '_').replace('(', '_')
 
-        genlut.generate1dLUTFromCTL(
-            lutDir + "/" + lut,
+        generate_1d_LUT_from_CTL(
+            lut_directory + "/" + lut,
             ctls,
-            lutResolution1d,
+            lut_resolution_1d,
             'float',
-            inputScale,
+            input_scale,
             1.0,
             {},
             cleanup,
-            acesCTLReleaseDir,
-            minValue,
-            maxValue)
+            aces_CTL_directory,
+            min_value,
+            max_value)
 
-        cs.toReferenceTransforms = []
-        cs.toReferenceTransforms.append({
+        cs.to_reference_transforms = []
+        cs.to_reference_transforms.append({
             'type': 'lutFile',
             'path': lut,
             'interpolation': 'linear',
@@ -471,54 +477,54 @@ def generateLUTs(odtInfo,
         })
 
         # AP1 primaries to AP0 primaries
-        cs.toReferenceTransforms.append({
+        cs.to_reference_transforms.append({
             'type': 'matrix',
-            'matrix': mat44FromMat33(acesAP1toAP0),
+            'matrix': mat44_from_mat33(ACES_AP1_to_AP0),
             'direction': 'forward'
         })
 
-        cs.fromReferenceTransforms = []
+        cs.from_reference_transforms = []
         return cs
 
-    ACEScc = createACEScc()
-    configData['colorSpaces'].append(ACEScc)
+    ACEScc = create_ACEScc()
+    config_data['colorSpaces'].append(ACEScc)
 
     #
     # ACESproxy
     #
-    def createACESProxy(name='ACESproxy'):
+    def create_ACESproxy(name='ACESproxy'):
         cs = ColorSpace(name)
         cs.description = "The %s color space" % name
-        cs.equalityGroup = ''
+        cs.equality_group = ''
         cs.family = 'ACES'
-        cs.isData = False
+        cs.is_data = False
 
         ctls = [
             '%s/ACESproxy/ACEScsc.ACESproxy10i_to_ACES.a1.0.0.ctl' % (
-                acesCTLReleaseDir),
+                aces_CTL_directory),
             # This transform gets back to the AP1 primaries
             # Useful as the 1d LUT is only covering the transfer function
             # The primaries switch is covered by the matrix below
-            '%s/ACEScg/ACEScsc.ACES_to_ACEScg.a1.0.0.ctl' % acesCTLReleaseDir
+            '%s/ACEScg/ACEScsc.ACES_to_ACEScg.a1.0.0.ctl' % aces_CTL_directory
         ]
         lut = "%s_to_aces.spi1d" % name
 
         # Remove spaces and parentheses
         lut = lut.replace(' ', '_').replace(')', '_').replace('(', '_')
 
-        genlut.generate1dLUTFromCTL(
-            lutDir + "/" + lut,
+        generate_1d_LUT_from_CTL(
+            lut_directory + "/" + lut,
             ctls,
-            lutResolution1d,
+            lut_resolution_1d,
             'uint16',
             64.0,
             1.0,
             {},
             cleanup,
-            acesCTLReleaseDir)
+            aces_CTL_directory)
 
-        cs.toReferenceTransforms = []
-        cs.toReferenceTransforms.append({
+        cs.to_reference_transforms = []
+        cs.to_reference_transforms.append({
             'type': 'lutFile',
             'path': lut,
             'interpolation': 'linear',
@@ -526,63 +532,63 @@ def generateLUTs(odtInfo,
         })
 
         # AP1 primaries to AP0 primaries
-        cs.toReferenceTransforms.append({
+        cs.to_reference_transforms.append({
             'type': 'matrix',
-            'matrix': mat44FromMat33(acesAP1toAP0),
+            'matrix': mat44_from_mat33(ACES_AP1_to_AP0),
             'direction': 'forward'
         })
 
-        cs.fromReferenceTransforms = []
+        cs.from_reference_transforms = []
         return cs
 
-    ACESproxy = createACESProxy()
-    configData['colorSpaces'].append(ACESproxy)
+    ACESproxy = create_ACESproxy()
+    config_data['colorSpaces'].append(ACESproxy)
 
     #
     # ACEScg
     #
-    def createACEScg(name='ACEScg'):
+    def create_ACEScg(name='ACEScg'):
         cs = ColorSpace(name)
         cs.description = "The %s color space" % name
-        cs.equalityGroup = ''
+        cs.equality_group = ''
         cs.family = 'ACES'
-        cs.isData = False
+        cs.is_data = False
 
-        cs.toReferenceTransforms = []
+        cs.to_reference_transforms = []
 
         # AP1 primaries to AP0 primaries
-        cs.toReferenceTransforms.append({
+        cs.to_reference_transforms.append({
             'type': 'matrix',
-            'matrix': mat44FromMat33(acesAP1toAP0),
+            'matrix': mat44_from_mat33(ACES_AP1_to_AP0),
             'direction': 'forward'
         })
 
-        cs.fromReferenceTransforms = []
+        cs.from_reference_transforms = []
         return cs
 
-    ACEScg = createACEScg()
-    configData['colorSpaces'].append(ACEScg)
+    ACEScg = create_ACEScg()
+    config_data['colorSpaces'].append(ACEScg)
 
     #
     # ADX
     #
-    def createADX(bitdepth=10, name='ADX'):
-        name = "%s%s" % (name, bitdepth)
+    def create_ADX(bit_depth=10, name='ADX'):
+        name = "%s%s" % (name, bit_depth)
         cs = ColorSpace(name)
         cs.description = "%s color space - used for film scans" % name
-        cs.equalityGroup = ''
+        cs.equality_group = ''
         cs.family = 'ADX'
-        cs.isData = False
+        cs.is_data = False
 
-        if bitdepth == 10:
-            cs.bitDepth = bitDepth = OCIO.Constants.BIT_DEPTH_UINT10
+        if bit_depth == 10:
+            cs.bit_depth = bit_depth = OCIO.Constants.BIT_DEPTH_UINT10
             adx_to_cdd = [1023.0 / 500.0, 0.0, 0.0, 0.0,
                           0.0, 1023.0 / 500.0, 0.0, 0.0,
                           0.0, 0.0, 1023.0 / 500.0, 0.0,
                           0.0, 0.0, 0.0, 1.0]
             offset = [-95.0 / 500.0, -95.0 / 500.0, -95.0 / 500.0, 0.0]
-        elif bitdepth == 16:
-            cs.bitDepth = bitDepth = OCIO.Constants.BIT_DEPTH_UINT16
+        elif bit_depth == 16:
+            cs.bit_depth = bit_depth = OCIO.Constants.BIT_DEPTH_UINT16
             adx_to_cdd = [65535.0 / 8000.0, 0.0, 0.0, 0.0,
                           0.0, 65535.0 / 8000.0, 0.0, 0.0,
                           0.0, 0.0, 65535.0 / 8000.0, 0.0,
@@ -590,10 +596,10 @@ def generateLUTs(odtInfo,
             offset = [-1520.0 / 8000.0, -1520.0 / 8000.0, -1520.0 / 8000.0,
                       0.0]
 
-        cs.toReferenceTransforms = []
+        cs.to_reference_transforms = []
 
         # Convert from ADX to Channel-Dependent Density
-        cs.toReferenceTransforms.append({
+        cs.to_reference_transforms.append({
             'type': 'matrix',
             'matrix': adx_to_cdd,
             'offset': offset,
@@ -601,7 +607,7 @@ def generateLUTs(odtInfo,
         })
 
         # Convert from Channel-Dependent Density to Channel-Independent Density
-        cs.toReferenceTransforms.append({
+        cs.to_reference_transforms.append({
             'type': 'matrix',
             'matrix': [0.75573, 0.22197, 0.02230, 0,
                        0.05901, 0.96928, -0.02829, 0,
@@ -611,8 +617,8 @@ def generateLUTs(odtInfo,
         })
 
         # Copied from Alex Fry's adx_cid_to_rle.py
-        def createCIDtoRLELUT():
-            def interpolate1D(x, xp, fp):
+        def create_CID_to_RLE_LUT():
+            def interpolate_1D(x, xp, fp):
                 return numpy.interp(x, xp, fp)
 
             LUT_1D_xp = [-0.190000000000000,
@@ -644,33 +650,34 @@ def generateLUTs(odtInfo,
 
             def cid_to_rle(x):
                 if x <= 0.6:
-                    return interpolate1D(x, LUT_1D_xp, LUT_1D_fp)
+                    return interpolate_1D(x, LUT_1D_xp, LUT_1D_fp)
                 return (100.0 / 55.0) * x - REF_PT
 
-            def Fit(value, fromMin, fromMax, toMin, toMax):
-                if fromMin == fromMax:
-                    raise ValueError("fromMin == fromMax")
-                return (value - fromMin) / (fromMax - fromMin) * (
-                    toMax - toMin) + toMin
+            def fit(value, from_min, from_max, to_min, to_max):
+                if from_min == from_max:
+                    raise ValueError("from_min == from_max")
+                return (value - from_min) / (from_max - from_min) * (
+                    to_max - to_min) + to_min
 
             NUM_SAMPLES = 2 ** 12
             RANGE = (-0.19, 3.0)
             data = []
             for i in xrange(NUM_SAMPLES):
                 x = i / (NUM_SAMPLES - 1.0)
-                x = Fit(x, 0.0, 1.0, RANGE[0], RANGE[1])
+                x = fit(x, 0.0, 1.0, RANGE[0], RANGE[1])
                 data.append(cid_to_rle(x))
 
             lut = 'ADX_CID_to_RLE.spi1d'
-            genlut.writeSPI1D(lutDir + "/" + lut, RANGE[0], RANGE[1], data,
-                              NUM_SAMPLES, 1)
+            write_SPI_1d(lut_directory + "/" + lut, RANGE[0], RANGE[1],
+                         data,
+                         NUM_SAMPLES, 1)
 
             return lut
 
         # Convert Channel Independent Density values to Relative Log Exposure
         # values.
-        lut = createCIDtoRLELUT()
-        cs.toReferenceTransforms.append({
+        lut = create_CID_to_RLE_LUT()
+        cs.to_reference_transforms.append({
             'type': 'lutFile',
             'path': lut,
             'interpolation': 'linear',
@@ -678,14 +685,14 @@ def generateLUTs(odtInfo,
         })
 
         # Convert Relative Log Exposure values to Relative Exposure values
-        cs.toReferenceTransforms.append({
+        cs.to_reference_transforms.append({
             'type': 'log',
             'base': 10,
             'direction': 'inverse'
         })
 
         # Convert Relative Exposure values to ACES values
-        cs.toReferenceTransforms.append({
+        cs.to_reference_transforms.append({
             'type': 'matrix',
             'matrix': [0.72286, 0.12630, 0.15084, 0,
                        0.11923, 0.76418, 0.11659, 0,
@@ -694,145 +701,143 @@ def generateLUTs(odtInfo,
             'direction': 'forward'
         })
 
-        cs.fromReferenceTransforms = []
+        cs.from_reference_transforms = []
         return cs
 
-    ADX10 = createADX(bitdepth=10)
-    configData['colorSpaces'].append(ADX10)
+    ADX10 = create_ADX(bit_depth=10)
+    config_data['colorSpaces'].append(ADX10)
 
-    ADX16 = createADX(bitdepth=16)
-    configData['colorSpaces'].append(ADX16)
+    ADX16 = create_ADX(bit_depth=16)
+    config_data['colorSpaces'].append(ADX16)
 
     #
     # Camera Input Transforms
     #
 
     # RED color spaces to ACES
-    redColorSpaces = red.createColorSpaces(lutDir, lutResolution1d)
-    for cs in redColorSpaces:
-        configData['colorSpaces'].append(cs)
+    red_colorspaces = red.create_colorspaces(lut_directory, lut_resolution_1d)
+    for cs in red_colorspaces:
+        config_data['colorSpaces'].append(cs)
 
     # Canon-Log to ACES
-    canonColorSpaces = canon.createColorSpaces(lutDir, lutResolution1d)
-    for cs in canonColorSpaces:
-        configData['colorSpaces'].append(cs)
+    canon_colorspaces = canon.create_colorspaces(lut_directory,
+                                                 lut_resolution_1d)
+    for cs in canon_colorspaces:
+        config_data['colorSpaces'].append(cs)
 
-    # SLog to ACES
-    sonyColorSpaces = sony.createColorSpaces(lutDir, lutResolution1d)
-    for cs in sonyColorSpaces:
-        configData['colorSpaces'].append(cs)
+    # S-Log to ACES
+    sony_colorSpaces = sony.create_colorspaces(lut_directory,
+                                               lut_resolution_1d)
+    for cs in sony_colorSpaces:
+        config_data['colorSpaces'].append(cs)
 
-    # LogC to ACES
-    arriColorSpaces = arri.createColorSpaces(lutDir, lutResolution1d)
-    for cs in arriColorSpaces:
-        configData['colorSpaces'].append(cs)
+    # Log-C to ACES
+    arri_colorSpaces = arri.create_colorspaces(lut_directory,
+                                               lut_resolution_1d)
+    for cs in arri_colorSpaces:
+        config_data['colorSpaces'].append(cs)
 
     #
     # Generic log transform
     #
-    def createGenericLog(name='log',
-                         minValue=0.0,
-                         maxValue=1.0,
-                         inputScale=1.0,
-                         middleGrey=0.18,
-                         minExposure=-6.0,
-                         maxExposure=6.5,
-                         lutResolution1d=lutResolution1d):
+    def create_generic_log(name='log',
+                           min_value=0.0,
+                           max_value=1.0,
+                           input_scale=1.0,
+                           middle_grey=0.18,
+                           min_exposure=-6.0,
+                           max_exposure=6.5,
+                           lut_resolution_1d=lut_resolution_1d):
         cs = ColorSpace(name)
         cs.description = "The %s color space" % name
-        cs.equalityGroup = name
+        cs.equality_group = name
         cs.family = 'Utility'
-        cs.isData = False
+        cs.is_data = False
 
         ctls = [
             '%s/utilities/ACESlib.OCIO_shaper_log2_to_lin_param.a1.0.0.ctl' % (
-                acesCTLReleaseDir)
-        ]
+                aces_CTL_directory)]
         lut = "%s_to_aces.spi1d" % name
 
         # Remove spaces and parentheses
         lut = lut.replace(' ', '_').replace(')', '_').replace('(', '_')
 
-        genlut.generate1dLUTFromCTL(
-            lutDir + "/" + lut,
+        generate_1d_LUT_from_CTL(
+            lut_directory + "/" + lut,
             ctls,
-            lutResolution1d,
+            lut_resolution_1d,
             'float',
-            inputScale,
+            input_scale,
             1.0,
             {
-                'middleGrey': middleGrey,
-                'minExposure': minExposure,
-                'maxExposure': maxExposure
+                'middleGrey': middle_grey,
+                'minExposure': min_exposure,
+                'maxExposure': max_exposure
             },
             cleanup,
-            acesCTLReleaseDir,
-            minValue,
-            maxValue)
+            aces_CTL_directory,
+            min_value,
+            max_value)
 
-        cs.toReferenceTransforms = []
-        cs.toReferenceTransforms.append({
+        cs.to_reference_transforms = []
+        cs.to_reference_transforms.append({
             'type': 'lutFile',
             'path': lut,
             'interpolation': 'linear',
             'direction': 'forward'
         })
 
-        cs.fromReferenceTransforms = []
+        cs.from_reference_transforms = []
         return cs
 
     #
     # ACES LMTs
     #
-    def createACESLMT(lmtName,
-                      lmtValues,
-                      shaperInfo,
-                      lutResolution1d=1024,
-                      lutResolution3d=64,
-                      cleanup=True):
-        cs = ColorSpace("%s" % lmtName)
-        cs.description = "The ACES Look Transform: %s" % lmtName
-        cs.equalityGroup = ''
+    def create_ACES_LMT(lmt_name,
+                        lmt_values,
+                        shaper_info,
+                        lut_resolution_1d=1024,
+                        lut_resolution_3d=64,
+                        cleanup=True):
+        cs = ColorSpace("%s" % lmt_name)
+        cs.description = "The ACES Look Transform: %s" % lmt_name
+        cs.equality_group = ''
         cs.family = 'Look'
-        cs.isData = False
+        cs.is_data = False
 
-        import pprint
-
-        pprint.pprint(lmtValues)
+        pprint.pprint(lmt_values)
 
         #
         # Generate the shaper transform
         #
-        (shaperName,
-         shaperToACESCTL,
-         shaperFromACESCTL,
-         shaperInputScale,
-         shaperParams) = shaperInfo
+        (shaper_name,
+         shaper_to_ACES_CTL,
+         shaper_from_ACES_CTL,
+         shaper_input_scale,
+         shaper_params) = shaper_info
 
-        shaperLut = "%s_to_aces.spi1d" % shaperName
-        if (not os.path.exists(lutDir + "/" + shaperLut)):
-            ctls = [
-                shaperToACESCTL % acesCTLReleaseDir
-            ]
+        shaper_lut = "%s_to_aces.spi1d" % shaper_name
+        if (not os.path.exists(lut_directory + "/" + shaper_lut)):
+            ctls = [shaper_to_ACES_CTL % aces_CTL_directory]
 
             # Remove spaces and parentheses
-            shaperLut = shaperLut.replace(
+            shaper_lut = shaper_lut.replace(
                 ' ', '_').replace(')', '_').replace('(', '_')
 
-            genlut.generate1dLUTFromCTL(
-                lutDir + "/" + shaperLut,
+            generate_1d_LUT_from_CTL(
+                lut_directory + "/" + shaper_lut,
                 ctls,
-                lutResolution1d,
+                lut_resolution_1d,
                 'float',
-                1.0 / shaperInputScale,
+                1.0 / shaper_input_scale,
                 1.0,
-                shaperParams,
+                shaper_params,
                 cleanup,
-                acesCTLReleaseDir)
+                aces_CTL_directory)
 
-        shaperOCIOTransform = {
+        shaper_OCIO_transform = {
             'type': 'lutFile',
-            'path': shaperLut,
+            'path': shaper_lut,
             'interpolation': 'linear',
             'direction': 'inverse'
         }
@@ -840,31 +845,31 @@ def generateLUTs(odtInfo,
         #
         # Generate the forward transform
         #
-        cs.fromReferenceTransforms = []
+        cs.from_reference_transforms = []
 
-        if 'transformCTL' in lmtValues:
+        if 'transformCTL' in lmt_values:
             ctls = [
-                shaperToACESCTL % acesCTLReleaseDir,
-                '%s/%s' % (acesCTLReleaseDir, lmtValues['transformCTL'])
+                shaper_to_ACES_CTL % aces_CTL_directory,
+                '%s/%s' % (aces_CTL_directory, lmt_values['transformCTL'])
             ]
-            lut = "%s.%s.spi3d" % (shaperName, lmtName)
+            lut = "%s.%s.spi3d" % (shaper_name, lmt_name)
 
             # Remove spaces and parentheses
             lut = lut.replace(' ', '_').replace(')', '_').replace('(', '_')
 
-            genlut.generate3dLUTFromCTL(
-                lutDir + "/" + lut,
+            generate_3d_LUT_from_CTL(
+                lut_directory + "/" + lut,
                 ctls,
-                lutResolution3d,
+                lut_resolution_3d,
                 'float',
-                1.0 / shaperInputScale,
+                1.0 / shaper_input_scale,
                 1.0,
-                shaperParams,
+                shaper_params,
                 cleanup,
-                acesCTLReleaseDir)
+                aces_CTL_directory)
 
-            cs.fromReferenceTransforms.append(shaperOCIOTransform)
-            cs.fromReferenceTransforms.append({
+            cs.from_reference_transforms.append(shaper_OCIO_transform)
+            cs.from_reference_transforms.append({
                 'type': 'lutFile',
                 'path': lut,
                 'interpolation': 'tetrahedral',
@@ -874,40 +879,40 @@ def generateLUTs(odtInfo,
         #
         # Generate the inverse transform
         #
-        cs.toReferenceTransforms = []
+        cs.to_reference_transforms = []
 
-        if 'transformCTLInverse' in lmtValues:
+        if 'transformCTLInverse' in lmt_values:
             ctls = [
                 '%s/%s' % (
-                    acesCTLReleaseDir, odtValues['transformCTLInverse']),
-                shaperFromACESCTL % acesCTLReleaseDir
+                    aces_CTL_directory, odt_values['transformCTLInverse']),
+                shaper_from_ACES_CTL % aces_CTL_directory
             ]
-            lut = "Inverse.%s.%s.spi3d" % (odtName, shaperName)
+            lut = "Inverse.%s.%s.spi3d" % (odt_name, shaper_name)
 
             # Remove spaces and parentheses
             lut = lut.replace(' ', '_').replace(')', '_').replace('(', '_')
 
-            genlut.generate3dLUTFromCTL(
-                lutDir + "/" + lut,
+            generate_3d_LUT_from_CTL(
+                lut_directory + "/" + lut,
                 ctls,
-                lutResolution3d,
+                lut_resolution_3d,
                 'half',
                 1.0,
-                shaperInputScale,
-                shaperParams,
+                shaper_input_scale,
+                shaper_params,
                 cleanup,
-                acesCTLReleaseDir)
+                aces_CTL_directory)
 
-            cs.toReferenceTransforms.append({
+            cs.to_reference_transforms.append({
                 'type': 'lutFile',
                 'path': lut,
                 'interpolation': 'tetrahedral',
                 'direction': 'forward'
             })
 
-            shaperInverse = shaperOCIOTransform.copy()
-            shaperInverse['direction'] = 'forward'
-            cs.toReferenceTransforms.append(shaperInverse)
+            shaper_inverse = shaper_OCIO_transform.copy()
+            shaper_inverse['direction'] = 'forward'
+            cs.to_reference_transforms.append(shaper_inverse)
 
         return cs
 
@@ -915,106 +920,102 @@ def generateLUTs(odtInfo,
     # LMT Shaper
     #
 
-    lmtLutResolution1d = max(4096, lutResolution1d)
-    lmtLutResolution3d = max(65, lutResolution3d)
+    lmt_lut_resolution_1d = max(4096, lut_resolution_1d)
+    lmt_lut_resolution_3d = max(65, lut_resolution_3d)
 
     # Log 2 shaper
-    lmtShaperName = 'LMT Shaper'
-    lmtParams = {
+    lmt_shaper_name = 'LMT Shaper'
+    lmt_params = {
         'middleGrey': 0.18,
         'minExposure': -10.0,
         'maxExposure': 6.5
     }
-    lmtShaper = createGenericLog(name=lmtShaperName,
-                                 middleGrey=lmtParams['middleGrey'],
-                                 minExposure=lmtParams['minExposure'],
-                                 maxExposure=lmtParams['maxExposure'],
-                                 lutResolution1d=lmtLutResolution1d)
-    configData['colorSpaces'].append(lmtShaper)
+    lmt_shaper = create_generic_log(name=lmt_shaper_name,
+                                    middle_grey=lmt_params['middleGrey'],
+                                    min_exposure=lmt_params['minExposure'],
+                                    max_exposure=lmt_params['maxExposure'],
+                                    lut_resolution_1d=lmt_lut_resolution_1d)
+    config_data['colorSpaces'].append(lmt_shaper)
 
-    shaperInputScale_genericLog2 = 1.0
+    shaper_input_scale_generic_log2 = 1.0
 
     # Log 2 shaper name and CTL transforms bundled up
-    lmtShaperData = [
-        lmtShaperName,
+    lmt_shaper_data = [
+        lmt_shaper_name,
         '%s/utilities/ACESlib.OCIO_shaper_log2_to_lin_param.a1.0.0.ctl',
         '%s/utilities/ACESlib.OCIO_shaper_lin_to_log2_param.a1.0.0.ctl',
-        shaperInputScale_genericLog2,
-        lmtParams
+        shaper_input_scale_generic_log2,
+        lmt_params
     ]
 
-    sortedLMTs = sorted(lmtInfo.iteritems(), key=lambda x: x[1])
-    print(sortedLMTs)
-    for lmt in sortedLMTs:
-        (lmtName, lmtValues) = lmt
-        cs = createACESLMT(
-            lmtValues['transformUserName'],
-            lmtValues,
-            lmtShaperData,
-            lmtLutResolution1d,
-            lmtLutResolution3d,
+    sorted_LMTs = sorted(lmt_info.iteritems(), key=lambda x: x[1])
+    print(sorted_LMTs)
+    for lmt in sorted_LMTs:
+        (lmt_name, lmt_values) = lmt
+        cs = create_ACES_LMT(
+            lmt_values['transformUserName'],
+            lmt_values,
+            lmt_shaper_data,
+            lmt_lut_resolution_1d,
+            lmt_lut_resolution_3d,
             cleanup)
-        configData['colorSpaces'].append(cs)
+        config_data['colorSpaces'].append(cs)
 
     #
     # ACES RRT with the supplied ODT
     #
-    def createACESRRTplusODT(odtName,
-                             odtValues,
-                             shaperInfo,
-                             lutResolution1d=1024,
-                             lutResolution3d=64,
-                             cleanup=True):
-        cs = ColorSpace("%s" % odtName)
+    def create_ACES_RRT_plus_ODT(odt_name,
+                                 odt_values,
+                                 shaper_info,
+                                 lut_resolution_1d=1024,
+                                 lut_resolution_3d=64,
+                                 cleanup=True):
+        cs = ColorSpace("%s" % odt_name)
         cs.description = "%s - %s Output Transform" % (
-            odtValues['transformUserNamePrefix'], odtName)
-        cs.equalityGroup = ''
+            odt_values['transformUserNamePrefix'], odt_name)
+        cs.equality_group = ''
         cs.family = 'Output'
-        cs.isData = False
+        cs.is_data = False
 
-        import pprint
-
-        pprint.pprint(odtValues)
+        pprint.pprint(odt_values)
 
         #
         # Generate the shaper transform
         #
         # if 'shaperCTL' in odtValues:
-        (shaperName,
-         shaperToACESCTL,
-         shaperFromACESCTL,
-         shaperInputScale,
-         shaperParams) = shaperInfo
+        (shaper_name,
+         shaper_to_ACES_CTL,
+         shaper_from_ACES_CTL,
+         shaper_input_scale,
+         shaper_params) = shaper_info
 
-        if 'legalRange' in odtValues:
-            shaperParams['legalRange'] = odtValues['legalRange']
+        if 'legalRange' in odt_values:
+            shaper_params['legalRange'] = odt_values['legalRange']
         else:
-            shaperParams['legalRange'] = 0
+            shaper_params['legalRange'] = 0
 
-        shaperLut = "%s_to_aces.spi1d" % shaperName
-        if (not os.path.exists(lutDir + "/" + shaperLut)):
-            ctls = [
-                shaperToACESCTL % acesCTLReleaseDir
-            ]
+        shaper_lut = "%s_to_aces.spi1d" % shaper_name
+        if (not os.path.exists(lut_directory + "/" + shaper_lut)):
+            ctls = [shaper_to_ACES_CTL % aces_CTL_directory]
 
             # Remove spaces and parentheses
-            shaperLut = shaperLut.replace(
+            shaper_lut = shaper_lut.replace(
                 ' ', '_').replace(')', '_').replace('(', '_')
 
-            genlut.generate1dLUTFromCTL(
-                lutDir + "/" + shaperLut,
+            generate_1d_LUT_from_CTL(
+                lut_directory + "/" + shaper_lut,
                 ctls,
-                lutResolution1d,
+                lut_resolution_1d,
                 'float',
-                1.0 / shaperInputScale,
+                1.0 / shaper_input_scale,
                 1.0,
-                shaperParams,
+                shaper_params,
                 cleanup,
-                acesCTLReleaseDir)
+                aces_CTL_directory)
 
-        shaperOCIOTransform = {
+        shaper_OCIO_transform = {
             'type': 'lutFile',
-            'path': shaperLut,
+            'path': shaper_lut,
             'interpolation': 'linear',
             'direction': 'inverse'
         }
@@ -1022,47 +1023,48 @@ def generateLUTs(odtInfo,
         #
         # Generate the forward transform
         #
-        cs.fromReferenceTransforms = []
+        cs.from_reference_transforms = []
 
-        if 'transformLUT' in odtValues:
+        if 'transformLUT' in odt_values:
             # Copy into the lut dir
-            transformLUTFileName = os.path.basename(odtValues['transformLUT'])
-            lut = lutDir + "/" + transformLUTFileName
-            shutil.copy(odtValues['transformLUT'], lut)
+            transform_LUT_file_name = os.path.basename(
+                odt_values['transformLUT'])
+            lut = lut_directory + "/" + transform_LUT_file_name
+            shutil.copy(odt_values['transformLUT'], lut)
 
-            cs.fromReferenceTransforms.append(shaperOCIOTransform)
-            cs.fromReferenceTransforms.append({
+            cs.from_reference_transforms.append(shaper_OCIO_transform)
+            cs.from_reference_transforms.append({
                 'type': 'lutFile',
-                'path': transformLUTFileName,
+                'path': transform_LUT_file_name,
                 'interpolation': 'tetrahedral',
                 'direction': 'forward'
             })
-        elif 'transformCTL' in odtValues:
+        elif 'transformCTL' in odt_values:
             # shaperLut
 
             ctls = [
-                shaperToACESCTL % acesCTLReleaseDir,
-                '%s/rrt/RRT.a1.0.0.ctl' % acesCTLReleaseDir,
-                '%s/odt/%s' % (acesCTLReleaseDir, odtValues['transformCTL'])
+                shaper_to_ACES_CTL % aces_CTL_directory,
+                '%s/rrt/RRT.a1.0.0.ctl' % aces_CTL_directory,
+                '%s/odt/%s' % (aces_CTL_directory, odt_values['transformCTL'])
             ]
-            lut = "%s.RRT.a1.0.0.%s.spi3d" % (shaperName, odtName)
+            lut = "%s.RRT.a1.0.0.%s.spi3d" % (shaper_name, odt_name)
 
             # Remove spaces and parentheses
             lut = lut.replace(' ', '_').replace(')', '_').replace('(', '_')
 
-            genlut.generate3dLUTFromCTL(lutDir + "/" + lut,
-                                        # shaperLUT,
-                                        ctls,
-                                        lutResolution3d,
-                                        'float',
-                                        1.0 / shaperInputScale,
-                                        1.0,
-                                        shaperParams,
-                                        cleanup,
-                                        acesCTLReleaseDir)
+            generate_3d_LUT_from_CTL(lut_directory + "/" + lut,
+                                     # shaperLUT,
+                                     ctls,
+                                     lut_resolution_3d,
+                                     'float',
+                                     1.0 / shaper_input_scale,
+                                     1.0,
+                                     shaper_params,
+                                     cleanup,
+                                     aces_CTL_directory)
 
-            cs.fromReferenceTransforms.append(shaperOCIOTransform)
-            cs.fromReferenceTransforms.append({
+            cs.from_reference_transforms.append(shaper_OCIO_transform)
+            cs.from_reference_transforms.append({
                 'type': 'lutFile',
                 'path': lut,
                 'interpolation': 'tetrahedral',
@@ -1072,259 +1074,266 @@ def generateLUTs(odtInfo,
         #
         # Generate the inverse transform
         #
-        cs.toReferenceTransforms = []
+        cs.to_reference_transforms = []
 
-        if 'transformLUTInverse' in odtValues:
+        if 'transformLUTInverse' in odt_values:
             # Copy into the lut dir
-            transformLUTInverseFileName = os.path.basename(
-                odtValues['transformLUTInverse'])
-            lut = lutDir + "/" + transformLUTInverseFileName
-            shutil.copy(odtValues['transformLUTInverse'], lut)
+            transform_LUT_inverse_file_name = os.path.basename(
+                odt_values['transformLUTInverse'])
+            lut = lut_directory + "/" + transform_LUT_inverse_file_name
+            shutil.copy(odt_values['transformLUTInverse'], lut)
 
-            cs.toReferenceTransforms.append({
+            cs.to_reference_transforms.append({
                 'type': 'lutFile',
-                'path': transformLUTInverseFileName,
+                'path': transform_LUT_inverse_file_name,
                 'interpolation': 'tetrahedral',
                 'direction': 'forward'
             })
 
-            shaperInverse = shaperOCIOTransform.copy()
-            shaperInverse['direction'] = 'forward'
-            cs.toReferenceTransforms.append(shaperInverse)
-        elif 'transformCTLInverse' in odtValues:
+            shaper_inverse = shaper_OCIO_transform.copy()
+            shaper_inverse['direction'] = 'forward'
+            cs.to_reference_transforms.append(shaper_inverse)
+        elif 'transformCTLInverse' in odt_values:
             ctls = [
                 '%s/odt/%s' % (
-                    acesCTLReleaseDir, odtValues['transformCTLInverse']),
-                '%s/rrt/InvRRT.a1.0.0.ctl' % acesCTLReleaseDir,
-                shaperFromACESCTL % acesCTLReleaseDir
+                    aces_CTL_directory, odt_values['transformCTLInverse']),
+                '%s/rrt/InvRRT.a1.0.0.ctl' % aces_CTL_directory,
+                shaper_from_ACES_CTL % aces_CTL_directory
             ]
-            lut = "InvRRT.a1.0.0.%s.%s.spi3d" % (odtName, shaperName)
+            lut = "InvRRT.a1.0.0.%s.%s.spi3d" % (odt_name, shaper_name)
 
             # Remove spaces and parentheses
             lut = lut.replace(' ', '_').replace(')', '_').replace('(', '_')
 
-            genlut.generate3dLUTFromCTL(
-                lutDir + "/" + lut,
+            generate_3d_LUT_from_CTL(
+                lut_directory + "/" + lut,
                 # None,
                 ctls,
-                lutResolution3d,
+                lut_resolution_3d,
                 'half',
                 1.0,
-                shaperInputScale,
-                shaperParams,
+                shaper_input_scale,
+                shaper_params,
                 cleanup,
-                acesCTLReleaseDir)
+                aces_CTL_directory)
 
-            cs.toReferenceTransforms.append({
+            cs.to_reference_transforms.append({
                 'type': 'lutFile',
                 'path': lut,
                 'interpolation': 'tetrahedral',
                 'direction': 'forward'
             })
 
-            shaperInverse = shaperOCIOTransform.copy()
-            shaperInverse['direction'] = 'forward'
-            cs.toReferenceTransforms.append(shaperInverse)
+            shaper_inverse = shaper_OCIO_transform.copy()
+            shaper_inverse['direction'] = 'forward'
+            cs.to_reference_transforms.append(shaper_inverse)
 
         return cs
 
     #
     # RRT/ODT shaper options
     #
-    shaperData = {}
+    shaper_data = {}
 
     # Log 2 shaper
-    log2ShaperName = shaperName
-    log2Params = {
+    log2_shaper_name = shaper_name
+    log2_params = {
         'middleGrey': 0.18,
         'minExposure': -6.0,
         'maxExposure': 6.5
     }
-    log2Shaper = createGenericLog(name=log2ShaperName,
-                                  middleGrey=log2Params['middleGrey'],
-                                  minExposure=log2Params['minExposure'],
-                                  maxExposure=log2Params['maxExposure'])
-    configData['colorSpaces'].append(log2Shaper)
+    log2_shaper = create_generic_log(
+        name=log2_shaper_name,
+        middle_grey=log2_params['middleGrey'],
+        min_exposure=log2_params['minExposure'],
+        max_exposure=log2_params['maxExposure'])
+    config_data['colorSpaces'].append(log2_shaper)
 
-    shaperInputScale_genericLog2 = 1.0
+    shaper_input_scale_generic_log2 = 1.0
 
     # Log 2 shaper name and CTL transforms bundled up
-    log2ShaperData = [
-        log2ShaperName,
+    log2_shaper_data = [
+        log2_shaper_name,
         '%s/utilities/ACESlib.OCIO_shaper_log2_to_lin_param.a1.0.0.ctl',
         '%s/utilities/ACESlib.OCIO_shaper_lin_to_log2_param.a1.0.0.ctl',
-        shaperInputScale_genericLog2,
-        log2Params
+        shaper_input_scale_generic_log2,
+        log2_params
     ]
 
-    shaperData[log2ShaperName] = log2ShaperData
+    shaper_data[log2_shaper_name] = log2_shaper_data
 
     #
     # Shaper that also includes the AP1 primaries
     # - Needed for some LUT baking steps
     #
-    log2ShaperAP1 = createGenericLog(name=log2ShaperName,
-                                     middleGrey=log2Params['middleGrey'],
-                                     minExposure=log2Params['minExposure'],
-                                     maxExposure=log2Params['maxExposure'])
-    log2ShaperAP1.name = "%s - AP1" % log2ShaperAP1.name
+    log2_shaper_AP1 = create_generic_log(
+        name=log2_shaper_name,
+        middle_grey=log2_params['middleGrey'],
+        min_exposure=log2_params['minExposure'],
+        max_exposure=log2_params['maxExposure'])
+    log2_shaper_AP1.name = "%s - AP1" % log2_shaper_AP1.name
     # AP1 primaries to AP0 primaries
-    log2ShaperAP1.toReferenceTransforms.append({
+    log2_shaper_AP1.to_reference_transforms.append({
         'type': 'matrix',
-        'matrix': mat44FromMat33(acesAP1toAP0),
+        'matrix': mat44_from_mat33(ACES_AP1_to_AP0),
         'direction': 'forward'
     })
-    configData['colorSpaces'].append(log2ShaperAP1)
+    config_data['colorSpaces'].append(log2_shaper_AP1)
 
     #
     # Choose your shaper
     #
-    rrtShaperName = log2ShaperName
-    rrtShaper = log2ShaperData
+    rrt_shaper_name = log2_shaper_name
+    rrt_shaper = log2_shaper_data
 
     #
     # RRT + ODT Combinations
     #
-    sortedOdts = sorted(odtInfo.iteritems(), key=lambda x: x[1])
-    print(sortedOdts)
-    for odt in sortedOdts:
-        (odtName, odtValues) = odt
+    sorted_odts = sorted(odt_info.iteritems(), key=lambda x: x[1])
+    print(sorted_odts)
+    for odt in sorted_odts:
+        (odt_name, odt_values) = odt
 
         # Have to handle ODTs that can generate either legal or full output
-        if odtName in ['Academy.Rec2020_100nits_dim.a1.0.0',
-                       'Academy.Rec709_100nits_dim.a1.0.0',
-                       'Academy.Rec709_D60sim_100nits_dim.a1.0.0']:
-            odtNameLegal = '%s - Legal' % odtValues['transformUserName']
+        if odt_name in ['Academy.Rec2020_100nits_dim.a1.0.0',
+                        'Academy.Rec709_100nits_dim.a1.0.0',
+                        'Academy.Rec709_D60sim_100nits_dim.a1.0.0']:
+            odt_name_legal = '%s - Legal' % odt_values['transformUserName']
         else:
-            odtNameLegal = odtValues['transformUserName']
+            odt_name_legal = odt_values['transformUserName']
 
-        odtLegal = odtValues.copy()
-        odtLegal['legalRange'] = 1
+        odt_legal = odt_values.copy()
+        odt_legal['legalRange'] = 1
 
-        cs = createACESRRTplusODT(
-            odtNameLegal,
-            odtLegal,
-            rrtShaper,
-            lutResolution1d,
-            lutResolution3d,
+        cs = create_ACES_RRT_plus_ODT(
+            odt_name_legal,
+            odt_legal,
+            rrt_shaper,
+            lut_resolution_1d,
+            lut_resolution_3d,
             cleanup)
-        configData['colorSpaces'].append(cs)
+        config_data['colorSpaces'].append(cs)
 
         # Create a display entry using this color space
-        configData['displays'][odtNameLegal] = {
+        config_data['displays'][odt_name_legal] = {
             'Linear': ACES,
             'Log': ACEScc,
             'Output Transform': cs}
 
-        if odtName in ['Academy.Rec2020_100nits_dim.a1.0.0',
-                       'Academy.Rec709_100nits_dim.a1.0.0',
-                       'Academy.Rec709_D60sim_100nits_dim.a1.0.0']:
-            print("Generating full range ODT for %s" % odtName)
+        if odt_name in ['Academy.Rec2020_100nits_dim.a1.0.0',
+                        'Academy.Rec709_100nits_dim.a1.0.0',
+                        'Academy.Rec709_D60sim_100nits_dim.a1.0.0']:
+            print("Generating full range ODT for %s" % odt_name)
 
-            odtNameFull = "%s - Full" % odtValues['transformUserName']
-            odtFull = odtValues.copy()
-            odtFull['legalRange'] = 0
+            odt_name_full = "%s - Full" % odt_values['transformUserName']
+            odt_full = odt_values.copy()
+            odt_full['legalRange'] = 0
 
-            csFull = createACESRRTplusODT(
-                odtNameFull,
-                odtFull,
-                rrtShaper,
-                lutResolution1d,
-                lutResolution3d,
+            cs_full = create_ACES_RRT_plus_ODT(
+                odt_name_full,
+                odt_full,
+                rrt_shaper,
+                lut_resolution_1d,
+                lut_resolution_3d,
                 cleanup)
-            configData['colorSpaces'].append(csFull)
+            config_data['colorSpaces'].append(cs_full)
 
             # Create a display entry using this color space
-            configData['displays'][odtNameFull] = {
+            config_data['displays'][odt_name_full] = {
                 'Linear': ACES,
                 'Log': ACEScc,
-                'Output Transform': csFull}
+                'Output Transform': cs_full}
 
     #
     # Generic Matrix transform
     #
-    def createGenericMatrix(name='matrix',
-                            fromReferenceValues=[],
-                            toReferenceValues=[]):
+    def create_generic_matrix(name='matrix',
+                              from_reference_values=[],
+                              to_reference_values=[]):
         cs = ColorSpace(name)
         cs.description = "The %s color space" % name
-        cs.equalityGroup = name
+        cs.equality_group = name
         cs.family = 'Utility'
-        cs.isData = False
+        cs.is_data = False
 
-        cs.toReferenceTransforms = []
-        if toReferenceValues != []:
-            for matrix in toReferenceValues:
-                cs.toReferenceTransforms.append({
+        cs.to_reference_transforms = []
+        if to_reference_values != []:
+            for matrix in to_reference_values:
+                cs.to_reference_transforms.append({
                     'type': 'matrix',
-                    'matrix': mat44FromMat33(matrix),
+                    'matrix': mat44_from_mat33(matrix),
                     'direction': 'forward'
                 })
 
-        cs.fromReferenceTransforms = []
-        if fromReferenceValues != []:
-            for matrix in fromReferenceValues:
-                cs.fromReferenceTransforms.append({
+        cs.from_reference_transforms = []
+        if from_reference_values != []:
+            for matrix in from_reference_values:
+                cs.from_reference_transforms.append({
                     'type': 'matrix',
-                    'matrix': mat44FromMat33(matrix),
+                    'matrix': mat44_from_mat33(matrix),
                     'direction': 'forward'
                 })
 
         return cs
 
-    cs = createGenericMatrix('XYZ', fromReferenceValues=[acesAP0toXYZ])
-    configData['colorSpaces'].append(cs)
+    cs = create_generic_matrix('XYZ', from_reference_values=[ACES_AP0_to_XYZ])
+    config_data['colorSpaces'].append(cs)
 
-    cs = createGenericMatrix('Linear - AP1', toReferenceValues=[acesAP1toAP0])
-    configData['colorSpaces'].append(cs)
-
-    # ACES to Linear, P3D60 primaries
-    xyzToP3D60 = [2.4027414142, -0.8974841639, -0.3880533700,
-                  -0.8325796487, 1.7692317536, 0.0237127115,
-                  0.0388233815, -0.0824996856, 1.0363685997]
-
-    cs = createGenericMatrix('Linear - P3-D60',
-                             fromReferenceValues=[acesAP0toXYZ, xyzToP3D60])
-    configData['colorSpaces'].append(cs)
+    cs = create_generic_matrix(
+        'Linear - AP1', to_reference_values=[ACES_AP1_to_AP0])
+    config_data['colorSpaces'].append(cs)
 
     # ACES to Linear, P3D60 primaries
-    xyzToP3DCI = [2.7253940305, -1.0180030062, -0.4401631952,
-                  -0.7951680258, 1.6897320548, 0.0226471906,
-                  0.0412418914, -0.0876390192, 1.1009293786]
+    XYZ_to_P3D60 = [2.4027414142, -0.8974841639, -0.3880533700,
+                    -0.8325796487, 1.7692317536, 0.0237127115,
+                    0.0388233815, -0.0824996856, 1.0363685997]
 
-    cs = createGenericMatrix('Linear - P3-DCI',
-                             fromReferenceValues=[acesAP0toXYZ, xyzToP3DCI])
-    configData['colorSpaces'].append(cs)
+    cs = create_generic_matrix(
+        'Linear - P3-D60',
+        from_reference_values=[ACES_AP0_to_XYZ, XYZ_to_P3D60])
+    config_data['colorSpaces'].append(cs)
+
+    # ACES to Linear, P3D60 primaries
+    XYZ_to_P3DCI = [2.7253940305, -1.0180030062, -0.4401631952,
+                    -0.7951680258, 1.6897320548, 0.0226471906,
+                    0.0412418914, -0.0876390192, 1.1009293786]
+
+    cs = create_generic_matrix(
+        'Linear - P3-DCI',
+        from_reference_values=[ACES_AP0_to_XYZ, XYZ_to_P3DCI])
+    config_data['colorSpaces'].append(cs)
 
     # ACES to Linear, Rec 709 primaries
-    xyzToRec709 = [3.2409699419, -1.5373831776, -0.4986107603,
-                   -0.9692436363, 1.8759675015, 0.0415550574,
-                   0.0556300797, -0.2039769589, 1.0569715142]
+    XYZ_to_Rec709 = [3.2409699419, -1.5373831776, -0.4986107603,
+                     -0.9692436363, 1.8759675015, 0.0415550574,
+                     0.0556300797, -0.2039769589, 1.0569715142]
 
-    cs = createGenericMatrix('Linear - Rec.709',
-                             fromReferenceValues=[acesAP0toXYZ, xyzToRec709])
-    configData['colorSpaces'].append(cs)
+    cs = create_generic_matrix(
+        'Linear - Rec.709',
+        from_reference_values=[ACES_AP0_to_XYZ, XYZ_to_Rec709])
+    config_data['colorSpaces'].append(cs)
 
     # ACES to Linear, Rec 2020 primaries
-    xyzToRec2020 = [1.7166511880, -0.3556707838, -0.2533662814,
-                    -0.6666843518, 1.6164812366, 0.0157685458,
-                    0.0176398574, -0.0427706133, 0.9421031212]
+    XYZ_to_Rec2020 = [1.7166511880, -0.3556707838, -0.2533662814,
+                      -0.6666843518, 1.6164812366, 0.0157685458,
+                      0.0176398574, -0.0427706133, 0.9421031212]
 
-    cs = createGenericMatrix('Linear - Rec.2020',
-                             fromReferenceValues=[acesAP0toXYZ, xyzToRec2020])
-    configData['colorSpaces'].append(cs)
+    cs = create_generic_matrix(
+        'Linear - Rec.2020',
+        from_reference_values=[ACES_AP0_to_XYZ, XYZ_to_Rec2020])
+    config_data['colorSpaces'].append(cs)
 
     print("generateLUTs - end")
-    return configData
+    return config_data
 
 
-def generateBakedLUTs(odtInfo,
-                      shaperName,
-                      bakedDir,
-                      configPath,
-                      lutResolution1d,
-                      lutResolution3d,
-                      lutResolutionShaper=1024):
+def generate_baked_LUTs(odt_info,
+                        shaper_name,
+                        baked_directory,
+                        config_path,
+                        lut_resolution_1d,
+                        lut_resolution_3d,
+                        lut_resolution_shaper=1024):
     """
     Object description.
 
@@ -1340,95 +1349,113 @@ def generateBakedLUTs(odtInfo,
     """
 
     # Add the legal and full variations into this list
-    odtInfoC = dict(odtInfo)
-    for odtCTLName, odtValues in odtInfo.iteritems():
-        if odtCTLName in ['Academy.Rec2020_100nits_dim.a1.0.0',
-                          'Academy.Rec709_100nits_dim.a1.0.0',
-                          'Academy.Rec709_D60sim_100nits_dim.a1.0.0']:
-            odtName = odtValues["transformUserName"]
+    odt_info_C = dict(odt_info)
+    for odt_CTL_name, odt_values in odt_info.iteritems():
+        if odt_CTL_name in ['Academy.Rec2020_100nits_dim.a1.0.0',
+                            'Academy.Rec709_100nits_dim.a1.0.0',
+                            'Academy.Rec709_D60sim_100nits_dim.a1.0.0']:
+            odt_name = odt_values["transformUserName"]
 
-            odtValuesLegal = dict(odtValues)
-            odtValuesLegal["transformUserName"] = "%s - Legal" % odtName
-            odtInfoC["%s - Legal" % odtCTLName] = odtValuesLegal
+            odt_values_legal = dict(odt_values)
+            odt_values_legal["transformUserName"] = "%s - Legal" % odt_name
+            odt_info_C["%s - Legal" % odt_CTL_name] = odt_values_legal
 
-            odtValuesFull = dict(odtValues)
-            odtValuesFull["transformUserName"] = "%s - Full" % odtName
-            odtInfoC["%s - Full" % odtCTLName] = odtValuesFull
+            odt_values_full = dict(odt_values)
+            odt_values_full["transformUserName"] = "%s - Full" % odt_name
+            odt_info_C["%s - Full" % odt_CTL_name] = odt_values_full
 
-            del (odtInfoC[odtCTLName])
+            del (odt_info_C[odt_CTL_name])
 
-    for odtCTLName, odtValues in odtInfoC.iteritems():
-        odtPrefix = odtValues["transformUserNamePrefix"]
-        odtName = odtValues["transformUserName"]
+    for odt_CTL_name, odt_values in odt_info_C.iteritems():
+        odt_prefix = odt_values["transformUserNamePrefix"]
+        odt_name = odt_values["transformUserName"]
 
         # For Photoshop
-        for inputspace in ["ACEScc", "ACESproxy"]:
-            args = ["--iconfig", configPath, "-v", "--inputspace", inputspace]
-            args += ["--outputspace", "%s" % odtName]
+        for input_space in ["ACEScc", "ACESproxy"]:
+            args = ["--iconfig", config_path,
+                    "-v",
+                    "--inputspace", input_space]
+            args += ["--outputspace", "%s" % odt_name]
             args += ["--description",
-                     "%s - %s for %s data" % (odtPrefix, odtName, inputspace)]
-            args += ["--shaperspace", shaperName, "--shapersize",
-                     str(lutResolutionShaper)]
-            args += ["--cubesize", str(lutResolution3d)]
-            args += ["--format", "icc", "%s/photoshop/%s for %s.icc" % (
-                bakedDir, odtName, inputspace)]
+                     "%s - %s for %s data" % (odt_prefix,
+                                              odt_name,
+                                              input_space)]
+            args += ["--shaperspace", shaper_name,
+                     "--shapersize", str(lut_resolution_shaper)]
+            args += ["--cubesize", str(lut_resolution_3d)]
+            args += ["--format",
+                     "icc",
+                     "%s/photoshop/%s for %s.icc" % (baked_directory,
+                                                     odt_name,
+                                                     input_space)]
 
-            bakeLUT = Process(description="bake a LUT", cmd="ociobakelut",
-                              args=args)
-            bakeLUT.execute()
+            bake_LUT = Process(description="bake a LUT",
+                               cmd="ociobakelut",
+                               args=args)
+            bake_LUT.execute()
 
-            # For Flame, Lustre
-        for inputspace in ["ACEScc", "ACESproxy"]:
-            args = ["--iconfig", configPath, "-v", "--inputspace", inputspace]
-            args += ["--outputspace", "%s" % odtName]
+        # For Flame, Lustre
+        for input_space in ["ACEScc", "ACESproxy"]:
+            args = ["--iconfig", config_path,
+                    "-v",
+                    "--inputspace", input_space]
+            args += ["--outputspace", "%s" % odt_name]
             args += ["--description",
-                     "%s - %s for %s data" % (odtPrefix, odtName, inputspace)]
-            args += ["--shaperspace", shaperName, "--shapersize",
-                     str(lutResolutionShaper)]
-            args += ["--cubesize", str(lutResolution3d)]
+                     "%s - %s for %s data" % (
+                         odt_prefix, odt_name, input_space)]
+            args += ["--shaperspace", shaper_name,
+                     "--shapersize", str(lut_resolution_shaper)]
+            args += ["--cubesize", str(lut_resolution_3d)]
 
             fargs = ["--format", "flame", "%s/flame/%s for %s Flame.3dl" % (
-                bakedDir, odtName, inputspace)]
-            bakeLUT = Process(description="bake a LUT", cmd="ociobakelut",
-                              args=(args + fargs))
-            bakeLUT.execute()
+                baked_directory, odt_name, input_space)]
+            bake_LUT = Process(description="bake a LUT",
+                               cmd="ociobakelut",
+                               args=(args + fargs))
+            bake_LUT.execute()
 
             largs = ["--format", "lustre", "%s/lustre/%s for %s Lustre.3dl" % (
-                bakedDir, odtName, inputspace)]
-            bakeLUT = Process(description="bake a LUT", cmd="ociobakelut",
-                              args=(args + largs))
-            bakeLUT.execute()
+                baked_directory, odt_name, input_space)]
+            bake_LUT = Process(description="bake a LUT",
+                               cmd="ociobakelut",
+                               args=(args + largs))
+            bake_LUT.execute()
 
         # For Maya, Houdini
-        for inputspace in ["ACEScg", "ACES2065-1"]:
-            args = ["--iconfig", configPath, "-v", "--inputspace", inputspace]
-            args += ["--outputspace", "%s" % odtName]
+        for input_space in ["ACEScg", "ACES2065-1"]:
+            args = ["--iconfig", config_path,
+                    "-v",
+                    "--inputspace", input_space]
+            args += ["--outputspace", "%s" % odt_name]
             args += ["--description",
-                     "%s - %s for %s data" % (odtPrefix, odtName, inputspace)]
-            if inputspace == 'ACEScg':
-                linShaperName = "%s - AP1" % shaperName
+                     "%s - %s for %s data" % (
+                         odt_prefix, odt_name, input_space)]
+            if input_space == 'ACEScg':
+                lin_shaper_name = "%s - AP1" % shaper_name
             else:
-                linShaperName = shaperName
-            args += ["--shaperspace", linShaperName, "--shapersize",
-                     str(lutResolutionShaper)]
+                lin_shaper_name = shaper_name
+            args += ["--shaperspace", lin_shaper_name,
+                     "--shapersize", str(lut_resolution_shaper)]
 
-            args += ["--cubesize", str(lutResolution3d)]
+            args += ["--cubesize", str(lut_resolution_3d)]
 
             margs = ["--format", "cinespace", "%s/maya/%s for %s Maya.csp" % (
-                bakedDir, odtName, inputspace)]
-            bakeLUT = Process(description="bake a LUT", cmd="ociobakelut",
-                              args=(args + margs))
-            bakeLUT.execute()
+                baked_directory, odt_name, input_space)]
+            bake_LUT = Process(description="bake a LUT",
+                               cmd="ociobakelut",
+                               args=(args + margs))
+            bake_LUT.execute()
 
             hargs = ["--format", "houdini",
                      "%s/houdini/%s for %s Houdini.lut" % (
-                         bakedDir, odtName, inputspace)]
-            bakeLUT = Process(description="bake a LUT", cmd="ociobakelut",
-                              args=(args + hargs))
-            bakeLUT.execute()
+                         baked_directory, odt_name, input_space)]
+            bake_LUT = Process(description="bake a LUT",
+                               cmd="ociobakelut",
+                               args=(args + hargs))
+            bake_LUT.execute()
 
 
-def createConfigDir(configDir, bakeSecondaryLUTs):
+def create_config_dir(config_directory, bake_secondary_LUTs):
     """
     Object description.
 
@@ -1443,21 +1470,20 @@ def createConfigDir(configDir, bakeSecondaryLUTs):
          Return value description.
     """
 
-    dirs = [configDir, "%s/luts" % configDir]
-    if bakeSecondaryLUTs:
-        dirs.extend(["%s/baked" % configDir,
-                     "%s/baked/flame" % configDir,
-                     "%s/baked/photoshop" % configDir,
-                     "%s/baked/houdini" % configDir,
-                     "%s/baked/lustre" % configDir,
-                     "%s/baked/maya" % configDir])
+    dirs = [config_directory, "%s/luts" % config_directory]
+    if bake_secondary_LUTs:
+        dirs.extend(["%s/baked" % config_directory,
+                     "%s/baked/flame" % config_directory,
+                     "%s/baked/photoshop" % config_directory,
+                     "%s/baked/houdini" % config_directory,
+                     "%s/baked/lustre" % config_directory,
+                     "%s/baked/maya" % config_directory])
 
     for d in dirs:
-        if not os.path.exists(d):
-            os.mkdir(d)
+        not os.path.exists(d) and os.mkdir(d)
 
 
-def getTransformInfo(ctlTransform):
+def get_transform_info(ctl_transform):
     """
     Object description.
 
@@ -1472,27 +1498,26 @@ def getTransformInfo(ctlTransform):
          Return value description.
     """
 
-    fp = open(ctlTransform, 'rb')
+    # TODO: Use *with* statement.
+    fp = open(ctl_transform, 'rb')
 
     # Read lines
     lines = fp.readlines()
 
     # Grab transform ID and User Name
-    transformID = lines[1][3:].split('<')[1].split('>')[1].lstrip().rstrip()
+    transform_ID = lines[1][3:].split('<')[1].split('>')[1].strip()
     # print(transformID)
-    transformUserName = '-'.join(
-        lines[2][3:].split('<')[1].split('>')[1].split('-')[
-        1:]).lstrip().rstrip()
-    transformUserNamePrefix = \
-        lines[2][3:].split('<')[1].split('>')[1].split('-')[
-            0].lstrip().rstrip()
+    transform_user_name = '-'.join(
+        lines[2][3:].split('<')[1].split('>')[1].split('-')[1:]).strip()
+    transform_user_name_prefix = (
+        lines[2][3:].split('<')[1].split('>')[1].split('-')[0].strip())
     # print(transformUserName)
     fp.close()
 
-    return transformID, transformUserName, transformUserNamePrefix
+    return transform_ID, transform_user_name, transform_user_name_prefix
 
 
-def getODTInfo(acesCTLReleaseDir):
+def get_ODT_info(aces_CTL_directory):
     """
     Object description.
 
@@ -1509,70 +1534,72 @@ def getODTInfo(acesCTLReleaseDir):
          Return value description.
     """
 
+    # TODO: Investigate usage of *files_walker* definition here.
     # Credit to Alex Fry for the original approach here
-    odtDir = os.path.join(acesCTLReleaseDir, "odt")
-    allodt = []
-    for dirName, subdirList, fileList in os.walk(odtDir):
-        for fname in fileList:
-            allodt.append((os.path.join(dirName, fname)))
+    odt_dir = os.path.join(aces_CTL_directory, "odt")
+    all_odt = []
+    for dir_name, subdir_list, file_list in os.walk(odt_dir):
+        for fname in file_list:
+            all_odt.append((os.path.join(dir_name, fname)))
 
-    odtCTLs = [x for x in allodt if
-               ("InvODT" not in x) and (os.path.split(x)[-1][0] != '.')]
+    odt_CTLs = [x for x in all_odt if
+                ("InvODT" not in x) and (os.path.split(x)[-1][0] != '.')]
 
     # print odtCTLs
 
     odts = {}
 
-    for odtCTL in odtCTLs:
-        odtTokens = os.path.split(odtCTL)
+    for odt_CTL in odt_CTLs:
+        odt_tokens = os.path.split(odt_CTL)
         # print(odtTokens)
 
         # Handle nested directories
-        odtPathTokens = os.path.split(odtTokens[-2])
-        odtDir = odtPathTokens[-1]
-        while odtPathTokens[-2][-3:] != 'odt':
-            odtPathTokens = os.path.split(odtPathTokens[-2])
-            odtDir = os.path.join(odtPathTokens[-1], odtDir)
+        odt_path_tokens = os.path.split(odt_tokens[-2])
+        odt_dir = odt_path_tokens[-1]
+        while odt_path_tokens[-2][-3:] != 'odt':
+            odt_path_tokens = os.path.split(odt_path_tokens[-2])
+            odt_dir = os.path.join(odt_path_tokens[-1], odt_dir)
 
         # Build full name
         # print("odtDir : %s" % odtDir)
-        transformCTL = odtTokens[-1]
+        transform_CTL = odt_tokens[-1]
         # print(transformCTL)
-        odtName = string.join(transformCTL.split('.')[1:-1], '.')
+        odt_name = string.join(transform_CTL.split('.')[1:-1], '.')
         # print(odtName)
 
         # Find id, user name and user name prefix
-        (transformID, transformUserName,
-         transformUserNamePrefix) = getTransformInfo(
-            "%s/odt/%s/%s" % (acesCTLReleaseDir, odtDir, transformCTL))
+        (transform_ID,
+         transform_user_name,
+         transform_user_name_prefix) = get_transform_info(
+            "%s/odt/%s/%s" % (aces_CTL_directory, odt_dir, transform_CTL))
 
         # Find inverse
-        transformCTLInverse = "InvODT.%s.ctl" % odtName
+        transform_CTL_inverse = "InvODT.%s.ctl" % odt_name
         if not os.path.exists(
-                os.path.join(odtTokens[-2], transformCTLInverse)):
-            transformCTLInverse = None
+                os.path.join(odt_tokens[-2], transform_CTL_inverse)):
+            transform_CTL_inverse = None
         # print(transformCTLInverse)
 
         # Add to list of ODTs
-        odts[odtName] = {}
-        odts[odtName]['transformCTL'] = os.path.join(odtDir, transformCTL)
-        if transformCTLInverse != None:
-            odts[odtName]['transformCTLInverse'] = os.path.join(
-                odtDir, transformCTLInverse)
+        odts[odt_name] = {}
+        odts[odt_name]['transformCTL'] = os.path.join(odt_dir, transform_CTL)
+        if transform_CTL_inverse != None:
+            odts[odt_name]['transformCTLInverse'] = os.path.join(
+                odt_dir, transform_CTL_inverse)
 
-        odts[odtName]['transformID'] = transformID
-        odts[odtName]['transformUserNamePrefix'] = transformUserNamePrefix
-        odts[odtName]['transformUserName'] = transformUserName
+        odts[odt_name]['transformID'] = transform_ID
+        odts[odt_name]['transformUserNamePrefix'] = transform_user_name_prefix
+        odts[odt_name]['transformUserName'] = transform_user_name
 
-        print("ODT : %s" % odtName)
-        print("\tTransform ID               : %s" % transformID)
-        print("\tTransform User Name Prefix : %s" % transformUserNamePrefix)
-        print("\tTransform User Name        : %s" % transformUserName)
+        print("ODT : %s" % odt_name)
+        print("\tTransform ID               : %s" % transform_ID)
+        print("\tTransform User Name Prefix : %s" % transform_user_name_prefix)
+        print("\tTransform User Name        : %s" % transform_user_name)
         print("\tForward ctl                : %s" % (
-            odts[odtName]['transformCTL']))
-        if 'transformCTLInverse' in odts[odtName]:
+            odts[odt_name]['transformCTL']))
+        if 'transformCTLInverse' in odts[odt_name]:
             print("\tInverse ctl                : %s" % (
-                odts[odtName]['transformCTLInverse']))
+                odts[odt_name]['transformCTLInverse']))
         else:
             print("\tInverse ctl                : %s" % "None")
 
@@ -1581,7 +1608,7 @@ def getODTInfo(acesCTLReleaseDir):
     return odts
 
 
-def getLMTInfo(acesCTLReleaseDir):
+def get_LMT_info(aces_CTL_directory):
     """
     Object description.
 
@@ -1598,71 +1625,74 @@ def getLMTInfo(acesCTLReleaseDir):
          Return value description.
     """
 
-    # Credit to Alex Fry for the original approach here
-    lmtDir = os.path.join(acesCTLReleaseDir, "lmt")
-    alllmt = []
-    for dirName, subdirList, fileList in os.walk(lmtDir):
-        for fname in fileList:
-            alllmt.append((os.path.join(dirName, fname)))
+    # TODO: Investigate refactoring with previous definition.
 
-    lmtCTLs = [x for x in alllmt if
-               ("InvLMT" not in x) and ("README" not in x) and (
-                   os.path.split(x)[-1][0] != '.')]
+    # Credit to Alex Fry for the original approach here
+    lmt_dir = os.path.join(aces_CTL_directory, "lmt")
+    all_lmt = []
+    for dir_name, subdir_list, file_list in os.walk(lmt_dir):
+        for fname in file_list:
+            all_lmt.append((os.path.join(dir_name, fname)))
+
+    lmt_CTLs = [x for x in all_lmt if
+                ("InvLMT" not in x) and ("README" not in x) and (
+                    os.path.split(x)[-1][0] != '.')]
 
     # print lmtCTLs
 
     lmts = {}
 
-    for lmtCTL in lmtCTLs:
-        lmtTokens = os.path.split(lmtCTL)
+    for lmt_CTL in lmt_CTLs:
+        lmt_tokens = os.path.split(lmt_CTL)
         # print(lmtTokens)
 
         # Handle nested directories
-        lmtPathTokens = os.path.split(lmtTokens[-2])
-        lmtDir = lmtPathTokens[-1]
-        while lmtPathTokens[-2][-3:] != 'ctl':
-            lmtPathTokens = os.path.split(lmtPathTokens[-2])
-            lmtDir = os.path.join(lmtPathTokens[-1], lmtDir)
+        lmt_path_tokens = os.path.split(lmt_tokens[-2])
+        lmt_dir = lmt_path_tokens[-1]
+        while lmt_path_tokens[-2][-3:] != 'ctl':
+            lmt_path_tokens = os.path.split(lmt_path_tokens[-2])
+            lmt_dir = os.path.join(lmt_path_tokens[-1], lmt_dir)
 
         # Build full name
         # print("lmtDir : %s" % lmtDir)
-        transformCTL = lmtTokens[-1]
+        transform_CTL = lmt_tokens[-1]
         # print(transformCTL)
-        lmtName = string.join(transformCTL.split('.')[1:-1], '.')
+        lmt_name = string.join(transform_CTL.split('.')[1:-1], '.')
         # print(lmtName)
 
         # Find id, user name and user name prefix
-        (transformID, transformUserName,
-         transformUserNamePrefix) = getTransformInfo(
-            "%s/%s/%s" % (acesCTLReleaseDir, lmtDir, transformCTL))
+        (transform_ID,
+         transform_user_name,
+         transform_user_name_prefix) = get_transform_info(
+            "%s/%s/%s" % (aces_CTL_directory, lmt_dir, transform_CTL))
 
         # Find inverse
-        transformCTLInverse = "InvLMT.%s.ctl" % lmtName
+        transform_CTL_inverse = "InvLMT.%s.ctl" % lmt_name
         if not os.path.exists(
-                os.path.join(lmtTokens[-2], transformCTLInverse)):
-            transformCTLInverse = None
+                os.path.join(lmt_tokens[-2], transform_CTL_inverse)):
+            transform_CTL_inverse = None
         # print(transformCTLInverse)
 
         # Add to list of LMTs
-        lmts[lmtName] = {}
-        lmts[lmtName]['transformCTL'] = os.path.join(lmtDir, transformCTL)
-        if transformCTLInverse != None:
-            # TODO: Check unresolved *odtName* referemce.
-            lmts[odtName]['transformCTLInverse'] = os.path.join(
-                lmtDir, transformCTLInverse)
+        lmts[lmt_name] = {}
+        lmts[lmt_name]['transformCTL'] = os.path.join(lmt_dir, transform_CTL)
+        if transform_CTL_inverse != None:
+            # TODO: Check unresolved *odt_name* referemce.
+            lmts[odt_name]['transformCTLInverse'] = os.path.join(
+                lmt_dir, transform_CTL_inverse)
 
-        lmts[lmtName]['transformID'] = transformID
-        lmts[lmtName]['transformUserNamePrefix'] = transformUserNamePrefix
-        lmts[lmtName]['transformUserName'] = transformUserName
+        lmts[lmt_name]['transformID'] = transform_ID
+        lmts[lmt_name]['transformUserNamePrefix'] = transform_user_name_prefix
+        lmts[lmt_name]['transformUserName'] = transform_user_name
 
-        print("LMT : %s" % lmtName)
-        print("\tTransform ID               : %s" % transformID)
-        print("\tTransform User Name Prefix : %s" % transformUserNamePrefix)
-        print("\tTransform User Name        : %s" % transformUserName)
-        print("\t Forward ctl : %s" % lmts[lmtName]['transformCTL'])
-        if 'transformCTLInverse' in lmts[lmtName]:
+        print("LMT : %s" % lmt_name)
+        print("\tTransform ID               : %s" % transform_ID)
+        print("\tTransform User Name Prefix : %s" % transform_user_name_prefix)
+        print("\tTransform User Name        : %s" % transform_user_name)
+        print("\t Forward ctl : %s" % lmts[lmt_name]['transformCTL'])
+        if 'transformCTLInverse' in lmts[lmt_name]:
             print("\t Inverse ctl : %s" % (
-                lmts[lmtName]['transformCTLInverse']))
+                lmts[lmt_name]['transformCTLInverse']))
         else:
             print("\t Inverse ctl : %s" % "None")
 
@@ -1671,12 +1701,12 @@ def getLMTInfo(acesCTLReleaseDir):
     return lmts
 
 
-def createACESConfig(acesCTLReleaseDir,
-                     configDir,
-                     lutResolution1d=4096,
-                     lutResolution3d=64,
-                     bakeSecondaryLUTs=True,
-                     cleanup=True):
+def create_ACES_config(aces_CTL_directory,
+                       config_directory,
+                       lut_resolution_1d=4096,
+                       lut_resolution_3d=64,
+                       bake_secondary_LUTs=True,
+                       cleanup=True):
     """
     Creates the ACES configuration.
 
@@ -1692,52 +1722,52 @@ def createACESConfig(acesCTLReleaseDir,
     """
 
     # Get ODT names and CTL paths
-    odtInfo = getODTInfo(acesCTLReleaseDir)
+    odt_info = get_ODT_info(aces_CTL_directory)
 
     # Get ODT names and CTL paths
-    lmtInfo = getLMTInfo(acesCTLReleaseDir)
+    lmt_info = get_LMT_info(aces_CTL_directory)
 
     # Create config dir
-    createConfigDir(configDir, bakeSecondaryLUTs)
+    create_config_dir(config_directory, bake_secondary_LUTs)
 
     # Generate config data and LUTs for different transforms
-    lutDir = "%s/luts" % configDir
-    shaperName = 'Output Shaper'
-    configData = generateLUTs(odtInfo,
-                              lmtInfo,
-                              shaperName,
-                              acesCTLReleaseDir,
-                              lutDir,
-                              lutResolution1d,
-                              lutResolution3d,
-                              cleanup)
+    lut_directory = "%s/luts" % config_directory
+    shaper_name = 'Output Shaper'
+    config_data = generate_LUTs(odt_info,
+                                lmt_info,
+                                shaper_name,
+                                aces_CTL_directory,
+                                lut_directory,
+                                lut_resolution_1d,
+                                lut_resolution_3d,
+                                cleanup)
 
     # Create the config using the generated LUTs
     print("Creating generic config")
-    config = createConfig(configData)
+    config = create_config(config_data)
     print("\n\n\n")
 
     # Write the config to disk
-    writeConfig(config, "%s/config.ocio" % configDir)
+    write_config(config, "%s/config.ocio" % config_directory)
 
     # Create a config that will work well with Nuke using the previously
     # generated LUTs.
     print("Creating Nuke-specific config")
-    nuke_config = createConfig(configData, nuke=True)
+    nuke_config = create_config(config_data, nuke=True)
     print("\n\n\n")
 
     # Write the config to disk
-    writeConfig(nuke_config, "%s/nuke_config.ocio" % configDir)
+    write_config(nuke_config, "%s/nuke_config.ocio" % config_directory)
 
     # Bake secondary LUTs using the config
-    if bakeSecondaryLUTs:
-        generateBakedLUTs(odtInfo,
-                          shaperName,
-                          "%s/baked" % configDir,
-                          "%s/config.ocio" % configDir,
-                          lutResolution1d,
-                          lutResolution3d,
-                          lutResolution1d)
+    if bake_secondary_LUTs:
+        generate_baked_LUTs(odt_info,
+                            shaper_name,
+                            "%s/baked" % config_directory,
+                            "%s/config.ocio" % config_directory,
+                            lut_resolution_1d,
+                            lut_resolution_3d,
+                            lut_resolution_1d)
 
     return True
 
@@ -1777,38 +1807,38 @@ def main():
     #
     # Get options
     #
-    acesCTLDir = options.acesCTLDir
-    configDir = options.configDir
-    lutResolution1d = int(options.lutResolution1d)
-    lutResolution3d = int(options.lutResolution3d)
-    bakeSecondaryLUTs = not (options.dontBakeSecondaryLUTs)
-    cleanupTempImages = not (options.keepTempImages)
+    aces_CTL_directory = options.acesCTLDir
+    config_directory = options.configDir
+    lut_resolution_1d = int(options.lutResolution1d)
+    lut_resolution_3d = int(options.lutResolution3d)
+    bake_secondary_LUTs = not (options.dontBakeSecondaryLUTs)
+    cleanup_temp_images = not (options.keepTempImages)
 
     try:
-        argsStart = sys.argv.index('--') + 1
-        args = sys.argv[argsStart:]
+        args_start = sys.argv.index('--') + 1
+        args = sys.argv[args_start:]
     except:
-        argsStart = len(sys.argv) + 1
+        args_start = len(sys.argv) + 1
         args = []
 
     print("command line : \n%s\n" % " ".join(sys.argv))
 
     # TODO: Use assertion and mention environment variables.
-    if not acesCTLDir:
+    if not aces_CTL_directory:
         print("process: No ACES CTL directory specified")
         return
-    if not configDir:
+    if not config_directory:
         print("process: No configuration directory specified")
         return
     #
     # Generate the configuration
     #
-    return createACESConfig(acesCTLDir,
-                            configDir,
-                            lutResolution1d,
-                            lutResolution3d,
-                            bakeSecondaryLUTs,
-                            cleanupTempImages)
+    return create_ACES_config(aces_CTL_directory,
+                              config_directory,
+                              lut_resolution_1d,
+                              lut_resolution_3d,
+                              bake_secondary_LUTs,
+                              cleanup_temp_images)
 
 
 if __name__ == '__main__':

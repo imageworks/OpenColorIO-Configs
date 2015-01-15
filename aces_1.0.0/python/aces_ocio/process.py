@@ -17,14 +17,14 @@ __maintainer__ = 'ACES Developers'
 __email__ = 'aces@oscars.org'
 __status__ = 'Production'
 
-__all__ = ['readText',
-           'writeText',
+__all__ = ['read_text',
+           'write_text',
            'Process',
            'ProcessList',
            'main']
 
 
-def readText(textFile):
+def read_text(text_file):
     """
     Object description.
 
@@ -39,15 +39,15 @@ def readText(textFile):
          Return value description.
     """
 
-    if (textFile != ""):
-        fp = open(textFile, 'rb')
+    if (text_file != ""):
+        fp = open(text_file, 'rb')
         # Create a text/plain message
         text = (fp.read())
         fp.close()
     return text
 
 
-def writeText(text, textFile):
+def write_text(text, text_file):
     """
     Object description.
 
@@ -62,8 +62,8 @@ def writeText(text, textFile):
          Return value description.
     """
 
-    if (textFile != ""):
-        fp = open(textFile, 'wb')
+    if (text_file != ""):
+        fp = open(text_file, 'wb')
         # Create a text/plain message
         fp.write(text)
         fp.close()
@@ -81,7 +81,7 @@ class Process:
                  args=[],
                  cwd=None,
                  env=None,
-                 batchWrapper=False):
+                 batch_wrapper=False):
         """
         Initialize the standard class variables.
 
@@ -109,10 +109,10 @@ class Process:
         self.echo = True
         self.cwd = cwd
         self.env = env
-        self.batchWrapper = batchWrapper
-        self.processKeys = []
+        self.batch_wrapper = batch_wrapper
+        self.process_keys = []
 
-    def getElapsedSeconds(self):
+    def get_elapsed_seconds(self):
         """
         Object description.
 
@@ -137,7 +137,7 @@ class Process:
             formatted = None
         return formatted
 
-    def writeKey(self, writeDict, key=None, value=None, startStop=None):
+    def write_key(self, write_dict, key=None, value=None, start_stop=None):
         """
         Writes a key / value pair in a supported format.
 
@@ -152,21 +152,21 @@ class Process:
              Return value description.
         """
 
-        if key != None and (value != None or startStop != None):
-            indent = '\t' * writeDict['indentationLevel']
-            if writeDict['format'] == 'xml':
-                if startStop == 'start':
-                    writeDict['logHandle'].write("%s<%s>\n" % (indent, key))
-                elif startStop == 'stop':
-                    writeDict['logHandle'].write("%s</%s>\n" % (indent, key))
+        if key != None and (value != None or start_stop != None):
+            indent = '\t' * write_dict['indentationLevel']
+            if write_dict['format'] == 'xml':
+                if start_stop == 'start':
+                    write_dict['logHandle'].write("%s<%s>\n" % (indent, key))
+                elif start_stop == 'stop':
+                    write_dict['logHandle'].write("%s</%s>\n" % (indent, key))
                 else:
-                    writeDict['logHandle'].write(
+                    write_dict['logHandle'].write(
                         "%s<%s>%s</%s>\n" % (indent, key, value, key))
             else:  # writeDict['format'] == 'txt':
-                writeDict['logHandle'].write(
+                write_dict['logHandle'].write(
                     "%s%40s : %s\n" % (indent, key, value))
 
-    def writeLogHeader(self, writeDict):
+    def write_log_header(self, write_dict):
         """
         Object description.
 
@@ -206,37 +206,37 @@ class Process:
         except:
             hostname = "unknown_hostname"
 
-        self.writeKey(writeDict, 'process', None, 'start')
-        writeDict['indentationLevel'] += 1
+        self.write_key(write_dict, 'process', None, 'start')
+        write_dict['indentationLevel'] += 1
 
-        self.writeKey(writeDict, 'description', self.description)
-        self.writeKey(writeDict, 'cmd', self.cmd)
+        self.write_key(write_dict, 'description', self.description)
+        self.write_key(write_dict, 'cmd', self.cmd)
         if self.args:
-            self.writeKey(writeDict, 'args', ' '.join(self.args))
-        self.writeKey(writeDict, 'start', self.start)
-        self.writeKey(writeDict, 'end', self.end)
-        self.writeKey(writeDict, 'elapsed', self.getElapsedSeconds())
+            self.write_key(write_dict, 'args', ' '.join(self.args))
+        self.write_key(write_dict, 'start', self.start)
+        self.write_key(write_dict, 'end', self.end)
+        self.write_key(write_dict, 'elapsed', self.get_elapsed_seconds())
 
-        self.writeKey(writeDict, 'user', user)
-        self.writeKey(writeDict, 'sysname', sysname)
-        self.writeKey(writeDict, 'nodename', nodename)
-        self.writeKey(writeDict, 'release', release)
-        self.writeKey(writeDict, 'version', version)
-        self.writeKey(writeDict, 'machine', machine)
-        self.writeKey(writeDict, 'processor', processor)
+        self.write_key(write_dict, 'user', user)
+        self.write_key(write_dict, 'sysname', sysname)
+        self.write_key(write_dict, 'nodename', nodename)
+        self.write_key(write_dict, 'release', release)
+        self.write_key(write_dict, 'version', version)
+        self.write_key(write_dict, 'machine', machine)
+        self.write_key(write_dict, 'processor', processor)
 
-        if len(self.processKeys) > 0:
-            self.writeKey(writeDict, 'processKeys', None, 'start')
-            for pair in self.processKeys:
+        if len(self.process_keys) > 0:
+            self.write_key(write_dict, 'processKeys', None, 'start')
+            for pair in self.process_keys:
                 (key, value) = pair
-                writeDict['indentationLevel'] += 1
-                self.writeKey(writeDict, key, value)
-                writeDict['indentationLevel'] -= 1
-            self.writeKey(writeDict, 'processKeys', None, 'stop')
+                write_dict['indentationLevel'] += 1
+                self.write_key(write_dict, key, value)
+                write_dict['indentationLevel'] -= 1
+            self.write_key(write_dict, 'processKeys', None, 'stop')
 
-        self.writeKey(writeDict, 'status', self.status)
+        self.write_key(write_dict, 'status', self.status)
 
-    def writeLogFooter(self, writeDict):
+    def write_log_footer(self, write_dict):
         """
         Object description.
 
@@ -251,10 +251,13 @@ class Process:
              Return value description.
         """
 
-        writeDict['indentationLevel'] -= 1
-        self.writeKey(writeDict, 'process', None, 'stop')
+        write_dict['indentationLevel'] -= 1
+        self.write_key(write_dict, 'process', None, 'stop')
 
-    def writeLog(self, logHandle=sys.stdout, indentationLevel=0, format='xml'):
+    def write_log(self,
+                  log_handle=sys.stdout,
+                  indentation_level=0,
+                  format='xml'):
         """
         Writes logging information to the specified handle.
 
@@ -269,27 +272,27 @@ class Process:
              Return value description.
         """
 
-        writeDict = {}
-        writeDict['logHandle'] = logHandle
-        writeDict['indentationLevel'] = indentationLevel
-        writeDict['format'] = format
+        write_dict = {}
+        write_dict['logHandle'] = log_handle
+        write_dict['indentationLevel'] = indentation_level
+        write_dict['format'] = format
 
-        if logHandle:
-            self.writeLogHeader(writeDict)
+        if log_handle:
+            self.write_log_header(write_dict)
 
             if self.log:
-                self.writeKey(writeDict, 'output', None, 'start')
+                self.write_key(write_dict, 'output', None, 'start')
                 if format == 'xml':
-                    logHandle.write("<![CDATA[\n")
+                    log_handle.write("<![CDATA[\n")
                 for line in self.log:
-                    logHandle.write('%s%s\n' % ("", line))
+                    log_handle.write('%s%s\n' % ("", line))
                 if format == 'xml':
-                    logHandle.write("]]>\n")
-                self.writeKey(writeDict, 'output', None, 'stop')
+                    log_handle.write("]]>\n")
+                self.write_key(write_dict, 'output', None, 'stop')
 
-            self.writeLogFooter(writeDict)
+            self.write_log_footer(write_dict)
 
-    def writeLogToDisk(self, logFilename=None, format='xml', header=None):
+    def write_log_to_disk(self, log_filename=None, format='xml', header=None):
         """
         Object description.
 
@@ -304,30 +307,33 @@ class Process:
              Return value description.
         """
 
-        if logFilename:
+        if log_filename:
             try:
                 # This also doesn't seem like the best structure...
                 # 3.1
                 try:
-                    logHandle = open(logFilename, mode='wt', encoding="utf-8")
+                    log_handle = open(log_filename,
+                                      mode='wt',
+                                      encoding="utf-8")
                 # 2.6
                 except:
-                    logHandle = open(logFilename, mode='wt')
+                    log_handle = open(log_filename,
+                                      mode='wt')
             except:
-                print("Couldn't open log : %s" % logFilename)
-                logHandle = None
+                print("Couldn't open log : %s" % log_filename)
+                log_handle = None
 
-        if logHandle:
+        if log_handle:
             if header:
                 if format == 'xml':
-                    logHandle.write("<![CDATA[\n")
-                logHandle.write(header)
+                    log_handle.write("<![CDATA[\n")
+                log_handle.write(header)
                 if format == 'xml':
-                    logHandle.write("]]>\n")
-            self.writeLog(logHandle)
-            logHandle.close()
+                    log_handle.write("]]>\n")
+            self.write_log(log_handle)
+            log_handle.close()
 
-    def logLine(self, line):
+    def log_line(self, line):
         """
         Adds a line of text to the log.
 
@@ -383,7 +389,7 @@ class Process:
 
         # intialize a few variables that may or may not be set later
         process = None
-        tmpWrapper = None
+        tmp_wrapper = None
         stdout = None
         stdin = None
         parentenv = os.environ
@@ -392,13 +398,13 @@ class Process:
         try:
             # Using subprocess
             if sp:
-                if self.batchWrapper:
+                if self.batch_wrapper:
                     cmd = " ".join(cmdargs)
-                    tmpWrapper = os.path.join(self.cwd, "process.bat")
-                    writeText(cmd, tmpWrapper)
+                    tmp_wrapper = os.path.join(self.cwd, "process.bat")
+                    write_text(cmd, tmp_wrapper)
                     print("%s : Running process through wrapper %s\n" % (
-                        self.__class__, tmpWrapper))
-                    process = sp.Popen([tmpWrapper], stdout=sp.PIPE,
+                        self.__class__, tmp_wrapper))
+                    process = sp.Popen([tmp_wrapper], stdout=sp.PIPE,
                                        stderr=sp.STDOUT,
                                        cwd=self.cwd, env=self.env)
                 else:
@@ -432,7 +438,7 @@ class Process:
                     # relatively frequently with processes that generate lots
                     # of print statements.
                     for line in process.stdout:
-                        self.logLine(line)
+                        self.log_line(line)
                     #
                     # So we go with the, um, uglier  option below
 
@@ -445,29 +451,30 @@ class Process:
                             break
                         # 3.1
                         try:
-                            self.logLine(str(line, encoding="utf-8"))
+                            self.log_line(str(line, encoding="utf-8"))
                         # 2.6
                         except:
-                            self.logLine(line)
+                            self.log_line(line)
                 except:
-                    self.logLine("Logging error : %s" % sys.exc_info()[0])
+                    self.log_line("Logging error : %s" % sys.exc_info()[0])
 
                 self.status = process.returncode
 
-                if self.batchWrapper and tmpWrapper:
+                if self.batch_wrapper and tmp_wrapper:
                     try:
-                        os.remove(tmpWrapper)
+                        os.remove(tmp_wrapper)
                     except:
-                        print("Couldn't remove temp wrapper : %s" % tmpWrapper)
+                        print(
+                            "Couldn't remove temp wrapper : %s" % tmp_wrapper)
                         traceback.print_exc()
 
         # Using os.popen4
         else:
-            exitCode = -1
+            exit_code = -1
             try:
                 # print("reading stdout lines")
-                stdoutLines = stdout.readlines()
-                exitCode = stdout.close()
+                stdout_lines = stdout.readlines()
+                exit_code = stdout.close()
 
                 stdout.close()
                 stdin.close()
@@ -477,16 +484,16 @@ class Process:
                 if self.cwd:
                     os.chdir(parentcwd)
 
-                if len(stdoutLines) > 0:
-                    for line in stdoutLines:
-                        self.logLine(line)
+                if len(stdout_lines) > 0:
+                    for line in stdout_lines:
+                        self.log_line(line)
 
-                if not exitCode:
-                    exitCode = 0
+                if not exit_code:
+                    exit_code = 0
             except:
-                self.logLine("Logging error : %s" % sys.exc_info()[0])
+                self.log_line("Logging error : %s" % sys.exc_info()[0])
 
-            self.status = exitCode
+            self.status = exit_code
 
         self.end = datetime.datetime.now()
 
@@ -516,7 +523,7 @@ class ProcessList(Process):
         self.processes = []
         self.blocking = blocking
 
-    def generateReport(self, writeDict):
+    def generate_report(self, write_dict):
         """
         Generates a log based on the success of the child processes.
 
@@ -533,24 +540,24 @@ class ProcessList(Process):
 
         if self.processes:
             _status = True
-            indent = '\t' * (writeDict['indentationLevel'] + 1)
+            indent = '\t' * (write_dict['indentationLevel'] + 1)
 
             self.log = []
 
             for child in self.processes:
                 if isinstance(child, ProcessList):
-                    child.generateReport(writeDict)
+                    child.generate_report(write_dict)
 
-                childResult = ""
+                child_result = ""
                 key = child.description
                 value = child.status
-                if writeDict['format'] == 'xml':
-                    childResult = (
+                if write_dict['format'] == 'xml':
+                    child_result = (
                         "%s<result description=\"%s\">%s</result>" % (
                             indent, key, value))
                 else:  # writeDict['format'] == 'txt':
-                    childResult = ("%s%40s : %s" % (indent, key, value))
-                self.log.append(childResult)
+                    child_result = ("%s%40s : %s" % (indent, key, value))
+                self.log.append(child_result)
 
                 if child.status != 0:
                     _status = False
@@ -562,7 +569,7 @@ class ProcessList(Process):
             self.log = ["No child processes available to generate a report"]
             self.status = -1
 
-    def writeLogHeader(self, writeDict):
+    def write_log_header(self, write_dict):
         """
         Object description.
 
@@ -577,19 +584,19 @@ class ProcessList(Process):
              Return value description.
         """
 
-        self.writeKey(writeDict, 'processList', None, 'start')
-        writeDict['indentationLevel'] += 1
+        self.write_key(write_dict, 'processList', None, 'start')
+        write_dict['indentationLevel'] += 1
 
-        self.writeKey(writeDict, 'description', self.description)
-        self.writeKey(writeDict, 'start', self.start)
-        self.writeKey(writeDict, 'end', self.end)
-        self.writeKey(writeDict, 'elapsed', self.getElapsedSeconds())
+        self.write_key(write_dict, 'description', self.description)
+        self.write_key(write_dict, 'start', self.start)
+        self.write_key(write_dict, 'end', self.end)
+        self.write_key(write_dict, 'elapsed', self.get_elapsed_seconds())
 
-        self.generateReport(writeDict)
+        self.generate_report(write_dict)
 
-        self.writeKey(writeDict, 'status', self.status)
+        self.write_key(write_dict, 'status', self.status)
 
-    def writeLogFooter(self, writeDict):
+    def write_log_footer(self, write_dict):
         """
         Object description.
 
@@ -604,10 +611,13 @@ class ProcessList(Process):
              Return value description.
         """
 
-        writeDict['indentationLevel'] -= 1
-        self.writeKey(writeDict, 'processList', None, 'stop')
+        write_dict['indentationLevel'] -= 1
+        self.write_key(write_dict, 'processList', None, 'stop')
 
-    def writeLog(self, logHandle=sys.stdout, indentationLevel=0, format='xml'):
+    def write_log(self,
+                  log_handle=sys.stdout,
+                  indentation_level=0,
+                  format='xml'):
         """
         Writes logging information to the specified handle.
 
@@ -622,27 +632,27 @@ class ProcessList(Process):
              Return value description.
         """
 
-        writeDict = {}
-        writeDict['logHandle'] = logHandle
-        writeDict['indentationLevel'] = indentationLevel
-        writeDict['format'] = format
+        write_dict = {}
+        write_dict['logHandle'] = log_handle
+        write_dict['indentationLevel'] = indentation_level
+        write_dict['format'] = format
 
-        if logHandle:
-            self.writeLogHeader(writeDict)
+        if log_handle:
+            self.write_log_header(write_dict)
 
             if self.log:
-                self.writeKey(writeDict, 'output', None, 'start')
+                self.write_key(write_dict, 'output', None, 'start')
                 for line in self.log:
-                    logHandle.write('%s%s\n' % ("", line))
-                self.writeKey(writeDict, 'output', None, 'stop')
+                    log_handle.write('%s%s\n' % ("", line))
+                self.write_key(write_dict, 'output', None, 'stop')
 
             if self.processes:
-                self.writeKey(writeDict, 'processes', None, 'start')
+                self.write_key(write_dict, 'processes', None, 'start')
                 for child in self.processes:
-                    child.writeLog(logHandle, indentationLevel + 1, format)
-                self.writeKey(writeDict, 'processes', None, 'stop')
+                    child.write_log(log_handle, indentation_level + 1, format)
+                self.write_key(write_dict, 'processes', None, 'stop')
 
-            self.writeLogFooter(writeDict)
+            self.write_log_footer(write_dict)
 
     def execute(self):
         """
@@ -715,13 +725,13 @@ def main():
     # Get options
     # 
     cmd = options.cmd
-    logFilename = options.log
+    log_filename = options.log
 
     try:
-        argsStart = sys.argv.index('--') + 1
-        args = sys.argv[argsStart:]
+        args_start = sys.argv.index('--') + 1
+        args = sys.argv[args_start:]
     except:
-        argsStart = len(sys.argv) + 1
+        args_start = len(sys.argv) + 1
         args = []
 
     if cmd is None:
@@ -735,14 +745,13 @@ def main():
     #
     # Test report generation and writing a log
     #
-    processList = ProcessList("a process list")
-    processList.processes.append(process)
-    processList.echo = True
-    processList.execute()
+    process_list = ProcessList("a process list")
+    process_list.processes.append(process)
+    process_list.echo = True
+    process_list.execute()
 
-    processList.writeLogToDisk(logFilename)
+    process_list.write_log_to_disk(log_filename)
 
-# main
 
 if __name__ == '__main__':
     main()

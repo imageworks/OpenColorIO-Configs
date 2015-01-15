@@ -12,10 +12,10 @@ import shutil
 import tempfile
 import unittest
 
-from aces_ocio.util import files_walker
+from aces_ocio.utilities import files_walker
 from aces_ocio.create_aces_config import (
     ACES_OCIO_CTL_DIRECTORY_ENVIRON,
-    createACESConfig)
+    create_ACES_config)
 
 __author__ = 'ACES Developers'
 __copyright__ = 'Copyright (C) 2014 - 2015 - ACES Developers'
@@ -112,7 +112,7 @@ class TestACESConfig(unittest.TestCase):
         generated configuration and comparing them to the existing one.
         """
 
-        self.assertTrue(createACESConfig(self.__aces_ocio_ctl_directory,
+        self.assertTrue(create_ACES_config(self.__aces_ocio_ctl_directory,
                                          self.__temporary_directory))
 
         reference_hashes = self.directory_hashes(

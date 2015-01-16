@@ -61,9 +61,9 @@ def create_s_log(gamut,
 
         if (s_log >= ab):
             linear = ((pow(10.,
-                           ((((s_log - b) /
+                           ( ((s_log - b) /
                               (w - b) - 0.616596 - 0.03) / 0.432699)) -
-                           0.037584) * 0.9))
+                       0.037584) * 0.9)
         else:
             linear = (
                          ((s_log - b) / (
@@ -76,10 +76,10 @@ def create_s_log(gamut,
         w = 940.
 
         if (s_log >= ab):
-            linear = (219. * (pow(10.,
-                                  ((((s_log - b) /
+            linear = ((219. * (pow(10.,
+                                   (((s_log - b) /
                                      (w - b) - 0.616596 - 0.03) / 0.432699)) -
-                                  0.037584) / 155.) * 0.9)
+                               0.037584) / 155.) * 0.9)
         else:
             linear = (((s_log - b) / (
                 w - b) - 0.030001222851889303) / 3.53881278538813) * 0.9
@@ -340,4 +340,3 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
     colorspaces.append(s_gamut3)
 
     return colorspaces
-

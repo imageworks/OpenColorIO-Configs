@@ -45,11 +45,11 @@ def create_log_c(gamut,
          Return value description.
     """
 
-    name = "%s (EI%s) - %s" % (transfer_function, exposure_index, gamut)
-    if transfer_function == "":
-        name = "Linear - %s" % gamut
-    if gamut == "":
-        name = "%s (EI%s)" % (transfer_function, exposure_index)
+    name = '%s (EI%s) - %s' % (transfer_function, exposure_index, gamut)
+    if transfer_function == '':
+        name = 'Linear - %s' % gamut
+    if gamut == '':
+        name = '%s (EI%s)' % (transfer_function, exposure_index)
 
     cs = ColorSpace(name)
     cs.description = name
@@ -58,7 +58,7 @@ def create_log_c(gamut,
     cs.is_data = False
 
     # Globals
-    IDT_maker_version = "0.08"
+    IDT_maker_version = '0.08'
 
     nominal_EI = 400.0
     black_signal = 0.003907
@@ -118,26 +118,26 @@ def create_log_c(gamut,
 
     cs.to_reference_transforms = []
 
-    if transfer_function == "V3 LogC":
-        data = array.array('f', "\0" * lut_resolution_1d * 4)
+    if transfer_function == 'V3 LogC':
+        data = array.array('f', '\0' * lut_resolution_1d * 4)
         for c in range(lut_resolution_1d):
             data[c] = log_c_to_linear(1023.0 * c / (lut_resolution_1d - 1),
                                       int(exposure_index))
 
-        lut = "%s_to_linear.spi1d" % (
-            "%s_%s" % (transfer_function, exposure_index))
+        lut = '%s_to_linear.spi1d' % (
+            '%s_%s' % (transfer_function, exposure_index))
 
         # Remove spaces and parentheses
         lut = lut.replace(' ', '_').replace(')', '_').replace('(', '_')
 
-        genlut.write_SPI_1d(lut_directory + "/" + lut,
+        genlut.write_SPI_1d(lut_directory + '/' + lut,
                             0.0,
                             1.0,
                             data,
                             lut_resolution_1d,
                             1)
 
-        # print("Writing %s" % lut)
+        # print('Writing %s' % lut)
         cs.to_reference_transforms.append({
             'type': 'lutFile',
             'path': lut,
@@ -175,8 +175,8 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
 
     colorspaces = []
 
-    transfer_function = "V3 LogC"
-    gamut = "Wide Gamut"
+    transfer_function = 'V3 LogC'
+    gamut = 'Wide Gamut'
 
     # EIs = [160.0, 200.0, 250.0, 320.0, 400.0, 500.0, 640.0, 800.0,
     # 1000.0, 1280.0, 1600.0, 2000.0, 2560.0, 3200.0]
@@ -190,7 +190,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
             gamut,
             transfer_function,
             EI,
-            "LogC",
+            'LogC',
             lut_directory,
             lut_resolution_1d)
         colorspaces.append(log_c_EI_full)
@@ -198,10 +198,10 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
     # Linearization only
     for EI in [800]:
         log_c_EI_linearization = create_log_c(
-            "",
+            '',
             transfer_function,
             EI,
-            "LogC",
+            'LogC',
             lut_directory,
             lut_resolution_1d)
         colorspaces.append(log_c_EI_linearization)
@@ -209,9 +209,9 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
     # Primaries
     log_c_EI_primaries = create_log_c(
         gamut,
-        "",
+        '',
         default_EI,
-        "LogC",
+        'LogC',
         lut_directory,
         lut_resolution_1d)
     colorspaces.append(log_c_EI_primaries)

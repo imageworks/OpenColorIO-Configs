@@ -42,11 +42,11 @@ def create_RED_log_film(gamut,
          Return value description.
     """
 
-    name = "%s - %s" % (transfer_function, gamut)
-    if transfer_function == "":
-        name = "Linear - %s" % gamut
-    if gamut == "":
-        name = "%s" % transfer_function
+    name = '%s - %s' % (transfer_function, gamut)
+    if transfer_function == '':
+        name = 'Linear - %s' % gamut
+    if gamut == '':
+        name = '%s' % transfer_function
 
     cs = ColorSpace(name)
     cs.description = name
@@ -70,12 +70,12 @@ def create_RED_log_film(gamut,
     cs.to_reference_transforms = []
 
     if transfer_function == 'REDlogFilm':
-        data = array.array('f', "\0" * lut_resolution_1d * 4)
+        data = array.array('f', '\0' * lut_resolution_1d * 4)
         for c in range(lut_resolution_1d):
             data[c] = cineon_to_linear(1023.0 * c / (lut_resolution_1d - 1))
 
-        lut = "CineonLog_to_linear.spi1d"
-        genlut.write_SPI_1d(lut_directory + "/" + lut,
+        lut = 'CineonLog_to_linear.spi1d'
+        genlut.write_SPI_1d(lut_directory + '/' + lut,
                             0.0,
                             1.0,
                             data,
@@ -92,36 +92,36 @@ def create_RED_log_film(gamut,
         cs.to_reference_transforms.append({
             'type': 'matrix',
             'matrix': mat44_from_mat33([0.532279, 0.376648, 0.091073,
-                                      0.046344, 0.974513, -0.020860,
-                                      -0.053976, -0.000320, 1.054267]),
+                                        0.046344, 0.974513, -0.020860,
+                                        -0.053976, -0.000320, 1.054267]),
             'direction': 'forward'})
     elif gamut == 'DRAGONcolor2':
         cs.to_reference_transforms.append({
             'type': 'matrix',
             'matrix': mat44_from_mat33([0.468452, 0.331484, 0.200064,
-                                      0.040787, 0.857658, 0.101553,
-                                      -0.047504, -0.000282, 1.047756]),
+                                        0.040787, 0.857658, 0.101553,
+                                        -0.047504, -0.000282, 1.047756]),
             'direction': 'forward'})
     elif gamut == 'REDcolor2':
         cs.to_reference_transforms.append({
             'type': 'matrix',
             'matrix': mat44_from_mat33([0.480997, 0.402289, 0.116714,
-                                      -0.004938, 1.000154, 0.004781,
-                                      -0.105257, 0.025320, 1.079907]),
+                                        -0.004938, 1.000154, 0.004781,
+                                        -0.105257, 0.025320, 1.079907]),
             'direction': 'forward'})
     elif gamut == 'REDcolor3':
         cs.to_reference_transforms.append({
             'type': 'matrix',
             'matrix': mat44_from_mat33([0.512136, 0.360370, 0.127494,
-                                      0.070377, 0.903884, 0.025737,
-                                      -0.020824, 0.017671, 1.003123]),
+                                        0.070377, 0.903884, 0.025737,
+                                        -0.020824, 0.017671, 1.003123]),
             'direction': 'forward'})
     elif gamut == 'REDcolor4':
         cs.to_reference_transforms.append({
             'type': 'matrix',
             'matrix': mat44_from_mat33([0.474202, 0.333677, 0.192121,
-                                      0.065164, 0.836932, 0.097901,
-                                      -0.019281, 0.016362, 1.002889]),
+                                        0.065164, 0.836932, 0.097901,
+                                        -0.019281, 0.016362, 1.002889]),
             'direction': 'forward'})
 
     cs.from_reference_transforms = []
@@ -147,91 +147,91 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
 
     # Full conversion
     RED_log_film_dragon = create_RED_log_film(
-        "DRAGONcolor",
-        "REDlogFilm",
-        "REDlogFilm",
+        'DRAGONcolor',
+        'REDlogFilm',
+        'REDlogFilm',
         lut_directory,
         lut_resolution_1d)
     colorspaces.append(RED_log_film_dragon)
 
     RED_log_film_dragon2 = create_RED_log_film(
-        "DRAGONcolor2",
-        "REDlogFilm",
-        "REDlogFilm",
+        'DRAGONcolor2',
+        'REDlogFilm',
+        'REDlogFilm',
         lut_directory,
         lut_resolution_1d)
     colorspaces.append(RED_log_film_dragon2)
 
     RED_log_film_color2 = create_RED_log_film(
-        "REDcolor2",
-        "REDlogFilm",
-        "REDlogFilm",
+        'REDcolor2',
+        'REDlogFilm',
+        'REDlogFilm',
         lut_directory,
         lut_resolution_1d)
     colorspaces.append(RED_log_film_color2)
 
     RED_log_film_color3 = create_RED_log_film(
-        "REDcolor3",
-        "REDlogFilm",
-        "REDlogFilm",
+        'REDcolor3',
+        'REDlogFilm',
+        'REDlogFilm',
         lut_directory,
         lut_resolution_1d)
     colorspaces.append(RED_log_film_color3)
 
     RED_log_film_color4 = create_RED_log_film(
-        "REDcolor4",
-        "REDlogFilm",
-        "REDlogFilm",
+        'REDcolor4',
+        'REDlogFilm',
+        'REDlogFilm',
         lut_directory,
         lut_resolution_1d)
     colorspaces.append(RED_log_film_color4)
 
     # Linearization only
     RED_log_film_dragon = create_RED_log_film(
-        "",
-        "REDlogFilm",
-        "REDlogFilm",
+        '',
+        'REDlogFilm',
+        'REDlogFilm',
         lut_directory,
         lut_resolution_1d)
     colorspaces.append(RED_log_film_dragon)
 
     # Primaries only
     RED_log_film_dragon = create_RED_log_film(
-        "DRAGONcolor",
-        "",
-        "REDlogFilm",
+        'DRAGONcolor',
+        '',
+        'REDlogFilm',
         lut_directory,
         lut_resolution_1d)
     colorspaces.append(RED_log_film_dragon)
 
     RED_log_film_dragon2 = create_RED_log_film(
-        "DRAGONcolor2",
-        "",
-        "REDlogFilm",
+        'DRAGONcolor2',
+        '',
+        'REDlogFilm',
         lut_directory,
         lut_resolution_1d)
     colorspaces.append(RED_log_film_dragon2)
 
     RED_log_film_color2 = create_RED_log_film(
-        "REDcolor2",
-        "",
-        "REDlogFilm",
+        'REDcolor2',
+        '',
+        'REDlogFilm',
         lut_directory,
         lut_resolution_1d)
     colorspaces.append(RED_log_film_color2)
 
     RED_log_film_color3 = create_RED_log_film(
-        "REDcolor3",
-        "",
-        "REDlogFilm",
+        'REDcolor3',
+        '',
+        'REDlogFilm',
         lut_directory,
         lut_resolution_1d)
     colorspaces.append(RED_log_film_color3)
 
     RED_log_film_color4 = create_RED_log_film(
-        "REDcolor4",
-        "",
-        "REDlogFilm",
+        'REDcolor4',
+        '',
+        'REDlogFilm',
         lut_directory,
         lut_resolution_1d)
     colorspaces.append(RED_log_film_color4)

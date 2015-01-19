@@ -12,10 +12,10 @@ Python
 ******
 
 >>> import sys
->>> sys.path.append("/path/to/script")
+>>> sys.path.append('/path/to/script')
 >>> import create_aces_config as cac
->>> acesReleaseCTLDir = "/path/to/github/checkout/releases/v0.7.1/transforms/ctl"
->>> configDir = "/path/to/config/dir"
+>>> acesReleaseCTLDir = '/path/to/github/checkout/releases/v0.7.1/transforms/ctl'
+>>> configDir = '/path/to/config/dir'
 >>> cac.createACESConfig(acesReleaseCTLDir, configDir, 1024, 33, True)
 
 Command Line
@@ -23,7 +23,7 @@ Command Line
 
 From the directory with 'create_aces_config.py':
 
-$ python create_aces_config.py -a "/path/to/github/checkout/releases/v0.7.1/transforms/ctl" -c "/path/to/config/dir" --lut_resolution_1d 1024 --lut_resolution_3d 33 --keepTempImages
+$ python create_aces_config.py -a '/path/to/github/checkout/releases/v0.7.1/transforms/ctl' -c '/path/to/config/dir' --lut_resolution_1d 1024 --lut_resolution_3d 33 --keepTempImages
 
 Build
 -----

@@ -39,7 +39,7 @@ def read_text(text_file):
          Return value description.
     """
 
-    if (text_file != ""):
+    if (text_file != ''):
         fp = open(text_file, 'rb')
         # Create a text/plain message
         text = (fp.read())
@@ -62,7 +62,7 @@ def write_text(text, text_file):
          Return value description.
     """
 
-    if (text_file != ""):
+    if (text_file != ''):
         fp = open(text_file, 'wb')
         # Create a text/plain message
         fp.write(text)
@@ -131,7 +131,7 @@ class Process:
 
         if self.end and self.start:
             delta = (self.end - self.start)
-            formatted = "%s.%s" % (delta.days * 86400 + delta.seconds,
+            formatted = '%s.%s' % (delta.days * 86400 + delta.seconds,
                                    int(math.floor(delta.microseconds / 1e3)))
         else:
             formatted = None
@@ -156,15 +156,15 @@ class Process:
             indent = '\t' * write_dict['indentationLevel']
             if write_dict['format'] == 'xml':
                 if start_stop == 'start':
-                    write_dict['logHandle'].write("%s<%s>\n" % (indent, key))
+                    write_dict['logHandle'].write('%s<%s>\n' % (indent, key))
                 elif start_stop == 'stop':
-                    write_dict['logHandle'].write("%s</%s>\n" % (indent, key))
+                    write_dict['logHandle'].write('%s</%s>\n' % (indent, key))
                 else:
                     write_dict['logHandle'].write(
-                        "%s<%s>%s</%s>\n" % (indent, key, value, key))
+                        '%s<%s>%s</%s>\n' % (indent, key, value, key))
             else:  # writeDict['format'] == 'txt':
                 write_dict['logHandle'].write(
-                    "%s%40s : %s\n" % (indent, key, value))
+                    '%s%40s : %s\n' % (indent, key, value))
 
     def write_log_header(self, write_dict):
         """
@@ -189,22 +189,22 @@ class Process:
             user = os.getlogin()
         except:
             try:
-                user = os.getenv("USERNAME")
+                user = os.getenv('USERNAME')
                 if user is None:
-                    user = os.getenv("USER")
+                    user = os.getenv('USER')
             except:
-                user = "unknown_user"
+                user = 'unknown_user'
         try:
             (sysname, nodename, release, version, machine,
              processor) = platform.uname()
         except:
             (sysname, nodename, release, version, machine, processor) = (
-                "unknown_sysname", "unknown_nodename", "unknown_release",
-                "unknown_version", "unknown_machine", "unknown_processor")
+                'unknown_sysname', 'unknown_nodename', 'unknown_release',
+                'unknown_version', 'unknown_machine', 'unknown_processor')
         try:
             hostname = platform.node()
         except:
-            hostname = "unknown_hostname"
+            hostname = 'unknown_hostname'
 
         self.write_key(write_dict, 'process', None, 'start')
         write_dict['indentationLevel'] += 1
@@ -283,11 +283,11 @@ class Process:
             if self.log:
                 self.write_key(write_dict, 'output', None, 'start')
                 if format == 'xml':
-                    log_handle.write("<![CDATA[\n")
+                    log_handle.write('<![CDATA[\n')
                 for line in self.log:
-                    log_handle.write('%s%s\n' % ("", line))
+                    log_handle.write('%s%s\n' % ('', line))
                 if format == 'xml':
-                    log_handle.write("]]>\n")
+                    log_handle.write(']]>\n')
                 self.write_key(write_dict, 'output', None, 'stop')
 
             self.write_log_footer(write_dict)
@@ -314,22 +314,22 @@ class Process:
                 try:
                     log_handle = open(log_filename,
                                       mode='wt',
-                                      encoding="utf-8")
+                                      encoding='utf-8')
                 # 2.6
                 except:
                     log_handle = open(log_filename,
                                       mode='wt')
             except:
-                print("Couldn't open log : %s" % log_filename)
+                print('Couldn\'t open log : %s' % log_filename)
                 log_handle = None
 
         if log_handle:
             if header:
                 if format == 'xml':
-                    log_handle.write("<![CDATA[\n")
+                    log_handle.write('<![CDATA[\n')
                 log_handle.write(header)
                 if format == 'xml':
-                    log_handle.write("]]>\n")
+                    log_handle.write(']]>\n')
             self.write_log(log_handle)
             log_handle.close()
 
@@ -350,7 +350,7 @@ class Process:
 
         self.log.append(line.rstrip())
         if self.echo:
-            print("%s" % line.rstrip())
+            print('%s' % line.rstrip())
 
     def execute(self):
         """
@@ -383,9 +383,9 @@ class Process:
         if self.echo:
             if sp:
                 print(
-                    "\n%s : %s\n" % (self.__class__, sp.list2cmdline(cmdargs)))
+                    '\n%s : %s\n' % (self.__class__, sp.list2cmdline(cmdargs)))
             else:
-                print("\n%s : %s\n" % (self.__class__, " ".join(cmdargs)))
+                print('\n%s : %s\n' % (self.__class__, ' '.join(cmdargs)))
 
         # intialize a few variables that may or may not be set later
         process = None
@@ -399,10 +399,10 @@ class Process:
             # Using subprocess
             if sp:
                 if self.batch_wrapper:
-                    cmd = " ".join(cmdargs)
-                    tmp_wrapper = os.path.join(self.cwd, "process.bat")
+                    cmd = ' '.join(cmdargs)
+                    tmp_wrapper = os.path.join(self.cwd, 'process.bat')
                     write_text(cmd, tmp_wrapper)
-                    print("%s : Running process through wrapper %s\n" % (
+                    print('%s : Running process through wrapper %s\n' % (
                         self.__class__, tmp_wrapper))
                     process = sp.Popen([tmp_wrapper], stdout=sp.PIPE,
                                        stderr=sp.STDOUT,
@@ -421,14 +421,14 @@ class Process:
 
                 stdin, stdout = os.popen4(cmdargs, 'r')
         except:
-            print("Couldn't execute command : %s" % cmdargs[0])
+            print('Couldn\'t execute command : %s' % cmdargs[0])
             traceback.print_exc()
 
         # Using subprocess
         if sp:
             if process != None:
                 # pid = process.pid
-                # log.logLine("process id %s\n" % pid)
+                # log.logLine('process id %s\n' % pid)
 
                 try:
                     # This is more proper python, and resolves some issues with
@@ -443,7 +443,7 @@ class Process:
                     # So we go with the, um, uglier  option below
 
                     # This is now used to ensure that the process has finished
-                    line = ""
+                    line = ''
                     while line != None and process.poll() is None:
                         try:
                             line = process.stdout.readline()
@@ -451,12 +451,12 @@ class Process:
                             break
                         # 3.1
                         try:
-                            self.log_line(str(line, encoding="utf-8"))
+                            self.log_line(str(line, encoding='utf-8'))
                         # 2.6
                         except:
                             self.log_line(line)
                 except:
-                    self.log_line("Logging error : %s" % sys.exc_info()[0])
+                    self.log_line('Logging error : %s' % sys.exc_info()[0])
 
                 self.status = process.returncode
 
@@ -465,14 +465,14 @@ class Process:
                         os.remove(tmp_wrapper)
                     except:
                         print(
-                            "Couldn't remove temp wrapper : %s" % tmp_wrapper)
+                            'Couldn\'t remove temp wrapper : %s' % tmp_wrapper)
                         traceback.print_exc()
 
         # Using os.popen4
         else:
             exit_code = -1
             try:
-                # print("reading stdout lines")
+                # print('reading stdout lines')
                 stdout_lines = stdout.readlines()
                 exit_code = stdout.close()
 
@@ -491,7 +491,7 @@ class Process:
                 if not exit_code:
                     exit_code = 0
             except:
-                self.log_line("Logging error : %s" % sys.exc_info()[0])
+                self.log_line('Logging error : %s' % sys.exc_info()[0])
 
             self.status = exit_code
 
@@ -519,7 +519,7 @@ class ProcessList(Process):
         """
 
         Process.__init__(self, description, None, None, cwd, env)
-        "Initialize the standard class variables"
+        'Initialize the standard class variables'
         self.processes = []
         self.blocking = blocking
 
@@ -548,15 +548,15 @@ class ProcessList(Process):
                 if isinstance(child, ProcessList):
                     child.generate_report(write_dict)
 
-                child_result = ""
+                child_result = ''
                 key = child.description
                 value = child.status
                 if write_dict['format'] == 'xml':
                     child_result = (
-                        "%s<result description=\"%s\">%s</result>" % (
+                        '%s<result description=\'%s\'>%s</result>' % (
                             indent, key, value))
                 else:  # writeDict['format'] == 'txt':
-                    child_result = ("%s%40s : %s" % (indent, key, value))
+                    child_result = ('%s%40s : %s' % (indent, key, value))
                 self.log.append(child_result)
 
                 if child.status != 0:
@@ -566,7 +566,7 @@ class ProcessList(Process):
             else:
                 self.status = 0
         else:
-            self.log = ["No child processes available to generate a report"]
+            self.log = ['No child processes available to generate a report']
             self.status = -1
 
     def write_log_header(self, write_dict):
@@ -643,7 +643,7 @@ class ProcessList(Process):
             if self.log:
                 self.write_key(write_dict, 'output', None, 'start')
                 for line in self.log:
-                    log_handle.write('%s%s\n' % ("", line))
+                    log_handle.write('%s%s\n' % ('', line))
                 self.write_key(write_dict, 'output', None, 'stop')
 
             if self.processes:
@@ -680,13 +680,13 @@ class ProcessList(Process):
                     try:
                         child.execute()
                     except:
-                        print("%s : caught exception in child class %s" % (
+                        print('%s : caught exception in child class %s' % (
                             self.__class__, child.__class__))
                         traceback.print_exc()
                         child.status = -1
 
                     if self.blocking and child.status != 0:
-                        print("%s : child class %s finished with an error" % (
+                        print('%s : child class %s finished with an error' % (
                             self.__class__, child.__class__))
                         self.status = -1
                         break
@@ -735,17 +735,17 @@ def main():
         args = []
 
     if cmd is None:
-        print("process: No command specified")
+        print('process: No command specified')
 
     #
     # Test regular logging
     #
-    process = Process(description="a process", cmd=cmd, args=args)
+    process = Process(description='a process', cmd=cmd, args=args)
 
     #
     # Test report generation and writing a log
     #
-    process_list = ProcessList("a process list")
+    process_list = ProcessList('a process list')
     process_list.processes.append(process)
     process_list.echo = True
     process_list.execute()

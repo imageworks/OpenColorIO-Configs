@@ -145,9 +145,8 @@ def write_config(config, config_path, sanity_check=True):
             return
             # sys.exit()
 
-    file_handle = open(config_path, mode='w')
-    file_handle.write(config.serialize())
-    file_handle.close()
+    with open(config_path, mode='w') as fp:
+        fp.write(config.serialize())
 
 
 def generate_OCIO_transform(transforms):
@@ -1525,11 +1524,8 @@ def get_transform_info(ctl_transform):
          Return value description.
     """
 
-    # TODO: Use *with* statement.
-    fp = open(ctl_transform, 'rb')
-
-    # Read lines
-    lines = fp.readlines()
+    with open(ctl_transform, 'rb') as fp:
+        lines = fp.readlines()
 
     # Grab transform ID and User Name
     transform_ID = lines[1][3:].split('<')[1].split('>')[1].strip()
@@ -1539,7 +1535,6 @@ def get_transform_info(ctl_transform):
     transform_user_name_prefix = (
         lines[2][3:].split('<')[1].split('>')[1].split('-')[0].strip())
     # print(transformUserName)
-    fp.close()
 
     return transform_ID, transform_user_name, transform_user_name_prefix
 

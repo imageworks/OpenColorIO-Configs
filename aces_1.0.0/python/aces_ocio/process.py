@@ -39,11 +39,9 @@ def read_text(text_file):
          Return value description.
     """
 
-    if (text_file != ''):
-        fp = open(text_file, 'rb')
-        # Create a text/plain message
-        text = (fp.read())
-        fp.close()
+    if text_file != '':
+        with open(text_file, 'rb') as fp:
+            text = (fp.read())
     return text
 
 
@@ -62,11 +60,9 @@ def write_text(text, text_file):
          Return value description.
     """
 
-    if (text_file != ''):
-        fp = open(text_file, 'wb')
-        # Create a text/plain message
-        fp.write(text)
-        fp.close()
+    if text_file != '':
+        with open(text_file, 'wb') as fp:
+            fp.write(text)
     return text
 
 
@@ -309,16 +305,14 @@ class Process:
 
         if log_filename:
             try:
-                # This also doesn't seem like the best structure...
+                # TODO: Review statements.
                 # 3.1
                 try:
-                    log_handle = open(log_filename,
-                                      mode='wt',
-                                      encoding='utf-8')
+                    log_handle = (
+                        open(log_filename, mode='wt', encoding='utf-8'))
                 # 2.6
                 except:
-                    log_handle = open(log_filename,
-                                      mode='wt')
+                    log_handle = open(log_filename, mode='wt')
             except:
                 print('Couldn\'t open log : %s' % log_filename)
                 log_handle = None

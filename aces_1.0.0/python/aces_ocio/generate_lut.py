@@ -99,19 +99,18 @@ def write_SPI_1d(filename, from_min, from_max, data, entries, channels):
          Return value description.
     """
 
-    f = file(filename, 'w')
-    f.write('Version 1\n')
-    f.write('From %f %f\n' % (from_min, from_max))
-    f.write('Length %d\n' % entries)
-    f.write('Components %d\n' % (min(3, channels)))
-    f.write('{\n')
-    for i in range(0, entries):
-        entry = ''
-        for j in range(0, min(3, channels)):
-            entry = '%s %s' % (entry, data[i * channels + j])
-        f.write('        %s\n' % entry)
-    f.write('}\n')
-    f.close()
+    with open(filename, 'w') as fp:
+        fp.write('Version 1\n')
+        fp.write('From %f %f\n' % (from_min, from_max))
+        fp.write('Length %d\n' % entries)
+        fp.write('Components %d\n' % (min(3, channels)))
+        fp.write('{\n')
+        for i in range(0, entries):
+            entry = ''
+            for j in range(0, min(3, channels)):
+                entry = '%s %s' % (entry, data[i * channels + j])
+            fp.write('        %s\n' % entry)
+        fp.write('}\n')
 
 
 def generate_1d_LUT_from_image(ramp_1d_path,

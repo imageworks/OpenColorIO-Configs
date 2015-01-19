@@ -443,13 +443,15 @@ def generate_LUTs(odt_info,
         cs.family = 'ACES'
         cs.is_data = False
 
-        ctls = [
-            '%s/ACEScc/ACEScsc.ACEScc_to_ACES.a1.0.0.ctl' % aces_CTL_directory,
-            # This transform gets back to the AP1 primaries
-            # Useful as the 1d LUT is only covering the transfer function
-            # The primaries switch is covered by the matrix below
-            '%s/ACEScg/ACEScsc.ACES_to_ACEScg.a1.0.0.ctl' % aces_CTL_directory
-        ]
+        ctls = [os.path.join(aces_CTL_directory,
+                             'ACEScc',
+                             'ACEScsc.ACEScc_to_ACES.a1.0.0.ctl'),
+                # This transform gets back to the AP1 primaries
+                # Useful as the 1d LUT is only covering the transfer function
+                # The primaries switch is covered by the matrix below
+                os.path.join(aces_CTL_directory,
+                             'ACEScg',
+                             'ACEScsc.ACES_to_ACEScg.a1.0.0.ctl')]
         lut = '%s_to_ACES.spi1d' % name
 
         # Remove spaces and parentheses
@@ -500,13 +502,15 @@ def generate_LUTs(odt_info,
         cs.is_data = False
 
         ctls = [
-            '%s/ACESproxy/ACEScsc.ACESproxy10i_to_ACES.a1.0.0.ctl' % (
-                aces_CTL_directory),
+            os.path.join(aces_CTL_directory,
+                         'ACESproxy',
+                         'ACEScsc.ACESproxy10i_to_ACES.a1.0.0.ctl'),
             # This transform gets back to the AP1 primaries
             # Useful as the 1d LUT is only covering the transfer function
             # The primaries switch is covered by the matrix below
-            '%s/ACEScg/ACEScsc.ACES_to_ACEScg.a1.0.0.ctl' % aces_CTL_directory
-        ]
+            os.path.join(aces_CTL_directory,
+                         'ACEScg',
+                         'ACEScsc.ACES_to_ACEScg.a1.0.0.ctl')]
         lut = '%s_to_aces.spi1d' % name
 
         # Remove spaces and parentheses
@@ -757,8 +761,9 @@ def generate_LUTs(odt_info,
         cs.is_data = False
 
         ctls = [
-            '%s/utilities/ACESlib.OCIO_shaper_log2_to_lin_param.a1.0.0.ctl' % (
-                aces_CTL_directory)]
+            os.path.join(aces_CTL_directory,
+                         'utilities',
+                         'ACESlib.OCIO_shaper_log2_to_lin_param.a1.0.0.ctl')]
         lut = '%s_to_aces.spi1d' % name
 
         # Remove spaces and parentheses
@@ -852,8 +857,7 @@ def generate_LUTs(odt_info,
         if 'transformCTL' in lmt_values:
             ctls = [
                 shaper_to_ACES_CTL % aces_CTL_directory,
-                '%s/%s' % (aces_CTL_directory, lmt_values['transformCTL'])
-            ]
+                os.path.join(aces_CTL_directory, lmt_values['transformCTL'])]
             lut = '%s.%s.spi3d' % (shaper_name, lmt_name)
 
             # Remove spaces and parentheses
@@ -885,8 +889,8 @@ def generate_LUTs(odt_info,
 
         if 'transformCTLInverse' in lmt_values:
             ctls = [
-                '%s/%s' % (
-                    aces_CTL_directory, odt_values['transformCTLInverse']),
+                os.path.join(aces_CTL_directory,
+                             odt_values['transformCTLInverse']),
                 shaper_from_ACES_CTL % aces_CTL_directory
             ]
             lut = 'Inverse.%s.%s.spi3d' % (odt_name, shaper_name)
@@ -944,11 +948,14 @@ def generate_LUTs(odt_info,
     # Log 2 shaper name and CTL transforms bundled up
     lmt_shaper_data = [
         lmt_shaper_name,
-        '%s/utilities/ACESlib.OCIO_shaper_log2_to_lin_param.a1.0.0.ctl',
-        '%s/utilities/ACESlib.OCIO_shaper_lin_to_log2_param.a1.0.0.ctl',
+        os.path.join('%s',
+                     'utilities',
+                     'ACESlib.OCIO_shaper_log2_to_lin_param.a1.0.0.ctl'),
+        os.path.join('%s',
+                     'utilities',
+                     'ACESlib.OCIO_shaper_lin_to_log2_param.a1.0.0.ctl'),
         shaper_input_scale_generic_log2,
-        lmt_params
-    ]
+        lmt_params]
 
     sorted_LMTs = sorted(lmt_info.iteritems(), key=lambda x: x[1])
     print(sorted_LMTs)
@@ -1046,9 +1053,12 @@ def generate_LUTs(odt_info,
 
             ctls = [
                 shaper_to_ACES_CTL % aces_CTL_directory,
-                '%s/rrt/RRT.a1.0.0.ctl' % aces_CTL_directory,
-                '%s/odt/%s' % (aces_CTL_directory, odt_values['transformCTL'])
-            ]
+                os.path.join(aces_CTL_directory,
+                             'rrt',
+                             'RRT.a1.0.0.ctl'),
+                os.path.join(aces_CTL_directory,
+                             'odt',
+                             odt_values['transformCTL'])]
             lut = '%s.RRT.a1.0.0.%s.spi3d' % (shaper_name, odt_name)
 
             # Remove spaces and parentheses
@@ -1098,9 +1108,12 @@ def generate_LUTs(odt_info,
             cs.to_reference_transforms.append(shaper_inverse)
         elif 'transformCTLInverse' in odt_values:
             ctls = [
-                '%s/odt/%s' % (
-                    aces_CTL_directory, odt_values['transformCTLInverse']),
-                '%s/rrt/InvRRT.a1.0.0.ctl' % aces_CTL_directory,
+                os.path.join(aces_CTL_directory,
+                             'odt',
+                             odt_values['transformCTLInverse']),
+                os.path.join(aces_CTL_directory,
+                             'rrt',
+                             'InvRRT.a1.0.0.ctl'),
                 shaper_from_ACES_CTL % aces_CTL_directory
             ]
             lut = 'InvRRT.a1.0.0.%s.%s.spi3d' % (odt_name, shaper_name)
@@ -1157,11 +1170,14 @@ def generate_LUTs(odt_info,
     # Log 2 shaper name and CTL transforms bundled up
     log2_shaper_data = [
         log2_shaper_name,
-        '%s/utilities/ACESlib.OCIO_shaper_log2_to_lin_param.a1.0.0.ctl',
-        '%s/utilities/ACESlib.OCIO_shaper_lin_to_log2_param.a1.0.0.ctl',
+        os.path.join('%s',
+                     'utilities',
+                     'ACESlib.OCIO_shaper_log2_to_lin_param.a1.0.0.ctl'),
+        os.path.join('%s',
+                     'utilities',
+                     'ACESlib.OCIO_shaper_lin_to_log2_param.a1.0.0.ctl'),
         shaper_input_scale_generic_log2,
-        log2_params
-    ]
+        log2_params]
 
     shaper_data[log2_shaper_name] = log2_shaper_data
 
@@ -1388,9 +1404,9 @@ def generate_baked_LUTs(odt_info,
             args += ['--cubesize', str(lut_resolution_3d)]
             args += ['--format',
                      'icc',
-                     '%s/photoshop/%s for %s.icc' % (baked_directory,
-                                                     odt_name,
-                                                     input_space)]
+                     os.path.join(baked_directory,
+                                  'photoshop',
+                                  '%s for %s.icc' % (odt_name, input_space))]
 
             bake_LUT = Process(description='bake a LUT',
                                cmd='ociobakelut',
@@ -1410,15 +1426,23 @@ def generate_baked_LUTs(odt_info,
                      '--shapersize', str(lut_resolution_shaper)]
             args += ['--cubesize', str(lut_resolution_3d)]
 
-            fargs = ['--format', 'flame', '%s/flame/%s for %s Flame.3dl' % (
-                baked_directory, odt_name, input_space)]
+            fargs = ['--format',
+                     'flame',
+                     os.path.join(
+                         baked_directory,
+                         'flame',
+                         '%s for %s Flame.3dl' % (odt_name, input_space))]
             bake_LUT = Process(description='bake a LUT',
                                cmd='ociobakelut',
                                args=(args + fargs))
             bake_LUT.execute()
 
-            largs = ['--format', 'lustre', '%s/lustre/%s for %s Lustre.3dl' % (
-                baked_directory, odt_name, input_space)]
+            largs = ['--format',
+                     'lustre',
+                     os.path.join(
+                         baked_directory,
+                         'lustre',
+                         '%s for %s Lustre.3dl' % (odt_name, input_space))]
             bake_LUT = Process(description='bake a LUT',
                                cmd='ociobakelut',
                                args=(args + largs))
@@ -1442,16 +1466,23 @@ def generate_baked_LUTs(odt_info,
 
             args += ['--cubesize', str(lut_resolution_3d)]
 
-            margs = ['--format', 'cinespace', '%s/maya/%s for %s Maya.csp' % (
-                baked_directory, odt_name, input_space)]
+            margs = ['--format',
+                     'cinespace',
+                     os.path.join(
+                         baked_directory,
+                         'maya',
+                         '%s for %s Maya.csp' % (odt_name, input_space))]
             bake_LUT = Process(description='bake a LUT',
                                cmd='ociobakelut',
                                args=(args + margs))
             bake_LUT.execute()
 
-            hargs = ['--format', 'houdini',
-                     '%s/houdini/%s for %s Houdini.lut' % (
-                         baked_directory, odt_name, input_space)]
+            hargs = ['--format',
+                     'houdini',
+                     os.path.join(
+                         baked_directory,
+                         'houdini',
+                         '%s for %s Houdini.lut' % (odt_name, input_space))]
             bake_LUT = Process(description='bake a LUT',
                                cmd='ociobakelut',
                                args=(args + hargs))
@@ -1473,14 +1504,14 @@ def create_config_dir(config_directory, bake_secondary_LUTs):
          Return value description.
     """
 
-    dirs = [config_directory, '%s/luts' % config_directory]
+    dirs = [config_directory, os.path.join(config_directory, 'luts')]
     if bake_secondary_LUTs:
-        dirs.extend(['%s/baked' % config_directory,
-                     '%s/baked/flame' % config_directory,
-                     '%s/baked/photoshop' % config_directory,
-                     '%s/baked/houdini' % config_directory,
-                     '%s/baked/lustre' % config_directory,
-                     '%s/baked/maya' % config_directory])
+        dirs.extend([os.path.join(config_directory, 'baked'),
+                     os.path.join(config_directory, 'baked', 'flame'),
+                     os.path.join(config_directory, 'baked', 'photoshop'),
+                     os.path.join(config_directory, 'baked', 'houdini'),
+                     os.path.join(config_directory, 'baked', 'lustre'),
+                     os.path.join(config_directory, 'baked', 'maya')])
 
     for d in dirs:
         not os.path.exists(d) and os.mkdir(d)
@@ -1574,7 +1605,7 @@ def get_ODT_info(aces_CTL_directory):
         (transform_ID,
          transform_user_name,
          transform_user_name_prefix) = get_transform_info(
-            '%s/odt/%s/%s' % (aces_CTL_directory, odt_dir, transform_CTL))
+            os.path.join(aces_CTL_directory, 'odt', odt_dir, transform_CTL))
 
         # Find inverse
         transform_CTL_inverse = 'InvODT.%s.ctl' % odt_name
@@ -1667,7 +1698,7 @@ def get_LMT_info(aces_CTL_directory):
         (transform_ID,
          transform_user_name,
          transform_user_name_prefix) = get_transform_info(
-            '%s/%s/%s' % (aces_CTL_directory, lmt_dir, transform_CTL))
+            os.path.join(aces_CTL_directory, lmt_dir, transform_CTL))
 
         # Find inverse
         transform_CTL_inverse = 'InvLMT.%s.ctl' % lmt_name
@@ -1734,7 +1765,7 @@ def create_ACES_config(aces_CTL_directory,
     create_config_dir(config_directory, bake_secondary_LUTs)
 
     # Generate config data and LUTs for different transforms
-    lut_directory = '%s/luts' % config_directory
+    lut_directory = os.path.join(config_directory, 'luts')
     shaper_name = 'Output Shaper'
     config_data = generate_LUTs(odt_info,
                                 lmt_info,
@@ -1751,7 +1782,8 @@ def create_ACES_config(aces_CTL_directory,
     print('\n\n\n')
 
     # Write the config to disk
-    write_config(config, '%s/config.ocio' % config_directory)
+    write_config(config,
+                 os.path.join(config_directory, 'config.ocio'))
 
     # Create a config that will work well with Nuke using the previously
     # generated LUTs.
@@ -1760,14 +1792,15 @@ def create_ACES_config(aces_CTL_directory,
     print('\n\n\n')
 
     # Write the config to disk
-    write_config(nuke_config, '%s/nuke_config.ocio' % config_directory)
+    write_config(nuke_config,
+                 os.path.join(config_directory, 'nuke_config.ocio'))
 
     # Bake secondary LUTs using the config
     if bake_secondary_LUTs:
         generate_baked_LUTs(odt_info,
                             shaper_name,
-                            '%s/baked' % config_directory,
-                            '%s/config.ocio' % config_directory,
+                            os.path.join(config_directory, 'baked'),
+                            os.path.join(config_directory, 'config.ocio'),
                             lut_resolution_1d,
                             lut_resolution_3d,
                             lut_resolution_1d)

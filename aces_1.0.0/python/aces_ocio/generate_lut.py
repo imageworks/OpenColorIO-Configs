@@ -240,7 +240,7 @@ def apply_CTL_to_image(input_image,
         ctlenv = os.environ
         if aces_CTL_directory != None:
             if os.path.split(aces_CTL_directory)[1] != 'utilities':
-                ctl_module_path = '%s/utilities' % aces_CTL_directory
+                ctl_module_path = os.path.join(aces_CTL_directory, 'utilities')
             else:
                 ctl_module_path = aces_CTL_directory
             ctlenv['CTL_MODULE_PATH'] = ctl_module_path

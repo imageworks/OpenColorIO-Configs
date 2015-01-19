@@ -6,6 +6,7 @@ Implements support for *Canon* colorspaces conversions and transfer functions.
 """
 
 import array
+import os
 
 import aces_ocio.generate_lut as genlut
 from aces_ocio.utilities import ColorSpace
@@ -77,12 +78,13 @@ def create_c_log(gamut,
             data[c] = c_log_to_linear(1023.0 * c / (lut_resolution_1d - 1))
 
         lut = '%s_to_linear.spi1d' % transfer_function
-        genlut.write_SPI_1d(lut_directory + '/' + lut,
-                            0.0,
-                            1.0,
-                            data,
-                            lut_resolution_1d,
-                            1)
+        genlut.write_SPI_1d(
+            os.path.join(lut_directory, lut),
+            0.0,
+            1.0,
+            data,
+            lut_resolution_1d,
+            1)
 
         cs.to_reference_transforms.append({
             'type': 'lutFile',

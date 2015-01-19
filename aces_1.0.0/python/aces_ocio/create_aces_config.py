@@ -456,7 +456,7 @@ def generate_LUTs(odt_info,
         lut = lut.replace(' ', '_').replace(')', '_').replace('(', '_')
 
         generate_1d_LUT_from_CTL(
-            lut_directory + '/' + lut,
+            os.path.join(lut_directory, lut),
             ctls,
             lut_resolution_1d,
             'float',
@@ -513,7 +513,7 @@ def generate_LUTs(odt_info,
         lut = lut.replace(' ', '_').replace(')', '_').replace('(', '_')
 
         generate_1d_LUT_from_CTL(
-            lut_directory + '/' + lut,
+            os.path.join(lut_directory, lut),
             ctls,
             lut_resolution_1d,
             'uint16',
@@ -668,7 +668,9 @@ def generate_LUTs(odt_info,
                 data.append(cid_to_rle(x))
 
             lut = 'ADX_CID_to_RLE.spi1d'
-            write_SPI_1d(lut_directory + '/' + lut, RANGE[0], RANGE[1],
+            write_SPI_1d(os.path.join(lut_directory, lut),
+                         RANGE[0],
+                         RANGE[1],
                          data,
                          NUM_SAMPLES, 1)
 
@@ -763,7 +765,7 @@ def generate_LUTs(odt_info,
         lut = lut.replace(' ', '_').replace(')', '_').replace('(', '_')
 
         generate_1d_LUT_from_CTL(
-            lut_directory + '/' + lut,
+            os.path.join(lut_directory, lut),
             ctls,
             lut_resolution_1d,
             'float',
@@ -817,7 +819,7 @@ def generate_LUTs(odt_info,
          shaper_params) = shaper_info
 
         shaper_lut = '%s_to_aces.spi1d' % shaper_name
-        if (not os.path.exists(lut_directory + '/' + shaper_lut)):
+        if (not os.path.exists(os.path.join(lut_directory, shaper_lut))):
             ctls = [shaper_to_ACES_CTL % aces_CTL_directory]
 
             # Remove spaces and parentheses
@@ -825,7 +827,7 @@ def generate_LUTs(odt_info,
                 ' ', '_').replace(')', '_').replace('(', '_')
 
             generate_1d_LUT_from_CTL(
-                lut_directory + '/' + shaper_lut,
+                os.path.join(lut_directory, shaper_lut),
                 ctls,
                 lut_resolution_1d,
                 'float',
@@ -858,7 +860,7 @@ def generate_LUTs(odt_info,
             lut = lut.replace(' ', '_').replace(')', '_').replace('(', '_')
 
             generate_3d_LUT_from_CTL(
-                lut_directory + '/' + lut,
+                os.path.join(lut_directory, lut),
                 ctls,
                 lut_resolution_3d,
                 'float',
@@ -893,7 +895,7 @@ def generate_LUTs(odt_info,
             lut = lut.replace(' ', '_').replace(')', '_').replace('(', '_')
 
             generate_3d_LUT_from_CTL(
-                lut_directory + '/' + lut,
+                os.path.join(lut_directory, lut),
                 ctls,
                 lut_resolution_3d,
                 'half',
@@ -995,7 +997,7 @@ def generate_LUTs(odt_info,
             shaper_params['legalRange'] = 0
 
         shaper_lut = '%s_to_aces.spi1d' % shaper_name
-        if (not os.path.exists(lut_directory + '/' + shaper_lut)):
+        if (not os.path.exists(os.path.join(lut_directory, shaper_lut))):
             ctls = [shaper_to_ACES_CTL % aces_CTL_directory]
 
             # Remove spaces and parentheses
@@ -1003,7 +1005,7 @@ def generate_LUTs(odt_info,
                 ' ', '_').replace(')', '_').replace('(', '_')
 
             generate_1d_LUT_from_CTL(
-                lut_directory + '/' + shaper_lut,
+                os.path.join(lut_directory, shaper_lut),
                 ctls,
                 lut_resolution_1d,
                 'float',
@@ -1029,7 +1031,7 @@ def generate_LUTs(odt_info,
             # Copy into the lut dir
             transform_LUT_file_name = os.path.basename(
                 odt_values['transformLUT'])
-            lut = lut_directory + '/' + transform_LUT_file_name
+            lut = os.path.join(lut_directory, transform_LUT_file_name)
             shutil.copy(odt_values['transformLUT'], lut)
 
             cs.from_reference_transforms.append(shaper_OCIO_transform)
@@ -1052,16 +1054,17 @@ def generate_LUTs(odt_info,
             # Remove spaces and parentheses
             lut = lut.replace(' ', '_').replace(')', '_').replace('(', '_')
 
-            generate_3d_LUT_from_CTL(lut_directory + '/' + lut,
-                                     # shaperLUT,
-                                     ctls,
-                                     lut_resolution_3d,
-                                     'float',
-                                     1.0 / shaper_input_scale,
-                                     1.0,
-                                     shaper_params,
-                                     cleanup,
-                                     aces_CTL_directory)
+            generate_3d_LUT_from_CTL(
+                os.path.join(lut_directory, lut),
+                # shaperLUT,
+                ctls,
+                lut_resolution_3d,
+                'float',
+                1.0 / shaper_input_scale,
+                1.0,
+                shaper_params,
+                cleanup,
+                aces_CTL_directory)
 
             cs.from_reference_transforms.append(shaper_OCIO_transform)
             cs.from_reference_transforms.append({
@@ -1080,7 +1083,7 @@ def generate_LUTs(odt_info,
             # Copy into the lut dir
             transform_LUT_inverse_file_name = os.path.basename(
                 odt_values['transformLUTInverse'])
-            lut = lut_directory + '/' + transform_LUT_inverse_file_name
+            lut = os.path.join(lut_directory, transform_LUT_inverse_file_name)
             shutil.copy(odt_values['transformLUTInverse'], lut)
 
             cs.to_reference_transforms.append({
@@ -1106,7 +1109,7 @@ def generate_LUTs(odt_info,
             lut = lut.replace(' ', '_').replace(')', '_').replace('(', '_')
 
             generate_3d_LUT_from_CTL(
-                lut_directory + '/' + lut,
+                os.path.join(lut_directory, lut),
                 # None,
                 ctls,
                 lut_resolution_3d,

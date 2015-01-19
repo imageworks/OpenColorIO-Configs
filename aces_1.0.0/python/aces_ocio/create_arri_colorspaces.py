@@ -7,6 +7,7 @@ Implements support for *ARRI* colorspaces conversions and transfer functions.
 
 import array
 import math
+import os
 
 import aces_ocio.generate_lut as genlut
 from aces_ocio.utilities import ColorSpace, mat44_from_mat33
@@ -130,12 +131,13 @@ def create_log_c(gamut,
         # Remove spaces and parentheses
         lut = lut.replace(' ', '_').replace(')', '_').replace('(', '_')
 
-        genlut.write_SPI_1d(lut_directory + '/' + lut,
-                            0.0,
-                            1.0,
-                            data,
-                            lut_resolution_1d,
-                            1)
+        genlut.write_SPI_1d(
+            os.path.join(lut_directory, lut),
+            0.0,
+            1.0,
+            data,
+            lut_resolution_1d,
+            1)
 
         # print('Writing %s' % lut)
         cs.to_reference_transforms.append({
@@ -149,8 +151,8 @@ def create_log_c(gamut,
         cs.to_reference_transforms.append({
             'type': 'matrix',
             'matrix': mat44_from_mat33([0.680206, 0.236137, 0.083658,
-                                      0.085415, 1.017471, -0.102886,
-                                      0.002057, -0.062563, 1.060506]),
+                                        0.085415, 1.017471, -0.102886,
+                                        0.002057, -0.062563, 1.060506]),
             'direction': 'forward'
         })
 

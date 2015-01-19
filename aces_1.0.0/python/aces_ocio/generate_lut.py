@@ -133,7 +133,7 @@ def generate_1d_LUT_from_image(ramp_1d_path,
     """
 
     if output_path is None:
-        output_path = ramp_1d_path + '.spi1d'
+        output_path = '%s.%s' % (ramp_1d_path, 'spi1d')
 
     # open image
     ramp = oiio.ImageInput.open(ramp_1d_path)
@@ -198,7 +198,7 @@ def generate_3d_LUT_from_image(ramp_3d_path, output_path=None, resolution=32):
     """
 
     if output_path is None:
-        output_path = ramp_3d_path + '.spi3d'
+        output_path = '%s.%s' % (ramp_3d_path, 'spi1d')
 
     args = ['--extract',
             '--cubesize',
@@ -323,21 +323,21 @@ def generate_1d_LUT_from_CTL(lut_path,
 
     lut_path_base = os.path.splitext(lut_path)[0]
 
-    identity_LUT_image_float = lut_path_base + '.float.tiff'
+    identity_LUT_image_float = '%s.%s.%s' % (lut_path_base, 'float', 'tiff')
     generate_1d_LUT_image(identity_LUT_image_float,
                           lut_resolution,
                           min_value,
                           max_value)
 
     if identity_LUT_bit_depth != 'half':
-        identity_LUT_image = lut_path_base + '.uint16.tiff'
+        identity_LUT_image = '%s.%s.%s' % (lut_path_base, 'uint16', 'tiff')
         convert_bit_depth(identity_LUT_image_float,
                           identity_LUT_image,
                           identity_LUT_bit_depth)
     else:
         identity_LUT_image = identity_LUT_image_float
 
-    transformed_LUT_image = lut_path_base + '.transformed.exr'
+    transformed_LUT_image = '%s.%s.%s' % (lut_path_base, 'transformed', 'exr')
     apply_CTL_to_image(identity_LUT_image,
                        transformed_LUT_image,
                        ctl_paths,
@@ -471,21 +471,20 @@ def generate_3d_LUT_from_CTL(lut_path,
 
     lut_path_base = os.path.splitext(lut_path)[0]
 
-    identity_LUT_image_float = lut_path_base + '.float.tiff'
+    identity_LUT_image_float = '%s.%s.%s' % (lut_path_base, 'float', 'tiff')
     generate_3d_LUT_image(identity_LUT_image_float, lut_resolution)
 
     if identity_LUT_bit_depth != 'half':
-        identity_LUT_image = (lut_path_base +
-                              '.' +
-                              identity_LUT_bit_depth +
-                              '.tiff')
+        identity_LUT_image = '%s.%s.%s' % (lut_path_base,
+                                           identity_LUT_bit_depth,
+                                           'tiff')
         convert_bit_depth(identity_LUT_image_float,
                           identity_LUT_image,
                           identity_LUT_bit_depth)
     else:
         identity_LUT_image = identity_LUT_image_float
 
-    transformed_LUT_image = lut_path_base + '.transformed.exr'
+    transformed_LUT_image = '%s.%s.%s' % (lut_path_base, 'transformed', 'exr')
     apply_CTL_to_image(identity_LUT_image,
                        transformed_LUT_image,
                        ctl_paths,
@@ -494,7 +493,7 @@ def generate_3d_LUT_from_CTL(lut_path,
                        global_params,
                        aces_CTL_directory)
 
-    corrected_LUT_image = lut_path_base + '.correct.exr'
+    corrected_LUT_image = '%s.%s.%s' % (lut_path_base, 'correct', 'exr')
     corrected_LUT_image = correct_LUT_image(transformed_LUT_image,
                                             corrected_LUT_image,
                                             lut_resolution)

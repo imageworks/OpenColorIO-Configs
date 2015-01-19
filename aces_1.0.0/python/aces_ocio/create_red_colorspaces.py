@@ -6,6 +6,7 @@ Implements support for *RED* colorspaces conversions and transfer functions.
 """
 
 import array
+import os
 
 import aces_ocio.generate_lut as genlut
 from aces_ocio.utilities import ColorSpace, mat44_from_mat33
@@ -75,12 +76,13 @@ def create_RED_log_film(gamut,
             data[c] = cineon_to_linear(1023.0 * c / (lut_resolution_1d - 1))
 
         lut = 'CineonLog_to_linear.spi1d'
-        genlut.write_SPI_1d(lut_directory + '/' + lut,
-                            0.0,
-                            1.0,
-                            data,
-                            lut_resolution_1d,
-                            1)
+        genlut.write_SPI_1d(
+            os.path.join(lut_directory, lut),
+            0.0,
+            1.0,
+            data,
+            lut_resolution_1d,
+            1)
 
         cs.to_reference_transforms.append({
             'type': 'lutFile',

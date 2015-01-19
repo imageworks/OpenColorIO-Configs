@@ -29,7 +29,7 @@ from aces_ocio.generate_lut import (
     generate_3d_LUT_from_CTL,
     write_SPI_1d)
 from aces_ocio.process import Process
-from aces_ocio.utilities import ColorSpace, mat44_from_mat33
+from aces_ocio.utilities import ColorSpace, mat44_from_mat33, sanitize_path
 
 __author__ = 'ACES Developers'
 __copyright__ = 'Copyright (C) 2014 - 2015 - ACES Developers'
@@ -454,8 +454,7 @@ def generate_LUTs(odt_info,
                              'ACEScsc.ACES_to_ACEScg.a1.0.0.ctl')]
         lut = '%s_to_ACES.spi1d' % name
 
-        # Remove spaces and parentheses
-        lut = lut.replace(' ', '_').replace(')', '_').replace('(', '_')
+        lut = sanitize_path(lut)
 
         generate_1d_LUT_from_CTL(
             os.path.join(lut_directory, lut),
@@ -513,8 +512,7 @@ def generate_LUTs(odt_info,
                          'ACEScsc.ACES_to_ACEScg.a1.0.0.ctl')]
         lut = '%s_to_aces.spi1d' % name
 
-        # Remove spaces and parentheses
-        lut = lut.replace(' ', '_').replace(')', '_').replace('(', '_')
+        lut = sanitize_path(lut)
 
         generate_1d_LUT_from_CTL(
             os.path.join(lut_directory, lut),
@@ -766,8 +764,7 @@ def generate_LUTs(odt_info,
                          'ACESlib.OCIO_shaper_log2_to_lin_param.a1.0.0.ctl')]
         lut = '%s_to_aces.spi1d' % name
 
-        # Remove spaces and parentheses
-        lut = lut.replace(' ', '_').replace(')', '_').replace('(', '_')
+        lut = sanitize_path(lut)
 
         generate_1d_LUT_from_CTL(
             os.path.join(lut_directory, lut),
@@ -860,8 +857,7 @@ def generate_LUTs(odt_info,
                 os.path.join(aces_CTL_directory, lmt_values['transformCTL'])]
             lut = '%s.%s.spi3d' % (shaper_name, lmt_name)
 
-            # Remove spaces and parentheses
-            lut = lut.replace(' ', '_').replace(')', '_').replace('(', '_')
+            lut = sanitize_path(lut)
 
             generate_3d_LUT_from_CTL(
                 os.path.join(lut_directory, lut),
@@ -895,8 +891,7 @@ def generate_LUTs(odt_info,
             ]
             lut = 'Inverse.%s.%s.spi3d' % (odt_name, shaper_name)
 
-            # Remove spaces and parentheses
-            lut = lut.replace(' ', '_').replace(')', '_').replace('(', '_')
+            lut = sanitize_path(lut)
 
             generate_3d_LUT_from_CTL(
                 os.path.join(lut_directory, lut),
@@ -1061,8 +1056,7 @@ def generate_LUTs(odt_info,
                              odt_values['transformCTL'])]
             lut = '%s.RRT.a1.0.0.%s.spi3d' % (shaper_name, odt_name)
 
-            # Remove spaces and parentheses
-            lut = lut.replace(' ', '_').replace(')', '_').replace('(', '_')
+            lut = sanitize_path(lut)
 
             generate_3d_LUT_from_CTL(
                 os.path.join(lut_directory, lut),
@@ -1118,8 +1112,7 @@ def generate_LUTs(odt_info,
             ]
             lut = 'InvRRT.a1.0.0.%s.%s.spi3d' % (odt_name, shaper_name)
 
-            # Remove spaces and parentheses
-            lut = lut.replace(' ', '_').replace(')', '_').replace('(', '_')
+            lut = sanitize_path(lut)
 
             generate_3d_LUT_from_CTL(
                 os.path.join(lut_directory, lut),

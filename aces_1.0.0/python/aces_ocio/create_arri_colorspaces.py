@@ -10,7 +10,7 @@ import math
 import os
 
 import aces_ocio.generate_lut as genlut
-from aces_ocio.utilities import ColorSpace, mat44_from_mat33
+from aces_ocio.utilities import ColorSpace, mat44_from_mat33, sanitize_path
 
 
 __author__ = 'ACES Developers'
@@ -128,8 +128,7 @@ def create_log_c(gamut,
         lut = '%s_to_linear.spi1d' % (
             '%s_%s' % (transfer_function, exposure_index))
 
-        # Remove spaces and parentheses
-        lut = lut.replace(' ', '_').replace(')', '_').replace('(', '_')
+        lut = sanitize_path(lut)
 
         genlut.write_SPI_1d(
             os.path.join(lut_directory, lut),

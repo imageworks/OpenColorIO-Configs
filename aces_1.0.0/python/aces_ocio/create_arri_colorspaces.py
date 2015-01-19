@@ -58,7 +58,7 @@ def create_log_c(gamut,
     cs.family = 'ARRI'
     cs.is_data = False
 
-    # Globals
+    # Globals.
     IDT_maker_version = '0.08'
 
     nominal_EI = 400.0
@@ -77,18 +77,19 @@ def create_log_c(gamut,
         offset = math.log10(cut) - slope * cut
         gain = EI / nominal_EI
         gray = mid_gray_signal / gain
-        # The higher the EI, the lower the gamma
+        # The higher the EI, the lower the gamma.
         enc_gain = gain_for_EI(EI)
         enc_offset = encoding_offset
         for i in range(0, 3):
             nz = ((95.0 / 1023.0 - enc_offset) / enc_gain - offset) / slope
             enc_offset = encoding_offset - math.log10(1 + nz) * enc_gain
-        # Calculate some intermediate values
+
         a = 1.0 / gray
         b = nz - black_signal / gray
         e = slope * a * enc_gain
         f = enc_gain * (slope * b + offset) + enc_offset
-        # Manipulations so we can return relative exposure
+
+        # Ensuring we can return relative exposure.
         s = 4 / (0.18 * EI)
         t = black_signal
         b += a * t
@@ -107,15 +108,12 @@ def create_log_c(gamut,
     def log_c_to_linear(code_value, exposure_index):
         p = log_c_inverse_parameters_for_EI(exposure_index)
         breakpoint = p['e'] * p['cut'] + p['f']
-        if (code_value > breakpoint):
+        if code_value > breakpoint:
             linear = ((pow(10, (code_value / 1023.0 - p['d']) / p['c']) -
                        p['b']) / p['a'])
         else:
             linear = (code_value / 1023.0 - p['f']) / p['e']
-
-        # print(codeValue, linear)
         return linear
-
 
     cs.to_reference_transforms = []
 
@@ -138,7 +136,6 @@ def create_log_c(gamut,
             lut_resolution_1d,
             1)
 
-        # print('Writing %s' % lut)
         cs.to_reference_transforms.append({
             'type': 'lutFile',
             'path': lut,
@@ -185,7 +182,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
            1000, 1280, 1600, 2000, 2560, 3200]
     default_EI = 800
 
-    # Full conversion
+    # Full Conversion
     for EI in EIs:
         log_c_EI_full = create_log_c(
             gamut,
@@ -196,7 +193,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
             lut_resolution_1d)
         colorspaces.append(log_c_EI_full)
 
-    # Linearization only
+    # Linearization Only
     for EI in [800]:
         log_c_EI_linearization = create_log_c(
             '',
@@ -207,7 +204,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
             lut_resolution_1d)
         colorspaces.append(log_c_EI_linearization)
 
-    # Primaries
+    # Primaries Only
     log_c_EI_primaries = create_log_c(
         gamut,
         '',

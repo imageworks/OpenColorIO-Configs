@@ -67,7 +67,7 @@ def create_c_log(gamut,
 
         linear = (pow(10.0, (legal_to_full(codeValue) - c3) / c1) - 1.0) / c2
         linear *= 0.9
-        # print(codeValue, linear)
+
         return linear
 
     cs.to_reference_transforms = []
@@ -211,7 +211,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         lut_resolution_1d)
     colorspaces.append(c_log_6)
 
-    # Linearization only
+    # Linearization Only
     c_log_7 = create_c_log(
         '',
         'Canon-Log',
@@ -220,7 +220,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         lut_resolution_1d)
     colorspaces.append(c_log_7)
 
-    # Primaries only
+    # Primaries Only
     c_log_8 = create_c_log(
         'Rec. 709 Daylight',
         '',

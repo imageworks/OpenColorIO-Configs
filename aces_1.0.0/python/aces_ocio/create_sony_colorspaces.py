@@ -62,13 +62,12 @@ def create_s_log(gamut,
 
         if (s_log >= ab):
             linear = ((pow(10.,
-                           ( ((s_log - b) /
-                              (w - b) - 0.616596 - 0.03) / 0.432699)) -
+                           (((s_log - b) /
+                             (w - b) - 0.616596 - 0.03) / 0.432699)) -
                        0.037584) * 0.9)
         else:
-            linear = (
-                         ((s_log - b) / (
-                             w - b) - 0.030001222851889303) / 5.) * 0.9
+            linear = (((s_log - b) / (
+                w - b) - 0.030001222851889303) / 5.) * 0.9
         return linear
 
     def s_log2_to_linear(s_log):
@@ -87,12 +86,12 @@ def create_s_log(gamut,
         return linear
 
     def s_log3_to_linear(code_value):
-        if code_value >= (171.2102946929):
+        if code_value >= 171.2102946929:
             linear = (pow(10.0, ((code_value - 420.0) / 261.5)) *
                       (0.18 + 0.01) - 0.01)
         else:
             linear = (code_value - 95.0) * 0.01125000 / (171.2102946929 - 95.0)
-        # print(codeValue, linear)
+
         return linear
 
     cs.to_reference_transforms = []
@@ -111,14 +110,11 @@ def create_s_log(gamut,
             lut_resolution_1d,
             1)
 
-        # print('Writing %s' % lut)
-
         cs.to_reference_transforms.append({
             'type': 'lutFile',
             'path': lut,
             'interpolation': 'linear',
-            'direction': 'forward'
-        })
+            'direction': 'forward'})
     elif transfer_function == 'S-Log2':
         data = array.array('f', '\0' * lut_resolution_1d * 4)
         for c in range(lut_resolution_1d):
@@ -133,14 +129,11 @@ def create_s_log(gamut,
             lut_resolution_1d,
             1)
 
-        # print('Writing %s' % lut)
-
         cs.to_reference_transforms.append({
             'type': 'lutFile',
             'path': lut,
             'interpolation': 'linear',
-            'direction': 'forward'
-        })
+            'direction': 'forward'})
     elif transfer_function == 'S-Log3':
         data = array.array('f', '\0' * lut_resolution_1d * 4)
         for c in range(lut_resolution_1d):
@@ -155,14 +148,11 @@ def create_s_log(gamut,
             lut_resolution_1d,
             1)
 
-        # print('Writing %s' % lut)
-
         cs.to_reference_transforms.append({
             'type': 'lutFile',
             'path': lut,
             'interpolation': 'linear',
-            'direction': 'forward'
-        })
+            'direction': 'forward'})
 
     if gamut == 'S-Gamut':
         cs.to_reference_transforms.append({
@@ -226,7 +216,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
 
     colorspaces = []
 
-    # S-Log1
+    # *S-Log1*
     s_log1_s_gamut = create_s_log(
         'S-Gamut',
         'S-Log1',
@@ -235,7 +225,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         lut_resolution_1d)
     colorspaces.append(s_log1_s_gamut)
 
-    # S-Log2
+    # *S-Log2*
     s_log2_s_gamut = create_s_log(
         'S-Gamut',
         'S-Log2',
@@ -260,7 +250,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         lut_resolution_1d)
     colorspaces.append(s_log2_s_gamut_tungsten)
 
-    # S-Log3
+    # *S-Log3*
     s_log3_s_gamut3Cine = create_s_log(
         'S-Gamut3.Cine',
         'S-Log3',
@@ -277,7 +267,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         lut_resolution_1d)
     colorspaces.append(s_log3_s_gamut3)
 
-    # Linearization only
+    # Linearization Only
     s_log1 = create_s_log(
         '',
         'S-Log1',
@@ -302,7 +292,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         lut_resolution_1d)
     colorspaces.append(s_log3)
 
-    # Primaries only
+    # Primaries Only
     s_gamut = create_s_log(
         'S-Gamut',
         '',

@@ -52,13 +52,8 @@ def generate_1d_LUT_image(ramp_1d_path,
          Return value description.
     """
 
-    # print('Generate 1d LUT image - %s' % ramp1dPath)
-
-    # open image
-    format = os.path.splitext(ramp_1d_path)[1]
     ramp = oiio.ImageOutput.create(ramp_1d_path)
 
-    # set image specs
     spec = oiio.ImageSpec()
     spec.set_format(oiio.FLOAT)
     # spec.format.basetype = oiio.FLOAT
@@ -134,19 +129,14 @@ def generate_1d_LUT_from_image(ramp_1d_path,
     if output_path is None:
         output_path = '%s.%s' % (ramp_1d_path, 'spi1d')
 
-    # open image
     ramp = oiio.ImageInput.open(ramp_1d_path)
 
-    # get image specs
     spec = ramp.spec()
-    type = spec.format.basetype
     width = spec.width
-    height = spec.height
     channels = spec.nchannels
 
-    # get data
-    # Force data to be read as float. The Python API doesn't handle
-    # half-floats well yet.
+    # Forcibly read data as float, the Python API doesn't handle half-float
+    # well yet.
     type = oiio.FLOAT
     data = ramp.read_image(type)
 
@@ -237,7 +227,7 @@ def apply_CTL_to_image(input_image,
 
     if len(ctl_paths) > 0:
         ctlenv = os.environ
-        if aces_CTL_directory != None:
+        if aces_CTL_directory is not None:
             if os.path.split(aces_CTL_directory)[1] != 'utilities':
                 ctl_module_path = os.path.join(aces_CTL_directory, 'utilities')
             else:
@@ -248,7 +238,6 @@ def apply_CTL_to_image(input_image,
         for ctl in ctl_paths:
             args += ['-ctl', ctl]
         args += ['-force']
-        # args += ['-verbose']
         args += ['-input_scale', str(input_scale)]
         args += ['-output_scale', str(output_scale)]
         args += ['-global_param1', 'aIn', '1.0']
@@ -256,8 +245,6 @@ def apply_CTL_to_image(input_image,
             args += ['-global_param1', key, str(value)]
         args += [input_image]
         args += [output_image]
-
-        # print('args : %s' % args)
 
         ctlp = Process(description='a ctlrender process',
                        cmd='ctlrender',
@@ -317,9 +304,6 @@ def generate_1d_LUT_from_CTL(lut_path,
          Return value description.
     """
 
-    # print(lutPath)
-    # print(ctlPaths)
-
     lut_path_base = os.path.splitext(lut_path)[0]
 
     identity_LUT_image_float = '%s.%s.%s' % (lut_path_base, 'float', 'tiff')
@@ -374,17 +358,13 @@ def correct_LUT_image(transformed_LUT_image,
          Return value description.
     """
 
-    # open image
     transformed = oiio.ImageInput.open(transformed_LUT_image)
 
-    # get image specs
     transformed_spec = transformed.spec()
-    type = transformed_spec.format.basetype
     width = transformed_spec.width
     height = transformed_spec.height
     channels = transformed_spec.nchannels
 
-    # rotate or not
     if width != lut_resolution * lut_resolution or height != lut_resolution:
         print(('Correcting image as resolution is off. '
                'Found %d x %d. Expected %d x %d') % (
@@ -394,20 +374,13 @@ def correct_LUT_image(transformed_LUT_image,
                   lut_resolution))
         print('Generating %s' % corrected_LUT_image)
 
-        #
-        # We're going to generate a new correct image
-        #
-
-        # Get the source data
-        # Force data to be read as float. The Python API doesn't handle
-        # half-floats well yet.
+        # Forcibly read data as float, the Python API doesn't handle half-float
+        # well yet.
         type = oiio.FLOAT
         source_data = transformed.read_image(type)
 
-        format = os.path.splitext(corrected_LUT_image)[1]
         correct = oiio.ImageOutput.create(corrected_LUT_image)
 
-        # set image specs
         correct_spec = oiio.ImageSpec()
         correct_spec.set_format(oiio.FLOAT)
         correct_spec.width = height
@@ -423,7 +396,6 @@ def correct_LUT_image(transformed_LUT_image,
         for j in range(0, correct_spec.height):
             for i in range(0, correct_spec.width):
                 for c in range(0, correct_spec.nchannels):
-                    # print(i, j, c)
                     dest_data[(correct_spec.nchannels *
                                correct_spec.width * j +
                                correct_spec.nchannels * i + c)] = (
@@ -465,9 +437,6 @@ def generate_3d_LUT_from_CTL(lut_path,
          Return value description.
     """
 
-    # print(lutPath)
-    # print(ctlPaths)
-
     lut_path_base = os.path.splitext(lut_path)[0]
 
     identity_LUT_image_float = '%s.%s.%s' % (lut_path_base, 'float', 'tiff')
@@ -506,7 +475,6 @@ def generate_3d_LUT_from_CTL(lut_path,
         os.remove(transformed_LUT_image)
         if corrected_LUT_image != transformed_LUT_image:
             os.remove(corrected_LUT_image)
-            # os.remove(correctedLUTImage)
 
 
 def main():
@@ -551,9 +519,6 @@ def main():
 
     options, arguments = p.parse_args()
 
-    #
-    # Get options
-    # 
     lut = options.lut
     ctls = options.ctl
     lut_resolution_1d = options.lut_resolution_1d
@@ -569,7 +534,7 @@ def main():
     cleanup = not options.keepTempImages
 
     params = {}
-    if options.ctlRenderParam != None:
+    if options.ctlRenderParam is not None:
         for param in options.ctlRenderParam:
             params[param[0]] = float(param[1])
 
@@ -580,11 +545,6 @@ def main():
         args_start = len(sys.argv) + 1
         args = []
 
-    # print('command line : \n%s\n' % ' '.join(sys.argv))
-
-    #
-    # Generate LUTs
-    #
     if generate_1d:
         print('1D LUT generation options')
     else:

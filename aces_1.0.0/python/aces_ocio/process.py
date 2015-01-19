@@ -158,7 +158,7 @@ class Process:
                 else:
                     write_dict['logHandle'].write(
                         '%s<%s>%s</%s>\n' % (indent, key, value, key))
-            else:  # writeDict['format'] == 'txt':
+            else:
                 write_dict['logHandle'].write(
                     '%s%40s : %s\n' % (indent, key, value))
 
@@ -179,8 +179,6 @@ class Process:
 
         import platform
 
-        # Retrieve operating environment information
-        user = None
         try:
             user = os.getlogin()
         except:
@@ -197,10 +195,6 @@ class Process:
             (sysname, nodename, release, version, machine, processor) = (
                 'unknown_sysname', 'unknown_nodename', 'unknown_release',
                 'unknown_version', 'unknown_machine', 'unknown_processor')
-        try:
-            hostname = platform.node()
-        except:
-            hostname = 'unknown_hostname'
 
         self.write_key(write_dict, 'process', None, 'start')
         write_dict['indentationLevel'] += 1
@@ -381,7 +375,6 @@ class Process:
             else:
                 print('\n%s : %s\n' % (self.__class__, ' '.join(cmdargs)))
 
-        # intialize a few variables that may or may not be set later
         process = None
         tmp_wrapper = None
         stdout = None
@@ -390,7 +383,7 @@ class Process:
         parentcwd = os.getcwd()
 
         try:
-            # Using subprocess
+            # Using *subprocess*.
             if sp:
                 if self.batch_wrapper:
                     cmd = ' '.join(cmdargs)
@@ -406,7 +399,7 @@ class Process:
                                        stderr=sp.STDOUT,
                                        cwd=self.cwd, env=self.env)
 
-            # using os.popen4
+            # using *os.popen4*.
             else:
                 if self.env:
                     os.environ = self.env
@@ -418,7 +411,7 @@ class Process:
             print('Couldn\'t execute command : %s' % cmdargs[0])
             traceback.print_exc()
 
-        # Using subprocess
+        # Using *subprocess*
         if sp:
             if process != None:
                 # pid = process.pid
@@ -428,15 +421,15 @@ class Process:
                     # This is more proper python, and resolves some issues with
                     # a process ending before all of its output has been
                     # processed, but it also seems to stall when the read
-                    # buffer is near or over it's limit. this happens
+                    # buffer is near or over its limit. This happens
                     # relatively frequently with processes that generate lots
                     # of print statements.
                     for line in process.stdout:
                         self.log_line(line)
-                    #
-                    # So we go with the, um, uglier  option below
 
-                    # This is now used to ensure that the process has finished
+                    # So we go with the, um, uglier option below.
+
+                    # This is now used to ensure that the process has finished.
                     line = ''
                     while line != None and process.poll() is None:
                         try:
@@ -462,11 +455,10 @@ class Process:
                             'Couldn\'t remove temp wrapper : %s' % tmp_wrapper)
                         traceback.print_exc()
 
-        # Using os.popen4
+        # Using *os.popen4*.
         else:
             exit_code = -1
             try:
-                # print('reading stdout lines')
                 stdout_lines = stdout.readlines()
                 exit_code = stdout.close()
 
@@ -542,14 +534,13 @@ class ProcessList(Process):
                 if isinstance(child, ProcessList):
                     child.generate_report(write_dict)
 
-                child_result = ''
                 key = child.description
                 value = child.status
                 if write_dict['format'] == 'xml':
                     child_result = (
                         '%s<result description=\'%s\'>%s</result>' % (
                             indent, key, value))
-                else:  # writeDict['format'] == 'txt':
+                else:
                     child_result = ('%s%40s : %s' % (indent, key, value))
                 self.log.append(child_result)
 
@@ -715,9 +706,6 @@ def main():
 
     options, arguments = p.parse_args()
 
-    #
-    # Get options
-    # 
     cmd = options.cmd
     log_filename = options.log
 
@@ -731,14 +719,10 @@ def main():
     if cmd is None:
         print('process: No command specified')
 
-    #
-    # Test regular logging
-    #
+    # Testing regular logging.
     process = Process(description='a process', cmd=cmd, args=args)
 
-    #
-    # Test report generation and writing a log
-    #
+    # Testing report generation and writing a log.
     process_list = ProcessList('a process list')
     process_list.processes.append(process)
     process_list.echo = True

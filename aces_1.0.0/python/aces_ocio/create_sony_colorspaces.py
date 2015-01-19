@@ -60,7 +60,7 @@ def create_s_log(gamut,
         ab = 90.
         w = 940.
 
-        if (s_log >= ab):
+        if s_log >= ab:
             linear = ((pow(10.,
                            (((s_log - b) /
                              (w - b) - 0.616596 - 0.03) / 0.432699)) -
@@ -75,7 +75,7 @@ def create_s_log(gamut,
         ab = 90.
         w = 940.
 
-        if (s_log >= ab):
+        if s_log >= ab:
             linear = ((219. * (pow(10.,
                                    (((s_log - b) /
                                      (w - b) - 0.616596 - 0.03) / 0.432699)) -

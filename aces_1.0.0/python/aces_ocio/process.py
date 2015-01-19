@@ -74,7 +74,7 @@ class Process:
     def __init__(self,
                  description=None,
                  cmd=None,
-                 args=[],
+                 args=None,
                  cwd=None,
                  env=None,
                  batch_wrapper=False):
@@ -91,6 +91,9 @@ class Process:
         type
              Return value description.
         """
+
+        if args is None:
+            args = []
 
         self.cmd = cmd
         if not description:
@@ -148,7 +151,7 @@ class Process:
              Return value description.
         """
 
-        if key != None and (value != None or start_stop != None):
+        if key is not None and (value is not None or start_stop is not None):
             indent = '\t' * write_dict['indentationLevel']
             if write_dict['format'] == 'xml':
                 if start_stop == 'start':
@@ -413,7 +416,7 @@ class Process:
 
         # Using *subprocess*
         if sp:
-            if process != None:
+            if process is not None:
                 # pid = process.pid
                 # log.logLine('process id %s\n' % pid)
 
@@ -431,14 +434,16 @@ class Process:
 
                     # This is now used to ensure that the process has finished.
                     line = ''
-                    while line != None and process.poll() is None:
+                    while line is not None and process.poll() is None:
                         try:
                             line = process.stdout.readline()
                         except:
                             break
                         # 3.1
                         try:
-                            self.log_line(str(line, encoding='utf-8'))
+                            # TODO: Investigate previous eroneous statement.
+                            # self.log_line(str(line, encoding='utf-8'))
+                            self.log_line(str(line))
                         # 2.6
                         except:
                             self.log_line(line)
@@ -460,6 +465,8 @@ class Process:
             exit_code = -1
             try:
                 stdout_lines = stdout.readlines()
+                # TODO: Investigate if this is the good behavior, close() does
+                # not return anything / None.
                 exit_code = stdout.close()
 
                 stdout.close()

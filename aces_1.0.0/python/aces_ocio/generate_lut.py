@@ -206,10 +206,10 @@ def generate_3d_LUT_from_image(ramp_3d_path, output_path=None, resolution=32):
 
 def apply_CTL_to_image(input_image,
                        output_image,
-                       ctl_paths=[],
+                       ctl_paths=None,
                        input_scale=1.0,
                        output_scale=1.0,
-                       global_params={},
+                       global_params=None,
                        aces_CTL_directory=None):
     """
     Object description.
@@ -224,6 +224,11 @@ def apply_CTL_to_image(input_image,
     type
          Return value description.
     """
+
+    if ctl_paths is None:
+        ctl_paths = []
+    if global_params is None:
+        global_params = {}
 
     if len(ctl_paths) > 0:
         ctlenv = os.environ
@@ -285,7 +290,7 @@ def generate_1d_LUT_from_CTL(lut_path,
                              identity_LUT_bit_depth='half',
                              input_scale=1.0,
                              output_scale=1.0,
-                             global_params={},
+                             global_params=None,
                              cleanup=True,
                              aces_CTL_directory=None,
                              min_value=0.0,
@@ -303,6 +308,9 @@ def generate_1d_LUT_from_CTL(lut_path,
     type
          Return value description.
     """
+
+    if global_params is None:
+        global_params = {}
 
     lut_path_base = os.path.splitext(lut_path)[0]
 
@@ -420,7 +428,7 @@ def generate_3d_LUT_from_CTL(lut_path,
                              identity_LUT_bit_depth='half',
                              input_scale=1.0,
                              output_scale=1.0,
-                             global_params={},
+                             global_params=None,
                              cleanup=True,
                              aces_CTL_directory=None):
     """
@@ -436,6 +444,9 @@ def generate_3d_LUT_from_CTL(lut_path,
     type
          Return value description.
     """
+
+    if global_params is None:
+        global_params = {}
 
     lut_path_base = os.path.splitext(lut_path)[0]
 

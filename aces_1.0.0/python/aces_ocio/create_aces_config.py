@@ -560,8 +560,7 @@ def generate_LUTs(odt_info,
             'type': 'matrix',
             'matrix': adx_to_cdd,
             'offset': offset,
-            'direction': 'forward'
-        })
+            'direction': 'forward'})
 
         # Convert from Channel-Dependent Density to Channel-Independent Density
         cs.to_reference_transforms.append({
@@ -570,8 +569,7 @@ def generate_LUTs(odt_info,
                        0.05901, 0.96928, -0.02829, 0,
                        0.16134, 0.07406, 0.76460, 0,
                        0.0, 0.0, 0.0, 1.0],
-            'direction': 'forward'
-        })
+            'direction': 'forward'})
 
         # Copied from *Alex Fry*'s *adx_cid_to_rle.py*
         def create_CID_to_RLE_LUT():
@@ -1170,8 +1168,14 @@ def generate_LUTs(odt_info,
     # Generic Matrix transform
     # -------------------------------------------------------------------------
     def create_generic_matrix(name='matrix',
-                              from_reference_values=[],
-                              to_reference_values=[]):
+                              from_reference_values=None,
+                              to_reference_values=None):
+
+        if from_reference_values is None:
+             from_reference_values = []
+        if to_reference_values is None:
+             to_reference_values = []
+
         cs = ColorSpace(name)
         cs.description = 'The %s color space' % name
         cs.equality_group = name
@@ -1504,7 +1508,7 @@ def get_ODT_info(aces_CTL_directory):
         # Add to list of ODTs
         odts[odt_name] = {}
         odts[odt_name]['transformCTL'] = os.path.join(odt_dir, transform_CTL)
-        if transform_CTL_inverse != None:
+        if transform_CTL_inverse is not None:
             odts[odt_name]['transformCTLInverse'] = os.path.join(
                 odt_dir, transform_CTL_inverse)
 
@@ -1590,7 +1594,7 @@ def get_LMT_info(aces_CTL_directory):
 
         lmts[lmt_name] = {}
         lmts[lmt_name]['transformCTL'] = os.path.join(lmt_dir, transform_CTL)
-        if transform_CTL_inverse != None:
+        if transform_CTL_inverse is not None:
             lmts[lmt_name]['transformCTLInverse'] = os.path.join(
                 lmt_dir, transform_CTL_inverse)
 

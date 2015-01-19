@@ -99,11 +99,12 @@ class TestACESConfig(unittest.TestCase):
         hashes = {}
         for path in files_walker(directory,
                                  filters_in=filters_in,
-                                 filters_out=filters_out):
+                                 filters_out=filters_out,
+                                 flags=flags):
             with open(path) as file:
-                hash = hashlib.md5(
+                digest = hashlib.md5(
                     re.sub('\s', '', file.read())).hexdigest()
-            hashes[path.replace(directory, '')] = hash
+            hashes[path.replace(directory, '')] = digest
         return hashes
 
     def test_ACES_config(self):

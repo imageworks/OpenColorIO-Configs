@@ -13,11 +13,6 @@ import shutil
 import string
 import sys
 
-# TODO: This restores the capability of running the script without having
-# added the package to PYTHONPATH, this is ugly and should ideally replaced by
-# dedicated executable in a /bin directory.
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-
 import PyOpenColorIO as ocio
 
 import aces_ocio.create_arri_colorspaces as arri
@@ -1818,9 +1813,9 @@ def main():
                               version='createACESConfig 0.1',
                               usage='%prog [options]')
     p.add_option('--acesCTLDir', '-a', default=os.environ.get(
-        'ACES_OCIO_CTL_DIRECTORY', None))
+        ACES_OCIO_CTL_DIRECTORY_ENVIRON, None))
     p.add_option('--configDir', '-c', default=os.environ.get(
-        'ACES_OCIO_CONFIGURATION_DIRECTORY', None))
+        ACES_OCIO_CONFIGURATION_DIRECTORY_ENVIRON, None))
     p.add_option('--lutResolution1d', default=4096)
     p.add_option('--lutResolution3d', default=64)
     p.add_option('--dontBakeSecondaryLUTs', action='store_true')
@@ -1835,9 +1830,10 @@ def main():
     config_directory = options.configDir
     lut_resolution_1d = int(options.lutResolution1d)
     lut_resolution_3d = int(options.lutResolution3d)
-    bake_secondary_LUTs = not (options.dontBakeSecondaryLUTs)
-    cleanup_temp_images = not (options.keepTempImages)
+    bake_secondary_LUTs = not options.dontBakeSecondaryLUTs
+    cleanup_temp_images = not options.keepTempImages
 
+    # TODO: Investigate the following statements.
     try:
         args_start = sys.argv.index('--') + 1
         args = sys.argv[args_start:]
@@ -1847,16 +1843,16 @@ def main():
 
     print('command line : \n%s\n' % ' '.join(sys.argv))
 
-    # TODO: Use assertion and mention environment variables.
-    if not aces_CTL_directory:
-        print('process: No ACES CTL directory specified')
-        return
-    if not config_directory:
-        print('process: No configuration directory specified')
-        return
-    #
-    # Generate the configuration
-    #
+    assert aces_CTL_directory is not None, (
+        'process: No "{0}" environment variable defined or no "ACES CTL" '
+        'directory specified'.format(
+            ACES_OCIO_CTL_DIRECTORY_ENVIRON))
+
+    assert config_directory is not None, (
+        'process: No "{0}" environment variable defined or no configuration '
+        'directory specified'.format(
+            ACES_OCIO_CONFIGURATION_DIRECTORY_ENVIRON))
+
     return create_ACES_config(aces_CTL_directory,
                               config_directory,
                               lut_resolution_1d,

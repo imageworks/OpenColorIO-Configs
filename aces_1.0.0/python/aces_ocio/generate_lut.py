@@ -534,8 +534,8 @@ def main():
 
     p.add_option('--lut', '-l', type='string', default='')
     p.add_option('--ctl', '-c', type='string', action='append')
-    p.add_option('--lut_resolution_1d', '', type='int', default=1024)
-    p.add_option('--lut_resolution_3d', '', type='int', default=33)
+    p.add_option('--lutResolution1d', '', type='int', default=1024)
+    p.add_option('--lutResolution3d', '', type='int', default=33)
     p.add_option('--ctlReleasePath', '-r', type='string', default='')
     p.add_option('--bitDepth', '-b', type='string', default='float')
     p.add_option('--keepTempImages', '', action='store_true')
@@ -565,7 +565,7 @@ def main():
     ctl_release_path = options.ctlReleasePath
     generate_1d = options.generate1d is True
     generate_3d = options.generate3d is True
-    bitdepth = options.bitDepth
+    bit_depth = options.bitDepth
     cleanup = not options.keepTempImages
 
     params = {}
@@ -600,14 +600,14 @@ def main():
     print('output scale        : %s' % output_scale)
     print('ctl render params   : %s' % params)
     print('ctl release path    : %s' % ctl_release_path)
-    print('bit depth of input  : %s' % bitdepth)
+    print('bit depth of input  : %s' % bit_depth)
     print('cleanup temp images : %s' % cleanup)
 
     if generate_1d:
         generate_1d_LUT_from_CTL(lut,
                                  ctls,
                                  lut_resolution_1d,
-                                 bitdepth,
+                                 bit_depth,
                                  input_scale,
                                  output_scale,
                                  params,
@@ -620,7 +620,7 @@ def main():
         generate_3d_LUT_from_CTL(lut,
                                  ctls,
                                  lut_resolution_3d,
-                                 bitdepth,
+                                 bit_depth,
                                  input_scale,
                                  output_scale,
                                  params,

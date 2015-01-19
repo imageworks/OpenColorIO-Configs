@@ -18,7 +18,7 @@ import sys
 # dedicated executable in a /bin directory.
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
-import PyOpenColorIO as OCIO
+import PyOpenColorIO as ocio
 
 import aces_ocio.create_arri_colorspaces as arri
 import aces_ocio.create_canon_colorspaces as canon
@@ -100,23 +100,23 @@ def set_config_default_roles(config,
     """
 
     if color_picking:
-        config.setRole(OCIO.Constants.ROLE_COLOR_PICKING, color_picking)
+        config.setRole(ocio.Constants.ROLE_COLOR_PICKING, color_picking)
     if color_timing:
-        config.setRole(OCIO.Constants.ROLE_COLOR_TIMING, color_timing)
+        config.setRole(ocio.Constants.ROLE_COLOR_TIMING, color_timing)
     if compositing_log:
-        config.setRole(OCIO.Constants.ROLE_COMPOSITING_LOG, compositing_log)
+        config.setRole(ocio.Constants.ROLE_COMPOSITING_LOG, compositing_log)
     if data:
-        config.setRole(OCIO.Constants.ROLE_DATA, data)
+        config.setRole(ocio.Constants.ROLE_DATA, data)
     if default:
-        config.setRole(OCIO.Constants.ROLE_DEFAULT, default)
+        config.setRole(ocio.Constants.ROLE_DEFAULT, default)
     if matte_paint:
-        config.setRole(OCIO.Constants.ROLE_MATTE_PAINT, matte_paint)
+        config.setRole(ocio.Constants.ROLE_MATTE_PAINT, matte_paint)
     if reference:
-        config.setRole(OCIO.Constants.ROLE_REFERENCE, reference)
+        config.setRole(ocio.Constants.ROLE_REFERENCE, reference)
     if scene_linear:
-        config.setRole(OCIO.Constants.ROLE_SCENE_LINEAR, scene_linear)
+        config.setRole(ocio.Constants.ROLE_SCENE_LINEAR, scene_linear)
     if texture_paint:
-        config.setRole(OCIO.Constants.ROLE_TEXTURE_PAINT, texture_paint)
+        config.setRole(ocio.Constants.ROLE_TEXTURE_PAINT, texture_paint)
 
     return True
 
@@ -168,27 +168,27 @@ def generate_OCIO_transform(transforms):
     # print('Generating transforms')
 
     interpolation_options = {
-        'linear': OCIO.Constants.INTERP_LINEAR,
-        'nearest': OCIO.Constants.INTERP_NEAREST,
-        'tetrahedral': OCIO.Constants.INTERP_TETRAHEDRAL
+        'linear': ocio.Constants.INTERP_LINEAR,
+        'nearest': ocio.Constants.INTERP_NEAREST,
+        'tetrahedral': ocio.Constants.INTERP_TETRAHEDRAL
     }
     direction_options = {
-        'forward': OCIO.Constants.TRANSFORM_DIR_FORWARD,
-        'inverse': OCIO.Constants.TRANSFORM_DIR_INVERSE
+        'forward': ocio.Constants.TRANSFORM_DIR_FORWARD,
+        'inverse': ocio.Constants.TRANSFORM_DIR_INVERSE
     }
 
     ocio_transforms = []
 
     for transform in transforms:
         if transform['type'] == 'lutFile':
-            ocio_transform = OCIO.FileTransform(
+            ocio_transform = ocio.FileTransform(
                 src=transform['path'],
                 interpolation=interpolation_options[
                     transform['interpolation']],
                 direction=direction_options[transform['direction']])
             ocio_transforms.append(ocio_transform)
         elif transform['type'] == 'matrix':
-            ocio_transform = OCIO.MatrixTransform()
+            ocio_transform = ocio.MatrixTransform()
             # MatrixTransform member variables can't be initialized directly.
             # Each must be set individually.
             ocio_transform.setMatrix(transform['matrix'])
@@ -202,11 +202,11 @@ def generate_OCIO_transform(transforms):
 
             ocio_transforms.append(ocio_transform)
         elif transform['type'] == 'exponent':
-            ocio_transform = OCIO.ExponentTransform()
+            ocio_transform = ocio.ExponentTransform()
             ocio_transform.setValue(transform['value'])
             ocio_transforms.append(ocio_transform)
         elif transform['type'] == 'log':
-            ocio_transform = OCIO.LogTransform(
+            ocio_transform = ocio.LogTransform(
                 base=transform['base'],
                 direction=direction_options[transform['direction']])
 
@@ -216,7 +216,7 @@ def generate_OCIO_transform(transforms):
 
     # Build a group transform if necessary
     if len(ocio_transforms) > 1:
-        transform_G = OCIO.GroupTransform()
+        transform_G = ocio.GroupTransform()
         for transform in ocio_transforms:
             transform_G.push_back(transform)
         transform = transform_G
@@ -244,7 +244,7 @@ def create_config(config_data, nuke=False):
     """
 
     # Create the config
-    config = OCIO.Config()
+    config = ocio.Config()
 
     #
     # Set config wide values
@@ -259,7 +259,7 @@ def create_config(config_data, nuke=False):
     print('Adding the reference color space : %s' % reference_data.name)
 
     # Create a color space
-    reference = OCIO.ColorSpace(
+    reference = ocio.ColorSpace(
         name=reference_data.name,
         bitDepth=reference_data.bit_depth,
         description=reference_data.description,
@@ -278,7 +278,7 @@ def create_config(config_data, nuke=False):
     for colorspace in sorted(config_data['colorSpaces']):
         print('Creating new color space : %s' % colorspace.name)
 
-        ocio_colorspace = OCIO.ColorSpace(
+        ocio_colorspace = ocio.ColorSpace(
             name=colorspace.name,
             bitDepth=colorspace.bit_depth,
             description=colorspace.description,
@@ -294,7 +294,7 @@ def create_config(config_data, nuke=False):
                 colorspace.to_reference_transforms)
             ocio_colorspace.setTransform(
                 ocio_transform,
-                OCIO.Constants.COLORSPACE_DIR_TO_REFERENCE)
+                ocio.Constants.COLORSPACE_DIR_TO_REFERENCE)
 
         if colorspace.from_reference_transforms != []:
             print('Generating From-Reference transforms')
@@ -302,7 +302,7 @@ def create_config(config_data, nuke=False):
                 colorspace.from_reference_transforms)
             ocio_colorspace.setTransform(
                 ocio_transform,
-                OCIO.Constants.COLORSPACE_DIR_FROM_REFERENCE)
+                ocio.Constants.COLORSPACE_DIR_FROM_REFERENCE)
 
         config.addColorSpace(ocio_colorspace)
 
@@ -405,7 +405,7 @@ def generate_LUTs(odt_info,
     ACES.equality_group = ''
     ACES.family = 'ACES'
     ACES.is_data = False
-    ACES.allocation_type = OCIO.Constants.ALLOCATION_LG2
+    ACES.allocation_type = ocio.Constants.ALLOCATION_LG2
     ACES.allocation_vars = [-15, 6]
 
     config_data['referenceColorSpace'] = ACES
@@ -581,14 +581,14 @@ def generate_LUTs(odt_info,
         cs.is_data = False
 
         if bit_depth == 10:
-            cs.bit_depth = bit_depth = OCIO.Constants.BIT_DEPTH_UINT10
+            cs.bit_depth = bit_depth = ocio.Constants.BIT_DEPTH_UINT10
             adx_to_cdd = [1023.0 / 500.0, 0.0, 0.0, 0.0,
                           0.0, 1023.0 / 500.0, 0.0, 0.0,
                           0.0, 0.0, 1023.0 / 500.0, 0.0,
                           0.0, 0.0, 0.0, 1.0]
             offset = [-95.0 / 500.0, -95.0 / 500.0, -95.0 / 500.0, 0.0]
         elif bit_depth == 16:
-            cs.bit_depth = bit_depth = OCIO.Constants.BIT_DEPTH_UINT16
+            cs.bit_depth = bit_depth = ocio.Constants.BIT_DEPTH_UINT16
             adx_to_cdd = [65535.0 / 8000.0, 0.0, 0.0, 0.0,
                           0.0, 65535.0 / 8000.0, 0.0, 0.0,
                           0.0, 0.0, 65535.0 / 8000.0, 0.0,

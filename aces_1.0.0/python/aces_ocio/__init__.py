@@ -11,19 +11,33 @@ Usage
 Python
 ******
 
->>> import sys
->>> sys.path.append("/path/to/script")
->>> import create_aces_config as cac
->>> acesReleaseCTLDir = "/path/to/github/checkout/releases/v0.7.1/transforms/ctl"
->>> configDir = "/path/to/config/dir"
->>> cac.createACESConfig(acesReleaseCTLDir, configDir, 1024, 33, True)
+>>> from aces_ocio.create_aces_config import create_ACES_config
+>>> aces_CTL_directory = '/path/to/github/checkout/releases/v1.0.0/transforms/ctl'
+>>> config_directory = '/path/to/configuration/dir'
+>>> create_ACES_config(aces_CTL_directory, config_directory, 1024, 33, True)
 
 Command Line
 ************
 
-From the directory with 'create_aces_config.py':
+Using the *create_aces_config* binary:
 
-$ python create_aces_config.py -a "/path/to/github/checkout/releases/v0.7.1/transforms/ctl" -c "/path/to/config/dir" --lut_resolution_1d 1024 --lut_resolution_3d 33 --keepTempImages
+$ create_aces_config -a '/path/to/github/checkout/releases/v0.7.1/transforms/ctl' -c '/path/to/config/dir' --lutResolution1d 1024 --lutResolution3d 33 --keepTempImages
+
+It is possible to set the following environment variables to avoid passing
+the paths to the binary:
+
+- *ACES_OCIO_CTL_DIRECTORY*
+- *ACES_OCIO_CONFIGURATION_DIRECTORY*
+
+The above command line call would be done as follows:
+
+$ create_aces_config --lutResolution1d 1024 --lutResolution3d 33 --keepTempImages
+
+Testing the generated configuration is needs the
+*ACES_OCIO_CTL_DIRECTORY* environment variable to be set and is done as
+follows:
+
+$ tests_aces_config
 
 Build
 -----

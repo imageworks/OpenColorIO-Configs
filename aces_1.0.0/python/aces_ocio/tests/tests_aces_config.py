@@ -9,12 +9,6 @@ import hashlib
 import os
 import re
 import shutil
-import sys
-
-# TODO: Temporary ugly thing to be discussed, ideally the package should be
-# in PYTHONPATH.
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
-
 import tempfile
 import unittest
 
@@ -39,7 +33,7 @@ __all__ = ['REFERENCE_CONFIG_ROOT_DIRECTORY',
 # TODO: Investigate how the current config has been generated to use it for
 # tests.
 # REFERENCE_CONFIG_ROOT_DIRECTORY = os.path.abspath(
-#     os.path.join(os.path.dirname(__file__), '..', '..', '..'))
+# os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 REFERENCE_CONFIG_ROOT_DIRECTORY = '/colour-science/colour-ramblings/ocio/aces'
 
 HASH_TEST_PATTERNS = ('\.3dl', '\.lut', '\.csp')
@@ -105,11 +99,12 @@ class TestACESConfig(unittest.TestCase):
         hashes = {}
         for path in files_walker(directory,
                                  filters_in=filters_in,
-                                 filters_out=filters_out):
+                                 filters_out=filters_out,
+                                 flags=flags):
             with open(path) as file:
-                hash = hashlib.md5(
+                digest = hashlib.md5(
                     re.sub('\s', '', file.read())).hexdigest()
-            hashes[path.replace(directory, '')] = hash
+            hashes[path.replace(directory, '')] = digest
         return hashes
 
     def test_ACES_config(self):

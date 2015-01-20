@@ -20,11 +20,9 @@ __status__ = 'Production'
 __all__ = ['ColorSpace',
            'mat44_from_mat33',
            'filter_words',
-           'files_walker']
+           'files_walker',
+           'sanitize_path']
 
-#
-# Utility classes and functions
-#
 
 class ColorSpace(object):
     """
@@ -152,3 +150,21 @@ def files_walker(directory, filters_in=None, filters_out=None, flags=0):
                     continue
 
                 yield path
+
+
+def sanitize_path(path):
+    """
+    Object description.
+
+    Parameters
+    ----------
+    parameter : type
+        Parameter description.
+
+    Returns
+    -------
+    type
+         Return value description.
+    """
+
+    return path.replace(' ', '_').replace(')', '_').replace('(', '_')

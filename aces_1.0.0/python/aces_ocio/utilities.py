@@ -31,6 +31,7 @@ class ColorSpace(object):
 
     def __init__(self,
                  name,
+                 aliases=[],
                  description=None,
                  bit_depth=OCIO.Constants.BIT_DEPTH_F32,
                  equality_group=None,
@@ -55,6 +56,7 @@ class ColorSpace(object):
         """
 
         self.name = name
+        self.aliases = []
         self.bit_depth = bit_depth
         self.description = description
         self.equality_group = equality_group
@@ -168,3 +170,31 @@ def sanitize_path(path):
     """
 
     return path.replace(' ', '_').replace(')', '_').replace('(', '_')
+
+def compact(string):
+    """
+    Removes blanks, underscores, dashes and parentheses
+
+    Parameters
+    ----------
+    parameter : type
+        A string.
+
+    Returns
+    -------
+    type
+         A compact version of that string.
+    """
+
+    compact = string
+    compact = compact.lower()
+    compact = compact.replace(' ', '_')
+    compact = compact.replace('(', '_')
+    compact = compact.replace(')', '_')
+    compact = compact.replace('.', '_')
+    compact = compact.replace('-', '_')
+    compact = compact.replace('___', '_')
+    compact = compact.replace('__', '_')
+    compact = compact.replace('_', '')
+
+    return compact

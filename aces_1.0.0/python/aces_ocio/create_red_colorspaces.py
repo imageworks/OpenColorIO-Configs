@@ -26,7 +26,8 @@ def create_RED_log_film(gamut,
                         transfer_function,
                         name,
                         lut_directory,
-                        lut_resolution_1d):
+                        lut_resolution_1d,
+                        aliases=[]):
     """
     Object description.
 
@@ -51,6 +52,7 @@ def create_RED_log_film(gamut,
 
     cs = ColorSpace(name)
     cs.description = name
+    cs.aliases = aliases
     cs.equality_group = ''
     cs.family = 'RED'
     cs.is_data = False
@@ -153,7 +155,8 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'REDlogFilm',
         'REDlogFilm',
         lut_directory,
-        lut_resolution_1d)
+        lut_resolution_1d,
+        ["rlf_dgn"])
     colorspaces.append(RED_log_film_dragon)
 
     RED_log_film_dragon2 = create_RED_log_film(
@@ -161,7 +164,8 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'REDlogFilm',
         'REDlogFilm',
         lut_directory,
-        lut_resolution_1d)
+        lut_resolution_1d,
+        ["rlf_dgn2"])
     colorspaces.append(RED_log_film_dragon2)
 
     RED_log_film_color2 = create_RED_log_film(
@@ -169,7 +173,8 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'REDlogFilm',
         'REDlogFilm',
         lut_directory,
-        lut_resolution_1d)
+        lut_resolution_1d,
+        ["rlf_rc2"])
     colorspaces.append(RED_log_film_color2)
 
     RED_log_film_color3 = create_RED_log_film(
@@ -177,7 +182,8 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'REDlogFilm',
         'REDlogFilm',
         lut_directory,
-        lut_resolution_1d)
+        lut_resolution_1d,
+        ["rlf_rc3"])
     colorspaces.append(RED_log_film_color3)
 
     RED_log_film_color4 = create_RED_log_film(
@@ -185,57 +191,64 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'REDlogFilm',
         'REDlogFilm',
         lut_directory,
-        lut_resolution_1d)
+        lut_resolution_1d,
+        ["rlf_rc4"])
     colorspaces.append(RED_log_film_color4)
 
     # Linearization only
-    RED_log_film_dragon = create_RED_log_film(
+    RED_log_film = create_RED_log_film(
         '',
         'REDlogFilm',
         'REDlogFilm',
         lut_directory,
-        lut_resolution_1d)
-    colorspaces.append(RED_log_film_dragon)
+        lut_resolution_1d,
+        ["crv_rlf"])
+    colorspaces.append(RED_log_film)
 
     # Primaries only
-    RED_log_film_dragon = create_RED_log_film(
+    RED_dragon = create_RED_log_film(
         'DRAGONcolor',
         '',
         'REDlogFilm',
         lut_directory,
-        lut_resolution_1d)
-    colorspaces.append(RED_log_film_dragon)
+        lut_resolution_1d,
+        ["lin_dgn"])
+    colorspaces.append(RED_dragon)
 
-    RED_log_film_dragon2 = create_RED_log_film(
+    RED_dragon2 = create_RED_log_film(
         'DRAGONcolor2',
         '',
         'REDlogFilm',
         lut_directory,
-        lut_resolution_1d)
-    colorspaces.append(RED_log_film_dragon2)
+        lut_resolution_1d,
+        ["lin_dgn2"])
+    colorspaces.append(RED_dragon2)
 
-    RED_log_film_color2 = create_RED_log_film(
+    RED_color2 = create_RED_log_film(
         'REDcolor2',
         '',
         'REDlogFilm',
         lut_directory,
-        lut_resolution_1d)
-    colorspaces.append(RED_log_film_color2)
+        lut_resolution_1d,
+        ["lin_rc2"])
+    colorspaces.append(RED_color2)
 
-    RED_log_film_color3 = create_RED_log_film(
+    RED_color3 = create_RED_log_film(
         'REDcolor3',
         '',
         'REDlogFilm',
         lut_directory,
-        lut_resolution_1d)
-    colorspaces.append(RED_log_film_color3)
+        lut_resolution_1d,
+        ["lin_rc3"])
+    colorspaces.append(RED_color3)
 
-    RED_log_film_color4 = create_RED_log_film(
+    RED_color4 = create_RED_log_film(
         'REDcolor4',
         '',
         'REDlogFilm',
         lut_directory,
-        lut_resolution_1d)
-    colorspaces.append(RED_log_film_color4)
+        lut_resolution_1d,
+        ["lin_rc4"])
+    colorspaces.append(RED_color4)
 
     return colorspaces

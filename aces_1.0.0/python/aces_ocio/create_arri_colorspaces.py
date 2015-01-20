@@ -10,7 +10,7 @@ import math
 import os
 
 import aces_ocio.generate_lut as genlut
-from aces_ocio.utilities import ColorSpace, mat44_from_mat33, sanitize_path
+from aces_ocio.utilities import ColorSpace, mat44_from_mat33, sanitize_path, compact
 
 
 __author__ = 'ACES Developers'
@@ -29,7 +29,8 @@ def create_log_c(gamut,
                  exposure_index,
                  name,
                  lut_directory,
-                 lut_resolution_1d):
+                 lut_resolution_1d,
+                 aliases):
     """
     Object description.
 
@@ -54,6 +55,7 @@ def create_log_c(gamut,
 
     cs = ColorSpace(name)
     cs.description = name
+    cs.aliases = aliases
     cs.equality_group = ''
     cs.family = 'ARRI'
     cs.is_data = False
@@ -190,7 +192,8 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
             EI,
             'LogC',
             lut_directory,
-            lut_resolution_1d)
+            lut_resolution_1d,
+            ["%sei%s_%s" % ("logc3", str(EI), "arriwide")])
         colorspaces.append(log_c_EI_full)
 
     # Linearization Only
@@ -201,7 +204,8 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
             EI,
             'LogC',
             lut_directory,
-            lut_resolution_1d)
+            lut_resolution_1d,
+            ["crv_%sei%s" % ("logc3", str(EI))])
         colorspaces.append(log_c_EI_linearization)
 
     # Primaries Only
@@ -211,7 +215,8 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         default_EI,
         'LogC',
         lut_directory,
-        lut_resolution_1d)
+        lut_resolution_1d,
+        ["%s_%s" % ('lin', "arriwide")])
     colorspaces.append(log_c_EI_primaries)
 
     return colorspaces

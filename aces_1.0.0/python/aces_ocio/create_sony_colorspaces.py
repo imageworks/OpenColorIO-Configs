@@ -26,7 +26,8 @@ def create_s_log(gamut,
                  transfer_function,
                  name,
                  lut_directory,
-                 lut_resolution_1d):
+                 lut_resolution_1d,
+                 aliases):
     """
     Object description.
 
@@ -51,6 +52,7 @@ def create_s_log(gamut,
 
     cs = ColorSpace(name)
     cs.description = name
+    cs.aliases = aliases
     cs.equality_group = ''
     cs.family = 'Sony'
     cs.is_data = False
@@ -222,7 +224,8 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'S-Log1',
         'S-Log',
         lut_directory,
-        lut_resolution_1d)
+        lut_resolution_1d,
+        ["slog1_sgamut"])
     colorspaces.append(s_log1_s_gamut)
 
     # *S-Log2*
@@ -231,7 +234,8 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'S-Log2',
         'S-Log2',
         lut_directory,
-        lut_resolution_1d)
+        lut_resolution_1d,
+        ["slog2_sgamut"])
     colorspaces.append(s_log2_s_gamut)
 
     s_log2_s_gamut_daylight = create_s_log(
@@ -239,7 +243,8 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'S-Log2',
         'S-Log2',
         lut_directory,
-        lut_resolution_1d)
+        lut_resolution_1d,
+        ["slog2_sgamutday"])
     colorspaces.append(s_log2_s_gamut_daylight)
 
     s_log2_s_gamut_tungsten = create_s_log(
@@ -247,7 +252,8 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'S-Log2',
         'S-Log2',
         lut_directory,
-        lut_resolution_1d)
+        lut_resolution_1d,
+        ["slog2_sgamuttung"])
     colorspaces.append(s_log2_s_gamut_tungsten)
 
     # *S-Log3*
@@ -256,7 +262,8 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'S-Log3',
         'S-Log3',
         lut_directory,
-        lut_resolution_1d)
+        lut_resolution_1d,
+        ["slog3_sgamutcine"])
     colorspaces.append(s_log3_s_gamut3Cine)
 
     s_log3_s_gamut3 = create_s_log(
@@ -264,7 +271,8 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'S-Log3',
         'S-Log3',
         lut_directory,
-        lut_resolution_1d)
+        lut_resolution_1d,
+        ["slog3_sgamut3"])
     colorspaces.append(s_log3_s_gamut3)
 
     # Linearization Only
@@ -273,7 +281,8 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'S-Log1',
         'S-Log',
         lut_directory,
-        lut_resolution_1d)
+        lut_resolution_1d,
+        ["crv_slog1"])
     colorspaces.append(s_log1)
 
     s_log2 = create_s_log(
@@ -281,7 +290,8 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'S-Log2',
         'S-Log2',
         lut_directory,
-        lut_resolution_1d)
+        lut_resolution_1d,
+        ["crv_slog2"])
     colorspaces.append(s_log2)
 
     s_log3 = create_s_log(
@@ -289,7 +299,8 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'S-Log3',
         'S-Log3',
         lut_directory,
-        lut_resolution_1d)
+        lut_resolution_1d,
+        ["crv_slog3"])
     colorspaces.append(s_log3)
 
     # Primaries Only
@@ -298,7 +309,8 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         '',
         'S-Log',
         lut_directory,
-        lut_resolution_1d)
+        lut_resolution_1d,
+        ["lin_sgamut"])
     colorspaces.append(s_gamut)
 
     s_gamut_daylight = create_s_log(
@@ -306,7 +318,8 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         '',
         'S-Log2',
         lut_directory,
-        lut_resolution_1d)
+        lut_resolution_1d,
+        ["lin_sgamutday"])
     colorspaces.append(s_gamut_daylight)
 
     s_gamut_tungsten = create_s_log(
@@ -314,7 +327,8 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         '',
         'S-Log2',
         lut_directory,
-        lut_resolution_1d)
+        lut_resolution_1d,
+        ["lin_sgamuttung"])
     colorspaces.append(s_gamut_tungsten)
 
     s_gamut3Cine = create_s_log(
@@ -322,7 +336,8 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         '',
         'S-Log3',
         lut_directory,
-        lut_resolution_1d)
+        lut_resolution_1d,
+        ["lin_sgamut3cine"])
     colorspaces.append(s_gamut3Cine)
 
     s_gamut3 = create_s_log(
@@ -330,7 +345,8 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         '',
         'S-Log3',
         lut_directory,
-        lut_resolution_1d)
+        lut_resolution_1d,
+        ["lin_sgamut3"])
     colorspaces.append(s_gamut3)
 
     return colorspaces

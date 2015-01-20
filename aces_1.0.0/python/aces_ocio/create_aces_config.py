@@ -24,7 +24,7 @@ from aces_ocio.generate_lut import (
     generate_3d_LUT_from_CTL,
     write_SPI_1d)
 from aces_ocio.process import Process
-from aces_ocio.utilities import ColorSpace, mat44_from_mat33, sanitize_path
+from aces_ocio.utilities import ColorSpace, mat44_from_mat33, sanitize_path, compact
 
 __author__ = 'ACES Developers'
 __copyright__ = 'Copyright (C) 2014 - 2015 - ACES Developers'
@@ -171,6 +171,8 @@ def generate_OCIO_transform(transforms):
     ocio_transforms = []
 
     for transform in transforms:
+
+        # lutFile transform
         if transform['type'] == 'lutFile':
             ocio_transform = ocio.FileTransform(
                 src=transform['path'],
@@ -178,10 +180,12 @@ def generate_OCIO_transform(transforms):
                     transform['interpolation']],
                 direction=direction_options[transform['direction']])
             ocio_transforms.append(ocio_transform)
+        
+        # matrix transform
         elif transform['type'] == 'matrix':
             ocio_transform = ocio.MatrixTransform()
-            # MatrixTransform member variables can't be initialized directly
-            # and must be set individually.
+            # MatrixTransform member variables can't be initialized directly.
+            # Each must be set individually.
             ocio_transform.setMatrix(transform['matrix'])
 
             if 'offset' in transform:
@@ -192,18 +196,31 @@ def generate_OCIO_transform(transforms):
                     direction_options[transform['direction']])
 
             ocio_transforms.append(ocio_transform)
+
+        # exponent transform
         elif transform['type'] == 'exponent':
             ocio_transform = ocio.ExponentTransform()
             ocio_transform.setValue(transform['value'])
             ocio_transforms.append(ocio_transform)
+
+        # log transform
         elif transform['type'] == 'log':
             ocio_transform = ocio.LogTransform(
                 base=transform['base'],
                 direction=direction_options[transform['direction']])
 
             ocio_transforms.append(ocio_transform)
+
+        # color space transform
+        elif transform['type'] == 'colorspace':
+            ocio_transform = ocio.ColorSpaceTransform( src=transform['src'],
+                dst=transform['dst'],
+                direction=direction_options['forward'] )
+            ocio_transforms.append(ocio_transform)
+
+        # unknown type
         else:
-            print('Ignoring unknown transform type : %s' % transform['type'])
+            print("Ignoring unknown transform type : %s" % transform['type'])
 
     if len(ocio_transforms) > 1:
         group_transform = ocio.GroupTransform()
@@ -214,6 +231,66 @@ def generate_OCIO_transform(transforms):
         transform = ocio_transforms[0]
 
     return transform
+
+def add_colorspace_alias(config, reference_colorspace, colorspace, colorspace_alias_names):
+    """
+    Object description.
+
+    Parameters
+    ----------
+    parameter : type
+        Parameter description.
+
+    Returns
+    -------
+    type
+         Return value description.
+    """
+
+    for alias_name in colorspace_alias_names:
+        if alias_name == colorspace.name.lower():
+            return
+
+        print( "Adding alias colorspace space %s, alias to %s" % (
+            alias_name, colorspace.name))
+
+        compact_family_name = "Aliases"
+
+        ocio_colorspace_alias = ocio.ColorSpace(
+            name=alias_name,
+            bitDepth=colorspace.bit_depth,
+            description=colorspace.description,
+            equalityGroup=colorspace.equality_group,
+            family=compact_family_name,
+            isData=colorspace.is_data,
+            allocation=colorspace.allocation_type,
+            allocationVars=colorspace.allocation_vars)
+
+        if colorspace.to_reference_transforms != []:
+            print("Generating To-Reference transforms")
+            ocio_transform = generate_OCIO_transform([{
+                'type': 'colorspace',
+                'src': colorspace.name,
+                'dst': reference_colorspace.name,
+                'direction': 'forward'
+                }])
+            ocio_colorspace_alias.setTransform(
+                ocio_transform,
+                ocio.Constants.COLORSPACE_DIR_TO_REFERENCE)
+
+        if colorspace.from_reference_transforms != []:
+            print("Generating From-Reference transforms")
+            ocio_transform = generate_OCIO_transform([{
+                'type': 'colorspace',
+                'src': reference_colorspace.name,
+                'dst': colorspace.name,
+                'direction': 'forward'
+                }])
+            ocio_colorspace_alias.setTransform(
+                ocio_transform,
+                ocio.Constants.COLORSPACE_DIR_FROM_REFERENCE)
+
+        config.addColorSpace(ocio_colorspace_alias)
 
 
 def create_config(config_data, nuke=False):
@@ -254,6 +331,13 @@ def create_config(config_data, nuke=False):
 
     config.addColorSpace(reference)
 
+    # Add alias
+    if reference_data.aliases != []:
+        add_colorspace_alias(config, reference_data,
+            reference_data, reference_data.aliases)
+
+    print("")
+
     # Creating the remaining colorspaces.
     for colorspace in sorted(config_data['colorSpaces']):
         print('Creating new color space : %s' % colorspace.name)
@@ -285,6 +369,13 @@ def create_config(config_data, nuke=False):
                 ocio.Constants.COLORSPACE_DIR_FROM_REFERENCE)
 
         config.addColorSpace(ocio_colorspace)
+
+        #
+        # Add alias to normal colorspace, using compact name
+        #
+        if colorspace.aliases != []:
+            add_colorspace_alias(config, reference_data, 
+                colorspace, colorspace.aliases)
 
         print('')
 
@@ -368,6 +459,7 @@ def generate_LUTs(odt_info,
     ACES.description = (
         'The Academy Color Encoding System reference color space')
     ACES.equality_group = ''
+    ACES.aliases = ["lin_ap0", "aces"]
     ACES.family = 'ACES'
     ACES.is_data = False
     ACES.allocation_type = ocio.Constants.ALLOCATION_LG2
@@ -397,6 +489,7 @@ def generate_LUTs(odt_info,
                       input_scale=1.0):
         cs = ColorSpace(name)
         cs.description = 'The %s color space' % name
+        cs.aliases = ["acescc_ap1"]
         cs.equality_group = ''
         cs.family = 'ACES'
         cs.is_data = False
@@ -452,6 +545,7 @@ def generate_LUTs(odt_info,
     def create_ACESproxy(name='ACESproxy'):
         cs = ColorSpace(name)
         cs.description = 'The %s color space' % name
+        cs.aliases = ["acesproxy_ap1"]
         cs.equality_group = ''
         cs.family = 'ACES'
         cs.is_data = False
@@ -507,6 +601,7 @@ def generate_LUTs(odt_info,
     def create_ACEScg(name='ACEScg'):
         cs = ColorSpace(name)
         cs.description = 'The %s color space' % name
+        cs.aliases = ["lin_ap1"]
         cs.equality_group = ''
         cs.family = 'ACES'
         cs.is_data = False
@@ -533,6 +628,7 @@ def generate_LUTs(odt_info,
         name = '%s%s' % (name, bit_depth)
         cs = ColorSpace(name)
         cs.description = '%s color space - used for film scans' % name
+        cs.aliases = ["adx%s" % str(bit_depth)]
         cs.equality_group = ''
         cs.family = 'ADX'
         cs.is_data = False
@@ -697,6 +793,7 @@ def generate_LUTs(odt_info,
     # *Generic Log Transform*
     # -------------------------------------------------------------------------
     def create_generic_log(name='log',
+                           aliases=[],
                            min_value=0.0,
                            max_value=1.0,
                            input_scale=1.0,
@@ -706,6 +803,7 @@ def generate_LUTs(odt_info,
                            lut_resolution_1d=lut_resolution_1d):
         cs = ColorSpace(name)
         cs.description = 'The %s color space' % name
+        cs.aliases = aliases
         cs.equality_group = name
         cs.family = 'Utility'
         cs.is_data = False
@@ -751,9 +849,11 @@ def generate_LUTs(odt_info,
                         shaper_info,
                         lut_resolution_1d=1024,
                         lut_resolution_3d=64,
-                        cleanup=True):
+                        cleanup=True,
+                        aliases=[]):
         cs = ColorSpace('%s' % lmt_name)
         cs.description = 'The ACES Look Transform: %s' % lmt_name
+        cs.aliases = aliases
         cs.equality_group = ''
         cs.family = 'Look'
         cs.is_data = False
@@ -863,6 +963,7 @@ def generate_LUTs(odt_info,
 
     # Defining the *Log 2* shaper.
     lmt_shaper_name = 'LMT Shaper'
+    lmt_shaper_name_aliases = ['crv_lmtshaper']
     lmt_params = {
         'middleGrey': 0.18,
         'minExposure': -10.0,
@@ -872,7 +973,8 @@ def generate_LUTs(odt_info,
                                     middle_grey=lmt_params['middleGrey'],
                                     min_exposure=lmt_params['minExposure'],
                                     max_exposure=lmt_params['maxExposure'],
-                                    lut_resolution_1d=lmt_lut_resolution_1d)
+                                    lut_resolution_1d=lmt_lut_resolution_1d,
+                                    aliases=lmt_shaper_name_aliases)
     config_data['colorSpaces'].append(lmt_shaper)
 
     shaper_input_scale_generic_log2 = 1.0
@@ -893,13 +995,15 @@ def generate_LUTs(odt_info,
     print(sorted_LMTs)
     for lmt in sorted_LMTs:
         (lmt_name, lmt_values) = lmt
+        lmt_aliases = ["look_%s" % compact(lmt_values['transformUserName'])]
         cs = create_ACES_LMT(
             lmt_values['transformUserName'],
             lmt_values,
             lmt_shaper_data,
             lmt_lut_resolution_1d,
             lmt_lut_resolution_3d,
-            cleanup)
+            cleanup,
+            lmt_aliases)
         config_data['colorSpaces'].append(cs)
 
     # -------------------------------------------------------------------------
@@ -910,10 +1014,12 @@ def generate_LUTs(odt_info,
                                  shaper_info,
                                  lut_resolution_1d=1024,
                                  lut_resolution_3d=64,
-                                 cleanup=True):
+                                 cleanup=True,
+                                 aliases=[]):
         cs = ColorSpace('%s' % odt_name)
         cs.description = '%s - %s Output Transform' % (
             odt_values['transformUserNamePrefix'], odt_name)
+        cs.aliases = aliases
         cs.equality_group = ''
         cs.family = 'Output'
         cs.is_data = False
@@ -1063,6 +1169,7 @@ def generate_LUTs(odt_info,
 
     # Defining the *Log 2* shaper.
     log2_shaper_name = shaper_name
+    log2_shaper_name_aliases = ["crv_%s" % compact(shaper_name)]
     log2_params = {
         'middleGrey': 0.18,
         'minExposure': -6.0,
@@ -1072,7 +1179,8 @@ def generate_LUTs(odt_info,
         name=log2_shaper_name,
         middle_grey=log2_params['middleGrey'],
         min_exposure=log2_params['minExposure'],
-        max_exposure=log2_params['maxExposure'])
+        max_exposure=log2_params['maxExposure'],
+        aliases=log2_shaper_name_aliases)
     config_data['colorSpaces'].append(log2_shaper)
 
     shaper_input_scale_generic_log2 = 1.0
@@ -1093,11 +1201,13 @@ def generate_LUTs(odt_info,
 
     # Shaper that also includes the AP1 primaries.
     # Needed for some LUT baking steps.
+    log2_shaper_api1_name_aliases = ["%s_ap1" % compact(shaper_name)]
     log2_shaper_AP1 = create_generic_log(
         name=log2_shaper_name,
         middle_grey=log2_params['middleGrey'],
         min_exposure=log2_params['minExposure'],
-        max_exposure=log2_params['maxExposure'])
+        max_exposure=log2_params['maxExposure'],
+        aliases=log2_shaper_api1_name_aliases)
     log2_shaper_AP1.name = '%s - AP1' % log2_shaper_AP1.name
 
     # *AP1* primaries to *AP0* primaries.
@@ -1127,13 +1237,16 @@ def generate_LUTs(odt_info,
         odt_legal = odt_values.copy()
         odt_legal['legalRange'] = 1
 
+        odt_aliases = ["out_%s" % compact(odt_name_legal)]
+
         cs = create_ACES_RRT_plus_ODT(
             odt_name_legal,
             odt_legal,
             rrt_shaper,
             lut_resolution_1d,
             lut_resolution_3d,
-            cleanup)
+            cleanup,
+            odt_aliases)
         config_data['colorSpaces'].append(cs)
 
         config_data['displays'][odt_name_legal] = {
@@ -1150,13 +1263,16 @@ def generate_LUTs(odt_info,
             odt_full = odt_values.copy()
             odt_full['legalRange'] = 0
 
+            odt_full_aliases = ["out_%s" % compact(odt_name_full)]
+
             cs_full = create_ACES_RRT_plus_ODT(
                 odt_name_full,
                 odt_full,
                 rrt_shaper,
                 lut_resolution_1d,
                 lut_resolution_3d,
-                cleanup)
+                cleanup,
+                odt_full_aliases)
             config_data['colorSpaces'].append(cs_full)
 
             config_data['displays'][odt_name_full] = {
@@ -1169,7 +1285,8 @@ def generate_LUTs(odt_info,
     # -------------------------------------------------------------------------
     def create_generic_matrix(name='matrix',
                               from_reference_values=None,
-                              to_reference_values=None):
+                              to_reference_values=None,
+                              aliases=[]):
 
         if from_reference_values is None:
              from_reference_values = []
@@ -1178,6 +1295,7 @@ def generate_LUTs(odt_info,
 
         cs = ColorSpace(name)
         cs.description = 'The %s color space' % name
+        cs.aliases = []
         cs.equality_group = name
         cs.family = 'Utility'
         cs.is_data = False
@@ -1200,11 +1318,15 @@ def generate_LUTs(odt_info,
 
         return cs
 
-    cs = create_generic_matrix('XYZ', from_reference_values=[ACES_AP0_to_XYZ])
+    cs = create_generic_matrix('XYZ', 
+        from_reference_values=[ACES_AP0_to_XYZ], 
+        aliases=["lin_xyz"])
     config_data['colorSpaces'].append(cs)
 
     cs = create_generic_matrix(
-        'Linear - AP1', to_reference_values=[ACES_AP1_to_AP0])
+        'Linear - AP1', 
+        to_reference_values=[ACES_AP1_to_AP0],
+        aliases=["lin_ap1"])
     config_data['colorSpaces'].append(cs)
 
     # *ACES* to *Linear*, *P3D60* primaries.
@@ -1214,7 +1336,8 @@ def generate_LUTs(odt_info,
 
     cs = create_generic_matrix(
         'Linear - P3-D60',
-        from_reference_values=[ACES_AP0_to_XYZ, XYZ_to_P3D60])
+        from_reference_values=[ACES_AP0_to_XYZ, XYZ_to_P3D60],
+        aliases=["lin_p3d60"])
     config_data['colorSpaces'].append(cs)
 
     # *ACES* to *Linear*, *P3DCI* primaries.
@@ -1224,7 +1347,8 @@ def generate_LUTs(odt_info,
 
     cs = create_generic_matrix(
         'Linear - P3-DCI',
-        from_reference_values=[ACES_AP0_to_XYZ, XYZ_to_P3DCI])
+        from_reference_values=[ACES_AP0_to_XYZ, XYZ_to_P3DCI],
+        aliases=["lin_p3dci"])
     config_data['colorSpaces'].append(cs)
 
     # *ACES* to *Linear*, *Rec. 709* primaries.
@@ -1234,7 +1358,8 @@ def generate_LUTs(odt_info,
 
     cs = create_generic_matrix(
         'Linear - Rec.709',
-        from_reference_values=[ACES_AP0_to_XYZ, XYZ_to_Rec709])
+        from_reference_values=[ACES_AP0_to_XYZ, XYZ_to_Rec709],
+        aliases=["lin_rec709"])
     config_data['colorSpaces'].append(cs)
 
     # *ACES* to *Linear*, *Rec. 2020* primaries.
@@ -1244,7 +1369,8 @@ def generate_LUTs(odt_info,
 
     cs = create_generic_matrix(
         'Linear - Rec.2020',
-        from_reference_values=[ACES_AP0_to_XYZ, XYZ_to_Rec2020])
+        from_reference_values=[ACES_AP0_to_XYZ, XYZ_to_Rec2020],
+        aliases=["lin_rec2020"])
     config_data['colorSpaces'].append(cs)
 
     print('generateLUTs - end')

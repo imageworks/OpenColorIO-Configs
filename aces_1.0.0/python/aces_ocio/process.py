@@ -6,6 +6,8 @@ A process wrapper class that maintains the text output and execution status of
 a process or a list of other process wrappers which carry such data.
 """
 
+from __future__ import division
+
 import os
 import sys
 import traceback

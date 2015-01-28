@@ -5,12 +5,14 @@
 Implements support for *ARRI* colorspaces conversions and transfer functions.
 """
 
+from __future__ import division
+
 import array
 import math
 import os
 
 import aces_ocio.generate_lut as genlut
-from aces_ocio.utilities import ColorSpace, mat44_from_mat33, sanitize_path, compact
+from aces_ocio.utilities import ColorSpace, mat44_from_mat33, sanitize
 
 
 __author__ = 'ACES Developers'
@@ -63,7 +65,7 @@ def create_log_c(gamut,
     # Globals.
     IDT_maker_version = '0.08'
 
-    nominal_EI = 400.0
+    nominal_EI = 400
     black_signal = 0.003907
     mid_gray_signal = 0.01
     encoding_gain = 0.256598
@@ -74,8 +76,8 @@ def create_log_c(gamut,
             0.89 - 1) / 3 + 1) * encoding_gain
 
     def log_c_inverse_parameters_for_EI(EI):
-        cut = 1.0 / 9.0
-        slope = 1.0 / (cut * math.log(10))
+        cut = 1 / 9
+        slope = 1 / (cut * math.log(10))
         offset = math.log10(cut) - slope * cut
         gain = EI / nominal_EI
         gray = mid_gray_signal / gain
@@ -83,10 +85,10 @@ def create_log_c(gamut,
         enc_gain = gain_for_EI(EI)
         enc_offset = encoding_offset
         for i in range(0, 3):
-            nz = ((95.0 / 1023.0 - enc_offset) / enc_gain - offset) / slope
+            nz = ((95 / 1023 - enc_offset) / enc_gain - offset) / slope
             enc_offset = encoding_offset - math.log10(1 + nz) * enc_gain
 
-        a = 1.0 / gray
+        a = 1 / gray
         b = nz - black_signal / gray
         e = slope * a * enc_gain
         f = enc_gain * (slope * b + offset) + enc_offset
@@ -111,10 +113,10 @@ def create_log_c(gamut,
         p = log_c_inverse_parameters_for_EI(exposure_index)
         breakpoint = p['e'] * p['cut'] + p['f']
         if code_value > breakpoint:
-            linear = ((pow(10, (code_value / 1023.0 - p['d']) / p['c']) -
+            linear = ((pow(10, (code_value / 1023 - p['d']) / p['c']) -
                        p['b']) / p['a'])
         else:
-            linear = (code_value / 1023.0 - p['f']) / p['e']
+            linear = (code_value / 1023 - p['f']) / p['e']
         return linear
 
     cs.to_reference_transforms = []
@@ -122,18 +124,18 @@ def create_log_c(gamut,
     if transfer_function == 'V3 LogC':
         data = array.array('f', '\0' * lut_resolution_1d * 4)
         for c in range(lut_resolution_1d):
-            data[c] = log_c_to_linear(1023.0 * c / (lut_resolution_1d - 1),
+            data[c] = log_c_to_linear(1023 * c / (lut_resolution_1d - 1),
                                       int(exposure_index))
 
         lut = '%s_to_linear.spi1d' % (
             '%s_%s' % (transfer_function, exposure_index))
 
-        lut = sanitize_path(lut)
+        lut = sanitize(lut)
 
         genlut.write_SPI_1d(
             os.path.join(lut_directory, lut),
-            0.0,
-            1.0,
+            0,
+            1,
             data,
             lut_resolution_1d,
             1)
@@ -178,8 +180,8 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
     transfer_function = 'V3 LogC'
     gamut = 'Wide Gamut'
 
-    # EIs = [160.0, 200.0, 250.0, 320.0, 400.0, 500.0, 640.0, 800.0,
-    # 1000.0, 1280.0, 1600.0, 2000.0, 2560.0, 3200.0]
+    # EIs = [160, 200, 250, 320, 400, 500, 640, 800,
+    # 1000, 1280, 1600, 2000, 2560, 3200]
     EIs = [160, 200, 250, 320, 400, 500, 640, 800,
            1000, 1280, 1600, 2000, 2560, 3200]
     default_EI = 800

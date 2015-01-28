@@ -5,13 +5,10 @@
 Implements support for general colorspaces conversions and transfer functions.
 """
 
-import array
-import math
-import os
+from __future__ import division
 
-import aces_ocio.generate_lut as genlut
 import aces_ocio.create_aces_colorspaces as aces
-from aces_ocio.utilities import ColorSpace, mat44_from_mat33, sanitize_path, compact
+from aces_ocio.utilities import ColorSpace, mat44_from_mat33
 
 
 __author__ = 'ACES Developers'
@@ -24,18 +21,30 @@ __status__ = 'Production'
 __all__ = ['create_generic_matrix',
            'create_colorspaces']
 
-# -------------------------------------------------------------------------
-# Generic Matrix transform
-# -------------------------------------------------------------------------
+
 def create_generic_matrix(name='matrix',
                           from_reference_values=None,
                           to_reference_values=None,
                           aliases=[]):
+    """
+    Object description.
+
+    Parameters
+    ----------
+    parameter : type
+        Parameter description.
+
+    Returns
+    -------
+    type
+         Return value description.
+    """
 
     if from_reference_values is None:
-         from_reference_values = []
+        from_reference_values = []
+
     if to_reference_values is None:
-         to_reference_values = []
+        to_reference_values = []
 
     cs = ColorSpace(name)
     cs.description = 'The %s color space' % name
@@ -62,10 +71,10 @@ def create_generic_matrix(name='matrix',
 
     return cs
 
-def create_colorspaces(lut_directory, 
-                       lut_resolution_1d, 
-                       lut_resolution_3d):
 
+def create_colorspaces(lut_directory,
+                       lut_resolution_1d,
+                       lut_resolution_3d):
     """
     Generates the colorspace conversions.
 
@@ -82,14 +91,14 @@ def create_colorspaces(lut_directory,
 
     colorspaces = []
 
-    cs = create_generic_matrix('XYZ', 
-        from_reference_values=[aces.ACES_AP0_to_XYZ], 
-        aliases=["lin_xyz"])
+    cs = create_generic_matrix('XYZ',
+                               from_reference_values=[aces.ACES_AP0_TO_XYZ],
+                               aliases=["lin_xyz"])
     colorspaces.append(cs)
 
     cs = create_generic_matrix(
-        'Linear - AP1', 
-        to_reference_values=[aces.ACES_AP1_to_AP0],
+        'Linear - AP1',
+        to_reference_values=[aces.ACES_AP1_TO_AP0],
         aliases=["lin_ap1"])
     colorspaces.append(cs)
 
@@ -100,7 +109,7 @@ def create_colorspaces(lut_directory,
 
     cs = create_generic_matrix(
         'Linear - P3-D60',
-        from_reference_values=[aces.ACES_AP0_to_XYZ, XYZ_to_P3D60],
+        from_reference_values=[aces.ACES_AP0_TO_XYZ, XYZ_to_P3D60],
         aliases=["lin_p3d60"])
     colorspaces.append(cs)
 
@@ -111,7 +120,7 @@ def create_colorspaces(lut_directory,
 
     cs = create_generic_matrix(
         'Linear - P3-DCI',
-        from_reference_values=[aces.ACES_AP0_to_XYZ, XYZ_to_P3DCI],
+        from_reference_values=[aces.ACES_AP0_TO_XYZ, XYZ_to_P3DCI],
         aliases=["lin_p3dci"])
     colorspaces.append(cs)
 
@@ -122,7 +131,7 @@ def create_colorspaces(lut_directory,
 
     cs = create_generic_matrix(
         'Linear - Rec.709',
-        from_reference_values=[aces.ACES_AP0_to_XYZ, XYZ_to_Rec709],
+        from_reference_values=[aces.ACES_AP0_TO_XYZ, XYZ_to_Rec709],
         aliases=["lin_rec709"])
     colorspaces.append(cs)
 
@@ -133,14 +142,14 @@ def create_colorspaces(lut_directory,
 
     cs = create_generic_matrix(
         'Linear - Rec.2020',
-        from_reference_values=[aces.ACES_AP0_to_XYZ, XYZ_to_Rec2020],
+        from_reference_values=[aces.ACES_AP0_TO_XYZ, XYZ_to_Rec2020],
         aliases=["lin_rec2020"])
     colorspaces.append(cs)
 
     # *ACES* to *Linear*, *Pro Photo* primaries.
-    AP0_to_RIMM = [ 1.2412367771, -0.1685692287, -0.0726675484,
-                    0.0061203066,  1.083151174,  -0.0892714806,
-                   -0.0032853314,  0.0099796402, 0.9933056912]
+    AP0_to_RIMM = [1.2412367771, -0.1685692287, -0.0726675484,
+                   0.0061203066, 1.083151174, -0.0892714806,
+                   -0.0032853314, 0.0099796402, 0.9933056912]
 
     cs = create_generic_matrix(
         'Linear - ProPhoto',
@@ -149,9 +158,9 @@ def create_colorspaces(lut_directory,
     colorspaces.append(cs)
 
     # *ACES* to *Linear*, *Adobe RGB* primaries.
-    AP0_to_ADOBERGB = [ 1.7245603168, -0.4199935942, -0.3045667227,
-                       -0.2764799142,  1.3727190877, -0.0962391734,
-                       -0.0261255258, -0.0901747807,  1.1163003065]
+    AP0_to_ADOBERGB = [1.7245603168, -0.4199935942, -0.3045667227,
+                       -0.2764799142, 1.3727190877, -0.0962391734,
+                       -0.0261255258, -0.0901747807, 1.1163003065]
 
     cs = create_generic_matrix(
         'Linear - Adobe RGB',
@@ -160,9 +169,9 @@ def create_colorspaces(lut_directory,
     colorspaces.append(cs)
 
     # *ACES* to *Linear*, *Adobe Wide Gamut RGB* primaries.
-    AP0_to_ADOBERGB = [ 1.3809814778, -0.1158594573, -0.2651220205,
-                        0.0057015535, 1.0402949043,  -0.0459964578,
-                       -0.0038908746, -0.0597091815,  1.0636000561]
+    AP0_to_ADOBERGB = [1.3809814778, -0.1158594573, -0.2651220205,
+                       0.0057015535, 1.0402949043, -0.0459964578,
+                       -0.0038908746, -0.0597091815, 1.0636000561]
 
     cs = create_generic_matrix(
         'Linear - Adobe Wide Gamut RGB',

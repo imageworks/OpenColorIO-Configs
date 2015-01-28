@@ -5,6 +5,8 @@
 Implements support for *Sony* colorspaces conversions and transfer functions.
 """
 
+from __future__ import division
+
 import array
 import os
 
@@ -89,10 +91,10 @@ def create_s_log(gamut,
 
     def s_log3_to_linear(code_value):
         if code_value >= 171.2102946929:
-            linear = (pow(10.0, ((code_value - 420.0) / 261.5)) *
+            linear = (pow(10, ((code_value - 420) / 261.5)) *
                       (0.18 + 0.01) - 0.01)
         else:
-            linear = (code_value - 95.0) * 0.01125000 / (171.2102946929 - 95.0)
+            linear = (code_value - 95) * 0.01125000 / (171.2102946929 - 95)
 
         return linear
 
@@ -101,13 +103,13 @@ def create_s_log(gamut,
     if transfer_function == 'S-Log1':
         data = array.array('f', '\0' * lut_resolution_1d * 4)
         for c in range(lut_resolution_1d):
-            data[c] = s_log1_to_linear(1023.0 * c / (lut_resolution_1d - 1))
+            data[c] = s_log1_to_linear(1023 * c / (lut_resolution_1d - 1))
 
         lut = '%s_to_linear.spi1d' % transfer_function
         genlut.write_SPI_1d(
             os.path.join(lut_directory, lut),
-            0.0,
-            1.0,
+            0,
+            1,
             data,
             lut_resolution_1d,
             1)
@@ -120,13 +122,13 @@ def create_s_log(gamut,
     elif transfer_function == 'S-Log2':
         data = array.array('f', '\0' * lut_resolution_1d * 4)
         for c in range(lut_resolution_1d):
-            data[c] = s_log2_to_linear(1023.0 * c / (lut_resolution_1d - 1))
+            data[c] = s_log2_to_linear(1023 * c / (lut_resolution_1d - 1))
 
         lut = '%s_to_linear.spi1d' % transfer_function
         genlut.write_SPI_1d(
             os.path.join(lut_directory, lut),
-            0.0,
-            1.0,
+            0,
+            1,
             data,
             lut_resolution_1d,
             1)
@@ -139,13 +141,13 @@ def create_s_log(gamut,
     elif transfer_function == 'S-Log3':
         data = array.array('f', '\0' * lut_resolution_1d * 4)
         for c in range(lut_resolution_1d):
-            data[c] = s_log3_to_linear(1023.0 * c / (lut_resolution_1d - 1))
+            data[c] = s_log3_to_linear(1023 * c / (lut_resolution_1d - 1))
 
         lut = '%s_to_linear.spi1d' % transfer_function
         genlut.write_SPI_1d(
             os.path.join(lut_directory, lut),
-            0.0,
-            1.0,
+            0,
+            1,
             data,
             lut_resolution_1d,
             1)

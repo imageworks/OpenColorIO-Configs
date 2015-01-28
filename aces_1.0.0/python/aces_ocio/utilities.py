@@ -5,8 +5,11 @@
 Defines various package utilities objects.
 """
 
+from __future__ import division
+
 import os
 import re
+from collections import OrderedDict
 
 import PyOpenColorIO as OCIO
 
@@ -21,7 +24,9 @@ __all__ = ['ColorSpace',
            'mat44_from_mat33',
            'filter_words',
            'files_walker',
-           'sanitize_path']
+           'replace',
+           'sanitize',
+           'compact']
 
 
 class ColorSpace(object):
@@ -40,7 +45,7 @@ class ColorSpace(object):
                  to_reference_transforms=[],
                  from_reference_transforms=[],
                  allocation_type=OCIO.Constants.ALLOCATION_UNIFORM,
-                 allocation_vars=[0.0, 1.0]):
+                 allocation_vars=[0, 1]):
         """
         Object description.
 
@@ -83,10 +88,10 @@ def mat44_from_mat33(mat33):
          Return value description.
     """
 
-    return [mat33[0], mat33[1], mat33[2], 0.0,
-            mat33[3], mat33[4], mat33[5], 0.0,
-            mat33[6], mat33[7], mat33[8], 0.0,
-            0, 0, 0, 1.0]
+    return [mat33[0], mat33[1], mat33[2], 0,
+            mat33[3], mat33[4], mat33[5], 0,
+            mat33[6], mat33[7], mat33[8], 0,
+            0, 0, 0, 1]
 
 
 def filter_words(words, filters_in=None, filters_out=None, flags=0):
@@ -154,7 +159,39 @@ def files_walker(directory, filters_in=None, filters_out=None, flags=0):
                 yield path
 
 
-def sanitize_path(path):
+def replace(string, data):
+    """
+    Replaces the data occurrences in the string.
+
+    Parameters
+    ----------
+    string : str or unicode
+        String to manipulate.
+    data : dict
+        Replacement occurrences.
+
+    Returns
+    -------
+    unicode
+        Manipulated string.
+
+    Examples
+    --------
+    >>> patterns = {"John" : "Luke",
+    ...             "Jane" : "Anakin",
+    ...             "Doe" : "Skywalker",
+    ...             "Z6PO" : "R2D2"}
+    >>> data = "Users are: John Doe, Jane Doe, Z6PO."
+    >>> replace(data,patterns )
+    u'Users are: Luke Skywalker, Anakin Skywalker, R2D2.'
+    """
+
+    for old, new in data.iteritems():
+        string = string.replace(old, new)
+    return string
+
+
+def sanitize(path):
     """
     Object description.
 
@@ -169,32 +206,30 @@ def sanitize_path(path):
          Return value description.
     """
 
-    return path.replace(' ', '_').replace(')', '_').replace('(', '_')
+    return replace(path, {' ': '_', ')': '_', '(': '_'})
+
 
 def compact(string):
     """
-    Removes blanks, underscores, dashes and parentheses
+    Removes blanks, underscores, dashes and parentheses.
 
     Parameters
     ----------
-    parameter : type
-        A string.
+    string : str or unicode
+        String to compact.
 
     Returns
     -------
-    type
+    str or unicode
          A compact version of that string.
     """
 
-    compact = string
-    compact = compact.lower()
-    compact = compact.replace(' ', '_')
-    compact = compact.replace('(', '_')
-    compact = compact.replace(')', '_')
-    compact = compact.replace('.', '_')
-    compact = compact.replace('-', '_')
-    compact = compact.replace('___', '_')
-    compact = compact.replace('__', '_')
-    compact = compact.replace('_', '')
-
-    return compact
+    return replace(string.lower(),
+                   OrderedDict(((' ', '_'),
+                                ('(', '_'),
+                                (')', '_'),
+                                ('.', '_'),
+                                ('-', '_'),
+                                ('___', '_'),
+                                ('__', '_'),
+                                ('_', ''))))

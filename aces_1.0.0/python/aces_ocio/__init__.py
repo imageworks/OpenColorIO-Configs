@@ -12,9 +12,9 @@ Python
 ******
 
 >>> from aces_ocio.create_aces_config import create_ACES_config
->>> aces_CTL_directory = '/path/to/github/checkout/releases/v1.0.0/transforms/ctl'
+>>> aces_ctl_directory = '/path/to/github/checkout/releases/v1.0.0/transforms/ctl'
 >>> config_directory = '/path/to/configuration/dir'
->>> create_ACES_config(aces_CTL_directory, config_directory, 1024, 33, True)
+>>> create_ACES_config(aces_ctl_directory, config_directory, 1024, 33, True)
 
 Command Line
 ************

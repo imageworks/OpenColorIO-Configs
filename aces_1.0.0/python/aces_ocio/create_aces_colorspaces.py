@@ -5,6 +5,8 @@
 Implements support for *ACES* colorspaces conversions and transfer functions.
 """
 
+from __future__ import division
+
 import math
 import numpy
 import os
@@ -94,9 +96,9 @@ def create_ACEScc(aces_ctl_directory,
                   lut_resolution_1d,
                   cleanup,
                   name='ACEScc',
-                  min_value=0.0,
-                  max_value=1.0,
-                  input_scale=1.0):
+                  min_value=0,
+                  max_value=1,
+                  input_scale=1):
     """
     Creates the *ACEScc* colorspace.
 
@@ -137,7 +139,7 @@ def create_ACEScc(aces_ctl_directory,
         lut_resolution_1d,
         'float',
         input_scale,
-        1.0,
+        1,
         {},
         cleanup,
         aces_ctl_directory,
@@ -205,8 +207,8 @@ def create_ACESproxy(aces_ctl_directory,
         ctls,
         lut_resolution_1d,
         'uint16',
-        64.0,
-        1.0,
+        64,
+        1,
         {},
         cleanup,
         aces_ctl_directory)
@@ -300,18 +302,18 @@ def create_ADX(lut_directory,
 
     if bit_depth == 10:
         cs.bit_depth = ocio.Constants.BIT_DEPTH_UINT10
-        ADX_to_CDD = [1023.0 / 500.0, 0.0, 0.0, 0.0,
-                      0.0, 1023.0 / 500.0, 0.0, 0.0,
-                      0.0, 0.0, 1023.0 / 500.0, 0.0,
-                      0.0, 0.0, 0.0, 1.0]
-        offset = [-95.0 / 500.0, -95.0 / 500.0, -95.0 / 500.0, 0.0]
+        ADX_to_CDD = [1023 / 500, 0, 0, 0,
+                      0, 1023 / 500, 0, 0,
+                      0, 0, 1023 / 500, 0,
+                      0, 0, 0, 1]
+        offset = [-95 / 500, -95 / 500, -95 / 500, 0]
     elif bit_depth == 16:
         cs.bit_depth = ocio.Constants.BIT_DEPTH_UINT16
-        ADX_to_CDD = [65535.0 / 8000.0, 0.0, 0.0, 0.0,
-                      0.0, 65535.0 / 8000.0, 0.0, 0.0,
-                      0.0, 0.0, 65535.0 / 8000.0, 0.0,
-                      0.0, 0.0, 0.0, 1.0]
-        offset = [-1520.0 / 8000.0, -1520.0 / 8000.0, -1520.0 / 8000.0, 0.0]
+        ADX_to_CDD = [65535 / 8000, 0, 0, 0,
+                      0, 65535 / 8000, 0, 0,
+                      0, 0, 65535 / 8000, 0,
+                      0, 0, 0, 1]
+        offset = [-1520 / 8000, -1520 / 8000, -1520 / 8000, 0]
 
     cs.to_reference_transforms = []
 
@@ -328,7 +330,7 @@ def create_ADX(lut_directory,
         'matrix': [0.75573, 0.22197, 0.02230, 0,
                    0.05901, 0.96928, -0.02829, 0,
                    0.16134, 0.07406, 0.76460, 0,
-                   0.0, 0.0, 0.0, 1.0],
+                   0, 0, 0, 1],
         'direction': 'forward'})
 
     # Copied from *Alex Fry*'s *adx_cid_to_rle.py*
@@ -361,13 +363,13 @@ def create_ADX(lut_directory,
                      -1.121718645000000,
                      -0.926545676714876]
 
-        REF_PT = ((7120.0 - 1520.0) / 8000.0 * (100.0 / 55.0) -
-                  math.log(0.18, 10.0))
+        REF_PT = ((7120 - 1520) / 8000 * (100 / 55) -
+                  math.log(0.18, 10))
 
         def cid_to_rle(x):
             if x <= 0.6:
                 return interpolate_1D(x, LUT_1D_xp, LUT_1D_fp)
-            return (100.0 / 55.0) * x - REF_PT
+            return (100 / 55) * x - REF_PT
 
         def fit(value, from_min, from_max, to_min, to_max):
             if from_min == from_max:
@@ -376,11 +378,11 @@ def create_ADX(lut_directory,
                 to_max - to_min) + to_min
 
         num_samples = 2 ** 12
-        domain = (-0.19, 3.0)
+        domain = (-0.19, 3)
         data = []
         for i in xrange(num_samples):
-            x = i / (num_samples - 1.0)
-            x = fit(x, 0.0, 1.0, domain[0], domain[1])
+            x = i / (num_samples - 1)
+            x = fit(x, 0, 1, domain[0], domain[1])
             data.append(cid_to_rle(x))
 
         lut = 'ADX_CID_to_RLE.spi1d'
@@ -414,7 +416,7 @@ def create_ADX(lut_directory,
         'matrix': [0.72286, 0.12630, 0.15084, 0,
                    0.11923, 0.76418, 0.11659, 0,
                    0.01427, 0.08213, 0.90359, 0,
-                   0.0, 0.0, 0.0, 1.0],
+                   0, 0, 0, 1],
         'direction': 'forward'})
 
     cs.from_reference_transforms = []
@@ -429,7 +431,7 @@ def create_ACES_LMT(lmt_name,
                     lut_resolution_1d=1024,
                     lut_resolution_3d=64,
                     cleanup=True,
-                    aliases=[]):
+                    aliases=None):
     """
     Creates the *ACES LMT* colorspace.
 
@@ -443,6 +445,9 @@ def create_ACES_LMT(lmt_name,
     Colorspace
          *ACES LMT* colorspace.
     """
+
+    if aliases is None:
+        aliases = []
 
     cs = ColorSpace('%s' % lmt_name)
     cs.description = 'The ACES Look Transform: %s' % lmt_name
@@ -471,8 +476,8 @@ def create_ACES_LMT(lmt_name,
             ctls,
             lut_resolution_1d,
             'float',
-            1.0 / shaper_input_scale,
-            1.0,
+            1 / shaper_input_scale,
+            1,
             shaper_params,
             cleanup,
             aces_ctl_directory)
@@ -499,8 +504,8 @@ def create_ACES_LMT(lmt_name,
             ctls,
             lut_resolution_3d,
             'float',
-            1.0 / shaper_input_scale,
-            1.0,
+            1 / shaper_input_scale,
+            1,
             shaper_params,
             cleanup,
             aces_ctl_directory)
@@ -530,7 +535,7 @@ def create_ACES_LMT(lmt_name,
             ctls,
             lut_resolution_3d,
             'half',
-            1.0,
+            1,
             shaper_input_scale,
             shaper_params,
             cleanup,
@@ -557,7 +562,7 @@ def create_ACES_RRT_plus_ODT(odt_name,
                              lut_resolution_1d=1024,
                              lut_resolution_3d=64,
                              cleanup=True,
-                             aliases=[]):
+                             aliases=None):
     """
     Object description.
 
@@ -571,6 +576,9 @@ def create_ACES_RRT_plus_ODT(odt_name,
     type
          Return value description.
     """
+
+    if aliases is None:
+        aliases = []
 
     cs = ColorSpace('%s' % odt_name)
     cs.description = '%s - %s Output Transform' % (
@@ -605,8 +613,8 @@ def create_ACES_RRT_plus_ODT(odt_name,
             ctls,
             lut_resolution_1d,
             'float',
-            1.0 / shaper_input_scale,
-            1.0,
+            1 / shaper_input_scale,
+            1,
             shaper_params,
             cleanup,
             aces_ctl_directory)
@@ -651,8 +659,8 @@ def create_ACES_RRT_plus_ODT(odt_name,
             ctls,
             lut_resolution_3d,
             'float',
-            1.0 / shaper_input_scale,
-            1.0,
+            1 / shaper_input_scale,
+            1,
             shaper_params,
             cleanup,
             aces_ctl_directory)
@@ -700,7 +708,7 @@ def create_ACES_RRT_plus_ODT(odt_name,
             ctls,
             lut_resolution_3d,
             'half',
-            1.0,
+            1,
             shaper_input_scale,
             shaper_params,
             cleanup,
@@ -725,11 +733,11 @@ def create_generic_log(aces_ctl_directory,
                        cleanup,
                        name='log',
                        aliases=[],
-                       min_value=0.0,
-                       max_value=1.0,
-                       input_scale=1.0,
+                       min_value=0,
+                       max_value=1,
+                       input_scale=1,
                        middle_grey=0.18,
-                       min_exposure=-6.0,
+                       min_exposure=-6,
                        max_exposure=6.5):
     """
     Creates the *Generic Log* colorspace.
@@ -766,7 +774,7 @@ def create_generic_log(aces_ctl_directory,
         lut_resolution_1d,
         'float',
         input_scale,
-        1.0,
+        1,
         {'middleGrey': middle_grey,
          'minExposure': min_exposure,
          'maxExposure': max_exposure},
@@ -820,7 +828,7 @@ def create_LMTs(aces_ctl_directory,
     lmt_shaper_name_aliases = ['crv_lmtshaper']
     lmt_params = {
         'middleGrey': 0.18,
-        'minExposure': -10.0,
+        'minExposure': -10,
         'maxExposure': 6.5}
 
     lmt_shaper = create_generic_log(aces_ctl_directory,
@@ -834,7 +842,7 @@ def create_LMTs(aces_ctl_directory,
                                     aliases=lmt_shaper_name_aliases)
     colorspaces.append(lmt_shaper)
 
-    shaper_input_scale_generic_log2 = 1.0
+    shaper_input_scale_generic_log2 = 1
 
     # *Log 2* shaper name and *CTL* transforms bundled up.
     lmt_shaper_data = [
@@ -904,7 +912,7 @@ def create_ODTs(aces_ctl_directory,
     log2_shaper_name_aliases = ["crv_%s" % compact(shaper_name)]
     log2_params = {
         'middleGrey': 0.18,
-        'minExposure': -6.0,
+        'minExposure': -6,
         'maxExposure': 6.5}
 
     log2_shaper = create_generic_log(
@@ -919,7 +927,7 @@ def create_ODTs(aces_ctl_directory,
         aliases=log2_shaper_name_aliases)
     colorspaces.append(log2_shaper)
 
-    shaper_input_scale_generic_log2 = 1.0
+    shaper_input_scale_generic_log2 = 1
 
     # *Log 2* shaper name and *CTL* transforms bundled up.
     log2_shaper_data = [

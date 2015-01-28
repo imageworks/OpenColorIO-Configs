@@ -5,6 +5,8 @@
 Implements support for general colorspaces conversions and transfer functions.
 """
 
+from __future__ import division
+
 import aces_ocio.create_aces_colorspaces as aces
 from aces_ocio.utilities import ColorSpace, mat44_from_mat33
 

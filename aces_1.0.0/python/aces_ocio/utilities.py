@@ -5,6 +5,8 @@
 Defines various package utilities objects.
 """
 
+from __future__ import division
+
 import os
 import re
 from collections import OrderedDict
@@ -43,7 +45,7 @@ class ColorSpace(object):
                  to_reference_transforms=[],
                  from_reference_transforms=[],
                  allocation_type=OCIO.Constants.ALLOCATION_UNIFORM,
-                 allocation_vars=[0.0, 1.0]):
+                 allocation_vars=[0, 1]):
         """
         Object description.
 
@@ -86,10 +88,10 @@ def mat44_from_mat33(mat33):
          Return value description.
     """
 
-    return [mat33[0], mat33[1], mat33[2], 0.0,
-            mat33[3], mat33[4], mat33[5], 0.0,
-            mat33[6], mat33[7], mat33[8], 0.0,
-            0, 0, 0, 1.0]
+    return [mat33[0], mat33[1], mat33[2], 0,
+            mat33[3], mat33[4], mat33[5], 0,
+            mat33[6], mat33[7], mat33[8], 0,
+            0, 0, 0, 1]
 
 
 def filter_words(words, filters_in=None, filters_out=None, flags=0):

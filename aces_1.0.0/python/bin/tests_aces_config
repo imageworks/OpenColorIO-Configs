@@ -5,6 +5,8 @@
 Tests the *ACES* configuration.
 """
 
+from __future__ import division
+
 import os
 import unittest
 import sys

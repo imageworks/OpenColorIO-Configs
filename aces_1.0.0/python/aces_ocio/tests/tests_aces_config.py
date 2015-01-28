@@ -5,6 +5,8 @@
 Defines unit tests for *ACES* configuration.
 """
 
+from __future__ import division
+
 import hashlib
 import os
 import re

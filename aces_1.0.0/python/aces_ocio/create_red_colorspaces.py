@@ -5,6 +5,8 @@
 Implements support for *RED* colorspaces conversions and transfer functions.
 """
 
+from __future__ import division
+
 import array
 import os
 
@@ -59,29 +61,29 @@ def create_RED_log_film(gamut,
 
     def cineon_to_linear(code_value):
         n_gamma = 0.6
-        black_point = 95.0
-        white_point = 685.0
+        black_point = 95
+        white_point = 685
         code_value_to_density = 0.002
 
-        black_linear = pow(10.0, (black_point - white_point) * (
+        black_linear = pow(10, (black_point - white_point) * (
             code_value_to_density / n_gamma))
-        code_linear = pow(10.0, (code_value - white_point) * (
+        code_linear = pow(10, (code_value - white_point) * (
             code_value_to_density / n_gamma))
 
-        return (code_linear - black_linear) / (1.0 - black_linear)
+        return (code_linear - black_linear) / (1 - black_linear)
 
     cs.to_reference_transforms = []
 
     if transfer_function == 'REDlogFilm':
         data = array.array('f', '\0' * lut_resolution_1d * 4)
         for c in range(lut_resolution_1d):
-            data[c] = cineon_to_linear(1023.0 * c / (lut_resolution_1d - 1))
+            data[c] = cineon_to_linear(1023 * c / (lut_resolution_1d - 1))
 
         lut = 'CineonLog_to_linear.spi1d'
         genlut.write_SPI_1d(
             os.path.join(lut_directory, lut),
-            0.0,
-            1.0,
+            0,
+            1,
             data,
             lut_resolution_1d,
             1)

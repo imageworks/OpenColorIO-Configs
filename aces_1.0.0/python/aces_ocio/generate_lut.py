@@ -6,6 +6,8 @@ Defines objects to generate various kind of 1d, 2d and 3d LUTs in various file
 formats.
 """
 
+from __future__ import division
+
 import array
 import os
 import sys
@@ -36,8 +38,8 @@ __all__ = ['generate_1d_LUT_image',
 
 def generate_1d_LUT_image(ramp_1d_path,
                           resolution=1024,
-                          min_value=0.0,
-                          max_value=1.0):
+                          min_value=0,
+                          max_value=1):
     """
     Object description.
 
@@ -110,8 +112,8 @@ def write_SPI_1d(filename, from_min, from_max, data, entries, channels):
 
 def generate_1d_LUT_from_image(ramp_1d_path,
                                output_path=None,
-                               min_value=0.0,
-                               max_value=1.0):
+                               min_value=0,
+                               max_value=1):
     """
     Object description.
 
@@ -207,8 +209,8 @@ def generate_3d_LUT_from_image(ramp_3d_path, output_path=None, resolution=32):
 def apply_CTL_to_image(input_image,
                        output_image,
                        ctl_paths=None,
-                       input_scale=1.0,
-                       output_scale=1.0,
+                       input_scale=1,
+                       output_scale=1,
                        global_params=None,
                        aces_ctl_directory=None):
     """
@@ -288,13 +290,13 @@ def generate_1d_LUT_from_CTL(lut_path,
                              ctl_paths,
                              lut_resolution=1024,
                              identity_LUT_bit_depth='half',
-                             input_scale=1.0,
-                             output_scale=1.0,
+                             input_scale=1,
+                             output_scale=1,
                              global_params=None,
                              cleanup=True,
                              aces_ctl_directory=None,
-                             min_value=0.0,
-                             max_value=1.0):
+                             min_value=0,
+                             max_value=1):
     """
     Object description.
 
@@ -426,8 +428,8 @@ def generate_3d_LUT_from_CTL(lut_path,
                              ctl_paths,
                              lut_resolution=64,
                              identity_LUT_bit_depth='half',
-                             input_scale=1.0,
-                             output_scale=1.0,
+                             input_scale=1,
+                             output_scale=1,
                              global_params=None,
                              cleanup=True,
                              aces_ctl_directory=None):
@@ -518,10 +520,10 @@ def main():
     p.add_option('--ctlReleasePath', '-r', type='string', default='')
     p.add_option('--bitDepth', '-b', type='string', default='float')
     p.add_option('--keepTempImages', '', action='store_true')
-    p.add_option('--minValue', '', type='float', default=0.0)
-    p.add_option('--maxValue', '', type='float', default=1.0)
-    p.add_option('--inputScale', '', type='float', default=1.0)
-    p.add_option('--outputScale', '', type='float', default=1.0)
+    p.add_option('--minValue', '', type='float', default=0)
+    p.add_option('--maxValue', '', type='float', default=1)
+    p.add_option('--inputScale', '', type='float', default=1)
+    p.add_option('--outputScale', '', type='float', default=1)
     p.add_option('--ctlRenderParam', '-p', type='string', nargs=2,
                  action='append')
 

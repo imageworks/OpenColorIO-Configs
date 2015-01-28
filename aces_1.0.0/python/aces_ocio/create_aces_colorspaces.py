@@ -34,24 +34,20 @@ __status__ = 'Production'
 
 __all__ = ['ACES_AP1_TO_AP0',
            'ACES_AP0_TO_XYZ',
+           'create_ACES',
            'create_ACEScc',
            'create_ACESproxy',
            'create_ACEScg',
            'create_ADX',
-           'create_generic_log',
            'create_ACES_LMT',
-           'create_lmts',
            'create_ACES_RRT_plus_ODT',
-           'create_odts',
-           'create_aces',
+           'create_generic_log',
+           'create_LMTs',
+           'create_ODTs',
            'get_transform_info',
-           'get_ODT_info',
-           'get_LMT_info',
+           'get_ODTs_info',
+           'get_LMTs_info',
            'create_colorspaces']
-
-# -------------------------------------------------------------------------
-# *Matrices*
-# -------------------------------------------------------------------------
 
 # Matrix converting *ACES AP1* primaries to *AP0*.
 ACES_AP1_TO_AP0 = [0.6954522414, 0.1406786965, 0.1638690622,
@@ -63,17 +59,8 @@ ACES_AP0_TO_XYZ = [0.9525523959, 0.0000000000, 0.0000936786,
                    0.3439664498, 0.7281660966, -0.0721325464,
                    0.0000000000, 0.0000000000, 1.0088251844]
 
-# -------------------------------------------------------------------------
-# *ACEScc*
-# -------------------------------------------------------------------------
-def create_ACEScc(aces_CTL_directory,
-                  lut_directory,
-                  lut_resolution_1d,
-                  cleanup,
-                  name='ACEScc',
-                  min_value=0.0,
-                  max_value=1.0,
-                  input_scale=1.0):
+
+def create_ACES():
     """
     Object description.
 
@@ -88,6 +75,42 @@ def create_ACEScc(aces_CTL_directory,
          Return value description.
     """
 
+    # Defining the reference colorspace.
+    aces2065_1 = ColorSpace('ACES2065-1')
+    aces2065_1.description = (
+        'The Academy Color Encoding System reference color space')
+    aces2065_1.equality_group = ''
+    aces2065_1.aliases = ["lin_ap0", "aces"]
+    aces2065_1.family = 'ACES'
+    aces2065_1.is_data = False
+    aces2065_1.allocation_type = ocio.Constants.ALLOCATION_LG2
+    aces2065_1.allocation_vars = [-15, 6]
+
+    return aces2065_1
+
+
+def create_ACEScc(aces_ctl_directory,
+                  lut_directory,
+                  lut_resolution_1d,
+                  cleanup,
+                  name='ACEScc',
+                  min_value=0.0,
+                  max_value=1.0,
+                  input_scale=1.0):
+    """
+    Creates the *ACEScc* colorspace.
+
+    Parameters
+    ----------
+    parameter : type
+        Parameter description.
+
+    Returns
+    -------
+    Colorspace
+         *ACEScc* colorspace.
+    """
+
     cs = ColorSpace(name)
     cs.description = 'The %s color space' % name
     cs.aliases = ["acescc_ap1"]
@@ -95,13 +118,13 @@ def create_ACEScc(aces_CTL_directory,
     cs.family = 'ACES'
     cs.is_data = False
 
-    ctls = [os.path.join(aces_CTL_directory,
+    ctls = [os.path.join(aces_ctl_directory,
                          'ACEScc',
                          'ACEScsc.ACEScc_to_ACES.a1.0.0.ctl'),
             # This transform gets back to the *AP1* primaries.
             # Useful as the 1d LUT is only covering the transfer function.
             # The primaries switch is covered by the matrix below:
-            os.path.join(aces_CTL_directory,
+            os.path.join(aces_ctl_directory,
                          'ACEScg',
                          'ACEScsc.ACES_to_ACEScg.a1.0.0.ctl')]
     lut = '%s_to_ACES.spi1d' % name
@@ -117,7 +140,7 @@ def create_ACEScc(aces_CTL_directory,
         1.0,
         {},
         cleanup,
-        aces_CTL_directory,
+        aces_ctl_directory,
         min_value,
         max_value)
 
@@ -138,16 +161,13 @@ def create_ACEScc(aces_CTL_directory,
     return cs
 
 
-# -------------------------------------------------------------------------
-# *ACESproxy*
-# -------------------------------------------------------------------------
-def create_ACESproxy(aces_CTL_directory,
+def create_ACESproxy(aces_ctl_directory,
                      lut_directory,
                      lut_resolution_1d,
                      cleanup,
                      name='ACESproxy'):
     """
-    Object description.
+    Creates the *ACESproxy* colorspace.
 
     Parameters
     ----------
@@ -156,8 +176,8 @@ def create_ACESproxy(aces_CTL_directory,
 
     Returns
     -------
-    type
-         Return value description.
+    Colorspace
+         *ACESproxy* colorspace.
     """
 
     cs = ColorSpace(name)
@@ -167,13 +187,13 @@ def create_ACESproxy(aces_CTL_directory,
     cs.family = 'ACES'
     cs.is_data = False
 
-    ctls = [os.path.join(aces_CTL_directory,
+    ctls = [os.path.join(aces_ctl_directory,
                          'ACESproxy',
                          'ACEScsc.ACESproxy10i_to_ACES.a1.0.0.ctl'),
             # This transform gets back to the *AP1* primaries.
             # Useful as the 1d LUT is only covering the transfer function.
             # The primaries switch is covered by the matrix below:
-            os.path.join(aces_CTL_directory,
+            os.path.join(aces_ctl_directory,
                          'ACEScg',
                          'ACEScsc.ACES_to_ACEScg.a1.0.0.ctl')]
     lut = '%s_to_aces.spi1d' % name
@@ -189,22 +209,20 @@ def create_ACESproxy(aces_CTL_directory,
         1.0,
         {},
         cleanup,
-        aces_CTL_directory)
+        aces_ctl_directory)
 
     cs.to_reference_transforms = []
     cs.to_reference_transforms.append({
         'type': 'lutFile',
         'path': lut,
         'interpolation': 'linear',
-        'direction': 'forward'
-    })
+        'direction': 'forward'})
 
     # *AP1* primaries to *AP0* primaries.
     cs.to_reference_transforms.append({
         'type': 'matrix',
         'matrix': mat44_from_mat33(ACES_AP1_TO_AP0),
-        'direction': 'forward'
-    })
+        'direction': 'forward'})
 
     cs.from_reference_transforms = []
     return cs
@@ -213,13 +231,13 @@ def create_ACESproxy(aces_CTL_directory,
 # -------------------------------------------------------------------------
 # *ACEScg*
 # -------------------------------------------------------------------------
-def create_ACEScg(aces_CTL_directory,
+def create_ACEScg(aces_ctl_directory,
                   lut_directory,
                   lut_resolution_1d,
                   cleanup,
                   name='ACEScg'):
     """
-    Object description.
+    Creates the *ACEScg* colorspace.
 
     Parameters
     ----------
@@ -228,8 +246,8 @@ def create_ACEScg(aces_CTL_directory,
 
     Returns
     -------
-    type
-         Return value description.
+    Colorspace
+         *ACEScg* colorspace.
     """
 
     cs = ColorSpace(name)
@@ -259,7 +277,7 @@ def create_ADX(lut_directory,
                bit_depth=10,
                name='ADX'):
     """
-    Object description.
+    Creates the *ADX* colorspace.
 
     Parameters
     ----------
@@ -268,8 +286,8 @@ def create_ADX(lut_directory,
 
     Returns
     -------
-    type
-         Return value description.
+    Colorspace
+         *ADX* colorspace.
     """
 
     name = '%s%s' % (name, bit_depth)
@@ -282,26 +300,25 @@ def create_ADX(lut_directory,
 
     if bit_depth == 10:
         cs.bit_depth = ocio.Constants.BIT_DEPTH_UINT10
-        adx_to_cdd = [1023.0 / 500.0, 0.0, 0.0, 0.0,
+        ADX_to_CDD = [1023.0 / 500.0, 0.0, 0.0, 0.0,
                       0.0, 1023.0 / 500.0, 0.0, 0.0,
                       0.0, 0.0, 1023.0 / 500.0, 0.0,
                       0.0, 0.0, 0.0, 1.0]
         offset = [-95.0 / 500.0, -95.0 / 500.0, -95.0 / 500.0, 0.0]
     elif bit_depth == 16:
         cs.bit_depth = ocio.Constants.BIT_DEPTH_UINT16
-        adx_to_cdd = [65535.0 / 8000.0, 0.0, 0.0, 0.0,
+        ADX_to_CDD = [65535.0 / 8000.0, 0.0, 0.0, 0.0,
                       0.0, 65535.0 / 8000.0, 0.0, 0.0,
                       0.0, 0.0, 65535.0 / 8000.0, 0.0,
                       0.0, 0.0, 0.0, 1.0]
-        offset = [-1520.0 / 8000.0, -1520.0 / 8000.0, -1520.0 / 8000.0,
-                  0.0]
+        offset = [-1520.0 / 8000.0, -1520.0 / 8000.0, -1520.0 / 8000.0, 0.0]
 
     cs.to_reference_transforms = []
 
     # Converting from *ADX* to *Channel-Dependent Density*.
     cs.to_reference_transforms.append({
         'type': 'matrix',
-        'matrix': adx_to_cdd,
+        'matrix': ADX_to_CDD,
         'offset': offset,
         'direction': 'forward'})
 
@@ -358,20 +375,20 @@ def create_ADX(lut_directory,
             return (value - from_min) / (from_max - from_min) * (
                 to_max - to_min) + to_min
 
-        NUM_SAMPLES = 2 ** 12
-        RANGE = (-0.19, 3.0)
+        num_samples = 2 ** 12
+        domain = (-0.19, 3.0)
         data = []
-        for i in xrange(NUM_SAMPLES):
-            x = i / (NUM_SAMPLES - 1.0)
-            x = fit(x, 0.0, 1.0, RANGE[0], RANGE[1])
+        for i in xrange(num_samples):
+            x = i / (num_samples - 1.0)
+            x = fit(x, 0.0, 1.0, domain[0], domain[1])
             data.append(cid_to_rle(x))
 
         lut = 'ADX_CID_to_RLE.spi1d'
         write_SPI_1d(os.path.join(lut_directory, lut),
-                     RANGE[0],
-                     RANGE[1],
+                     domain[0],
+                     domain[1],
                      data,
-                     NUM_SAMPLES, 1)
+                     num_samples, 1)
 
         return lut
 
@@ -404,90 +421,17 @@ def create_ADX(lut_directory,
     return cs
 
 
-# -------------------------------------------------------------------------
-# *Generic Log Transform*
-# -------------------------------------------------------------------------
-def create_generic_log(aces_CTL_directory,
-                       lut_directory,
-                       lut_resolution_1d,
-                       cleanup,
-                       name='log',
-                       aliases=[],
-                       min_value=0.0,
-                       max_value=1.0,
-                       input_scale=1.0,
-                       middle_grey=0.18,
-                       min_exposure=-6.0,
-                       max_exposure=6.5):
-    """
-    Object description.
-
-    Parameters
-    ----------
-    parameter : type
-        Parameter description.
-
-    Returns
-    -------
-    type
-         Return value description.
-    """
-
-    cs = ColorSpace(name)
-    cs.description = 'The %s color space' % name
-    cs.aliases = aliases
-    cs.equality_group = name
-    cs.family = 'Utility'
-    cs.is_data = False
-
-    ctls = [os.path.join(
-        aces_CTL_directory,
-        'utilities',
-        'ACESlib.OCIO_shaper_log2_to_lin_param.a1.0.0.ctl')]
-    lut = '%s_to_aces.spi1d' % name
-
-    lut = sanitize(lut)
-
-    generate_1d_LUT_from_CTL(
-        os.path.join(lut_directory, lut),
-        ctls,
-        lut_resolution_1d,
-        'float',
-        input_scale,
-        1.0,
-        {'middleGrey': middle_grey,
-         'minExposure': min_exposure,
-         'maxExposure': max_exposure},
-        cleanup,
-        aces_CTL_directory,
-        min_value,
-        max_value)
-
-    cs.to_reference_transforms = []
-    cs.to_reference_transforms.append({
-        'type': 'lutFile',
-        'path': lut,
-        'interpolation': 'linear',
-        'direction': 'forward'})
-
-    cs.from_reference_transforms = []
-    return cs
-
-
-# -------------------------------------------------------------------------
-# *Individual LMTs*
-# -------------------------------------------------------------------------
 def create_ACES_LMT(lmt_name,
                     lmt_values,
                     shaper_info,
-                    aces_CTL_directory,
+                    aces_ctl_directory,
                     lut_directory,
                     lut_resolution_1d=1024,
                     lut_resolution_3d=64,
                     cleanup=True,
                     aliases=[]):
     """
-    Object description.
+    Creates the *ACES LMT* colorspace.
 
     Parameters
     ----------
@@ -496,8 +440,8 @@ def create_ACES_LMT(lmt_name,
 
     Returns
     -------
-    type
-         Return value description.
+    Colorspace
+         *ACES LMT* colorspace.
     """
 
     cs = ColorSpace('%s' % lmt_name)
@@ -518,7 +462,7 @@ def create_ACES_LMT(lmt_name,
 
     shaper_lut = '%s_to_aces.spi1d' % shaper_name
     if not os.path.exists(os.path.join(lut_directory, shaper_lut)):
-        ctls = [shaper_to_ACES_CTL % aces_CTL_directory]
+        ctls = [shaper_to_ACES_CTL % aces_ctl_directory]
 
         shaper_lut = sanitize(shaper_lut)
 
@@ -531,7 +475,7 @@ def create_ACES_LMT(lmt_name,
             1.0,
             shaper_params,
             cleanup,
-            aces_CTL_directory)
+            aces_ctl_directory)
 
     shaper_OCIO_transform = {
         'type': 'lutFile',
@@ -543,8 +487,8 @@ def create_ACES_LMT(lmt_name,
     cs.from_reference_transforms = []
 
     if 'transformCTL' in lmt_values:
-        ctls = [shaper_to_ACES_CTL % aces_CTL_directory,
-                os.path.join(aces_CTL_directory,
+        ctls = [shaper_to_ACES_CTL % aces_ctl_directory,
+                os.path.join(aces_ctl_directory,
                              lmt_values['transformCTL'])]
         lut = '%s.%s.spi3d' % (shaper_name, lmt_name)
 
@@ -559,25 +503,24 @@ def create_ACES_LMT(lmt_name,
             1.0,
             shaper_params,
             cleanup,
-            aces_CTL_directory)
+            aces_ctl_directory)
 
         cs.from_reference_transforms.append(shaper_OCIO_transform)
         cs.from_reference_transforms.append({
             'type': 'lutFile',
             'path': lut,
             'interpolation': 'tetrahedral',
-            'direction': 'forward'
-        })
+            'direction': 'forward'})
 
     # Generating the inverse transform.
     cs.to_reference_transforms = []
 
     if 'transformCTLInverse' in lmt_values:
-        ctls = [os.path.join(aces_CTL_directory,
+        ctls = [os.path.join(aces_ctl_directory,
                              # TODO: Investigate "odt_values" undeclared
                              # variable.
                              odt_values['transformCTLInverse']),
-                shaper_from_ACES_CTL % aces_CTL_directory]
+                shaper_from_ACES_CTL % aces_ctl_directory]
         lut = 'Inverse.%s.%s.spi3d' % (odt_name, shaper_name)
 
         lut = sanitize(lut)
@@ -591,7 +534,7 @@ def create_ACES_LMT(lmt_name,
             shaper_input_scale,
             shaper_params,
             cleanup,
-            aces_CTL_directory)
+            aces_ctl_directory)
 
         cs.to_reference_transforms.append({
             'type': 'lutFile',
@@ -606,98 +549,10 @@ def create_ACES_LMT(lmt_name,
     return cs
 
 
-# -------------------------------------------------------------------------
-# *LMTs*
-# -------------------------------------------------------------------------
-def create_lmts(aces_CTL_directory,
-                lut_directory,
-                lut_resolution_1d,
-                lut_resolution_3d,
-                lmt_info,
-                shaper_name,
-                cleanup):
-    """
-    Object description.
-
-    Parameters
-    ----------
-    parameter : type
-        Parameter description.
-
-    Returns
-    -------
-    type
-         Return value description.
-    """
-
-    colorspaces = []
-
-    # -------------------------------------------------------------------------
-    # *LMT Shaper*
-    # -------------------------------------------------------------------------
-    lmt_lut_resolution_1d = max(4096, lut_resolution_1d)
-    lmt_lut_resolution_3d = max(65, lut_resolution_3d)
-
-    # Defining the *Log 2* shaper.
-    lmt_shaper_name = 'LMT Shaper'
-    lmt_shaper_name_aliases = ['crv_lmtshaper']
-    lmt_params = {
-        'middleGrey': 0.18,
-        'minExposure': -10.0,
-        'maxExposure': 6.5}
-
-    lmt_shaper = create_generic_log(aces_CTL_directory,
-                                    lut_directory,
-                                    lmt_lut_resolution_1d,
-                                    cleanup,
-                                    name=lmt_shaper_name,
-                                    middle_grey=lmt_params['middleGrey'],
-                                    min_exposure=lmt_params['minExposure'],
-                                    max_exposure=lmt_params['maxExposure'],
-                                    aliases=lmt_shaper_name_aliases)
-    colorspaces.append(lmt_shaper)
-
-    shaper_input_scale_generic_log2 = 1.0
-
-    # *Log 2* shaper name and *CTL* transforms bundled up.
-    lmt_shaper_data = [
-        lmt_shaper_name,
-        os.path.join('%s',
-                     'utilities',
-                     'ACESlib.OCIO_shaper_log2_to_lin_param.a1.0.0.ctl'),
-        os.path.join('%s',
-                     'utilities',
-                     'ACESlib.OCIO_shaper_lin_to_log2_param.a1.0.0.ctl'),
-        shaper_input_scale_generic_log2,
-        lmt_params]
-
-    sorted_LMTs = sorted(lmt_info.iteritems(), key=lambda x: x[1])
-    print(sorted_LMTs)
-    for lmt in sorted_LMTs:
-        (lmt_name, lmt_values) = lmt
-        lmt_aliases = ["look_%s" % compact(lmt_values['transformUserName'])]
-        cs = create_ACES_LMT(
-            lmt_values['transformUserName'],
-            lmt_values,
-            lmt_shaper_data,
-            aces_CTL_directory,
-            lut_directory,
-            lmt_lut_resolution_1d,
-            lmt_lut_resolution_3d,
-            cleanup,
-            lmt_aliases)
-        colorspaces.append(cs)
-
-    return colorspaces
-
-
-# -------------------------------------------------------------------------
-# *ACES RRT* with supplied *ODT*.
-# -------------------------------------------------------------------------
 def create_ACES_RRT_plus_ODT(odt_name,
                              odt_values,
                              shaper_info,
-                             aces_CTL_directory,
+                             aces_ctl_directory,
                              lut_directory,
                              lut_resolution_1d=1024,
                              lut_resolution_3d=64,
@@ -741,7 +596,7 @@ def create_ACES_RRT_plus_ODT(odt_name,
 
     shaper_lut = '%s_to_aces.spi1d' % shaper_name
     if not os.path.exists(os.path.join(lut_directory, shaper_lut)):
-        ctls = [shaper_to_ACES_CTL % aces_CTL_directory]
+        ctls = [shaper_to_ACES_CTL % aces_ctl_directory]
 
         shaper_lut = sanitize(shaper_lut)
 
@@ -754,7 +609,7 @@ def create_ACES_RRT_plus_ODT(odt_name,
             1.0,
             shaper_params,
             cleanup,
-            aces_CTL_directory)
+            aces_ctl_directory)
 
     shaper_OCIO_transform = {
         'type': 'lutFile',
@@ -779,11 +634,11 @@ def create_ACES_RRT_plus_ODT(odt_name,
             'direction': 'forward'})
     elif 'transformCTL' in odt_values:
         ctls = [
-            shaper_to_ACES_CTL % aces_CTL_directory,
-            os.path.join(aces_CTL_directory,
+            shaper_to_ACES_CTL % aces_ctl_directory,
+            os.path.join(aces_ctl_directory,
                          'rrt',
                          'RRT.a1.0.0.ctl'),
-            os.path.join(aces_CTL_directory,
+            os.path.join(aces_ctl_directory,
                          'odt',
                          odt_values['transformCTL'])]
         lut = '%s.RRT.a1.0.0.%s.spi3d' % (shaper_name, odt_name)
@@ -800,7 +655,7 @@ def create_ACES_RRT_plus_ODT(odt_name,
             1.0,
             shaper_params,
             cleanup,
-            aces_CTL_directory)
+            aces_ctl_directory)
 
         cs.from_reference_transforms.append(shaper_OCIO_transform)
         cs.from_reference_transforms.append({
@@ -828,13 +683,13 @@ def create_ACES_RRT_plus_ODT(odt_name,
         shaper_inverse['direction'] = 'forward'
         cs.to_reference_transforms.append(shaper_inverse)
     elif 'transformCTLInverse' in odt_values:
-        ctls = [os.path.join(aces_CTL_directory,
+        ctls = [os.path.join(aces_ctl_directory,
                              'odt',
                              odt_values['transformCTLInverse']),
-                os.path.join(aces_CTL_directory,
+                os.path.join(aces_ctl_directory,
                              'rrt',
                              'InvRRT.a1.0.0.ctl'),
-                shaper_from_ACES_CTL % aces_CTL_directory]
+                shaper_from_ACES_CTL % aces_ctl_directory]
         lut = 'InvRRT.a1.0.0.%s.%s.spi3d' % (odt_name, shaper_name)
 
         lut = sanitize(lut)
@@ -849,7 +704,7 @@ def create_ACES_RRT_plus_ODT(odt_name,
             shaper_input_scale,
             shaper_params,
             cleanup,
-            aces_CTL_directory)
+            aces_ctl_directory)
 
         cs.to_reference_transforms.append({
             'type': 'lutFile',
@@ -864,10 +719,156 @@ def create_ACES_RRT_plus_ODT(odt_name,
     return cs
 
 
-# -------------------------------------------------------------------------
-# *ODTs*
-# -------------------------------------------------------------------------
-def create_odts(aces_CTL_directory,
+def create_generic_log(aces_ctl_directory,
+                       lut_directory,
+                       lut_resolution_1d,
+                       cleanup,
+                       name='log',
+                       aliases=[],
+                       min_value=0.0,
+                       max_value=1.0,
+                       input_scale=1.0,
+                       middle_grey=0.18,
+                       min_exposure=-6.0,
+                       max_exposure=6.5):
+    """
+    Creates the *Generic Log* colorspace.
+
+    Parameters
+    ----------
+    parameter : type
+        Parameter description.
+
+    Returns
+    -------
+    Colorspace
+         *Generic Log* colorspace.
+    """
+
+    cs = ColorSpace(name)
+    cs.description = 'The %s color space' % name
+    cs.aliases = aliases
+    cs.equality_group = name
+    cs.family = 'Utility'
+    cs.is_data = False
+
+    ctls = [os.path.join(
+        aces_ctl_directory,
+        'utilities',
+        'ACESlib.OCIO_shaper_log2_to_lin_param.a1.0.0.ctl')]
+    lut = '%s_to_aces.spi1d' % name
+
+    lut = sanitize(lut)
+
+    generate_1d_LUT_from_CTL(
+        os.path.join(lut_directory, lut),
+        ctls,
+        lut_resolution_1d,
+        'float',
+        input_scale,
+        1.0,
+        {'middleGrey': middle_grey,
+         'minExposure': min_exposure,
+         'maxExposure': max_exposure},
+        cleanup,
+        aces_ctl_directory,
+        min_value,
+        max_value)
+
+    cs.to_reference_transforms = []
+    cs.to_reference_transforms.append({
+        'type': 'lutFile',
+        'path': lut,
+        'interpolation': 'linear',
+        'direction': 'forward'})
+
+    cs.from_reference_transforms = []
+    return cs
+
+
+def create_LMTs(aces_ctl_directory,
+                lut_directory,
+                lut_resolution_1d,
+                lut_resolution_3d,
+                lmt_info,
+                shaper_name,
+                cleanup):
+    """
+    Object description.
+
+    Parameters
+    ----------
+    parameter : type
+        Parameter description.
+
+    Returns
+    -------
+    type
+         Return value description.
+    """
+
+    colorspaces = []
+
+    # -------------------------------------------------------------------------
+    # *LMT Shaper*
+    # -------------------------------------------------------------------------
+    lmt_lut_resolution_1d = max(4096, lut_resolution_1d)
+    lmt_lut_resolution_3d = max(65, lut_resolution_3d)
+
+    # Defining the *Log 2* shaper.
+    lmt_shaper_name = 'LMT Shaper'
+    lmt_shaper_name_aliases = ['crv_lmtshaper']
+    lmt_params = {
+        'middleGrey': 0.18,
+        'minExposure': -10.0,
+        'maxExposure': 6.5}
+
+    lmt_shaper = create_generic_log(aces_ctl_directory,
+                                    lut_directory,
+                                    lmt_lut_resolution_1d,
+                                    cleanup,
+                                    name=lmt_shaper_name,
+                                    middle_grey=lmt_params['middleGrey'],
+                                    min_exposure=lmt_params['minExposure'],
+                                    max_exposure=lmt_params['maxExposure'],
+                                    aliases=lmt_shaper_name_aliases)
+    colorspaces.append(lmt_shaper)
+
+    shaper_input_scale_generic_log2 = 1.0
+
+    # *Log 2* shaper name and *CTL* transforms bundled up.
+    lmt_shaper_data = [
+        lmt_shaper_name,
+        os.path.join('%s',
+                     'utilities',
+                     'ACESlib.OCIO_shaper_log2_to_lin_param.a1.0.0.ctl'),
+        os.path.join('%s',
+                     'utilities',
+                     'ACESlib.OCIO_shaper_lin_to_log2_param.a1.0.0.ctl'),
+        shaper_input_scale_generic_log2,
+        lmt_params]
+
+    sorted_LMTs = sorted(lmt_info.iteritems(), key=lambda x: x[1])
+    print(sorted_LMTs)
+    for lmt in sorted_LMTs:
+        lmt_name, lmt_values = lmt
+        lmt_aliases = ["look_%s" % compact(lmt_values['transformUserName'])]
+        cs = create_ACES_LMT(
+            lmt_values['transformUserName'],
+            lmt_values,
+            lmt_shaper_data,
+            aces_ctl_directory,
+            lut_directory,
+            lmt_lut_resolution_1d,
+            lmt_lut_resolution_3d,
+            cleanup,
+            lmt_aliases)
+        colorspaces.append(cs)
+
+    return colorspaces
+
+
+def create_ODTs(aces_ctl_directory,
                 lut_directory,
                 lut_resolution_1d,
                 lut_resolution_3d,
@@ -907,7 +908,7 @@ def create_odts(aces_CTL_directory,
         'maxExposure': 6.5}
 
     log2_shaper = create_generic_log(
-        aces_CTL_directory,
+        aces_ctl_directory,
         lut_directory,
         lut_resolution_1d,
         cleanup,
@@ -937,8 +938,8 @@ def create_odts(aces_CTL_directory,
     # Shaper that also includes the AP1 primaries.
     # Needed for some LUT baking steps.
     log2_shaper_api1_name_aliases = ["%s_ap1" % compact(shaper_name)]
-    log2_shaper_AP1 = create_generic_log(
-        aces_CTL_directory,
+    log2_shaper_ap1 = create_generic_log(
+        aces_ctl_directory,
         lut_directory,
         lut_resolution_1d,
         cleanup,
@@ -947,15 +948,15 @@ def create_odts(aces_CTL_directory,
         min_exposure=log2_params['minExposure'],
         max_exposure=log2_params['maxExposure'],
         aliases=log2_shaper_api1_name_aliases)
-    log2_shaper_AP1.name = '%s - AP1' % log2_shaper_AP1.name
+    log2_shaper_ap1.name = '%s - AP1' % log2_shaper_ap1.name
 
     # *AP1* primaries to *AP0* primaries.
-    log2_shaper_AP1.to_reference_transforms.append({
+    log2_shaper_ap1.to_reference_transforms.append({
         'type': 'matrix',
         'matrix': mat44_from_mat33(ACES_AP1_TO_AP0),
         'direction': 'forward'
     })
-    colorspaces.append(log2_shaper_AP1)
+    colorspaces.append(log2_shaper_ap1)
 
     rrt_shaper = log2_shaper_data
 
@@ -981,7 +982,7 @@ def create_odts(aces_CTL_directory,
             odt_name_legal,
             odt_legal,
             rrt_shaper,
-            aces_CTL_directory,
+            aces_ctl_directory,
             lut_directory,
             lut_resolution_1d,
             lut_resolution_3d,
@@ -1010,7 +1011,7 @@ def create_odts(aces_CTL_directory,
                 odt_name_full,
                 odt_full,
                 rrt_shaper,
-                aces_CTL_directory,
+                aces_ctl_directory,
                 lut_directory,
                 lut_resolution_1d,
                 lut_resolution_3d,
@@ -1024,35 +1025,6 @@ def create_odts(aces_CTL_directory,
                 'Output Transform': cs_full}
 
     return (colorspaces, displays)
-
-
-def create_aces():
-    """
-    Object description.
-
-    Parameters
-    ----------
-    parameter : type
-        Parameter description.
-
-    Returns
-    -------
-    type
-         Return value description.
-    """
-
-    # Defining the reference colorspace.
-    ACES = ColorSpace('ACES2065-1')
-    ACES.description = (
-        'The Academy Color Encoding System reference color space')
-    ACES.equality_group = ''
-    ACES.aliases = ["lin_ap0", "aces"]
-    ACES.family = 'ACES'
-    ACES.is_data = False
-    ACES.allocation_type = ocio.Constants.ALLOCATION_LG2
-    ACES.allocation_vars = [-15, 6]
-
-    return ACES
 
 
 def get_transform_info(ctl_transform):
@@ -1092,7 +1064,7 @@ def get_transform_info(ctl_transform):
             transform_full_legal_switch)
 
 
-def get_ODT_info(aces_CTL_directory):
+def get_ODTs_info(aces_ctl_directory):
     """
     Object description.
 
@@ -1111,7 +1083,7 @@ def get_ODT_info(aces_CTL_directory):
 
     # TODO: Investigate usage of *files_walker* definition here.
     # Credit to *Alex Fry* for the original approach here.
-    odt_dir = os.path.join(aces_CTL_directory, 'odt')
+    odt_dir = os.path.join(aces_ctl_directory, 'odt')
     all_odt = []
     for dir_name, subdir_list, file_list in os.walk(odt_dir):
         for fname in file_list:
@@ -1141,7 +1113,7 @@ def get_ODT_info(aces_CTL_directory):
          transform_user_name,
          transform_user_name_prefix,
          transform_full_legal_switch) = get_transform_info(
-            os.path.join(aces_CTL_directory, 'odt', odt_dir, transform_CTL))
+            os.path.join(aces_ctl_directory, 'odt', odt_dir, transform_CTL))
 
         # Finding inverse.
         transform_CTL_inverse = 'InvODT.%s.ctl' % odt_name
@@ -1182,7 +1154,7 @@ def get_ODT_info(aces_CTL_directory):
     return odts
 
 
-def get_LMT_info(aces_CTL_directory):
+def get_LMTs_info(aces_ctl_directory):
     """
     Object description.
 
@@ -1202,7 +1174,7 @@ def get_LMT_info(aces_CTL_directory):
     # TODO: Investigate refactoring with previous definition.
 
     # Credit to Alex Fry for the original approach here
-    lmt_dir = os.path.join(aces_CTL_directory, 'lmt')
+    lmt_dir = os.path.join(aces_ctl_directory, 'lmt')
     all_lmt = []
     for dir_name, subdir_list, file_list in os.walk(lmt_dir):
         for fname in file_list:
@@ -1233,7 +1205,7 @@ def get_LMT_info(aces_CTL_directory):
          transform_user_name,
          transform_user_name_prefix,
          transform_full_legal_switch) = get_transform_info(
-            os.path.join(aces_CTL_directory, lmt_dir, transform_CTL))
+            os.path.join(aces_ctl_directory, lmt_dir, transform_CTL))
 
         # Finding inverse.
         transform_CTL_inverse = 'InvLMT.%s.ctl' % lmt_name
@@ -1269,7 +1241,7 @@ def get_LMT_info(aces_CTL_directory):
     return lmts
 
 
-def create_colorspaces(aces_CTL_directory,
+def create_colorspaces(aces_ctl_directory,
                        lut_directory,
                        lut_resolution_1d,
                        lut_resolution_3d,
@@ -1293,17 +1265,17 @@ def create_colorspaces(aces_CTL_directory,
 
     colorspaces = []
 
-    ACES = create_aces()
+    ACES = create_ACES()
 
-    ACEScc = create_ACEScc(aces_CTL_directory, lut_directory,
+    ACEScc = create_ACEScc(aces_ctl_directory, lut_directory,
                            lut_resolution_1d, cleanup)
     colorspaces.append(ACEScc)
 
-    ACESproxy = create_ACESproxy(aces_CTL_directory, lut_directory,
+    ACESproxy = create_ACESproxy(aces_ctl_directory, lut_directory,
                                  lut_resolution_1d, cleanup)
     colorspaces.append(ACESproxy)
 
-    ACEScg = create_ACEScg(aces_CTL_directory, lut_directory,
+    ACEScg = create_ACEScg(aces_ctl_directory, lut_directory,
                            lut_resolution_1d, cleanup)
     colorspaces.append(ACEScg)
 
@@ -1313,7 +1285,7 @@ def create_colorspaces(aces_CTL_directory,
     ADX16 = create_ADX(lut_directory, lut_resolution_1d, bit_depth=16)
     colorspaces.append(ADX16)
 
-    lmts = create_lmts(aces_CTL_directory,
+    lmts = create_LMTs(aces_ctl_directory,
                        lut_directory,
                        lut_resolution_1d,
                        lut_resolution_3d,
@@ -1322,7 +1294,7 @@ def create_colorspaces(aces_CTL_directory,
                        cleanup)
     colorspaces.extend(lmts)
 
-    odts, displays = create_odts(aces_CTL_directory,
+    odts, displays = create_ODTs(aces_ctl_directory,
                                  lut_directory,
                                  lut_resolution_1d,
                                  lut_resolution_3d,

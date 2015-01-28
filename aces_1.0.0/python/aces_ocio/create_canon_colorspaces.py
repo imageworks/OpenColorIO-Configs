@@ -57,17 +57,17 @@ def create_c_log(gamut,
     cs.family = 'Canon'
     cs.is_data = False
 
-    def legal_to_full(codeValue):
-        return (codeValue - 64.0) / (940.0 - 64.0)
+    def legal_to_full(code_value):
+        return (code_value - 64.0) / (940.0 - 64.0)
 
-    def c_log_to_linear(codeValue):
+    def c_log_to_linear(code_value):
         # log = fullToLegal(c1 * log10(c2*linear + 1) + c3)
         # linear = (pow(10, (legalToFul(log) - c3)/c1) - 1)/c2
         c1 = 0.529136
         c2 = 10.1596
         c3 = 0.0730597
 
-        linear = (pow(10.0, (legal_to_full(codeValue) - c3) / c1) - 1.0) / c2
+        linear = (pow(10.0, (legal_to_full(code_value) - c3) / c1) - 1.0) / c2
         linear *= 0.9
 
         return linear

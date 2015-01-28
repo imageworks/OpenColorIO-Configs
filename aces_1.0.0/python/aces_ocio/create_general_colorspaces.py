@@ -19,9 +19,7 @@ __status__ = 'Production'
 __all__ = ['create_generic_matrix',
            'create_colorspaces']
 
-# -------------------------------------------------------------------------
-# Generic Matrix transform
-# -------------------------------------------------------------------------
+
 def create_generic_matrix(name='matrix',
                           from_reference_values=None,
                           to_reference_values=None,

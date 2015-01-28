@@ -152,12 +152,11 @@ def generate_OCIO_transform(transforms):
     interpolation_options = {
         'linear': ocio.Constants.INTERP_LINEAR,
         'nearest': ocio.Constants.INTERP_NEAREST,
-        'tetrahedral': ocio.Constants.INTERP_TETRAHEDRAL
-    }
+        'tetrahedral': ocio.Constants.INTERP_TETRAHEDRAL}
+
     direction_options = {
         'forward': ocio.Constants.TRANSFORM_DIR_FORWARD,
-        'inverse': ocio.Constants.TRANSFORM_DIR_INVERSE
-    }
+        'inverse': ocio.Constants.TRANSFORM_DIR_INVERSE}
 
     ocio_transforms = []
 
@@ -210,7 +209,6 @@ def generate_OCIO_transform(transforms):
                                                       direction_options[
                                                           'forward'])
             ocio_transforms.append(ocio_transform)
-
         # unknown type
         else:
             print("Ignoring unknown transform type : %s" % transform['type'])
@@ -226,7 +224,9 @@ def generate_OCIO_transform(transforms):
     return transform
 
 
-def add_colorspace_alias(config, reference_colorspace, colorspace,
+def add_colorspace_alias(config,
+                         reference_colorspace,
+                         colorspace,
                          colorspace_alias_names):
     """
     Object description.
@@ -246,10 +246,10 @@ def add_colorspace_alias(config, reference_colorspace, colorspace,
         if alias_name == colorspace.name.lower():
             return
 
-        print( "Adding alias colorspace space %s, alias to %s" % (
+        print('Adding alias colorspace space %s, alias to %s' % (
             alias_name, colorspace.name))
 
-        compact_family_name = "Aliases"
+        compact_family_name = 'Aliases'
 
         ocio_colorspace_alias = ocio.ColorSpace(
             name=alias_name,
@@ -261,8 +261,8 @@ def add_colorspace_alias(config, reference_colorspace, colorspace,
             allocation=colorspace.allocation_type,
             allocationVars=colorspace.allocation_vars)
 
-        if colorspace.to_reference_transforms != []:
-            print("Generating To-Reference transforms")
+        if not colorspace.to_reference_transforms:
+            print('Generating To-Reference transforms')
             ocio_transform = generate_OCIO_transform(
                 [{'type': 'colorspace',
                   'src': colorspace.name,
@@ -272,8 +272,8 @@ def add_colorspace_alias(config, reference_colorspace, colorspace,
                 ocio_transform,
                 ocio.Constants.COLORSPACE_DIR_TO_REFERENCE)
 
-        if colorspace.from_reference_transforms != []:
-            print("Generating From-Reference transforms")
+        if not colorspace.from_reference_transforms:
+            print('Generating From-Reference transforms')
             ocio_transform = generate_OCIO_transform(
                 [{'type': 'colorspace',
                   'src': reference_colorspace.name,
@@ -428,7 +428,7 @@ def create_config(config_data, nuke=False):
 def generate_LUTs(odt_info,
                   lmt_info,
                   shaper_name,
-                  aces_CTL_directory,
+                  aces_ctl_directory,
                   lut_directory,
                   lut_resolution_1d=4096,
                   lut_resolution_3d=64,
@@ -463,7 +463,7 @@ def generate_LUTs(odt_info,
     (aces_reference,
      aces_colorspaces,
      aces_displays,
-     aces_log_display_space) = aces.create_colorspaces(aces_CTL_directory,
+     aces_log_display_space) = aces.create_colorspaces(aces_ctl_directory,
                                                        lut_directory,
                                                        lut_resolution_1d,
                                                        lut_resolution_3d,
@@ -547,22 +547,22 @@ def generate_baked_LUTs(odt_info,
 
     # Create two entries for ODTs that have full and legal range support
     odt_info_C = dict(odt_info)
-    for odt_CTL_name, odt_values in odt_info.iteritems():
+    for odt_ctl_name, odt_values in odt_info.iteritems():
         if odt_values['transformHasFullLegalSwitch']:
             odt_name = odt_values['transformUserName']
 
             odt_values_legal = dict(odt_values)
             odt_values_legal['transformUserName'] = '%s - Legal' % odt_name
-            odt_info_C['%s - Legal' % odt_CTL_name] = odt_values_legal
+            odt_info_C['%s - Legal' % odt_ctl_name] = odt_values_legal
 
             odt_values_full = dict(odt_values)
             odt_values_full['transformUserName'] = '%s - Full' % odt_name
-            odt_info_C['%s - Full' % odt_CTL_name] = odt_values_full
+            odt_info_C['%s - Full' % odt_ctl_name] = odt_values_full
 
-            del (odt_info_C[odt_CTL_name])
+            del (odt_info_C[odt_ctl_name])
 
     # Generate appropriate LUTs for each ODT
-    for odt_CTL_name, odt_values in odt_info_C.iteritems():
+    for odt_ctl_name, odt_values in odt_info_C.iteritems():
         odt_prefix = odt_values['transformUserNamePrefix']
         odt_name = odt_values['transformUserName']
 
@@ -585,10 +585,10 @@ def generate_baked_LUTs(odt_info,
                                   'photoshop',
                                   '%s for %s.icc' % (odt_name, input_space))]
 
-            bake_LUT = Process(description='bake a LUT',
+            bake_lut = Process(description='bake a LUT',
                                cmd='ociobakelut',
                                args=args)
-            bake_LUT.execute()
+            bake_lut.execute()
 
         # *Flame*, *Lustre*
         for input_space in ['ACEScc', 'ACESproxy']:
@@ -609,10 +609,10 @@ def generate_baked_LUTs(odt_info,
                          baked_directory,
                          'flame',
                          '%s for %s Flame.3dl' % (odt_name, input_space))]
-            bake_LUT = Process(description='bake a LUT',
+            bake_lut = Process(description='bake a LUT',
                                cmd='ociobakelut',
                                args=(args + fargs))
-            bake_LUT.execute()
+            bake_lut.execute()
 
             largs = ['--format',
                      'lustre',
@@ -620,10 +620,10 @@ def generate_baked_LUTs(odt_info,
                          baked_directory,
                          'lustre',
                          '%s for %s Lustre.3dl' % (odt_name, input_space))]
-            bake_LUT = Process(description='bake a LUT',
+            bake_lut = Process(description='bake a LUT',
                                cmd='ociobakelut',
                                args=(args + largs))
-            bake_LUT.execute()
+            bake_lut.execute()
 
         # *Maya*, *Houdini*
         for input_space in ['ACEScg', 'ACES2065-1']:
@@ -649,10 +649,10 @@ def generate_baked_LUTs(odt_info,
                          baked_directory,
                          'maya',
                          '%s for %s Maya.csp' % (odt_name, input_space))]
-            bake_LUT = Process(description='bake a LUT',
+            bake_lut = Process(description='bake a LUT',
                                cmd='ociobakelut',
                                args=(args + margs))
-            bake_LUT.execute()
+            bake_lut.execute()
 
             hargs = ['--format',
                      'houdini',
@@ -660,10 +660,10 @@ def generate_baked_LUTs(odt_info,
                          baked_directory,
                          'houdini',
                          '%s for %s Houdini.lut' % (odt_name, input_space))]
-            bake_LUT = Process(description='bake a LUT',
+            bake_lut = Process(description='bake a LUT',
                                cmd='ociobakelut',
                                args=(args + hargs))
-            bake_LUT.execute()
+            bake_lut.execute()
 
 
 def create_config_dir(config_directory, bake_secondary_LUTs):
@@ -697,7 +697,7 @@ def create_config_dir(config_directory, bake_secondary_LUTs):
     return lut_directory
 
 
-def create_ACES_config(aces_CTL_directory,
+def create_ACES_config(aces_ctl_directory,
                        config_directory,
                        lut_resolution_1d=4096,
                        lut_resolution_3d=64,
@@ -719,14 +719,14 @@ def create_ACES_config(aces_CTL_directory,
 
     lut_directory = create_config_dir(config_directory, bake_secondary_LUTs)
 
-    odt_info = aces.get_ODT_info(aces_CTL_directory)
-    lmt_info = aces.get_LMT_info(aces_CTL_directory)
+    odt_info = aces.get_ODTs_info(aces_ctl_directory)
+    lmt_info = aces.get_LMTs_info(aces_ctl_directory)
 
     shaper_name = 'Output Shaper'
     config_data = generate_LUTs(odt_info,
                                 lmt_info,
                                 shaper_name,
-                                aces_CTL_directory,
+                                aces_ctl_directory,
                                 lut_directory,
                                 lut_resolution_1d,
                                 lut_resolution_3d,
@@ -790,11 +790,11 @@ def main():
 
     options, arguments = p.parse_args()
 
-    aces_CTL_directory = options.acesCTLDir
+    aces_ctl_directory = options.acesCTLDir
     config_directory = options.configDir
     lut_resolution_1d = int(options.lutResolution1d)
     lut_resolution_3d = int(options.lutResolution3d)
-    bake_secondary_LUTs = not options.dontBakeSecondaryLUTs
+    bake_secondary_luts = not options.dontBakeSecondaryLUTs
     cleanup_temp_images = not options.keepTempImages
 
     # TODO: Investigate the following statements.
@@ -807,7 +807,7 @@ def main():
 
     print('command line : \n%s\n' % ' '.join(sys.argv))
 
-    assert aces_CTL_directory is not None, (
+    assert aces_ctl_directory is not None, (
         'process: No "{0}" environment variable defined or no "ACES CTL" '
         'directory specified'.format(
             ACES_OCIO_CTL_DIRECTORY_ENVIRON))
@@ -817,11 +817,11 @@ def main():
         'directory specified'.format(
             ACES_OCIO_CONFIGURATION_DIRECTORY_ENVIRON))
 
-    return create_ACES_config(aces_CTL_directory,
+    return create_ACES_config(aces_ctl_directory,
                               config_directory,
                               lut_resolution_1d,
                               lut_resolution_3d,
-                              bake_secondary_LUTs,
+                              bake_secondary_luts,
                               cleanup_temp_images)
 
 

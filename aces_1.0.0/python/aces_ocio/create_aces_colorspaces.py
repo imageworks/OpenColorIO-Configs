@@ -21,7 +21,7 @@ from aces_ocio.generate_lut import (
 from aces_ocio.utilities import (
     ColorSpace,
     mat44_from_mat33,
-    sanitize_path,
+    sanitize,
     compact)
 
 
@@ -106,7 +106,7 @@ def create_ACEScc(aces_CTL_directory,
                          'ACEScsc.ACES_to_ACEScg.a1.0.0.ctl')]
     lut = '%s_to_ACES.spi1d' % name
 
-    lut = sanitize_path(lut)
+    lut = sanitize(lut)
 
     generate_1d_LUT_from_CTL(
         os.path.join(lut_directory, lut),
@@ -178,7 +178,7 @@ def create_ACESproxy(aces_CTL_directory,
                          'ACEScsc.ACES_to_ACEScg.a1.0.0.ctl')]
     lut = '%s_to_aces.spi1d' % name
 
-    lut = sanitize_path(lut)
+    lut = sanitize(lut)
 
     generate_1d_LUT_from_CTL(
         os.path.join(lut_directory, lut),
@@ -446,7 +446,7 @@ def create_generic_log(aces_CTL_directory,
         'ACESlib.OCIO_shaper_log2_to_lin_param.a1.0.0.ctl')]
     lut = '%s_to_aces.spi1d' % name
 
-    lut = sanitize_path(lut)
+    lut = sanitize(lut)
 
     generate_1d_LUT_from_CTL(
         os.path.join(lut_directory, lut),
@@ -520,7 +520,7 @@ def create_ACES_LMT(lmt_name,
     if not os.path.exists(os.path.join(lut_directory, shaper_lut)):
         ctls = [shaper_to_ACES_CTL % aces_CTL_directory]
 
-        shaper_lut = sanitize_path(shaper_lut)
+        shaper_lut = sanitize(shaper_lut)
 
         generate_1d_LUT_from_CTL(
             os.path.join(lut_directory, shaper_lut),
@@ -548,7 +548,7 @@ def create_ACES_LMT(lmt_name,
                              lmt_values['transformCTL'])]
         lut = '%s.%s.spi3d' % (shaper_name, lmt_name)
 
-        lut = sanitize_path(lut)
+        lut = sanitize(lut)
 
         generate_3d_LUT_from_CTL(
             os.path.join(lut_directory, lut),
@@ -580,7 +580,7 @@ def create_ACES_LMT(lmt_name,
                 shaper_from_ACES_CTL % aces_CTL_directory]
         lut = 'Inverse.%s.%s.spi3d' % (odt_name, shaper_name)
 
-        lut = sanitize_path(lut)
+        lut = sanitize(lut)
 
         generate_3d_LUT_from_CTL(
             os.path.join(lut_directory, lut),
@@ -743,7 +743,7 @@ def create_ACES_RRT_plus_ODT(odt_name,
     if not os.path.exists(os.path.join(lut_directory, shaper_lut)):
         ctls = [shaper_to_ACES_CTL % aces_CTL_directory]
 
-        shaper_lut = sanitize_path(shaper_lut)
+        shaper_lut = sanitize(shaper_lut)
 
         generate_1d_LUT_from_CTL(
             os.path.join(lut_directory, shaper_lut),
@@ -788,7 +788,7 @@ def create_ACES_RRT_plus_ODT(odt_name,
                          odt_values['transformCTL'])]
         lut = '%s.RRT.a1.0.0.%s.spi3d' % (shaper_name, odt_name)
 
-        lut = sanitize_path(lut)
+        lut = sanitize(lut)
 
         generate_3d_LUT_from_CTL(
             os.path.join(lut_directory, lut),
@@ -837,7 +837,7 @@ def create_ACES_RRT_plus_ODT(odt_name,
                 shaper_from_ACES_CTL % aces_CTL_directory]
         lut = 'InvRRT.a1.0.0.%s.%s.spi3d' % (odt_name, shaper_name)
 
-        lut = sanitize_path(lut)
+        lut = sanitize(lut)
 
         generate_3d_LUT_from_CTL(
             os.path.join(lut_directory, lut),

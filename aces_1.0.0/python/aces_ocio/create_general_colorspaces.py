@@ -39,7 +39,7 @@ def create_generic_matrix(name='matrix',
 
     cs = ColorSpace(name)
     cs.description = 'The %s color space' % name
-    cs.aliases = []
+    cs.aliases = aliases
     cs.equality_group = name
     cs.family = 'Utility'
     cs.is_data = False
@@ -135,6 +135,39 @@ def create_colorspaces(lut_directory,
         'Linear - Rec.2020',
         from_reference_values=[aces.ACES_AP0_to_XYZ, XYZ_to_Rec2020],
         aliases=["lin_rec2020"])
+    colorspaces.append(cs)
+
+    # *ACES* to *Linear*, *Pro Photo* primaries.
+    AP0_to_RIMM = [ 1.2412367771, -0.1685692287, -0.0726675484,
+                    0.0061203066,  1.083151174,  -0.0892714806,
+                   -0.0032853314,  0.0099796402, 0.9933056912]
+
+    cs = create_generic_matrix(
+        'Linear - ProPhoto',
+        from_reference_values=[AP0_to_RIMM],
+        aliases=["lin_prophoto", "lin_rimm"])
+    colorspaces.append(cs)
+
+    # *ACES* to *Linear*, *Adobe RGB* primaries.
+    AP0_to_ADOBERGB = [ 1.7245603168, -0.4199935942, -0.3045667227,
+                       -0.2764799142,  1.3727190877, -0.0962391734,
+                       -0.0261255258, -0.0901747807,  1.1163003065]
+
+    cs = create_generic_matrix(
+        'Linear - Adobe RGB',
+        from_reference_values=[AP0_to_ADOBERGB],
+        aliases=["lin_adobergb"])
+    colorspaces.append(cs)
+
+    # *ACES* to *Linear*, *Adobe Wide Gamut RGB* primaries.
+    AP0_to_ADOBERGB = [ 1.3809814778, -0.1158594573, -0.2651220205,
+                        0.0057015535, 1.0402949043,  -0.0459964578,
+                       -0.0038908746, -0.0597091815,  1.0636000561]
+
+    cs = create_generic_matrix(
+        'Linear - Adobe Wide Gamut RGB',
+        from_reference_values=[AP0_to_ADOBERGB],
+        aliases=["lin_adobewidegamutrgb"])
     colorspaces.append(cs)
 
     return colorspaces

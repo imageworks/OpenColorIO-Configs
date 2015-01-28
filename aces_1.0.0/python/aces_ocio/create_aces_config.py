@@ -5,9 +5,7 @@
 Defines objects creating the *ACES* configuration.
 """
 
-import math
 import os
-import shutil
 import sys
 
 import PyOpenColorIO as ocio
@@ -19,12 +17,7 @@ import aces_ocio.create_red_colorspaces as red
 import aces_ocio.create_sony_colorspaces as sony
 import aces_ocio.create_general_colorspaces as general
 
-from aces_ocio.generate_lut import (
-    generate_1d_LUT_from_CTL,
-    generate_3d_LUT_from_CTL,
-    write_SPI_1d)
 from aces_ocio.process import Process
-from aces_ocio.utilities import ColorSpace, mat44_from_mat33, sanitize_path, compact
 
 __author__ = 'ACES Developers'
 __copyright__ = 'Copyright (C) 2014 - 2015 - ACES Developers'
@@ -38,6 +31,7 @@ __all__ = ['ACES_OCIO_CTL_DIRECTORY_ENVIRON',
            'set_config_default_roles',
            'write_config',
            'generate_OCIO_transform',
+           'add_colorspace_alias',
            'create_config',
            'generate_LUTs',
            'generate_baked_LUTs',
@@ -177,7 +171,7 @@ def generate_OCIO_transform(transforms):
                     transform['interpolation']],
                 direction=direction_options[transform['direction']])
             ocio_transforms.append(ocio_transform)
-        
+
         # matrix transform
         elif transform['type'] == 'matrix':
             ocio_transform = ocio.MatrixTransform()
@@ -210,9 +204,11 @@ def generate_OCIO_transform(transforms):
 
         # color space transform
         elif transform['type'] == 'colorspace':
-            ocio_transform = ocio.ColorSpaceTransform( src=transform['src'],
-                dst=transform['dst'],
-                direction=direction_options['forward'] )
+            ocio_transform = ocio.ColorSpaceTransform(src=transform['src'],
+                                                      dst=transform['dst'],
+                                                      direction=
+                                                      direction_options[
+                                                          'forward'])
             ocio_transforms.append(ocio_transform)
 
         # unknown type
@@ -229,7 +225,9 @@ def generate_OCIO_transform(transforms):
 
     return transform
 
-def add_colorspace_alias(config, reference_colorspace, colorspace, colorspace_alias_names):
+
+def add_colorspace_alias(config, reference_colorspace, colorspace,
+                         colorspace_alias_names):
     """
     Object description.
 
@@ -265,24 +263,22 @@ def add_colorspace_alias(config, reference_colorspace, colorspace, colorspace_al
 
         if colorspace.to_reference_transforms != []:
             print("Generating To-Reference transforms")
-            ocio_transform = generate_OCIO_transform([{
-                'type': 'colorspace',
-                'src': colorspace.name,
-                'dst': reference_colorspace.name,
-                'direction': 'forward'
-                }])
+            ocio_transform = generate_OCIO_transform(
+                [{'type': 'colorspace',
+                  'src': colorspace.name,
+                  'dst': reference_colorspace.name,
+                  'direction': 'forward'}])
             ocio_colorspace_alias.setTransform(
                 ocio_transform,
                 ocio.Constants.COLORSPACE_DIR_TO_REFERENCE)
 
         if colorspace.from_reference_transforms != []:
             print("Generating From-Reference transforms")
-            ocio_transform = generate_OCIO_transform([{
-                'type': 'colorspace',
-                'src': reference_colorspace.name,
-                'dst': colorspace.name,
-                'direction': 'forward'
-                }])
+            ocio_transform = generate_OCIO_transform(
+                [{'type': 'colorspace',
+                  'src': reference_colorspace.name,
+                  'dst': colorspace.name,
+                  'direction': 'forward'}])
             ocio_colorspace_alias.setTransform(
                 ocio_transform,
                 ocio.Constants.COLORSPACE_DIR_FROM_REFERENCE)
@@ -331,7 +327,7 @@ def create_config(config_data, nuke=False):
     # Add alias
     if reference_data.aliases != []:
         add_colorspace_alias(config, reference_data,
-            reference_data, reference_data.aliases)
+                             reference_data, reference_data.aliases)
 
     print("")
 
@@ -371,8 +367,8 @@ def create_config(config_data, nuke=False):
         # Add alias to normal colorspace, using compact name
         #
         if colorspace.aliases != []:
-            add_colorspace_alias(config, reference_data, 
-                colorspace, colorspace.aliases)
+            add_colorspace_alias(config, reference_data,
+                                 colorspace, colorspace.aliases)
 
         print('')
 
@@ -428,6 +424,7 @@ def create_config(config_data, nuke=False):
 
     return config
 
+
 def generate_LUTs(odt_info,
                   lmt_info,
                   shaper_name,
@@ -464,10 +461,10 @@ def generate_LUTs(odt_info,
 
     # *ACES* colorspaces
     (aces_reference,
-     aces_colorspaces, 
+     aces_colorspaces,
      aces_displays,
      aces_log_display_space) = aces.create_colorspaces(aces_CTL_directory,
-                                                       lut_directory, 
+                                                       lut_directory,
                                                        lut_resolution_1d,
                                                        lut_resolution_3d,
                                                        lmt_info,
@@ -503,7 +500,7 @@ def generate_LUTs(odt_info,
         config_data['colorSpaces'].append(cs)
 
     # *RED* colorspaces to *ACES*.
-    red_colorspaces = red.create_colorspaces(lut_directory, 
+    red_colorspaces = red.create_colorspaces(lut_directory,
                                              lut_resolution_1d)
     for cs in red_colorspaces:
         config_data['colorSpaces'].append(cs)
@@ -698,6 +695,7 @@ def create_config_dir(config_directory, bake_secondary_LUTs):
         not os.path.exists(d) and os.mkdir(d)
 
     return lut_directory
+
 
 def create_ACES_config(aces_CTL_directory,
                        config_directory,

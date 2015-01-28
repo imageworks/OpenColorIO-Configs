@@ -10,7 +10,7 @@ import math
 import os
 
 import aces_ocio.generate_lut as genlut
-from aces_ocio.utilities import ColorSpace, mat44_from_mat33, sanitize_path, compact
+from aces_ocio.utilities import ColorSpace, mat44_from_mat33, sanitize_path
 
 
 __author__ = 'ACES Developers'

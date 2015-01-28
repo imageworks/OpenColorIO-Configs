@@ -171,6 +171,7 @@ def sanitize_path(path):
 
     return path.replace(' ', '_').replace(')', '_').replace('(', '_')
 
+
 def compact(string):
     """
     Removes blanks, underscores, dashes and parentheses

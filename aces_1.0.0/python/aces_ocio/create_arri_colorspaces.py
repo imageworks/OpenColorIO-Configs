@@ -11,6 +11,8 @@ import array
 import math
 import os
 
+import PyOpenColorIO as ocio
+
 import aces_ocio.generate_lut as genlut
 from aces_ocio.utilities import ColorSpace, mat44_from_mat33, sanitize
 
@@ -61,6 +63,11 @@ def create_log_c(gamut,
     cs.equality_group = ''
     cs.family = 'ARRI'
     cs.is_data = False
+
+    # A linear space needs allocation variables
+    if transfer_function == '':
+        cs.allocation_type = ocio.Constants.ALLOCATION_LG2
+        cs.allocation_vars = [-8, 5, 0.00390625]
 
     # Globals.
     IDT_maker_version = '0.08'

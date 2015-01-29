@@ -86,7 +86,7 @@ def create_ACES():
     aces2065_1.family = 'ACES'
     aces2065_1.is_data = False
     aces2065_1.allocation_type = ocio.Constants.ALLOCATION_LG2
-    aces2065_1.allocation_vars = [-15, 6]
+    aces2065_1.allocation_vars = [-8, 5, 0.00390625]
 
     return aces2065_1
 
@@ -119,6 +119,8 @@ def create_ACEScc(aces_ctl_directory,
     cs.equality_group = ''
     cs.family = 'ACES'
     cs.is_data = False
+    cs.allocation_type = ocio.Constants.ALLOCATION_UNIFORM
+    cs.allocation_vars = [min_value, max_value]
 
     ctls = [os.path.join(aces_ctl_directory,
                          'ACEScc',
@@ -129,7 +131,7 @@ def create_ACEScc(aces_ctl_directory,
             os.path.join(aces_ctl_directory,
                          'ACEScg',
                          'ACEScsc.ACES_to_ACEScg.a1.0.0.ctl')]
-    lut = '%s_to_ACES.spi1d' % name
+    lut = '%s_to_linear.spi1d' % name
 
     lut = sanitize(lut)
 
@@ -198,7 +200,7 @@ def create_ACESproxy(aces_ctl_directory,
             os.path.join(aces_ctl_directory,
                          'ACEScg',
                          'ACEScsc.ACES_to_ACEScg.a1.0.0.ctl')]
-    lut = '%s_to_aces.spi1d' % name
+    lut = '%s_to_linear.spi1d' % name
 
     lut = sanitize(lut)
 
@@ -258,6 +260,8 @@ def create_ACEScg(aces_ctl_directory,
     cs.equality_group = ''
     cs.family = 'ACES'
     cs.is_data = False
+    cs.allocation_type = ocio.Constants.ALLOCATION_LG2
+    cs.allocation_vars = [-8, 5, 0.00390625]
 
     cs.to_reference_transforms = []
 
@@ -455,6 +459,8 @@ def create_ACES_LMT(lmt_name,
     cs.equality_group = ''
     cs.family = 'Look'
     cs.is_data = False
+    cs.allocation_type = ocio.Constants.ALLOCATION_LG2
+    cs.allocation_vars = [-8, 5, 0.00390625]
 
     pprint.pprint(lmt_values)
 
@@ -465,7 +471,7 @@ def create_ACES_LMT(lmt_name,
      shaper_input_scale,
      shaper_params) = shaper_info
 
-    shaper_lut = '%s_to_aces.spi1d' % shaper_name
+    shaper_lut = '%s_to_linear.spi1d' % shaper_name
     if not os.path.exists(os.path.join(lut_directory, shaper_lut)):
         ctls = [shaper_to_ACES_CTL % aces_ctl_directory]
 
@@ -522,9 +528,7 @@ def create_ACES_LMT(lmt_name,
 
     if 'transformCTLInverse' in lmt_values:
         ctls = [os.path.join(aces_ctl_directory,
-                             # TODO: Investigate "odt_values" undeclared
-                             # variable.
-                             odt_values['transformCTLInverse']),
+                             lmt_values['transformCTLInverse']),
                 shaper_from_ACES_CTL % aces_ctl_directory]
         lut = 'Inverse.%s.%s.spi3d' % (odt_name, shaper_name)
 
@@ -602,7 +606,7 @@ def create_ACES_RRT_plus_ODT(odt_name,
     else:
         shaper_params['legalRange'] = 0
 
-    shaper_lut = '%s_to_aces.spi1d' % shaper_name
+    shaper_lut = '%s_to_linear.spi1d' % shaper_name
     if not os.path.exists(os.path.join(lut_directory, shaper_lut)):
         ctls = [shaper_to_ACES_CTL % aces_ctl_directory]
 
@@ -764,7 +768,7 @@ def create_generic_log(aces_ctl_directory,
         aces_ctl_directory,
         'utilities',
         'ACESlib.OCIO_shaper_log2_to_lin_param.a1.0.0.ctl')]
-    lut = '%s_to_aces.spi1d' % name
+    lut = '%s_to_linear.spi1d' % name
 
     lut = sanitize(lut)
 
@@ -1276,7 +1280,8 @@ def create_colorspaces(aces_ctl_directory,
     ACES = create_ACES()
 
     ACEScc = create_ACEScc(aces_ctl_directory, lut_directory,
-                           lut_resolution_1d, cleanup)
+                           lut_resolution_1d, cleanup, 
+                           min_value=-0.35840, max_value=1.468)
     colorspaces.append(ACEScc)
 
     ACESproxy = create_ACESproxy(aces_ctl_directory, lut_directory,

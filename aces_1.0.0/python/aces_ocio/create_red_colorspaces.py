@@ -10,6 +10,8 @@ from __future__ import division
 import array
 import os
 
+import PyOpenColorIO as ocio
+
 import aces_ocio.generate_lut as genlut
 from aces_ocio.utilities import ColorSpace, mat44_from_mat33
 
@@ -58,6 +60,11 @@ def create_RED_log_film(gamut,
     cs.equality_group = ''
     cs.family = 'RED'
     cs.is_data = False
+
+    # A linear space needs allocation variables
+    if transfer_function == '':
+        cs.allocation_type = ocio.Constants.ALLOCATION_LG2
+        cs.allocation_vars = [-8, 5, 0.00390625]
 
     def cineon_to_linear(code_value):
         n_gamma = 0.6

@@ -7,6 +7,8 @@ Implements support for general colorspaces conversions and transfer functions.
 
 from __future__ import division
 
+import PyOpenColorIO as ocio
+
 import aces_ocio.create_aces_colorspaces as aces
 from aces_ocio.utilities import ColorSpace, mat44_from_mat33
 
@@ -52,6 +54,10 @@ def create_generic_matrix(name='matrix',
     cs.equality_group = name
     cs.family = 'Utility'
     cs.is_data = False
+
+    # A linear space needs allocation variables
+    cs.allocation_type = ocio.Constants.ALLOCATION_LG2
+    cs.allocation_vars = [-8, 5, 0.00390625]
 
     cs.to_reference_transforms = []
     if to_reference_values:
@@ -152,7 +158,7 @@ def create_colorspaces(lut_directory,
                    -0.0032853314, 0.0099796402, 0.9933056912]
 
     cs = create_generic_matrix(
-        'Linear - ProPhoto',
+        'Linear - RIMM ROMM (ProPhoto)',
         from_reference_values=[AP0_to_RIMM],
         aliases=["lin_prophoto", "lin_rimm"])
     colorspaces.append(cs)

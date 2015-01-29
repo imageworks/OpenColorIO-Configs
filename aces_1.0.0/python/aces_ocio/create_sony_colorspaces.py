@@ -10,6 +10,8 @@ from __future__ import division
 import array
 import os
 
+import PyOpenColorIO as ocio
+
 import aces_ocio.generate_lut as genlut
 from aces_ocio.utilities import ColorSpace, mat44_from_mat33
 
@@ -58,6 +60,11 @@ def create_s_log(gamut,
     cs.equality_group = ''
     cs.family = 'Sony'
     cs.is_data = False
+
+    # A linear space needs allocation variables
+    if transfer_function == '':
+        cs.allocation_type = ocio.Constants.ALLOCATION_LG2
+        cs.allocation_vars = [-8, 5, 0.00390625]
 
     def s_log1_to_linear(s_log):
         b = 64.

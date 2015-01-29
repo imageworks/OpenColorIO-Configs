@@ -15,6 +15,7 @@ import PyOpenColorIO as ocio
 import aces_ocio.create_aces_colorspaces as aces
 import aces_ocio.create_arri_colorspaces as arri
 import aces_ocio.create_canon_colorspaces as canon
+import aces_ocio.create_panasonic_colorspaces as panasonic
 import aces_ocio.create_red_colorspaces as red
 import aces_ocio.create_sony_colorspaces as sony
 import aces_ocio.create_general_colorspaces as general
@@ -489,7 +490,7 @@ def generate_LUTs(odt_info,
     # *Camera Input Transforms*
     # -------------------------------------------------------------------------
 
-    # *Log-C* to *ACES*.
+    # *ARRI Log-C* to *ACES*.
     arri_colorSpaces = arri.create_colorspaces(lut_directory,
                                                lut_resolution_1d)
     for cs in arri_colorSpaces:
@@ -500,6 +501,13 @@ def generate_LUTs(odt_info,
                                                  lut_resolution_1d)
     for cs in canon_colorspaces:
         config_data['colorSpaces'].append(cs)
+
+    # *Panasonic V-Log* to *ACES*.
+    panasonic_colorSpaces = panasonic.create_colorspaces(lut_directory,
+                                                         lut_resolution_1d)
+    for cs in panasonic_colorSpaces:
+        config_data['colorSpaces'].append(cs)
+
 
     # *RED* colorspaces to *ACES*.
     red_colorspaces = red.create_colorspaces(lut_directory,

@@ -192,7 +192,6 @@ colorspaces:
     isdata: false
     allocation: lg2
     allocationvars: [-8, 5, 0.00390625]
-    from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Linear - AP1}
 
   - !<ColorSpace>
     name: ADX10
@@ -468,31 +467,31 @@ colorspaces:
     allocationvars: [0, 1]
 
   - !<ColorSpace>
-    name: Rec.2020 - Full
+    name: Rec.709 - Legal
     family: Output
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      ACES 1.0 Output - Rec.2020 - Full Output Transform
+      ACES 1.0 Output - Rec.709 - Legal Output Transform
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: InvRRT.a1.0.0.Rec.2020_-_Full.Output_Shaper.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: InvRRT.a1.0.0.Rec.709_-_Legal.Output_Shaper.spi3d, interpolation: tetrahedral}
         - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear}
     from_reference: !<GroupTransform>
       children:
         - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
-        - !<FileTransform> {src: Output_Shaper.RRT.a1.0.0.Rec.2020_-_Full.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Output_Shaper.RRT.a1.0.0.Rec.709_-_Legal.spi3d, interpolation: tetrahedral}
 
   - !<ColorSpace>
-    name: out_rec2020full
+    name: out_rec709legal
     family: Aliases
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      ACES 1.0 Output - Rec.2020 - Full Output Transform
+      ACES 1.0 Output - Rec.709 - Legal Output Transform
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
@@ -678,31 +677,31 @@ colorspaces:
     allocationvars: [0, 1]
 
   - !<ColorSpace>
-    name: Rec.709 - Legal
+    name: Rec.2020 - Full
     family: Output
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      ACES 1.0 Output - Rec.709 - Legal Output Transform
+      ACES 1.0 Output - Rec.2020 - Full Output Transform
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: InvRRT.a1.0.0.Rec.709_-_Legal.Output_Shaper.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: InvRRT.a1.0.0.Rec.2020_-_Full.Output_Shaper.spi3d, interpolation: tetrahedral}
         - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear}
     from_reference: !<GroupTransform>
       children:
         - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
-        - !<FileTransform> {src: Output_Shaper.RRT.a1.0.0.Rec.709_-_Legal.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Output_Shaper.RRT.a1.0.0.Rec.2020_-_Full.spi3d, interpolation: tetrahedral}
 
   - !<ColorSpace>
-    name: out_rec709legal
+    name: out_rec2020full
     family: Aliases
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      ACES 1.0 Output - Rec.709 - Legal Output Transform
+      ACES 1.0 Output - Rec.2020 - Full Output Transform
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
@@ -2277,6 +2276,7 @@ colorspaces:
     isdata: false
     allocation: lg2
     allocationvars: [-8, 5, 0.00390625]
+    to_reference: !<MatrixTransform> {matrix: [1.04981, 0, -9.74845e-05, 0, -0.495903, 1.37331, 0.09824, 0, 0, 0, 0.991252, 0, 0, 0, 0, 1]}
     from_reference: !<MatrixTransform> {matrix: [0.952552, 0, 9.36786e-05, 0, 0.343966, 0.728166, -0.0721325, 0, 0, 0, 1.00883, 0, 0, 0, 0, 1]}
 
   - !<ColorSpace>
@@ -2289,7 +2289,6 @@ colorspaces:
     isdata: false
     allocation: lg2
     allocationvars: [-8, 5, 0.00390625]
-    to_reference: !<ColorSpaceTransform> {src: XYZ, dst: ACES2065-1}
 
   - !<ColorSpace>
     name: Linear - AP1
@@ -2302,6 +2301,7 @@ colorspaces:
     allocation: lg2
     allocationvars: [-8, 5, 0.00390625]
     to_reference: !<MatrixTransform> {matrix: [0.695452, 0.140679, 0.163869, 0, 0.0447946, 0.859671, 0.0955343, 0, -0.00552588, 0.00402521, 1.0015, 0, 0, 0, 0, 1]}
+    from_reference: !<MatrixTransform> {matrix: [1.45144, -0.236511, -0.214929, 0, -0.0765538, 1.17623, -0.0996759, 0, 0.00831615, -0.00603245, 0.997716, 0, 0, 0, 0, 1]}
 
   - !<ColorSpace>
     name: Linear - P3-D60

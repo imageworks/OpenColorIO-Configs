@@ -51,15 +51,25 @@ __all__ = ['ACES_AP1_TO_AP0',
            'get_LMTs_info',
            'create_colorspaces']
 
-# Matrix converting *ACES AP1* primaries to *AP0*.
+# Matrix converting *ACES AP1* primaries to *ACES AP0*.
 ACES_AP1_TO_AP0 = [0.6954522414, 0.1406786965, 0.1638690622,
                    0.0447945634, 0.8596711185, 0.0955343182,
                    -0.0055258826, 0.0040252103, 1.0015006723]
+
+# Matrix converting *ACES AP0* primaries to *ACES AP1*.
+ACES_AP0_TO_AP1 = [1.4514393161, -0.2365107469, -0.2149285693,
+                   -0.0765537734, 1.1762296998, -0.0996759264,
+                   0.0083161484, -0.0060324498, 0.9977163014]
 
 # Matrix converting *ACES AP0* primaries to *XYZ*.
 ACES_AP0_TO_XYZ = [0.9525523959, 0.0000000000, 0.0000936786,
                    0.3439664498, 0.7281660966, -0.0721325464,
                    0.0000000000, 0.0000000000, 1.0088251844]
+
+# Matrix converting *ACES AP0* primaries to *XYZ*.
+ACES_XYZ_TO_AP0 = [1.0498110175, 0.0000000000, -0.0000974845,
+                   -0.4959030231, 1.3733130458, 0.0982400361,
+                   0.0000000000, 0.0000000000, 0.9912520182]
 
 
 def create_ACES():
@@ -124,13 +134,7 @@ def create_ACEScc(aces_ctl_directory,
 
     ctls = [os.path.join(aces_ctl_directory,
                          'ACEScc',
-                         'ACEScsc.ACEScc_to_ACES.a1.0.0.ctl'),
-            # This transform gets back to the *AP1* primaries.
-            # Useful as the 1d LUT is only covering the transfer function.
-            # The primaries switch is covered by the matrix below:
-            os.path.join(aces_ctl_directory,
-                         'ACEScg',
-                         'ACEScsc.ACES_to_ACEScg.a1.0.0.ctl')]
+                         'ACEScsc.ACEScc_to_ACES.a1.0.0.ctl')]
     lut = '%s_to_linear.spi1d' % name
 
     lut = sanitize(lut)
@@ -142,11 +146,12 @@ def create_ACEScc(aces_ctl_directory,
         'float',
         input_scale,
         1,
-        {},
+        {'transferFunctionOnly':1},
         cleanup,
         aces_ctl_directory,
         min_value,
-        max_value)
+        max_value,
+        1)
 
     cs.to_reference_transforms = []
     cs.to_reference_transforms.append({
@@ -194,12 +199,12 @@ def create_ACESproxy(aces_ctl_directory,
     ctls = [os.path.join(aces_ctl_directory,
                          'ACESproxy',
                          'ACEScsc.ACESproxy10i_to_ACES.a1.0.0.ctl'),
-            # This transform gets back to the *AP1* primaries.
-            # Useful as the 1d LUT is only covering the transfer function.
-            # The primaries switch is covered by the matrix below:
-            os.path.join(aces_ctl_directory,
-                         'ACEScg',
-                         'ACEScsc.ACES_to_ACEScg.a1.0.0.ctl')]
+                          # This transform gets back to the *AP1* primaries.
+                          # Useful as the 1d LUT is only covering the transfer function.
+                          # The primaries switch is covered by the matrix below:
+                          os.path.join(aces_ctl_directory,
+                                       'ACEScg',
+                                       'ACEScsc.ACES_to_ACEScg.a1.0.0.ctl')]
     lut = '%s_to_linear.spi1d' % name
 
     lut = sanitize(lut)
@@ -213,7 +218,10 @@ def create_ACESproxy(aces_ctl_directory,
         1,
         {},
         cleanup,
-        aces_ctl_directory)
+        aces_ctl_directory,
+        0,
+        1,
+        1)
 
     cs.to_reference_transforms = []
     cs.to_reference_transforms.append({
@@ -486,7 +494,10 @@ def create_ACES_LMT(lmt_name,
             1,
             shaper_params,
             cleanup,
-            aces_ctl_directory)
+            aces_ctl_directory,
+            0,
+            1,
+            1)
 
     shaper_OCIO_transform = {
         'type': 'lutFile',
@@ -543,7 +554,10 @@ def create_ACES_LMT(lmt_name,
             shaper_input_scale,
             shaper_params,
             cleanup,
-            aces_ctl_directory)
+            aces_ctl_directory,
+            0,
+            1,
+            1)
 
         cs.to_reference_transforms.append({
             'type': 'lutFile',
@@ -621,7 +635,10 @@ def create_ACES_RRT_plus_ODT(odt_name,
             1,
             shaper_params,
             cleanup,
-            aces_ctl_directory)
+            aces_ctl_directory,
+            0,
+            1,
+            1)
 
     shaper_OCIO_transform = {
         'type': 'lutFile',
@@ -785,7 +802,8 @@ def create_generic_log(aces_ctl_directory,
         cleanup,
         aces_ctl_directory,
         min_value,
-        max_value)
+        max_value,
+        1)
 
     cs.to_reference_transforms = []
     cs.to_reference_transforms.append({

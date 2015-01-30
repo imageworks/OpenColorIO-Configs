@@ -78,7 +78,13 @@ def generate_1d_LUT_image(ramp_1d_path,
     ramp.close()
 
 
-def write_SPI_1d(filename, from_min, from_max, data, entries, channels):
+def write_SPI_1d(filename, 
+                 from_min, 
+                 from_max, 
+                 data, 
+                 entries, 
+                 channels, 
+                 components=3):
     """
     Object description.
 
@@ -96,15 +102,19 @@ def write_SPI_1d(filename, from_min, from_max, data, entries, channels):
          Return value description.
     """
 
+    # May want to use fewer components than there are channels in the data
+    # Most commonly used for single channel LUTs
+    components = min(3, components, channels)
+
     with open(filename, 'w') as fp:
         fp.write('Version 1\n')
         fp.write('From %f %f\n' % (from_min, from_max))
         fp.write('Length %d\n' % entries)
-        fp.write('Components %d\n' % (min(3, channels)))
+        fp.write('Components %d\n' % components)
         fp.write('{\n')
         for i in range(0, entries):
             entry = ''
-            for j in range(0, min(3, channels)):
+            for j in range(0, components):
                 entry = '%s %s' % (entry, data[i * channels + j])
             fp.write('        %s\n' % entry)
         fp.write('}\n')
@@ -113,7 +123,8 @@ def write_SPI_1d(filename, from_min, from_max, data, entries, channels):
 def generate_1d_LUT_from_image(ramp_1d_path,
                                output_path=None,
                                min_value=0,
-                               max_value=1):
+                               max_value=1,
+                               channels=3):
     """
     Object description.
 
@@ -133,16 +144,17 @@ def generate_1d_LUT_from_image(ramp_1d_path,
 
     ramp = oiio.ImageInput.open(ramp_1d_path)
 
-    spec = ramp.spec()
-    width = spec.width
-    channels = spec.nchannels
+    ramp_spec = ramp.spec()
+    ramp_width = ramp_spec.width
+    ramp_channels = ramp_spec.nchannels
 
     # Forcibly read data as float, the Python API doesn't handle half-float
     # well yet.
     type = oiio.FLOAT
-    data = ramp.read_image(type)
+    ramp_data = ramp.read_image(type)
 
-    write_SPI_1d(output_path, min_value, max_value, data, width, channels)
+    write_SPI_1d(output_path, min_value, max_value, 
+      ramp_data, ramp_width, ramp_channels, channels)
 
 
 def generate_3d_LUT_image(ramp_3d_path, resolution=32):
@@ -296,7 +308,8 @@ def generate_1d_LUT_from_CTL(lut_path,
                              cleanup=True,
                              aces_ctl_directory=None,
                              min_value=0,
-                             max_value=1):
+                             max_value=1,
+                             channels=3):
     """
     Object description.
 
@@ -342,7 +355,8 @@ def generate_1d_LUT_from_CTL(lut_path,
     generate_1d_LUT_from_image(transformed_LUT_image,
                                lut_path,
                                min_value,
-                               max_value)
+                               max_value,
+                               channels)
 
     if cleanup:
         os.remove(identity_LUT_image)

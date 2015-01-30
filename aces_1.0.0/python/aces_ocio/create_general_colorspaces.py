@@ -98,6 +98,7 @@ def create_colorspaces(lut_directory,
     colorspaces = []
 
     cs = create_generic_matrix('XYZ',
+                               to_reference_values=[aces.ACES_XYZ_TO_AP0],
                                from_reference_values=[aces.ACES_AP0_TO_XYZ],
                                aliases=["lin_xyz"])
     colorspaces.append(cs)
@@ -105,6 +106,7 @@ def create_colorspaces(lut_directory,
     cs = create_generic_matrix(
         'Linear - AP1',
         to_reference_values=[aces.ACES_AP1_TO_AP0],
+        from_reference_values=[aces.ACES_AP0_TO_AP1],
         aliases=["lin_ap1"])
     colorspaces.append(cs)
 

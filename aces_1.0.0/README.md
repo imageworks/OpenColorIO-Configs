@@ -29,6 +29,10 @@ The **ACES CTL** code used as source for the configuration is available here:
 - https://github.com/ampas/aces-dev/tree/v1.0
 - https://github.com/ampas/aces-dev/releases/tag/v1.0
 
+The current configuration depends on a **fork of the 1.0 ACES CTL** that is available here:
+- https://github.com/hpd/aces-dev/tree/master/transforms/ctl
+- The fork contains a few additional scripts in the utilities folder but is otherwise the same.
+
 Transforms
 ----------
 Transforms generated based on the following sources:
@@ -48,6 +52,9 @@ Transforms generated based on the following sources:
     - Choose *OSX Mountain Lion v10.8* to download the IDTs
 - http://www.usa.canon.com/cusa/professional/products/professional_cameras/cinema_eos_cameras/eos_c100#DriversAndSoftware
     - Choose *OSX Mountain Lion v10.8* to download the IDTs
+
+### Panasonic
+- http://pro-av.panasonic.net/en/varicam/35/dl.html
 
 ### RED
 - http://www.red.com/learn/red-101/redlogfilm-redgamma
@@ -72,6 +79,7 @@ The script used to generate these transforms and the transforms themselves were 
 - Joseph Goldstone
 - Jim Houston
 - Thomas Mansencal
+- Robert Molholm
 - Will McCown
 - Graeme Nattress
 - Doug Walker

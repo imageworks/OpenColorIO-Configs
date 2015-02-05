@@ -120,11 +120,119 @@ def write_SPI_1d(filename,
         fp.write('}\n')
 
 
+def write_CSP_1d(filename, 
+                 from_min, 
+                 from_max, 
+                 data, 
+                 entries, 
+                 channels, 
+                 components=3):
+    """
+    Object description.
+
+    Parameters
+    ----------
+    parameter : type
+        Parameter description.
+
+    Returns
+    -------
+    type
+         Return value description.
+    """
+
+    # May want to use fewer components than there are channels in the data
+    # Most commonly used for single channel LUTs
+    components = min(3, components, channels)
+
+    with open(filename, 'w') as fp:
+        fp.write('CSPLUTV100\n')
+        fp.write('1D\n')
+        fp.write('\n')
+        fp.write('BEGIN METADATA')
+        fp.write('END METADATA')
+
+        fp.write('\n')
+
+        fp.write('2\n')
+        fp.write('%f %f\n' % (from_min, from_max))
+        fp.write('0.0 1.0\n')
+        fp.write('2\n')
+        fp.write('%f %f\n' % (from_min, from_max))
+        fp.write('0.0 1.0\n')
+        fp.write('2\n')
+        fp.write('%f %f\n' % (from_min, from_max))
+        fp.write('0.0 1.0\n')
+
+        fp.write('\n')
+
+        fp.write('%d\n' % entries)
+        if components == 1:
+          for i in range(0, entries):
+              entry = ''
+              for j in range(3):
+                  entry = '%s %s' % (entry, data[i * channels])
+              fp.write('%s\n' % entry)
+        else:
+          for i in range(entries):
+              entry = ''
+              for j in range(components):
+                  entry = '%s %s' % (entry, data[i * channels + j])
+              fp.write('%s\n' % entry)
+        fp.write('\n')
+
+def write_1d(filename, 
+             from_min, 
+             from_max, 
+             data, 
+             data_entries, 
+             data_channels, 
+             lut_components=3,
+             format='spi1d'):
+    """
+    Object description.
+
+    Parameters
+    ----------
+    parameter : type
+        Parameter description.
+
+    Returns
+    -------
+    type
+         Return value description.
+    """
+
+    ocioFormatsToExtensions = {'cinespace' : 'csp',
+                               'flame'     : '3dl',
+                               'icc'       : 'icc',
+                               'houdini'   : 'lut',
+                               'lustre'    : '3dl'}
+
+    if format in ocioFormatsToExtensions:
+      if ocioFormatsToExtensions[format] == 'csp':
+        write_CSP_1d(filename,
+                     from_min,
+                     from_max,
+                     data,
+                     data_entries,
+                     data_channels,
+                     lut_components)
+    else:
+      write_SPI_1d(filename,
+                   from_min,
+                   from_max,
+                   data,
+                   data_entries,
+                   data_channels,
+                   lut_components)
+
 def generate_1d_LUT_from_image(ramp_1d_path,
                                output_path=None,
                                min_value=0,
                                max_value=1,
-                               channels=3):
+                               channels=3,
+                               format='spi1d'):
     """
     Object description.
 
@@ -153,8 +261,8 @@ def generate_1d_LUT_from_image(ramp_1d_path,
     type = oiio.FLOAT
     ramp_data = ramp.read_image(type)
 
-    write_SPI_1d(output_path, min_value, max_value, 
-      ramp_data, ramp_width, ramp_channels, channels)
+    write_1d(output_path, min_value, max_value, 
+      ramp_data, ramp_width, ramp_channels, channels, format)
 
 
 def generate_3d_LUT_image(ramp_3d_path, resolution=32):
@@ -185,7 +293,10 @@ def generate_3d_LUT_image(ramp_3d_path, resolution=32):
     lut_extract.execute()
 
 
-def generate_3d_LUT_from_image(ramp_3d_path, output_path=None, resolution=32):
+def generate_3d_LUT_from_image(ramp_3d_path, 
+                               output_path=None, 
+                               resolution=32,
+                               format='spi3d'):
     """
     Object description.
 
@@ -201,21 +312,58 @@ def generate_3d_LUT_from_image(ramp_3d_path, output_path=None, resolution=32):
     """
 
     if output_path is None:
-        output_path = '%s.%s' % (ramp_3d_path, 'spi1d')
+        output_path = '%s.%s' % (ramp_3d_path, 'spi3d')
 
-    args = ['--extract',
-            '--cubesize',
-            str(resolution),
-            '--maxwidth',
-            str(resolution * resolution),
-            '--input',
-            ramp_3d_path,
-            '--output',
-            output_path]
-    lut_extract = Process(description='extract a 3d LUT',
-                          cmd='ociolutimage',
-                          args=args)
-    lut_extract.execute()
+    ocioFormatsToExtensions = {'cinespace' : 'csp',
+                               'flame'     : '3dl',
+                               'icc'       : 'icc',
+                               'houdini'   : 'lut',
+                               'lustre'    : '3dl'}
+
+    if format == 'spi3d' or not (format in ocioFormatsToExtensions):
+      # Extract a spi3d LUT
+      args = ['--extract',
+              '--cubesize',
+              str(resolution),
+              '--maxwidth',
+              str(resolution * resolution),
+              '--input',
+              ramp_3d_path,
+              '--output',
+              output_path]
+      lut_extract = Process(description='extract a 3d LUT',
+                            cmd='ociolutimage',
+                            args=args)
+      lut_extract.execute()
+
+    else:
+      output_path_spi3d = '%s.%s' % (output_path, 'spi3d')
+
+      # Extract a spi3d LUT
+      args = ['--extract',
+              '--cubesize',
+              str(resolution),
+              '--maxwidth',
+              str(resolution * resolution),
+              '--input',
+              ramp_3d_path,
+              '--output',
+              output_path_spi3d]
+      lut_extract = Process(description='extract a 3d LUT',
+                            cmd='ociolutimage',
+                            args=args)
+      lut_extract.execute()
+
+      # Convert to a different format
+      args = ['--lut',
+              output_path_spi3d,
+              '--format',
+              format,
+              output_path]
+      lut_convert = Process(description='convert a 3d LUT',
+                            cmd='ociobakelut',
+                            args=args)
+      lut_convert.execute()
 
 
 def apply_CTL_to_image(input_image,
@@ -309,7 +457,8 @@ def generate_1d_LUT_from_CTL(lut_path,
                              aces_ctl_directory=None,
                              min_value=0,
                              max_value=1,
-                             channels=3):
+                             channels=3,
+                             format='spi1d'):
     """
     Object description.
 
@@ -356,7 +505,8 @@ def generate_1d_LUT_from_CTL(lut_path,
                                lut_path,
                                min_value,
                                max_value,
-                               channels)
+                               channels,
+                               format)
 
     if cleanup:
         os.remove(identity_LUT_image)
@@ -446,7 +596,8 @@ def generate_3d_LUT_from_CTL(lut_path,
                              output_scale=1,
                              global_params=None,
                              cleanup=True,
-                             aces_ctl_directory=None):
+                             aces_ctl_directory=None,
+                             format='spi3d'):
     """
     Object description.
 
@@ -493,7 +644,10 @@ def generate_3d_LUT_from_CTL(lut_path,
                                             corrected_LUT_image,
                                             lut_resolution)
 
-    generate_3d_LUT_from_image(corrected_LUT_image, lut_path, lut_resolution)
+    generate_3d_LUT_from_image(corrected_LUT_image, 
+                               lut_path, 
+                               lut_resolution, 
+                               format)
 
     if cleanup:
         os.remove(identity_LUT_image)
@@ -502,7 +656,9 @@ def generate_3d_LUT_from_CTL(lut_path,
         os.remove(transformed_LUT_image)
         if corrected_LUT_image != transformed_LUT_image:
             os.remove(corrected_LUT_image)
-
+        if format != 'spi3d':
+            lut_path_spi3d = '%s.%s' % (lut_path, 'spi3d')
+            os.remove(lut_path_spi3d)
 
 def main():
     """
@@ -528,6 +684,7 @@ def main():
         usage='%prog [options]')
 
     p.add_option('--lut', '-l', type='string', default='')
+    p.add_option('--format', '-f', type='string', default='')
     p.add_option('--ctl', '-c', type='string', action='append')
     p.add_option('--lutResolution1d', '', type='int', default=1024)
     p.add_option('--lutResolution3d', '', type='int', default=33)
@@ -547,6 +704,7 @@ def main():
     options, arguments = p.parse_args()
 
     lut = options.lut
+    format = options.format
     ctls = options.ctl
     lut_resolution_1d = options.lutResolution1d
     lut_resolution_3d = options.lutResolution3d
@@ -578,6 +736,7 @@ def main():
         print('3D LUT generation options')
 
     print('lut                 : %s' % lut)
+    print('format              : %s' % format)
     print('ctls                : %s' % ctls)
     print('lut res 1d          : %s' % lut_resolution_1d)
     print('lut res 3d          : %s' % lut_resolution_3d)
@@ -601,7 +760,8 @@ def main():
                                  cleanup,
                                  ctl_release_path,
                                  min_value,
-                                 max_value)
+                                 max_value,
+                                 format=format)
 
     elif generate_3d:
         generate_3d_LUT_from_CTL(lut,
@@ -612,7 +772,8 @@ def main():
                                  output_scale,
                                  params,
                                  cleanup,
-                                 ctl_release_path)
+                                 ctl_release_path,
+                                 format=format)
     else:
         print(('\n\nNo LUT generated. '
                'You must choose either 1D or 3D LUT generation\n\n'))

@@ -335,7 +335,7 @@ def generate_1d_LUT_from_CTL(lut_path,
                           min_value,
                           max_value)
 
-    if identity_LUT_bit_depth != 'half':
+    if identity_LUT_bit_depth not in ['half', 'float']:
         identity_LUT_image = '%s.%s.%s' % (lut_path_base, 'uint16', 'tiff')
         convert_bit_depth(identity_LUT_image_float,
                           identity_LUT_image,
@@ -469,7 +469,7 @@ def generate_3d_LUT_from_CTL(lut_path,
     identity_LUT_image_float = '%s.%s.%s' % (lut_path_base, 'float', 'tiff')
     generate_3d_LUT_image(identity_LUT_image_float, lut_resolution)
 
-    if identity_LUT_bit_depth != 'half':
+    if identity_LUT_bit_depth not in ['half', 'float']:
         identity_LUT_image = '%s.%s.%s' % (lut_path_base,
                                            identity_LUT_bit_depth,
                                            'tiff')
@@ -548,8 +548,8 @@ def main():
 
     lut = options.lut
     ctls = options.ctl
-    lut_resolution_1d = options.lut_resolution_1d
-    lut_resolution_3d = options.lut_resolution_3d
+    lut_resolution_1d = options.lutResolution1d
+    lut_resolution_3d = options.lutResolution3d
     min_value = options.minValue
     max_value = options.maxValue
     input_scale = options.inputScale

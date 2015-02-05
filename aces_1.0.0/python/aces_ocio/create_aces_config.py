@@ -413,15 +413,15 @@ def create_config(config_data, nuke=False):
 
     set_config_default_roles(
         config,
-        color_picking=reference.getName(),
-        color_timing=reference.getName(),
-        compositing_log=reference.getName(),
-        data=reference.getName(),
-        default=reference.getName(),
-        matte_paint=reference.getName(),
-        reference=reference.getName(),
-        scene_linear=reference.getName(),
-        texture_paint=reference.getName())
+        color_picking=config_data['roles']['color_picking'],
+        color_timing=config_data['roles']['color_timing'],
+        compositing_log=config_data['roles']['compositing_log'],
+        data=config_data['roles']['data'],
+        default=config_data['roles']['default'],
+        matte_paint=config_data['roles']['matte_paint'],
+        reference=config_data['roles']['reference'],
+        scene_linear=config_data['roles']['scene_linear'],
+        texture_paint=config_data['roles']['texture_paint'])
 
     config.sanityCheck()
 
@@ -466,16 +466,18 @@ def generate_LUTs(odt_info,
     (aces_reference,
      aces_colorspaces,
      aces_displays,
-     aces_log_display_space) = aces.create_colorspaces(aces_ctl_directory,
-                                                       lut_directory,
-                                                       lut_resolution_1d,
-                                                       lut_resolution_3d,
-                                                       lmt_info,
-                                                       odt_info,
-                                                       shaper_name,
-                                                       cleanup)
+     aces_log_display_space,
+     aces_roles) = aces.create_colorspaces(aces_ctl_directory,
+                                           lut_directory,
+                                           lut_resolution_1d,
+                                           lut_resolution_3d,
+                                           lmt_info,
+                                           odt_info,
+                                           shaper_name,
+                                           cleanup)
 
     config_data['referenceColorSpace'] = aces_reference
+    config_data['roles'] = aces_roles
 
     for cs in aces_colorspaces:
         config_data['colorSpaces'].append(cs)
@@ -508,7 +510,6 @@ def generate_LUTs(odt_info,
     for cs in panasonic_colorSpaces:
         config_data['colorSpaces'].append(cs)
 
-
     # *RED* colorspaces to *ACES*.
     red_colorspaces = red.create_colorspaces(lut_directory,
                                              lut_resolution_1d)
@@ -529,6 +530,18 @@ def generate_LUTs(odt_info,
                                                      lut_resolution_3d)
     for cs in general_colorSpaces:
         config_data['colorSpaces'].append(cs)
+
+    # The *Raw* color space
+    raw = general.create_raw()
+    config_data['colorSpaces'].append(raw)
+
+    # Override 'linear' display
+    config_data['linearDisplaySpace'] = raw
+
+    # Override certain roles, for now
+    config_data['roles']['data'] = raw.name
+    config_data['roles']['reference'] = raw.name
+    config_data['roles']['texture_paint'] = raw.name
 
     print('generateLUTs - end')
     return config_data

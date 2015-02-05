@@ -23,7 +23,9 @@ __status__ = 'Production'
 __all__ = ['create_generic_matrix',
            'create_colorspaces']
 
-
+# -------------------------------------------------------------------------
+# *Simple Matrix Transform*
+# -------------------------------------------------------------------------
 def create_generic_matrix(name='matrix',
                           from_reference_values=None,
                           to_reference_values=None,
@@ -76,7 +78,6 @@ def create_generic_matrix(name='matrix',
                 'direction': 'forward'})
 
     return cs
-
 
 def create_colorspaces(lut_directory,
                        lut_resolution_1d,
@@ -176,6 +177,7 @@ def create_colorspaces(lut_directory,
         aliases=["lin_adobergb"])
     colorspaces.append(cs)
 
+
     # *ACES* to *Linear*, *Adobe Wide Gamut RGB* primaries.
     AP0_to_ADOBERGB = [1.3809814778, -0.1158594573, -0.2651220205,
                        0.0057015535, 1.0402949043, -0.0459964578,
@@ -188,3 +190,17 @@ def create_colorspaces(lut_directory,
     colorspaces.append(cs)
 
     return colorspaces
+
+def create_raw():
+    # *Raw* utility space
+    name = "Raw"
+    raw = ColorSpace(name)
+    raw.description = 'The %s color space' % name
+    raw.aliases = []
+    raw.equality_group = name
+    raw.family = 'Utility'
+    raw.is_data = True
+
+    return raw
+
+

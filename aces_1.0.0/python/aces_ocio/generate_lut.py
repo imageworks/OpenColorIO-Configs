@@ -149,8 +149,8 @@ def write_CSP_1d(filename,
         fp.write('CSPLUTV100\n')
         fp.write('1D\n')
         fp.write('\n')
-        fp.write('BEGIN METADATA')
-        fp.write('END METADATA')
+        fp.write('BEGIN METADATA\n')
+        fp.write('END METADATA\n')
 
         fp.write('\n')
 

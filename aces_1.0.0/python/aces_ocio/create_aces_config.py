@@ -545,9 +545,6 @@ def generate_LUTs(odt_info,
     raw = general.create_raw()
     config_data['colorSpaces'].append(raw)
 
-    # Override 'linear' display
-    config_data['linearDisplaySpace'] = raw
-
     # Override certain roles, for now
     config_data['roles']['data'] = raw.name
     config_data['roles']['reference'] = raw.name

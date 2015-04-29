@@ -58,7 +58,7 @@ def create_s_log(gamut,
     cs.description = name
     cs.aliases = aliases
     cs.equality_group = ''
-    cs.family = 'Sony'
+    cs.family = 'Input/Sony'
     cs.is_data = False
 
     # A linear space needs allocation variables

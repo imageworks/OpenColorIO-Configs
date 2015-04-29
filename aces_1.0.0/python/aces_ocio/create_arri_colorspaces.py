@@ -61,7 +61,7 @@ def create_log_c(gamut,
     cs.description = name
     cs.aliases = aliases
     cs.equality_group = ''
-    cs.family = 'ARRI'
+    cs.family = 'Input/ARRI'
     cs.is_data = False
 
     # A linear space needs allocation variables

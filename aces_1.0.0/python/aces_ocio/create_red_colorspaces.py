@@ -58,7 +58,7 @@ def create_RED_log_film(gamut,
     cs.description = name
     cs.aliases = aliases
     cs.equality_group = ''
-    cs.family = 'RED'
+    cs.family = 'Input/RED'
     cs.is_data = False
 
     # A linear space needs allocation variables

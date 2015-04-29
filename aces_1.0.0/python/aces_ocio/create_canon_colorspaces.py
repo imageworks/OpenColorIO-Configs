@@ -58,7 +58,7 @@ def create_c_log(gamut,
     cs.description = name
     cs.aliases = aliases
     cs.equality_group = ''
-    cs.family = 'Canon'
+    cs.family = 'Input/Canon'
     cs.is_data = False
 
     # A linear space needs allocation variables

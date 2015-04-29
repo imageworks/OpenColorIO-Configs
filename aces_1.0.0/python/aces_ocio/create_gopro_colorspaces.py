@@ -58,7 +58,7 @@ def create_protune(gamut,
     cs.description = name
     cs.aliases = aliases
     cs.equality_group = ''
-    cs.family = 'GoPro'
+    cs.family = 'Input/GoPro'
     cs.is_data = False
 
     # A linear space needs allocation variables

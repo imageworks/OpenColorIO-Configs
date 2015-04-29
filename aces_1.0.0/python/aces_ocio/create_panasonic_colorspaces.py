@@ -56,7 +56,7 @@ def create_v_log(gamut,
     cs.description = name
     cs.aliases = aliases
     cs.equality_group = ''
-    cs.family = 'Panasonic'
+    cs.family = 'Input/Panasonic'
     cs.is_data = False
 
     # A linear space needs allocation variables

@@ -391,22 +391,25 @@ def create_config(config_data, nuke=False):
 
     # Defining the *Nuke* specific set of *views* and *displays*.
     else:
-        for display, view_list in config_data['displays'].iteritems():
+        display_name = 'Output'
+        displays.append(display_name)
+
+        display_names = sorted(config_data['displays'])
+        for display in display_names:
+            view_list = config_data['displays'][display]
             for view_name, colorspace in view_list.iteritems():
                 if view_name == 'Output Transform':
-                    view_name = 'View'
-                    config.addDisplay(display, view_name, colorspace.name)
-                    if not (view_name in views):
-                        views.append(view_name)
-            displays.append(display)
+                    config.addDisplay(display_name, display, colorspace.name)
+                    if not (display in views):
+                        views.append(display)
 
         linear_display_space_name = config_data['linearDisplaySpace'].name
         log_display_space_name = config_data['logDisplaySpace'].name
 
-        config.addDisplay('linear', 'View', linear_display_space_name)
-        displays.append('linear')
-        config.addDisplay('log', 'View', log_display_space_name)
-        displays.append('log')
+        config.addDisplay(display_name, 'Linear', linear_display_space_name)
+        views.append('Linear')
+        config.addDisplay(display_name, 'Log', log_display_space_name)
+        views.append('Log')
 
     # Setting the active *displays* and *views*.
     config.setActiveDisplays(','.join(sorted(displays)))

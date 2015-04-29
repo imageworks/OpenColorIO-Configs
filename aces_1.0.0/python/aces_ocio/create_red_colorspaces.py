@@ -115,6 +115,13 @@ def create_RED_log_film(gamut,
                                         0.040787, 0.857658, 0.101553,
                                         -0.047504, -0.000282, 1.047756]),
             'direction': 'forward'})
+    elif gamut == 'REDcolor':
+        cs.to_reference_transforms.append({
+            'type': 'matrix',
+            'matrix': mat44_from_mat33([0.451464, 0.388498, 0.160038,
+                                        0.062716, 0.866790, 0.070491,
+                                        -0.017541, 0.086921, 0.930590]),
+            'direction': 'forward'})
     elif gamut == 'REDcolor2':
         cs.to_reference_transforms.append({
             'type': 'matrix',
@@ -177,6 +184,15 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         ["rlf_dgn2"])
     colorspaces.append(RED_log_film_dragon2)
 
+    RED_log_film_color = create_RED_log_film(
+        'REDcolor',
+        'REDlogFilm',
+        'REDlogFilm',
+        lut_directory,
+        lut_resolution_1d,
+        ["rlf_rc"])
+    colorspaces.append(RED_log_film_color)
+
     RED_log_film_color2 = create_RED_log_film(
         'REDcolor2',
         'REDlogFilm',
@@ -232,6 +248,15 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         lut_resolution_1d,
         ["lin_dgn2"])
     colorspaces.append(RED_dragon2)
+
+    RED_color = create_RED_log_film(
+        'REDcolor',
+        '',
+        'REDlogFilm',
+        lut_directory,
+        lut_resolution_1d,
+        ["lin_rc"])
+    colorspaces.append(RED_color)
 
     RED_color2 = create_RED_log_film(
         'REDcolor2',

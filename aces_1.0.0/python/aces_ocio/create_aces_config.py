@@ -15,6 +15,7 @@ import PyOpenColorIO as ocio
 import aces_ocio.create_aces_colorspaces as aces
 import aces_ocio.create_arri_colorspaces as arri
 import aces_ocio.create_canon_colorspaces as canon
+import aces_ocio.create_gopro_colorspaces as gopro
 import aces_ocio.create_panasonic_colorspaces as panasonic
 import aces_ocio.create_red_colorspaces as red
 import aces_ocio.create_sony_colorspaces as sony
@@ -502,6 +503,12 @@ def generate_LUTs(odt_info,
     canon_colorspaces = canon.create_colorspaces(lut_directory,
                                                  lut_resolution_1d)
     for cs in canon_colorspaces:
+        config_data['colorSpaces'].append(cs)
+
+    # *GoPro Protune* to *ACES*.
+    gopro_colorspaces = gopro.create_colorspaces(lut_directory,
+                                                 lut_resolution_1d)
+    for cs in gopro_colorspaces:
         config_data['colorSpaces'].append(cs)
 
     # *Panasonic V-Log* to *ACES*.

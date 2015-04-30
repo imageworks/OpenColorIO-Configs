@@ -14,7 +14,7 @@ roles:
   default: ACES2065-1
   matte_paint: ACEScc
   reference: Raw
-  scene_linear: ACEScg
+  scene_linear: ACES2065-1
   texture_paint: Raw
 
 displays:
@@ -171,30 +171,6 @@ colorspaces:
         - !<FileTransform> {src: ADX_CID_to_RLE.spi1d, interpolation: linear}
         - !<LogTransform> {base: 10, direction: inverse}
         - !<MatrixTransform> {matrix: [0.72286, 0.1263, 0.15084, 0, 0.11923, 0.76418, 0.11659, 0, 0.01427, 0.08213, 0.90359, 0, 0, 0, 0, 1]}
-
-  - !<ColorSpace>
-    name: Output Shaper
-    family: Utility
-    equalitygroup: Output Shaper
-    bitdepth: 32f
-    description: |
-      The Output Shaper color space
-    isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
-    to_reference: !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear}
-
-  - !<ColorSpace>
-    name: crv_outputshaper
-    family: Aliases
-    equalitygroup: Output Shaper
-    bitdepth: 32f
-    description: |
-      The Output Shaper color space
-    isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
-    from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Output Shaper}
 
   - !<ColorSpace>
     name: ACES 1.0 to 0.1 emulation
@@ -1061,6 +1037,33 @@ colorspaces:
     from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: V3 LogC (EI1000) - Wide Gamut}
 
   - !<ColorSpace>
+    name: V3 LogC (EI1280) - Wide Gamut
+    family: Input/ARRI
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      V3 LogC (EI1280) - Wide Gamut
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: V3_LogC_1280_to_linear.spi1d, interpolation: linear}
+        - !<MatrixTransform> {matrix: [0.680206, 0.236137, 0.083658, 0, 0.085415, 1.01747, -0.102886, 0, 0.002057, -0.062563, 1.06051, 0, 0, 0, 0, 1]}
+
+  - !<ColorSpace>
+    name: logc3ei1280_arriwide
+    family: Aliases
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      V3 LogC (EI1280) - Wide Gamut
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: V3 LogC (EI1280) - Wide Gamut}
+
+  - !<ColorSpace>
     name: ADX16
     family: ADX
     equalitygroup: ""
@@ -1103,31 +1106,28 @@ colorspaces:
     from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: LMT Shaper}
 
   - !<ColorSpace>
-    name: V3 LogC (EI1280) - Wide Gamut
-    family: Input/ARRI
-    equalitygroup: ""
+    name: Output Shaper
+    family: Utility
+    equalitygroup: Output Shaper
     bitdepth: 32f
     description: |
-      V3 LogC (EI1280) - Wide Gamut
+      The Output Shaper color space
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
-    to_reference: !<GroupTransform>
-      children:
-        - !<FileTransform> {src: V3_LogC_1280_to_linear.spi1d, interpolation: linear}
-        - !<MatrixTransform> {matrix: [0.680206, 0.236137, 0.083658, 0, 0.085415, 1.01747, -0.102886, 0, 0.002057, -0.062563, 1.06051, 0, 0, 0, 0, 1]}
+    to_reference: !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear}
 
   - !<ColorSpace>
-    name: logc3ei1280_arriwide
+    name: crv_outputshaper
     family: Aliases
-    equalitygroup: ""
+    equalitygroup: Output Shaper
     bitdepth: 32f
     description: |
-      V3 LogC (EI1280) - Wide Gamut
+      The Output Shaper color space
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
-    from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: V3 LogC (EI1280) - Wide Gamut}
+    from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Output Shaper}
 
   - !<ColorSpace>
     name: V3 LogC (EI1600) - Wide Gamut

@@ -53,7 +53,7 @@ def create_log_c(gamut,
 
     name = '%s (EI%s) - %s' % (transfer_function, exposure_index, gamut)
     if transfer_function == '':
-        name = 'Linear - %s' % gamut
+        name = 'Linear - ARRI %s' % gamut
     if gamut == '':
         name = '%s (EI%s)' % (transfer_function, exposure_index)
 

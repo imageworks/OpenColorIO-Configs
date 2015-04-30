@@ -50,7 +50,7 @@ def create_c_log(gamut,
 
     name = '%s - %s' % (transfer_function, gamut)
     if transfer_function == '':
-        name = 'Linear - %s' % gamut
+        name = 'Linear - Canon %s' % gamut
     if gamut == '':
         name = '%s' % transfer_function
 
@@ -245,7 +245,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'Canon-Log',
         lut_directory,
         lut_resolution_1d,
-        ["lin_rec709day"])
+        ["lin_canonrec709day"])
     colorspaces.append(c_log_8)
 
     c_log_9 = create_c_log(
@@ -254,7 +254,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'Canon-Log',
         lut_directory,
         lut_resolution_1d,
-        ["lin_rec709tung"])
+        ["lin_canonrec709tung"])
     colorspaces.append(c_log_9)
 
     c_log_10 = create_c_log(
@@ -263,7 +263,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'Canon-Log',
         lut_directory,
         lut_resolution_1d,
-        ["lin_dcip3day"])
+        ["lin_canondcip3day"])
     colorspaces.append(c_log_10)
 
     c_log_11 = create_c_log(
@@ -272,7 +272,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'Canon-Log',
         lut_directory,
         lut_resolution_1d,
-        ["lin_dcip3tung"])
+        ["lin_canondcip3tung"])
     colorspaces.append(c_log_11)
 
     c_log_12 = create_c_log(
@@ -281,7 +281,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'Canon-Log',
         lut_directory,
         lut_resolution_1d,
-        ["lin_cgamutday"])
+        ["lin_canoncgamutday"])
     colorspaces.append(c_log_12)
 
     c_log_13 = create_c_log(
@@ -290,7 +290,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'Canon-Log',
         lut_directory,
         lut_resolution_1d,
-        ["lin_cgamuttung"])
+        ["lin_canoncgamuttung"])
     colorspaces.append(c_log_13)
 
     return colorspaces

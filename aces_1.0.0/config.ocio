@@ -212,6 +212,30 @@ colorspaces:
         - !<MatrixTransform> {matrix: [0.72286, 0.1263, 0.15084, 0, 0.11923, 0.76418, 0.11659, 0, 0.01427, 0.08213, 0.90359, 0, 0, 0, 0, 1]}
 
   - !<ColorSpace>
+    name: Output Shaper
+    family: Utility
+    equalitygroup: Output Shaper
+    bitdepth: 32f
+    description: |
+      The Output Shaper color space
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear}
+
+  - !<ColorSpace>
+    name: crv_outputshaper
+    family: Aliases
+    equalitygroup: Output Shaper
+    bitdepth: 32f
+    description: |
+      The Output Shaper color space
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Output Shaper}
+
+  - !<ColorSpace>
     name: ACES 1.0 to 0.1 emulation
     family: Look
     equalitygroup: ""
@@ -368,12 +392,12 @@ colorspaces:
     from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Dolby PQ 10000}
 
   - !<ColorSpace>
-    name: Linear - Wide Gamut
+    name: Linear - ARRI Wide Gamut
     family: Input/ARRI
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      Linear - Wide Gamut
+      Linear - ARRI Wide Gamut
     isdata: false
     allocation: lg2
     allocationvars: [-8, 5, 0.00390625]
@@ -385,11 +409,11 @@ colorspaces:
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      Linear - Wide Gamut
+      Linear - ARRI Wide Gamut
     isdata: false
     allocation: lg2
     allocationvars: [-8, 5, 0.00390625]
-    from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Linear - Wide Gamut}
+    from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Linear - ARRI Wide Gamut}
 
   - !<ColorSpace>
     name: Dolby PQ Scaled
@@ -1076,33 +1100,6 @@ colorspaces:
     from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: V3 LogC (EI1000) - Wide Gamut}
 
   - !<ColorSpace>
-    name: V3 LogC (EI1280) - Wide Gamut
-    family: Input/ARRI
-    equalitygroup: ""
-    bitdepth: 32f
-    description: |
-      V3 LogC (EI1280) - Wide Gamut
-    isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
-    to_reference: !<GroupTransform>
-      children:
-        - !<FileTransform> {src: V3_LogC_1280_to_linear.spi1d, interpolation: linear}
-        - !<MatrixTransform> {matrix: [0.680206, 0.236137, 0.083658, 0, 0.085415, 1.01747, -0.102886, 0, 0.002057, -0.062563, 1.06051, 0, 0, 0, 0, 1]}
-
-  - !<ColorSpace>
-    name: logc3ei1280_arriwide
-    family: Aliases
-    equalitygroup: ""
-    bitdepth: 32f
-    description: |
-      V3 LogC (EI1280) - Wide Gamut
-    isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
-    from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: V3 LogC (EI1280) - Wide Gamut}
-
-  - !<ColorSpace>
     name: ADX16
     family: ADX
     equalitygroup: ""
@@ -1145,28 +1142,31 @@ colorspaces:
     from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: LMT Shaper}
 
   - !<ColorSpace>
-    name: Output Shaper
-    family: Utility
-    equalitygroup: Output Shaper
+    name: V3 LogC (EI1280) - Wide Gamut
+    family: Input/ARRI
+    equalitygroup: ""
     bitdepth: 32f
     description: |
-      The Output Shaper color space
+      V3 LogC (EI1280) - Wide Gamut
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
-    to_reference: !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear}
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: V3_LogC_1280_to_linear.spi1d, interpolation: linear}
+        - !<MatrixTransform> {matrix: [0.680206, 0.236137, 0.083658, 0, 0.085415, 1.01747, -0.102886, 0, 0.002057, -0.062563, 1.06051, 0, 0, 0, 0, 1]}
 
   - !<ColorSpace>
-    name: crv_outputshaper
+    name: logc3ei1280_arriwide
     family: Aliases
-    equalitygroup: Output Shaper
+    equalitygroup: ""
     bitdepth: 32f
     description: |
-      The Output Shaper color space
+      V3 LogC (EI1280) - Wide Gamut
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
-    from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Output Shaper}
+    from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: V3 LogC (EI1280) - Wide Gamut}
 
   - !<ColorSpace>
     name: V3 LogC (EI1600) - Wide Gamut
@@ -1487,172 +1487,172 @@ colorspaces:
     from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Canon-Log}
 
   - !<ColorSpace>
-    name: Linear - Rec. 709 Daylight
+    name: Linear - Canon Rec. 709 Daylight
     family: Input/Canon
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      Linear - Rec. 709 Daylight
+      Linear - Canon Rec. 709 Daylight
     isdata: false
     allocation: lg2
     allocationvars: [-8, 5, 0.00390625]
     to_reference: !<MatrixTransform> {matrix: [0.561539, 0.40206, 0.0364009, 0, 0.0927396, 0.924121, -0.0168608, 0, 0.084813, 0.00637383, 0.908813, 0, 0, 0, 0, 1]}
 
   - !<ColorSpace>
-    name: lin_rec709day
+    name: lin_canonrec709day
     family: Aliases
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      Linear - Rec. 709 Daylight
+      Linear - Canon Rec. 709 Daylight
     isdata: false
     allocation: lg2
     allocationvars: [-8, 5, 0.00390625]
-    from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Linear - Rec. 709 Daylight}
+    from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Linear - Canon Rec. 709 Daylight}
 
   - !<ColorSpace>
-    name: Linear - Rec. 709 Tungsten
+    name: Linear - Canon Rec. 709 Tungsten
     family: Input/Canon
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      Linear - Rec. 709 Tungsten
+      Linear - Canon Rec. 709 Tungsten
     isdata: false
     allocation: lg2
     allocationvars: [-8, 5, 0.00390625]
     to_reference: !<MatrixTransform> {matrix: [0.566996, 0.365079, 0.0679242, 0, 0.070901, 0.880331, 0.0487679, 0, 0.0730135, -0.0665409, 0.993527, 0, 0, 0, 0, 1]}
 
   - !<ColorSpace>
-    name: lin_rec709tung
+    name: lin_canonrec709tung
     family: Aliases
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      Linear - Rec. 709 Tungsten
+      Linear - Canon Rec. 709 Tungsten
     isdata: false
     allocation: lg2
     allocationvars: [-8, 5, 0.00390625]
-    from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Linear - Rec. 709 Tungsten}
+    from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Linear - Canon Rec. 709 Tungsten}
 
   - !<ColorSpace>
-    name: Linear - DCI-P3 Daylight
+    name: Linear - Canon DCI-P3 Daylight
     family: Input/Canon
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      Linear - DCI-P3 Daylight
+      Linear - Canon DCI-P3 Daylight
     isdata: false
     allocation: lg2
     allocationvars: [-8, 5, 0.00390625]
     to_reference: !<MatrixTransform> {matrix: [0.607161, 0.299507, 0.0933321, 0, 0.00496812, 1.05098, -0.0559503, 0, -0.00783994, 0.000809127, 1.00703, 0, 0, 0, 0, 1]}
 
   - !<ColorSpace>
-    name: lin_dcip3day
+    name: lin_canondcip3day
     family: Aliases
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      Linear - DCI-P3 Daylight
+      Linear - Canon DCI-P3 Daylight
     isdata: false
     allocation: lg2
     allocationvars: [-8, 5, 0.00390625]
-    from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Linear - DCI-P3 Daylight}
+    from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Linear - Canon DCI-P3 Daylight}
 
   - !<ColorSpace>
-    name: Linear - DCI-P3 Tungsten
+    name: Linear - Canon DCI-P3 Tungsten
     family: Input/Canon
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      Linear - DCI-P3 Tungsten
+      Linear - Canon DCI-P3 Tungsten
     isdata: false
     allocation: lg2
     allocationvars: [-8, 5, 0.00390625]
     to_reference: !<MatrixTransform> {matrix: [0.650279, 0.25388, 0.0958407, 0, -0.026138, 1.0179, 0.00823746, 0, 0.00775756, -0.0630817, 1.05532, 0, 0, 0, 0, 1]}
 
   - !<ColorSpace>
-    name: lin_dcip3tung
+    name: lin_canondcip3tung
     family: Aliases
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      Linear - DCI-P3 Tungsten
+      Linear - Canon DCI-P3 Tungsten
     isdata: false
     allocation: lg2
     allocationvars: [-8, 5, 0.00390625]
-    from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Linear - DCI-P3 Tungsten}
+    from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Linear - Canon DCI-P3 Tungsten}
 
   - !<ColorSpace>
-    name: Linear - Cinema Gamut Daylight
+    name: Linear - Canon Cinema Gamut Daylight
     family: Input/Canon
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      Linear - Cinema Gamut Daylight
+      Linear - Canon Cinema Gamut Daylight
     isdata: false
     allocation: lg2
     allocationvars: [-8, 5, 0.00390625]
     to_reference: !<MatrixTransform> {matrix: [0.763064, 0.149021, 0.0879144, 0, 0.00365746, 1.10696, -0.110618, 0, -0.00940779, -0.218383, 1.22779, 0, 0, 0, 0, 1]}
 
   - !<ColorSpace>
-    name: lin_cgamutday
+    name: lin_canoncgamutday
     family: Aliases
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      Linear - Cinema Gamut Daylight
+      Linear - Canon Cinema Gamut Daylight
     isdata: false
     allocation: lg2
     allocationvars: [-8, 5, 0.00390625]
-    from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Linear - Cinema Gamut Daylight}
+    from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Linear - Canon Cinema Gamut Daylight}
 
   - !<ColorSpace>
-    name: Linear - Cinema Gamut Tungsten
+    name: Linear - Canon Cinema Gamut Tungsten
     family: Input/Canon
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      Linear - Cinema Gamut Tungsten
+      Linear - Canon Cinema Gamut Tungsten
     isdata: false
     allocation: lg2
     allocationvars: [-8, 5, 0.00390625]
     to_reference: !<MatrixTransform> {matrix: [0.817416, 0.0907557, 0.091828, 0, -0.0353614, 1.06569, -0.0303292, 0, 0.0103904, -0.299271, 1.28888, 0, 0, 0, 0, 1]}
 
   - !<ColorSpace>
-    name: lin_cgamuttung
+    name: lin_canoncgamuttung
     family: Aliases
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      Linear - Cinema Gamut Tungsten
+      Linear - Canon Cinema Gamut Tungsten
     isdata: false
     allocation: lg2
     allocationvars: [-8, 5, 0.00390625]
-    from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Linear - Cinema Gamut Tungsten}
+    from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Linear - Canon Cinema Gamut Tungsten}
 
   - !<ColorSpace>
-    name: Protune Flat - Protune Native
+    name: Protune Flat - Protune Native - Experimental
     family: Input/GoPro
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      Protune Flat - Protune Native
+      Protune Flat - Protune Native - Experimental
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
     to_reference: !<FileTransform> {src: Protune_Flat_to_linear.spi1d, interpolation: linear}
 
   - !<ColorSpace>
-    name: protuneflat_protunegamut
+    name: protuneflat_protunegamutexp
     family: Aliases
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      Protune Flat - Protune Native
+      Protune Flat - Protune Native - Experimental
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
-    from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Protune Flat - Protune Native}
+    from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Protune Flat - Protune Native - Experimental}
 
   - !<ColorSpace>
     name: Protune Flat
@@ -1679,28 +1679,28 @@ colorspaces:
     from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Protune Flat}
 
   - !<ColorSpace>
-    name: Linear - Protune Native
+    name: Linear - Protune Native - Experimental
     family: Input/GoPro
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      Linear - Protune Native
+      Linear - Protune Native - Experimental
     isdata: false
     allocation: lg2
     allocationvars: [-8, 5, 0.00390625]
 
   - !<ColorSpace>
-    name: lin_protunegamut
+    name: lin_protunegamutexp
     family: Aliases
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      Linear - Protune Native
+      Linear - Protune Native - Experimental
     isdata: false
     allocation: lg2
     allocationvars: [-8, 5, 0.00390625]
-    to_reference: !<ColorSpaceTransform> {src: Linear - Protune Native, dst: ACES2065-1}
-    from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Linear - Protune Native}
+    to_reference: !<ColorSpaceTransform> {src: Linear - Protune Native - Experimental, dst: ACES2065-1}
+    from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Linear - Protune Native - Experimental}
 
   - !<ColorSpace>
     name: V-Log - V-Gamut

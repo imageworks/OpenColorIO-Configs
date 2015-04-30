@@ -391,7 +391,7 @@ def create_config(config_data, nuke=False):
 
     # Defining the *Nuke* specific set of *views* and *displays*.
     else:
-        display_name = 'Output'
+        display_name = 'ACES'
         displays.append(display_name)
 
         display_names = sorted(config_data['displays'])

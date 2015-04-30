@@ -48,9 +48,11 @@ def create_protune(gamut,
          Return value description.
     """
 
-    name = '%s - %s' % (transfer_function, gamut)
+    # The gamut should be marked as experimental until
+    # matrices are fully verified
+    name = '%s - %s - Experimental' % (transfer_function, gamut)
     if transfer_function == '':
-        name = 'Linear - %s' % gamut
+        name = 'Linear - %s - Experimental' % gamut
     if gamut == '':
         name = '%s' % transfer_function
 
@@ -134,7 +136,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'Protune',
         lut_directory,
         lut_resolution_1d,
-        ["protuneflat_protunegamut"])
+        ["protuneflat_protunegamutexp"])
     colorspaces.append(protune_1)
 
     # Linearization Only
@@ -154,7 +156,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'Protune',
         lut_directory,
         lut_resolution_1d,
-        ["lin_protunegamut"])
+        ["lin_protunegamutexp"])
     colorspaces.append(protune_3)
 
     return colorspaces

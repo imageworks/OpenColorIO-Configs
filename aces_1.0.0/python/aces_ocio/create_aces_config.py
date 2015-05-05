@@ -329,9 +329,10 @@ def create_config(config_data, nuke=False):
     config.addColorSpace(reference)
 
     # Add alias
-    if reference_data.aliases != []:
-        add_colorspace_alias(config, reference_data,
-                             reference_data, reference_data.aliases)
+    if not nuke:
+        if reference_data.aliases != []:
+            add_colorspace_alias(config, reference_data,
+                                 reference_data, reference_data.aliases)
 
     print("")
 
@@ -370,9 +371,10 @@ def create_config(config_data, nuke=False):
         #
         # Add alias to normal colorspace, using compact name
         #
-        if colorspace.aliases != []:
-            add_colorspace_alias(config, reference_data,
-                                 colorspace, colorspace.aliases)
+        if not nuke:
+            if colorspace.aliases != []:
+                add_colorspace_alias(config, reference_data,
+                                     colorspace, colorspace.aliases)
 
         print('')
 
@@ -403,6 +405,10 @@ def create_config(config_data, nuke=False):
                     if not (display in views):
                         views.append(display)
 
+        # Works with Nuke Studio and Mari, but not Nuke
+        #display_name = 'Utility'
+        #displays.append(display_name)
+        
         linear_display_space_name = config_data['linearDisplaySpace'].name
         log_display_space_name = config_data['logDisplaySpace'].name
 

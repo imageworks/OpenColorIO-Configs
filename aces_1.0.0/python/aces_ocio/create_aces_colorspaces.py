@@ -1061,7 +1061,6 @@ def create_ODTs(aces_ctl_directory,
     colorspaces.append(log2_shaper_copy_colorspace)
 
     # Defining the *Log2 shaper that includes the AP1* primaries.
-    # Needed for some LUT baking steps.
     log2_shaper_api1_name = "%s - AP1" % "Log2 Shaper"
     log2_shaper_api1_colorspace = ColorSpace(log2_shaper_api1_name)
     log2_shaper_api1_colorspace.description = 'The %s color space' % log2_shaper_api1_name
@@ -1079,6 +1078,19 @@ def create_ODTs(aces_ctl_directory,
         'direction': 'forward'
     })
     colorspaces.append(log2_shaper_api1_colorspace)
+
+    # Defining the *Log2 shaper that includes the AP1* primaries.
+    # Named with 'shaper_name' variable. Needed for some LUT baking steps.
+    shaper_api1_name = "%s - AP1" % shaper_name
+    shaper_api1_colorspace = ColorSpace(shaper_api1_name)
+    shaper_api1_colorspace.description = 'The %s color space' % shaper_api1_name
+    shaper_api1_colorspace.aliases = ["%s_ap1" % compact(shaper_api1_name)]
+    shaper_api1_colorspace.equality_group = shaper_api1_name
+    shaper_api1_colorspace.family = log2_shaper_colorspace.family
+    shaper_api1_colorspace.is_data = log2_shaper_colorspace.is_data
+    shaper_api1_colorspace.to_reference_transforms = list(log2_shaper_api1_colorspace.to_reference_transforms)
+    shaper_api1_colorspace.from_reference_transforms = list(log2_shaper_api1_colorspace.from_reference_transforms)
+    colorspaces.append(shaper_api1_colorspace)
 
     # Define the base *Dolby PQ Shaper*
     #

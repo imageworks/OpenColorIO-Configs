@@ -116,14 +116,14 @@ def create_log_c(gamut,
                 'e': e,
                 'f': f}
 
-    def log_c_to_linear(code_value, exposure_index):
+    def normalized_log_c_to_linear(code_value, exposure_index):
         p = log_c_inverse_parameters_for_EI(exposure_index)
         breakpoint = p['e'] * p['cut'] + p['f']
         if code_value > breakpoint:
-            linear = ((pow(10, (code_value / 1023 - p['d']) / p['c']) -
+            linear = ((pow(10, (code_value - p['d']) / p['c']) -
                        p['b']) / p['a'])
         else:
-            linear = (code_value / 1023 - p['f']) / p['e']
+            linear = (code_value - p['f']) / p['e']
         return linear
 
     cs.to_reference_transforms = []
@@ -131,8 +131,8 @@ def create_log_c(gamut,
     if transfer_function == 'V3 LogC':
         data = array.array('f', '\0' * lut_resolution_1d * 4)
         for c in range(lut_resolution_1d):
-            data[c] = log_c_to_linear(1023 * c / (lut_resolution_1d - 1),
-                                      int(exposure_index))
+            data[c] = normalized_log_c_to_linear(c / (lut_resolution_1d - 1),
+                                                 int(exposure_index))
 
         lut = '%s_to_linear.spi1d' % (
             '%s_%s' % (transfer_function, exposure_index))

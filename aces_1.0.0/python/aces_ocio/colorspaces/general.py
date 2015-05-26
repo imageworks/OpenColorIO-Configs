@@ -9,7 +9,7 @@ from __future__ import division
 
 import PyOpenColorIO as ocio
 
-import aces_ocio.create_aces_colorspaces as aces
+from aces_ocio.colorspaces import aces
 from aces_ocio.utilities import ColorSpace, mat44_from_mat33
 
 

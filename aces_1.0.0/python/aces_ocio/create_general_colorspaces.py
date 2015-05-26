@@ -79,6 +79,7 @@ def create_generic_matrix(name='matrix',
 
     return cs
 
+
 def create_colorspaces(lut_directory,
                        lut_resolution_1d,
                        lut_resolution_3d):
@@ -190,6 +191,7 @@ def create_colorspaces(lut_directory,
     colorspaces.append(cs)
 
     return colorspaces
+
 
 def create_raw():
     # *Raw* utility space

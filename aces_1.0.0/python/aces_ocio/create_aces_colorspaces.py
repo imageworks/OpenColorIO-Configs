@@ -146,7 +146,7 @@ def create_ACEScc(aces_ctl_directory,
         'float',
         input_scale,
         1,
-        {'transferFunctionOnly':1},
+        {'transferFunctionOnly': 1},
         cleanup,
         aces_ctl_directory,
         min_value,
@@ -199,12 +199,12 @@ def create_ACESproxy(aces_ctl_directory,
     ctls = [os.path.join(aces_ctl_directory,
                          'ACESproxy',
                          'ACEScsc.ACESproxy10i_to_ACES.a1.0.0.ctl'),
-                          # This transform gets back to the *AP1* primaries.
-                          # Useful as the 1d LUT is only covering the transfer function.
-                          # The primaries switch is covered by the matrix below:
-                          os.path.join(aces_ctl_directory,
-                                       'ACEScg',
-                                       'ACEScsc.ACES_to_ACEScg.a1.0.0.ctl')]
+            # This transform gets back to the *AP1* primaries.
+            # Useful as the 1d LUT is only covering the transfer function.
+            # The primaries switch is covered by the matrix below:
+            os.path.join(aces_ctl_directory,
+                         'ACEScg',
+                         'ACEScsc.ACES_to_ACEScg.a1.0.0.ctl')]
     lut = '%s_to_linear.spi1d' % name
 
     lut = sanitize(lut)
@@ -434,6 +434,7 @@ def create_ADX(lut_directory,
     cs.from_reference_transforms = []
     return cs
 
+
 # -------------------------------------------------------------------------
 # *Generic Log Transform*
 # -------------------------------------------------------------------------
@@ -504,18 +505,19 @@ def create_generic_log(aces_ctl_directory,
     cs.from_reference_transforms = []
     return cs
 
+
 # -------------------------------------------------------------------------
 # *base Dolby PQ Transform*
 # -------------------------------------------------------------------------
 def create_dolbypq(aces_CTL_directory,
-                    lut_directory,
-                    lut_resolution_1d,
-                    cleanup,
-                    name='pq',
-                    aliases=[],
-                    min_value=0.0,
-                    max_value=1.0,
-                    input_scale=1.0):
+                   lut_directory,
+                   lut_resolution_1d,
+                   cleanup,
+                   name='pq',
+                   aliases=[],
+                   min_value=0.0,
+                   max_value=1.0,
+                   input_scale=1.0):
     cs = ColorSpace(name)
     cs.description = 'The %s color space' % name
     cs.aliases = aliases
@@ -524,9 +526,9 @@ def create_dolbypq(aces_CTL_directory,
     cs.is_data = False
 
     ctls = [os.path.join(
-                         aces_CTL_directory,
-                         'utilities',
-                         'ACESlib.OCIO_shaper_dolbypq_to_lin.a1.0.0.ctl')]
+        aces_CTL_directory,
+        'utilities',
+        'ACESlib.OCIO_shaper_dolbypq_to_lin.a1.0.0.ctl')]
     lut = '%s_to_linear.spi1d' % name
 
     lut = sanitize(lut)
@@ -554,21 +556,22 @@ def create_dolbypq(aces_CTL_directory,
     cs.from_reference_transforms = []
     return cs
 
+
 # -------------------------------------------------------------------------
 # *Dolby PQ Transform that considers a fixed linear range*
 # -------------------------------------------------------------------------
 def create_dolbypq_scaled(aces_CTL_directory,
-                           lut_directory,
-                           lut_resolution_1d,
-                           cleanup,
-                           name='pq',
-                           aliases=[],
-                           min_value=0.0,
-                           max_value=1.0,
-                           input_scale=1.0,
-                           middle_grey=0.18,
-                           min_exposure=-6.0,
-                           max_exposure=6.5):
+                          lut_directory,
+                          lut_resolution_1d,
+                          cleanup,
+                          name='pq',
+                          aliases=[],
+                          min_value=0.0,
+                          max_value=1.0,
+                          input_scale=1.0,
+                          middle_grey=0.18,
+                          min_exposure=-6.0,
+                          max_exposure=6.5):
     cs = ColorSpace(name)
     cs.description = 'The %s color space' % name
     cs.aliases = aliases
@@ -577,9 +580,9 @@ def create_dolbypq_scaled(aces_CTL_directory,
     cs.is_data = False
 
     ctls = [os.path.join(
-                         aces_CTL_directory,
-                         'utilities',
-                         'ACESlib.OCIO_shaper_dolbypq_to_lin_param.a1.0.0.ctl')]
+        aces_CTL_directory,
+        'utilities',
+        'ACESlib.OCIO_shaper_dolbypq_to_lin_param.a1.0.0.ctl')]
     lut = '%s_to_linear.spi1d' % name
 
     lut = sanitize(lut)
@@ -608,6 +611,7 @@ def create_dolbypq_scaled(aces_CTL_directory,
 
     cs.from_reference_transforms = []
     return cs
+
 
 # -------------------------------------------------------------------------
 # *Individual LMT*
@@ -732,6 +736,7 @@ def create_ACES_LMT(lmt_name,
 
     return cs
 
+
 # -------------------------------------------------------------------------
 # *LMTs*
 # -------------------------------------------------------------------------
@@ -815,6 +820,7 @@ def create_LMTs(aces_ctl_directory,
         colorspaces.append(cs)
 
     return colorspaces
+
 
 # -------------------------------------------------------------------------
 # *ACES RRT* with supplied *ODT*.
@@ -978,6 +984,7 @@ def create_ACES_RRT_plus_ODT(odt_name,
 
     return cs
 
+
 # -------------------------------------------------------------------------
 # *ODTs*
 # -------------------------------------------------------------------------
@@ -1056,20 +1063,25 @@ def create_ODTs(aces_ctl_directory,
     log2_shaper_copy_colorspace.equality_group = log2_shaper_copy_name
     log2_shaper_copy_colorspace.family = log2_shaper_colorspace.family
     log2_shaper_copy_colorspace.is_data = log2_shaper_colorspace.is_data
-    log2_shaper_copy_colorspace.to_reference_transforms = list(log2_shaper_colorspace.to_reference_transforms)
-    log2_shaper_copy_colorspace.from_reference_transforms = list(log2_shaper_colorspace.from_reference_transforms)
+    log2_shaper_copy_colorspace.to_reference_transforms = list(
+        log2_shaper_colorspace.to_reference_transforms)
+    log2_shaper_copy_colorspace.from_reference_transforms = list(
+        log2_shaper_colorspace.from_reference_transforms)
     colorspaces.append(log2_shaper_copy_colorspace)
 
     # Defining the *Log2 shaper that includes the AP1* primaries.
     log2_shaper_api1_name = "%s - AP1" % "Log2 Shaper"
     log2_shaper_api1_colorspace = ColorSpace(log2_shaper_api1_name)
     log2_shaper_api1_colorspace.description = 'The %s color space' % log2_shaper_api1_name
-    log2_shaper_api1_colorspace.aliases = ["%s_ap1" % compact(log2_shaper_copy_name)]
+    log2_shaper_api1_colorspace.aliases = [
+        "%s_ap1" % compact(log2_shaper_copy_name)]
     log2_shaper_api1_colorspace.equality_group = log2_shaper_api1_name
     log2_shaper_api1_colorspace.family = log2_shaper_colorspace.family
     log2_shaper_api1_colorspace.is_data = log2_shaper_colorspace.is_data
-    log2_shaper_api1_colorspace.to_reference_transforms = list(log2_shaper_colorspace.to_reference_transforms)
-    log2_shaper_api1_colorspace.from_reference_transforms = list(log2_shaper_colorspace.from_reference_transforms)
+    log2_shaper_api1_colorspace.to_reference_transforms = list(
+        log2_shaper_colorspace.to_reference_transforms)
+    log2_shaper_api1_colorspace.from_reference_transforms = list(
+        log2_shaper_colorspace.from_reference_transforms)
 
     # *AP1* primaries to *AP0* primaries.
     log2_shaper_api1_colorspace.to_reference_transforms.append({
@@ -1088,8 +1100,10 @@ def create_ODTs(aces_ctl_directory,
     shaper_api1_colorspace.equality_group = shaper_api1_name
     shaper_api1_colorspace.family = log2_shaper_colorspace.family
     shaper_api1_colorspace.is_data = log2_shaper_colorspace.is_data
-    shaper_api1_colorspace.to_reference_transforms = list(log2_shaper_api1_colorspace.to_reference_transforms)
-    shaper_api1_colorspace.from_reference_transforms = list(log2_shaper_api1_colorspace.from_reference_transforms)
+    shaper_api1_colorspace.to_reference_transforms = list(
+        log2_shaper_api1_colorspace.to_reference_transforms)
+    shaper_api1_colorspace.from_reference_transforms = list(
+        log2_shaper_api1_colorspace.from_reference_transforms)
     colorspaces.append(shaper_api1_colorspace)
 
     # Define the base *Dolby PQ Shaper*
@@ -1152,7 +1166,7 @@ def create_ODTs(aces_ctl_directory,
     # Pick a specific shaper
     #
     rrt_shaper = log2_shaper_data
-    #rrt_shaper = dolbypq_scaled_shaper_data
+    # rrt_shaper = dolbypq_scaled_shaper_data
 
     # *RRT + ODT* combinations.
     sorted_odts = sorted(odt_info.iteritems(), key=lambda x: x[1])
@@ -1462,7 +1476,7 @@ def create_colorspaces(aces_ctl_directory,
     ACES = create_ACES()
 
     ACEScc = create_ACEScc(aces_ctl_directory, lut_directory,
-                           lut_resolution_1d, cleanup, 
+                           lut_resolution_1d, cleanup,
                            min_value=-0.35840, max_value=1.468)
     colorspaces.append(ACEScc)
 
@@ -1500,15 +1514,14 @@ def create_colorspaces(aces_ctl_directory,
                                  ACEScc)
     colorspaces.extend(odts)
 
-    roles = {'color_picking'   : ACEScg.name,
-             'color_timing'    : ACEScc.name,
-             'compositing_log' : ACEScc.name,
-             'data'            : '',
-             'default'         : ACES.name,
-             'matte_paint'     : ACEScc.name,
-             'reference'       : '',
-             'scene_linear'    : ACES.name,
-             'texture_paint'   : ''}
-
+    roles = {'color_picking': ACEScg.name,
+             'color_timing': ACEScc.name,
+             'compositing_log': ACEScc.name,
+             'data': '',
+             'default': ACES.name,
+             'matte_paint': ACEScc.name,
+             'reference': '',
+             'scene_linear': ACES.name,
+             'texture_paint': ''}
 
     return ACES, colorspaces, displays, ACEScc, roles

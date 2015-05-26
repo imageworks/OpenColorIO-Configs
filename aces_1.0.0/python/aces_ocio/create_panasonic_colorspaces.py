@@ -73,7 +73,7 @@ def create_v_log(gamut,
         if (x <= cutInv):
             return (x - 0.125) / 5.6
         else:
-            return pow(10, (x-d)/c) - b
+            return pow(10, (x - d) / c) - b
 
     cs.to_reference_transforms = []
 
@@ -100,10 +100,10 @@ def create_v_log(gamut,
     if gamut == 'V-Gamut':
         cs.to_reference_transforms.append({
             'type': 'matrix',
-            'matrix': [ 0.724382758,  0.166748484,  0.108497411, 0.0,
-                        0.021354009,  0.985138372, -0.006319092, 0.0,
-                       -0.009234278, -0.00104295,   1.010272625, 0.0,
-                        0, 0, 0, 1.0],
+            'matrix': [0.724382758, 0.166748484, 0.108497411, 0.0,
+                       0.021354009, 0.985138372, -0.006319092, 0.0,
+                       -0.009234278, -0.00104295, 1.010272625, 0.0,
+                       0, 0, 0, 1.0],
             'direction': 'forward'})
 
     cs.from_reference_transforms = []

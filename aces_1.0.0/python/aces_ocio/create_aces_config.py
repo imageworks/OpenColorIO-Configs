@@ -406,9 +406,9 @@ def create_config(config_data, nuke=False):
                         views.append(display)
 
         # Works with Nuke Studio and Mari, but not Nuke
-        #display_name = 'Utility'
+        # display_name = 'Utility'
         #displays.append(display_name)
-        
+
         linear_display_space_name = config_data['linearDisplaySpace'].name
         log_display_space_name = config_data['logDisplaySpace'].name
 

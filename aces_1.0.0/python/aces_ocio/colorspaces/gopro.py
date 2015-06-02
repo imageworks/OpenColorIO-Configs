@@ -2,8 +2,10 @@
 # -*- coding: utf-8 -*-
 
 """
-Implements support for *Panasonic* colorspaces conversions and transfer functions.
+Implements support for *GoPro* colorspaces conversions and transfer functions.
 """
+
+from __future__ import division
 
 import array
 import os
@@ -11,7 +13,7 @@ import os
 import PyOpenColorIO as ocio
 
 import aces_ocio.generate_lut as genlut
-from aces_ocio.utilities import ColorSpace
+from aces_ocio.utilities import (ColorSpace, sanitize)
 
 __author__ = 'ACES Developers'
 __copyright__ = 'Copyright (C) 2014 - 2015 - ACES Developers'
@@ -20,20 +22,20 @@ __maintainer__ = 'ACES Developers'
 __email__ = 'aces@oscars.org'
 __status__ = 'Production'
 
-__all__ = ['create_v_log',
+__all__ = ['create_protune',
            'create_colorspaces']
 
 
-def create_v_log(gamut,
-                 transfer_function,
-                 name,
-                 lut_directory,
-                 lut_resolution_1d,
-                 aliases):
+def create_protune(gamut,
+                   transfer_function,
+                   name,
+                   lut_directory,
+                   lut_resolution_1d,
+                   aliases):
     """
     Object description.
 
-    Panasonic V-Log to ACES.
+    Protune to ACES.
 
     Parameters
     ----------
@@ -46,9 +48,11 @@ def create_v_log(gamut,
          Return value description.
     """
 
-    name = '%s - %s' % (transfer_function, gamut)
+    # The gamut should be marked as experimental until
+    # matrices are fully verified
+    name = '%s - %s - Experimental' % (transfer_function, gamut)
     if transfer_function == '':
-        name = 'Linear - %s' % gamut
+        name = 'Linear - %s - Experimental' % gamut
     if gamut == '':
         name = '%s' % transfer_function
 
@@ -56,7 +60,7 @@ def create_v_log(gamut,
     cs.description = name
     cs.aliases = aliases
     cs.equality_group = ''
-    cs.family = 'Input/Panasonic'
+    cs.family = 'Input/GoPro'
     cs.is_data = False
 
     # A linear space needs allocation variables
@@ -64,29 +68,27 @@ def create_v_log(gamut,
         cs.allocation_type = ocio.Constants.ALLOCATION_LG2
         cs.allocation_vars = [-8, 5, 0.00390625]
 
-    def v_log_to_linear(x):
-        cutInv = 0.181
-        b = 0.00873
-        c = 0.241514
-        d = 0.598206
+    def protune_to_linear(normalized_code_value):
+        c1 = 113.0
+        c2 = 1.0
+        c3 = 112.0
+        linear = ((pow(c1, (normalized_code_value)) - c2) / c3)
 
-        if (x <= cutInv):
-            return (x - 0.125) / 5.6
-        else:
-            return pow(10, (x-d)/c) - b
+        return linear
 
     cs.to_reference_transforms = []
 
-    if transfer_function == 'V-Log':
+    if transfer_function == 'Protune Flat':
         data = array.array('f', '\0' * lut_resolution_1d * 4)
         for c in range(lut_resolution_1d):
-            data[c] = v_log_to_linear(float(c) / (lut_resolution_1d - 1))
+            data[c] = protune_to_linear(float(c) / (lut_resolution_1d - 1))
 
         lut = '%s_to_linear.spi1d' % transfer_function
+        lut = sanitize(lut)
         genlut.write_SPI_1d(
             os.path.join(lut_directory, lut),
-            0.0,
-            1.0,
+            0,
+            1,
             data,
             lut_resolution_1d,
             1)
@@ -97,13 +99,13 @@ def create_v_log(gamut,
             'interpolation': 'linear',
             'direction': 'forward'})
 
-    if gamut == 'V-Gamut':
+    if gamut == 'Protune Gamut':
         cs.to_reference_transforms.append({
             'type': 'matrix',
-            'matrix': [ 0.724382758,  0.166748484,  0.108497411, 0.0,
-                        0.021354009,  0.985138372, -0.006319092, 0.0,
-                       -0.009234278, -0.00104295,   1.010272625, 0.0,
-                        0, 0, 0, 1.0],
+            'matrix': [0.533448429, 0.32413911, 0.142412421, 0,
+                       -0.050729924, 1.07572006, -0.024990416, 0,
+                       0.071419661, -0.290521962, 1.219102381, 0,
+                       0, 0, 0, 1],
             'direction': 'forward'})
 
     cs.from_reference_transforms = []
@@ -128,33 +130,33 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
     colorspaces = []
 
     # Full conversion
-    v_log_1 = create_v_log(
-        'V-Gamut',
-        'V-Log',
-        'V-Log',
+    protune_1 = create_protune(
+        'Protune Native',
+        'Protune Flat',
+        'Protune',
         lut_directory,
         lut_resolution_1d,
-        ["vlog_vgamut"])
-    colorspaces.append(v_log_1)
+        ["protuneflat_protunegamutexp"])
+    colorspaces.append(protune_1)
 
     # Linearization Only
-    v_log_2 = create_v_log(
+    protune_2 = create_protune(
         '',
-        'V-Log',
-        'V-Log',
+        'Protune Flat',
+        'Protune',
         lut_directory,
         lut_resolution_1d,
-        ["crv_vlog"])
-    colorspaces.append(v_log_2)
+        ["crv_protuneflat"])
+    colorspaces.append(protune_2)
 
     # Primaries Only
-    v_log_3 = create_v_log(
-        'V-Gamut',
+    protune_3 = create_protune(
+        'Protune Native',
         '',
-        'V-Log',
+        'Protune',
         lut_directory,
         lut_resolution_1d,
-        ["lin_vgamut"])
-    colorspaces.append(v_log_3)
+        ["lin_protunegamutexp"])
+    colorspaces.append(protune_3)
 
     return colorspaces

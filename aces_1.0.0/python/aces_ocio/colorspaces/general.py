@@ -9,7 +9,7 @@ from __future__ import division
 
 import PyOpenColorIO as ocio
 
-import aces_ocio.create_aces_colorspaces as aces
+from aces_ocio.colorspaces import aces
 from aces_ocio.utilities import ColorSpace, mat44_from_mat33
 
 
@@ -78,6 +78,7 @@ def create_generic_matrix(name='matrix',
                 'direction': 'forward'})
 
     return cs
+
 
 def create_colorspaces(lut_directory,
                        lut_resolution_1d,
@@ -190,6 +191,7 @@ def create_colorspaces(lut_directory,
     colorspaces.append(cs)
 
     return colorspaces
+
 
 def create_raw():
     # *Raw* utility space

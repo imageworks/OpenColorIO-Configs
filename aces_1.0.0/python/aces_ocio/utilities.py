@@ -11,7 +11,7 @@ import os
 import re
 from collections import OrderedDict
 
-import PyOpenColorIO as OCIO
+import PyOpenColorIO as ocio
 
 __author__ = 'ACES Developers'
 __copyright__ = 'Copyright (C) 2014 - 2015 - ACES Developers'
@@ -38,13 +38,13 @@ class ColorSpace(object):
                  name,
                  aliases=[],
                  description=None,
-                 bit_depth=OCIO.Constants.BIT_DEPTH_F32,
+                 bit_depth=ocio.Constants.BIT_DEPTH_F32,
                  equality_group=None,
                  family=None,
                  is_data=False,
                  to_reference_transforms=[],
                  from_reference_transforms=[],
-                 allocation_type=OCIO.Constants.ALLOCATION_UNIFORM,
+                 allocation_type=ocio.Constants.ALLOCATION_UNIFORM,
                  allocation_vars=[0, 1]):
         """
         Object description.
@@ -147,9 +147,8 @@ def files_walker(directory, filters_in=None, filters_out=None, flags=0):
          Return value description.
     """
 
-    for parent_directory, directories, files in os.walk(directory,
-                                                        topdown=False,
-                                                        followlinks=True):
+    for parent_directory, directories, files in os.walk(
+            directory, topdown=False, followlinks=True):
         for file in files:
             path = os.path.join(parent_directory, file)
             if os.path.isfile(path):

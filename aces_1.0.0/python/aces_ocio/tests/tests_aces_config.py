@@ -15,7 +15,7 @@ import tempfile
 import unittest
 
 from aces_ocio.utilities import files_walker
-from aces_ocio.create_aces_config import (
+from aces_ocio.aces_config import (
     ACES_OCIO_CTL_DIRECTORY_ENVIRON,
     create_ACES_config)
 

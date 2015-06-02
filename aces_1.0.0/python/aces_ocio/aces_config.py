@@ -11,17 +11,16 @@ import os
 import sys
 
 import PyOpenColorIO as ocio
-
-import aces_ocio.create_aces_colorspaces as aces
-import aces_ocio.create_arri_colorspaces as arri
-import aces_ocio.create_canon_colorspaces as canon
-import aces_ocio.create_gopro_colorspaces as gopro
-import aces_ocio.create_panasonic_colorspaces as panasonic
-import aces_ocio.create_red_colorspaces as red
-import aces_ocio.create_sony_colorspaces as sony
-import aces_ocio.create_general_colorspaces as general
-
+from aces_ocio.colorspaces import aces
+from aces_ocio.colorspaces import arri
+from aces_ocio.colorspaces import canon
+from aces_ocio.colorspaces import general
+from aces_ocio.colorspaces import gopro
+from aces_ocio.colorspaces import panasonic
+from aces_ocio.colorspaces import red
+from aces_ocio.colorspaces import sony
 from aces_ocio.process import Process
+
 
 __author__ = 'ACES Developers'
 __copyright__ = 'Copyright (C) 2014 - 2015 - ACES Developers'
@@ -406,9 +405,9 @@ def create_config(config_data, nuke=False):
                         views.append(display)
 
         # Works with Nuke Studio and Mari, but not Nuke
-        #display_name = 'Utility'
-        #displays.append(display_name)
-        
+        # display_name = 'Utility'
+        # displays.append(display_name)
+
         linear_display_space_name = config_data['linearDisplaySpace'].name
         log_display_space_name = config_data['logDisplaySpace'].name
 

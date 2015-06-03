@@ -1059,7 +1059,7 @@ def create_ODTs(aces_ctl_directory,
     log2_shaper_copy_name = "Log2 Shaper"
     log2_shaper_copy_colorspace = ColorSpace(log2_shaper_copy_name)
     log2_shaper_copy_colorspace.description = 'The %s color space' % log2_shaper_copy_name
-    log2_shaper_copy_colorspace.aliases = [compact(log2_shaper_copy_name)]
+    log2_shaper_copy_colorspace.aliases = ["crv_%s" % compact(log2_shaper_copy_name)]
     log2_shaper_copy_colorspace.equality_group = log2_shaper_copy_name
     log2_shaper_copy_colorspace.family = log2_shaper_colorspace.family
     log2_shaper_copy_colorspace.is_data = log2_shaper_colorspace.is_data
@@ -1096,7 +1096,7 @@ def create_ODTs(aces_ctl_directory,
     shaper_api1_name = "%s - AP1" % shaper_name
     shaper_api1_colorspace = ColorSpace(shaper_api1_name)
     shaper_api1_colorspace.description = 'The %s color space' % shaper_api1_name
-    shaper_api1_colorspace.aliases = ["%s_ap1" % compact(shaper_api1_name)]
+    shaper_api1_colorspace.aliases = ["%s_ap1" % compact(shaper_name)]
     shaper_api1_colorspace.equality_group = shaper_api1_name
     shaper_api1_colorspace.family = log2_shaper_colorspace.family
     shaper_api1_colorspace.is_data = log2_shaper_colorspace.is_data
@@ -1514,6 +1514,9 @@ def create_colorspaces(aces_ctl_directory,
                                  ACEScc)
     colorspaces.extend(odts)
 
+    # Wish there was an automatic way to get this from the CTL
+    defaultDisplay = "sRGB (D60 sim.)"
+
     roles = {'color_picking': ACEScg.name,
              'color_timing': ACEScc.name,
              'compositing_log': ACEScc.name,
@@ -1524,4 +1527,4 @@ def create_colorspaces(aces_ctl_directory,
              'scene_linear': ACES.name,
              'texture_paint': ''}
 
-    return ACES, colorspaces, displays, ACEScc, roles
+    return ACES, colorspaces, displays, ACEScc, roles, defaultDisplay

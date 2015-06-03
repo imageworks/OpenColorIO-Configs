@@ -55,7 +55,9 @@ def set_config_default_roles(config,
                              matte_paint='',
                              reference='',
                              scene_linear='',
-                             texture_paint=''):
+                             texture_paint='',
+                             rendering='',
+                             compositing_linear=''):
     """
     Sets given *OCIO* configuration default roles.
 
@@ -102,10 +104,21 @@ def set_config_default_roles(config,
         config.setRole(ocio.Constants.ROLE_MATTE_PAINT, matte_paint)
     if reference:
         config.setRole(ocio.Constants.ROLE_REFERENCE, reference)
-    if scene_linear:
-        config.setRole(ocio.Constants.ROLE_SCENE_LINEAR, scene_linear)
     if texture_paint:
         config.setRole(ocio.Constants.ROLE_TEXTURE_PAINT, texture_paint)
+
+    # 'rendering' and 'compositing_linear' roles default to the 'scene_linear'
+    # value if not set explicitly
+    if rendering:
+        config.setRole("rendering", rendering)
+    if compositing_linear:
+        config.setRole("compositing_linear", compositing_linear)
+    if scene_linear:
+        config.setRole(ocio.Constants.ROLE_SCENE_LINEAR, scene_linear)
+        if not rendering:
+            config.setRole("rendering", scene_linear)
+        if not compositing_linear:
+            config.setRole("compositing_linear", scene_linear)
 
     return True
 
@@ -247,6 +260,8 @@ def add_colorspace_alias(config,
 
     for alias_name in colorspace_alias_names:
         if alias_name == colorspace.name.lower():
+            print('Skipping alias creation for %s, alias %s, because lower cased names match' % (
+                colorspace.name, alias_name) )
             return
 
         print('Adding alias colorspace space %s, alias to %s' % (
@@ -264,7 +279,7 @@ def add_colorspace_alias(config,
             allocation=colorspace.allocation_type,
             allocationVars=colorspace.allocation_vars)
 
-        if not colorspace.to_reference_transforms:
+        if colorspace.to_reference_transforms:
             print('Generating To-Reference transforms')
             ocio_transform = generate_OCIO_transform(
                 [{'type': 'colorspace',
@@ -275,7 +290,7 @@ def add_colorspace_alias(config,
                 ocio_transform,
                 ocio.Constants.COLORSPACE_DIR_TO_REFERENCE)
 
-        if not colorspace.from_reference_transforms:
+        if colorspace.from_reference_transforms:
             print('Generating From-Reference transforms')
             ocio_transform = generate_OCIO_transform(
                 [{'type': 'colorspace',
@@ -289,7 +304,7 @@ def add_colorspace_alias(config,
         config.addColorSpace(ocio_colorspace_alias)
 
 
-def create_config(config_data, nuke=False):
+def create_config(config_data, gui=False):
     """
     Object description.
 
@@ -328,10 +343,10 @@ def create_config(config_data, nuke=False):
     config.addColorSpace(reference)
 
     # Add alias
-    if not nuke:
-        if reference_data.aliases != []:
-            add_colorspace_alias(config, reference_data,
-                                 reference_data, reference_data.aliases)
+    #if not gui:
+    if reference_data.aliases != []:
+        add_colorspace_alias(config, reference_data,
+                             reference_data, reference_data.aliases)
 
     print("")
 
@@ -370,10 +385,11 @@ def create_config(config_data, nuke=False):
         #
         # Add alias to normal colorspace, using compact name
         #
-        if not nuke:
-            if colorspace.aliases != []:
-                add_colorspace_alias(config, reference_data,
-                                     colorspace, colorspace.aliases)
+        #if not gui:
+        if colorspace.aliases != []:
+            #print('Adding alias color spaces : %s' % colorspace.aliases)
+            add_colorspace_alias(config, reference_data,
+                                 colorspace, colorspace.aliases)
 
         print('')
 
@@ -382,7 +398,7 @@ def create_config(config_data, nuke=False):
     views = []
 
     # Defining a *generic* *display* and *view* setup.
-    if not nuke:
+    if not gui:
         for display, view_list in config_data['displays'].iteritems():
             for view_name, colorspace in view_list.iteritems():
                 config.addDisplay(display, view_name, colorspace.name)
@@ -390,12 +406,17 @@ def create_config(config_data, nuke=False):
                     views.append(view_name)
             displays.append(display)
 
-    # Defining the *Nuke* specific set of *views* and *displays*.
+    # Defining the set of *views* and *displays* useful in a *GUI* context.
     else:
         display_name = 'ACES'
         displays.append(display_name)
 
         display_names = sorted(config_data['displays'])
+
+        # Make sure the default display is first
+        default_display = config_data['defaultDisplay']
+        display_names.insert(0, display_names.pop(display_names.index(default_display)))
+
         for display in display_names:
             view_list = config_data['displays'][display]
             for view_name, colorspace in view_list.iteritems():
@@ -408,8 +429,8 @@ def create_config(config_data, nuke=False):
         # display_name = 'Utility'
         # displays.append(display_name)
 
-        linear_display_space_name = config_data['linearDisplaySpace'].name
-        log_display_space_name = config_data['logDisplaySpace'].name
+        linear_display_space_name = config_data['roles']['scene_linear']
+        log_display_space_name = config_data['roles']['compositing_log']
 
         config.addDisplay(display_name, 'Linear', linear_display_space_name)
         views.append('Linear')
@@ -476,14 +497,15 @@ def generate_LUTs(odt_info,
      aces_colorspaces,
      aces_displays,
      aces_log_display_space,
-     aces_roles) = aces.create_colorspaces(aces_ctl_directory,
-                                           lut_directory,
-                                           lut_resolution_1d,
-                                           lut_resolution_3d,
-                                           lmt_info,
-                                           odt_info,
-                                           shaper_name,
-                                           cleanup)
+     aces_roles,
+     aces_default_display) = aces.create_colorspaces(aces_ctl_directory,
+                                                     lut_directory,
+                                                     lut_resolution_1d,
+                                                     lut_resolution_3d,
+                                                     lmt_info,
+                                                     odt_info,
+                                                     shaper_name,
+                                                     cleanup)
 
     config_data['referenceColorSpace'] = aces_reference
     config_data['roles'] = aces_roles
@@ -494,6 +516,7 @@ def generate_LUTs(odt_info,
     for name, data in aces_displays.iteritems():
         config_data['displays'][name] = data
 
+    config_data['defaultDisplay'] = aces_default_display
     config_data['linearDisplaySpace'] = aces_reference
     config_data['logDisplaySpace'] = aces_log_display_space
 
@@ -767,19 +790,21 @@ def create_ACES_config(aces_ctl_directory,
                                 lut_resolution_3d,
                                 cleanup)
 
+    '''
     print('Creating "generic" config')
     config = create_config(config_data)
     print('\n\n\n')
 
     write_config(config,
                  os.path.join(config_directory, 'config.ocio'))
+    '''
 
-    print('Creating "Nuke" config')
-    nuke_config = create_config(config_data, nuke=True)
+    print('Creating "GUI" config')
+    gui_config = create_config(config_data, gui=True)
     print('\n\n\n')
 
-    write_config(nuke_config,
-                 os.path.join(config_directory, 'nuke_config.ocio'))
+    write_config(gui_config,
+                 os.path.join(config_directory, 'config.ocio'))
 
     if bake_secondary_LUTs:
         generate_baked_LUTs(odt_info,

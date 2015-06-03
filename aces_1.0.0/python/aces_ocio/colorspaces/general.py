@@ -189,7 +189,7 @@ def transfer_function_Rec709_to_linear(v):
     d = 4.5
     g = (1.0/0.45)
 
-    if v < b:
+    if v < b*d:
         return v/d
 
     return pow(((v + (a - 1)) / a), g)
@@ -200,7 +200,7 @@ def transfer_function_Rec2020_10bit_to_linear(v):
     d = 4.5
     g = (1.0/0.45)
 
-    if v < b:
+    if v < b*d:
         return v/d
 
     return pow(((v + (a - 1)) / a), g)
@@ -211,7 +211,7 @@ def transfer_function_Rec2020_12bit_to_linear(v):
     d = 4.5
     g = (1.0/0.45)
 
-    if v < b:
+    if v < b*d:
         return v/d
 
     return pow(((v + (a - 1)) / a), g)

@@ -483,44 +483,23 @@ def create_colorspaces(lut_directory,
 
     # *Linear* to *Rec. 2020 10 bit* Transfer Function*
     cs = create_transfer_colorspace(
-        'Curve - Rec.2020 - 10 bit',
+        'Curve - Rec.2020',
         'rec2020',
         transfer_function_Rec2020_10bit_to_linear,
         lut_directory,
         lut_resolution_1d,
-        aliases=["crv_rec202010bit"])
+        aliases=["crv_rec2020"])
     colorspaces.append(cs)
 
     # *ACES* to *Rec. 2020 10 bit* Primaries + Transfer Function*
     cs = create_matrix_plus_transfer_colorspace(
-        'Rec.2020 10 bit - Rec.2020',
+        'Rec.2020',
         'rec2020',
         transfer_function_Rec2020_10bit_to_linear,
         lut_directory,
         lut_resolution_1d,
         from_reference_values=[aces.ACES_AP0_TO_XYZ, XYZ_to_Rec2020],
-        aliases=["rec202010bit"])
-    colorspaces.append(cs)
-
-    # *Linear* to *Rec. 2020 10 bit* Transfer Function*
-    cs = create_transfer_colorspace(
-        'Curve - Rec.2020 - 12 bit',
-        'rec2020',
-        transfer_function_Rec2020_12bit_to_linear,
-        lut_directory,
-        lut_resolution_1d,
-        aliases=["crv_rec202012bit"])
-    colorspaces.append(cs)
-
-    # *ACES* to *Rec. 2020 10 bit* Primaries + Transfer Function*
-    cs = create_matrix_plus_transfer_colorspace(
-        'Rec.2020 12 bit - Rec.2020',
-        'rec2020',
-        transfer_function_Rec2020_12bit_to_linear,
-        lut_directory,
-        lut_resolution_1d,
-        from_reference_values=[aces.ACES_AP0_TO_XYZ, XYZ_to_Rec2020],
-        aliases=["rec202012bit"])
+        aliases=["rec2020"])
     colorspaces.append(cs)
 
     #

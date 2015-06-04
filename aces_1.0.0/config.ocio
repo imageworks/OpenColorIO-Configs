@@ -497,38 +497,6 @@ colorspaces:
     from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: DCDM (P3 gamut clip)}
 
   - !<ColorSpace>
-    name: P3-D60 PQ (1000 nits)
-    family: Output
-    equalitygroup: ""
-    bitdepth: 32f
-    description: |
-      ACES 1.0 Output - P3-D60 PQ (1000 nits) Output Transform
-    isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
-    to_reference: !<GroupTransform>
-      children:
-        - !<FileTransform> {src: InvRRT.a1.0.0.P3-D60_PQ__1000_nits_.Output_Shaper.spi3d, interpolation: tetrahedral}
-        - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear}
-    from_reference: !<GroupTransform>
-      children:
-        - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
-        - !<FileTransform> {src: Output_Shaper.RRT.a1.0.0.P3-D60_PQ__1000_nits_.spi3d, interpolation: tetrahedral}
-
-  - !<ColorSpace>
-    name: out_p3d60pq1000nits
-    family: Aliases
-    equalitygroup: ""
-    bitdepth: 32f
-    description: |
-      ACES 1.0 Output - P3-D60 PQ (1000 nits) Output Transform
-    isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
-    to_reference: !<ColorSpaceTransform> {src: P3-D60 PQ (1000 nits), dst: ACES2065-1}
-    from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: P3-D60 PQ (1000 nits)}
-
-  - !<ColorSpace>
     name: DCDM
     family: Output
     equalitygroup: ""
@@ -561,36 +529,68 @@ colorspaces:
     from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: DCDM}
 
   - !<ColorSpace>
-    name: Rec.2020 - Full
+    name: P3-D60 PQ (4000 nits)
     family: Output
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      ACES 1.0 Output - Rec.2020 - Full Output Transform
+      ACES 1.0 Output - P3-D60 PQ (4000 nits) Output Transform
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: InvRRT.a1.0.0.Rec.2020_-_Full.Output_Shaper.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: InvRRT.a1.0.0.P3-D60_PQ__4000_nits_.Output_Shaper.spi3d, interpolation: tetrahedral}
         - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear}
     from_reference: !<GroupTransform>
       children:
         - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
-        - !<FileTransform> {src: Output_Shaper.RRT.a1.0.0.Rec.2020_-_Full.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Output_Shaper.RRT.a1.0.0.P3-D60_PQ__4000_nits_.spi3d, interpolation: tetrahedral}
 
   - !<ColorSpace>
-    name: out_rec2020full
+    name: out_p3d60pq4000nits
     family: Aliases
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      ACES 1.0 Output - Rec.2020 - Full Output Transform
+      ACES 1.0 Output - P3-D60 PQ (4000 nits) Output Transform
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
-    to_reference: !<ColorSpaceTransform> {src: Rec.2020 - Full, dst: ACES2065-1}
-    from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Rec.2020 - Full}
+    to_reference: !<ColorSpaceTransform> {src: P3-D60 PQ (4000 nits), dst: ACES2065-1}
+    from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: P3-D60 PQ (4000 nits)}
+
+  - !<ColorSpace>
+    name: P3-D60 PQ (1000 nits)
+    family: Output
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      ACES 1.0 Output - P3-D60 PQ (1000 nits) Output Transform
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: InvRRT.a1.0.0.P3-D60_PQ__1000_nits_.Output_Shaper.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear}
+    from_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
+        - !<FileTransform> {src: Output_Shaper.RRT.a1.0.0.P3-D60_PQ__1000_nits_.spi3d, interpolation: tetrahedral}
+
+  - !<ColorSpace>
+    name: out_p3d60pq1000nits
+    family: Aliases
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      ACES 1.0 Output - P3-D60 PQ (1000 nits) Output Transform
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<ColorSpaceTransform> {src: P3-D60 PQ (1000 nits), dst: ACES2065-1}
+    from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: P3-D60 PQ (1000 nits)}
 
   - !<ColorSpace>
     name: P3-D60 PQ (2000 nits)
@@ -625,6 +625,38 @@ colorspaces:
     from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: P3-D60 PQ (2000 nits)}
 
   - !<ColorSpace>
+    name: Rec.2020 - Full
+    family: Output
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      ACES 1.0 Output - Rec.2020 - Full Output Transform
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: InvRRT.a1.0.0.Rec.2020_-_Full.Output_Shaper.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear}
+    from_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
+        - !<FileTransform> {src: Output_Shaper.RRT.a1.0.0.Rec.2020_-_Full.spi3d, interpolation: tetrahedral}
+
+  - !<ColorSpace>
+    name: out_rec2020full
+    family: Aliases
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      ACES 1.0 Output - Rec.2020 - Full Output Transform
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<ColorSpaceTransform> {src: Rec.2020 - Full, dst: ACES2065-1}
+    from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Rec.2020 - Full}
+
+  - !<ColorSpace>
     name: P3-D60
     family: Output
     equalitygroup: ""
@@ -655,38 +687,6 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<ColorSpaceTransform> {src: P3-D60, dst: ACES2065-1}
     from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: P3-D60}
-
-  - !<ColorSpace>
-    name: P3-D60 PQ (4000 nits)
-    family: Output
-    equalitygroup: ""
-    bitdepth: 32f
-    description: |
-      ACES 1.0 Output - P3-D60 PQ (4000 nits) Output Transform
-    isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
-    to_reference: !<GroupTransform>
-      children:
-        - !<FileTransform> {src: InvRRT.a1.0.0.P3-D60_PQ__4000_nits_.Output_Shaper.spi3d, interpolation: tetrahedral}
-        - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear}
-    from_reference: !<GroupTransform>
-      children:
-        - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
-        - !<FileTransform> {src: Output_Shaper.RRT.a1.0.0.P3-D60_PQ__4000_nits_.spi3d, interpolation: tetrahedral}
-
-  - !<ColorSpace>
-    name: out_p3d60pq4000nits
-    family: Aliases
-    equalitygroup: ""
-    bitdepth: 32f
-    description: |
-      ACES 1.0 Output - P3-D60 PQ (4000 nits) Output Transform
-    isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
-    to_reference: !<ColorSpaceTransform> {src: P3-D60 PQ (4000 nits), dst: ACES2065-1}
-    from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: P3-D60 PQ (4000 nits)}
 
   - !<ColorSpace>
     name: P3-DCI
@@ -2819,36 +2819,36 @@ colorspaces:
     from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Linear - Rec.2020}
 
   - !<ColorSpace>
-    name: Curve - Rec.2020 - 10 bit
+    name: Curve - Rec.2020
     family: Utility
-    equalitygroup: Curve - Rec.2020 - 10 bit
+    equalitygroup: Curve - Rec.2020
     bitdepth: 32f
     description: |
-      The Curve - Rec.2020 - 10 bit color space
+      The Curve - Rec.2020 color space
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
     to_reference: !<FileTransform> {src: rec2020_to_linear.spi1d, interpolation: linear}
 
   - !<ColorSpace>
-    name: crv_rec202010bit
+    name: crv_rec2020
     family: Aliases
-    equalitygroup: Curve - Rec.2020 - 10 bit
+    equalitygroup: Curve - Rec.2020
     bitdepth: 32f
     description: |
-      The Curve - Rec.2020 - 10 bit color space
+      The Curve - Rec.2020 color space
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
-    to_reference: !<ColorSpaceTransform> {src: Curve - Rec.2020 - 10 bit, dst: ACES2065-1}
+    to_reference: !<ColorSpaceTransform> {src: Curve - Rec.2020, dst: ACES2065-1}
 
   - !<ColorSpace>
-    name: Rec.2020 10 bit - Rec.2020
+    name: Rec.2020
     family: Utility
-    equalitygroup: Rec.2020 10 bit - Rec.2020
+    equalitygroup: Rec.2020
     bitdepth: 32f
     description: |
-      The Rec.2020 10 bit - Rec.2020 color space
+      The Rec.2020 color space
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
@@ -2859,68 +2859,16 @@ colorspaces:
         - !<FileTransform> {src: rec2020_to_linear.spi1d, interpolation: linear, direction: inverse}
 
   - !<ColorSpace>
-    name: rec202010bit
+    name: rec2020
     family: Aliases
-    equalitygroup: Rec.2020 10 bit - Rec.2020
+    equalitygroup: Rec.2020
     bitdepth: 32f
     description: |
-      The Rec.2020 10 bit - Rec.2020 color space
+      The Rec.2020 color space
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
-    from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Rec.2020 10 bit - Rec.2020}
-
-  - !<ColorSpace>
-    name: Curve - Rec.2020 - 12 bit
-    family: Utility
-    equalitygroup: Curve - Rec.2020 - 12 bit
-    bitdepth: 32f
-    description: |
-      The Curve - Rec.2020 - 12 bit color space
-    isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
-    to_reference: !<FileTransform> {src: rec2020_to_linear.spi1d, interpolation: linear}
-
-  - !<ColorSpace>
-    name: crv_rec202012bit
-    family: Aliases
-    equalitygroup: Curve - Rec.2020 - 12 bit
-    bitdepth: 32f
-    description: |
-      The Curve - Rec.2020 - 12 bit color space
-    isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
-    to_reference: !<ColorSpaceTransform> {src: Curve - Rec.2020 - 12 bit, dst: ACES2065-1}
-
-  - !<ColorSpace>
-    name: Rec.2020 12 bit - Rec.2020
-    family: Utility
-    equalitygroup: Rec.2020 12 bit - Rec.2020
-    bitdepth: 32f
-    description: |
-      The Rec.2020 12 bit - Rec.2020 color space
-    isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
-    from_reference: !<GroupTransform>
-      children:
-        - !<MatrixTransform> {matrix: [0.952552, 0, 9.36786e-05, 0, 0.343966, 0.728166, -0.0721325, 0, 0, 0, 1.00883, 0, 0, 0, 0, 1]}
-        - !<MatrixTransform> {matrix: [1.71665, -0.355671, -0.253366, 0, -0.666684, 1.61648, 0.0157685, 0, 0.0176399, -0.0427706, 0.942103, 0, 0, 0, 0, 1]}
-        - !<FileTransform> {src: rec2020_to_linear.spi1d, interpolation: linear, direction: inverse}
-
-  - !<ColorSpace>
-    name: rec202012bit
-    family: Aliases
-    equalitygroup: Rec.2020 12 bit - Rec.2020
-    bitdepth: 32f
-    description: |
-      The Rec.2020 12 bit - Rec.2020 color space
-    isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
-    from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Rec.2020 12 bit - Rec.2020}
+    from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Rec.2020}
 
   - !<ColorSpace>
     name: Linear - RIMM ROMM (ProPhoto)

@@ -350,6 +350,8 @@ def create_config(config_data, gui=False):
 
     print("")
 
+    #print( "color spaces : %s" % [x.name for x in sorted(config_data['colorSpaces'])])
+
     # Creating the remaining colorspaces.
     for colorspace in sorted(config_data['colorSpaces']):
         print('Creating new color space : %s' % colorspace.name)

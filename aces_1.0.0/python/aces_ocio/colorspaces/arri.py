@@ -55,7 +55,7 @@ def create_log_c(gamut,
     if transfer_function == '':
         name = 'Linear - ARRI %s' % gamut
     if gamut == '':
-        name = '%s (EI%s)' % (transfer_function, exposure_index)
+        name = 'Curve - %s (EI%s)' % (transfer_function, exposure_index)
 
     cs = ColorSpace(name)
     cs.description = name

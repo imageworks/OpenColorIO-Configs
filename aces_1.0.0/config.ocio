@@ -149,8 +149,8 @@ colorspaces:
     description: |
       The Linear - AP1 color space
     isdata: false
-    allocation: lg2
-    allocationvars: [-8, 5, 0.00390625]
+    allocation: uniform
+    allocationvars: [0, 1]
     to_reference: !<ColorSpaceTransform> {src: Linear - AP1, dst: ACES2065-1}
     from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Linear - AP1}
 
@@ -497,70 +497,6 @@ colorspaces:
     from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: DCDM (P3 gamut clip)}
 
   - !<ColorSpace>
-    name: DCDM
-    family: Output
-    equalitygroup: ""
-    bitdepth: 32f
-    description: |
-      ACES 1.0 Output - DCDM Output Transform
-    isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
-    to_reference: !<GroupTransform>
-      children:
-        - !<FileTransform> {src: InvRRT.a1.0.0.DCDM.Output_Shaper.spi3d, interpolation: tetrahedral}
-        - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear}
-    from_reference: !<GroupTransform>
-      children:
-        - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
-        - !<FileTransform> {src: Output_Shaper.RRT.a1.0.0.DCDM.spi3d, interpolation: tetrahedral}
-
-  - !<ColorSpace>
-    name: out_dcdm
-    family: Aliases
-    equalitygroup: ""
-    bitdepth: 32f
-    description: |
-      ACES 1.0 Output - DCDM Output Transform
-    isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
-    to_reference: !<ColorSpaceTransform> {src: DCDM, dst: ACES2065-1}
-    from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: DCDM}
-
-  - !<ColorSpace>
-    name: P3-D60 PQ (4000 nits)
-    family: Output
-    equalitygroup: ""
-    bitdepth: 32f
-    description: |
-      ACES 1.0 Output - P3-D60 PQ (4000 nits) Output Transform
-    isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
-    to_reference: !<GroupTransform>
-      children:
-        - !<FileTransform> {src: InvRRT.a1.0.0.P3-D60_PQ__4000_nits_.Output_Shaper.spi3d, interpolation: tetrahedral}
-        - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear}
-    from_reference: !<GroupTransform>
-      children:
-        - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
-        - !<FileTransform> {src: Output_Shaper.RRT.a1.0.0.P3-D60_PQ__4000_nits_.spi3d, interpolation: tetrahedral}
-
-  - !<ColorSpace>
-    name: out_p3d60pq4000nits
-    family: Aliases
-    equalitygroup: ""
-    bitdepth: 32f
-    description: |
-      ACES 1.0 Output - P3-D60 PQ (4000 nits) Output Transform
-    isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
-    to_reference: !<ColorSpaceTransform> {src: P3-D60 PQ (4000 nits), dst: ACES2065-1}
-    from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: P3-D60 PQ (4000 nits)}
-
-  - !<ColorSpace>
     name: P3-D60 PQ (1000 nits)
     family: Output
     equalitygroup: ""
@@ -593,36 +529,36 @@ colorspaces:
     from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: P3-D60 PQ (1000 nits)}
 
   - !<ColorSpace>
-    name: P3-D60 PQ (2000 nits)
+    name: DCDM
     family: Output
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      ACES 1.0 Output - P3-D60 PQ (2000 nits) Output Transform
+      ACES 1.0 Output - DCDM Output Transform
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: InvRRT.a1.0.0.P3-D60_PQ__2000_nits_.Output_Shaper.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: InvRRT.a1.0.0.DCDM.Output_Shaper.spi3d, interpolation: tetrahedral}
         - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear}
     from_reference: !<GroupTransform>
       children:
         - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
-        - !<FileTransform> {src: Output_Shaper.RRT.a1.0.0.P3-D60_PQ__2000_nits_.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Output_Shaper.RRT.a1.0.0.DCDM.spi3d, interpolation: tetrahedral}
 
   - !<ColorSpace>
-    name: out_p3d60pq2000nits
+    name: out_dcdm
     family: Aliases
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      ACES 1.0 Output - P3-D60 PQ (2000 nits) Output Transform
+      ACES 1.0 Output - DCDM Output Transform
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
-    to_reference: !<ColorSpaceTransform> {src: P3-D60 PQ (2000 nits), dst: ACES2065-1}
-    from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: P3-D60 PQ (2000 nits)}
+    to_reference: !<ColorSpaceTransform> {src: DCDM, dst: ACES2065-1}
+    from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: DCDM}
 
   - !<ColorSpace>
     name: Rec.2020 - Full
@@ -657,6 +593,38 @@ colorspaces:
     from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Rec.2020 - Full}
 
   - !<ColorSpace>
+    name: P3-D60 PQ (2000 nits)
+    family: Output
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      ACES 1.0 Output - P3-D60 PQ (2000 nits) Output Transform
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: InvRRT.a1.0.0.P3-D60_PQ__2000_nits_.Output_Shaper.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear}
+    from_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
+        - !<FileTransform> {src: Output_Shaper.RRT.a1.0.0.P3-D60_PQ__2000_nits_.spi3d, interpolation: tetrahedral}
+
+  - !<ColorSpace>
+    name: out_p3d60pq2000nits
+    family: Aliases
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      ACES 1.0 Output - P3-D60 PQ (2000 nits) Output Transform
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<ColorSpaceTransform> {src: P3-D60 PQ (2000 nits), dst: ACES2065-1}
+    from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: P3-D60 PQ (2000 nits)}
+
+  - !<ColorSpace>
     name: P3-D60
     family: Output
     equalitygroup: ""
@@ -687,6 +655,38 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<ColorSpaceTransform> {src: P3-D60, dst: ACES2065-1}
     from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: P3-D60}
+
+  - !<ColorSpace>
+    name: P3-D60 PQ (4000 nits)
+    family: Output
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      ACES 1.0 Output - P3-D60 PQ (4000 nits) Output Transform
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: InvRRT.a1.0.0.P3-D60_PQ__4000_nits_.Output_Shaper.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear}
+    from_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
+        - !<FileTransform> {src: Output_Shaper.RRT.a1.0.0.P3-D60_PQ__4000_nits_.spi3d, interpolation: tetrahedral}
+
+  - !<ColorSpace>
+    name: out_p3d60pq4000nits
+    family: Aliases
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      ACES 1.0 Output - P3-D60 PQ (4000 nits) Output Transform
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<ColorSpaceTransform> {src: P3-D60 PQ (4000 nits), dst: ACES2065-1}
+    from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: P3-D60 PQ (4000 nits)}
 
   - !<ColorSpace>
     name: P3-DCI
@@ -1291,12 +1291,12 @@ colorspaces:
     to_reference: !<ColorSpaceTransform> {src: V3 LogC (EI3200) - Wide Gamut, dst: ACES2065-1}
 
   - !<ColorSpace>
-    name: V3 LogC (EI800)
+    name: Curve - V3 LogC (EI800)
     family: Input/ARRI
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      V3 LogC (EI800)
+      Curve - V3 LogC (EI800)
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
@@ -1308,11 +1308,11 @@ colorspaces:
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      V3 LogC (EI800)
+      Curve - V3 LogC (EI800)
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
-    to_reference: !<ColorSpaceTransform> {src: V3 LogC (EI800), dst: ACES2065-1}
+    to_reference: !<ColorSpaceTransform> {src: Curve - V3 LogC (EI800), dst: ACES2065-1}
 
   - !<ColorSpace>
     name: Canon-Log - Rec. 709 Daylight
@@ -1477,12 +1477,12 @@ colorspaces:
     to_reference: !<ColorSpaceTransform> {src: Canon-Log - Cinema Gamut Tungsten, dst: ACES2065-1}
 
   - !<ColorSpace>
-    name: Canon-Log
+    name: Curve - Canon-Log
     family: Input/Canon
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      Canon-Log
+      Curve - Canon-Log
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
@@ -1494,11 +1494,11 @@ colorspaces:
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      Canon-Log
+      Curve - Canon-Log
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
-    to_reference: !<ColorSpaceTransform> {src: Canon-Log, dst: ACES2065-1}
+    to_reference: !<ColorSpaceTransform> {src: Curve - Canon-Log, dst: ACES2065-1}
 
   - !<ColorSpace>
     name: Linear - Canon Rec. 709 Daylight
@@ -1669,12 +1669,12 @@ colorspaces:
     to_reference: !<ColorSpaceTransform> {src: Protune Flat - Protune Native - Experimental, dst: ACES2065-1}
 
   - !<ColorSpace>
-    name: Protune Flat
+    name: Curve - Protune Flat
     family: Input/GoPro
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      Protune Flat
+      Curve - Protune Flat
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
@@ -1686,11 +1686,11 @@ colorspaces:
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      Protune Flat
+      Curve - Protune Flat
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
-    to_reference: !<ColorSpaceTransform> {src: Protune Flat, dst: ACES2065-1}
+    to_reference: !<ColorSpaceTransform> {src: Curve - Protune Flat, dst: ACES2065-1}
 
   - !<ColorSpace>
     name: Linear - Protune Native - Experimental
@@ -1742,12 +1742,12 @@ colorspaces:
     to_reference: !<ColorSpaceTransform> {src: V-Log - V-Gamut, dst: ACES2065-1}
 
   - !<ColorSpace>
-    name: V-Log
+    name: Curve - V-Log
     family: Input/Panasonic
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      V-Log
+      Curve - V-Log
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
@@ -1759,11 +1759,11 @@ colorspaces:
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      V-Log
+      Curve - V-Log
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
-    to_reference: !<ColorSpaceTransform> {src: V-Log, dst: ACES2065-1}
+    to_reference: !<ColorSpaceTransform> {src: Curve - V-Log, dst: ACES2065-1}
 
   - !<ColorSpace>
     name: Linear - V-Gamut
@@ -1952,12 +1952,12 @@ colorspaces:
     to_reference: !<ColorSpaceTransform> {src: REDlogFilm - REDcolor4, dst: ACES2065-1}
 
   - !<ColorSpace>
-    name: REDlogFilm
+    name: Curve - REDlogFilm
     family: Input/RED
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      REDlogFilm
+      Curve - REDlogFilm
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
@@ -1969,11 +1969,11 @@ colorspaces:
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      REDlogFilm
+      Curve - REDlogFilm
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
-    to_reference: !<ColorSpaceTransform> {src: REDlogFilm, dst: ACES2065-1}
+    to_reference: !<ColorSpaceTransform> {src: Curve - REDlogFilm, dst: ACES2065-1}
 
   - !<ColorSpace>
     name: Linear - DRAGONcolor
@@ -2282,12 +2282,12 @@ colorspaces:
     to_reference: !<ColorSpaceTransform> {src: S-Log3 - S-Gamut3, dst: ACES2065-1}
 
   - !<ColorSpace>
-    name: S-Log1
+    name: Curve - S-Log1
     family: Input/Sony
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      S-Log1
+      Curve - S-Log1
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
@@ -2299,19 +2299,19 @@ colorspaces:
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      S-Log1
+      Curve - S-Log1
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
-    to_reference: !<ColorSpaceTransform> {src: S-Log1, dst: ACES2065-1}
+    to_reference: !<ColorSpaceTransform> {src: Curve - S-Log1, dst: ACES2065-1}
 
   - !<ColorSpace>
-    name: S-Log2
+    name: Curve - S-Log2
     family: Input/Sony
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      S-Log2
+      Curve - S-Log2
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
@@ -2323,19 +2323,19 @@ colorspaces:
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      S-Log2
+      Curve - S-Log2
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
-    to_reference: !<ColorSpaceTransform> {src: S-Log2, dst: ACES2065-1}
+    to_reference: !<ColorSpaceTransform> {src: Curve - S-Log2, dst: ACES2065-1}
 
   - !<ColorSpace>
-    name: S-Log3
+    name: Curve - S-Log3
     family: Input/Sony
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      S-Log3
+      Curve - S-Log3
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
@@ -2347,11 +2347,11 @@ colorspaces:
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      S-Log3
+      Curve - S-Log3
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
-    to_reference: !<ColorSpaceTransform> {src: S-Log3, dst: ACES2065-1}
+    to_reference: !<ColorSpaceTransform> {src: Curve - S-Log3, dst: ACES2065-1}
 
   - !<ColorSpace>
     name: Linear - S-Gamut
@@ -2481,8 +2481,8 @@ colorspaces:
     description: |
       The XYZ color space
     isdata: false
-    allocation: lg2
-    allocationvars: [-8, 5, 0.00390625]
+    allocation: uniform
+    allocationvars: [0, 1]
     to_reference: !<MatrixTransform> {matrix: [1.04981, 0, -9.74845e-05, 0, -0.495903, 1.37331, 0.09824, 0, 0, 0, 0.991252, 0, 0, 0, 0, 1]}
     from_reference: !<MatrixTransform> {matrix: [0.952552, 0, 9.36786e-05, 0, 0.343966, 0.728166, -0.0721325, 0, 0, 0, 1.00883, 0, 0, 0, 0, 1]}
 
@@ -2494,8 +2494,8 @@ colorspaces:
     description: |
       The XYZ color space
     isdata: false
-    allocation: lg2
-    allocationvars: [-8, 5, 0.00390625]
+    allocation: uniform
+    allocationvars: [0, 1]
     to_reference: !<ColorSpaceTransform> {src: XYZ, dst: ACES2065-1}
     from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: XYZ}
 
@@ -2507,8 +2507,8 @@ colorspaces:
     description: |
       The Linear - AP1 color space
     isdata: false
-    allocation: lg2
-    allocationvars: [-8, 5, 0.00390625]
+    allocation: uniform
+    allocationvars: [0, 1]
     to_reference: !<MatrixTransform> {matrix: [0.695452, 0.140679, 0.163869, 0, 0.0447946, 0.859671, 0.0955343, 0, -0.00552588, 0.00402521, 1.0015, 0, 0, 0, 0, 1]}
     from_reference: !<MatrixTransform> {matrix: [1.45144, -0.236511, -0.214929, 0, -0.0765538, 1.17623, -0.0996759, 0, 0.00831615, -0.00603245, 0.997716, 0, 0, 0, 0, 1]}
 
@@ -2520,8 +2520,8 @@ colorspaces:
     description: |
       The Linear - P3-D60 color space
     isdata: false
-    allocation: lg2
-    allocationvars: [-8, 5, 0.00390625]
+    allocation: uniform
+    allocationvars: [0, 1]
     from_reference: !<GroupTransform>
       children:
         - !<MatrixTransform> {matrix: [0.952552, 0, 9.36786e-05, 0, 0.343966, 0.728166, -0.0721325, 0, 0, 0, 1.00883, 0, 0, 0, 0, 1]}
@@ -2535,8 +2535,8 @@ colorspaces:
     description: |
       The Linear - P3-D60 color space
     isdata: false
-    allocation: lg2
-    allocationvars: [-8, 5, 0.00390625]
+    allocation: uniform
+    allocationvars: [0, 1]
     from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Linear - P3-D60}
 
   - !<ColorSpace>
@@ -2547,8 +2547,8 @@ colorspaces:
     description: |
       The Linear - P3-DCI color space
     isdata: false
-    allocation: lg2
-    allocationvars: [-8, 5, 0.00390625]
+    allocation: uniform
+    allocationvars: [0, 1]
     from_reference: !<GroupTransform>
       children:
         - !<MatrixTransform> {matrix: [0.952552, 0, 9.36786e-05, 0, 0.343966, 0.728166, -0.0721325, 0, 0, 0, 1.00883, 0, 0, 0, 0, 1]}
@@ -2562,8 +2562,8 @@ colorspaces:
     description: |
       The Linear - P3-DCI color space
     isdata: false
-    allocation: lg2
-    allocationvars: [-8, 5, 0.00390625]
+    allocation: uniform
+    allocationvars: [0, 1]
     from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Linear - P3-DCI}
 
   - !<ColorSpace>
@@ -2574,8 +2574,8 @@ colorspaces:
     description: |
       The Linear - Rec.709 color space
     isdata: false
-    allocation: lg2
-    allocationvars: [-8, 5, 0.00390625]
+    allocation: uniform
+    allocationvars: [0, 1]
     from_reference: !<GroupTransform>
       children:
         - !<MatrixTransform> {matrix: [0.952552, 0, 9.36786e-05, 0, 0.343966, 0.728166, -0.0721325, 0, 0, 0, 1.00883, 0, 0, 0, 0, 1]}
@@ -2589,8 +2589,8 @@ colorspaces:
     description: |
       The Linear - Rec.709 color space
     isdata: false
-    allocation: lg2
-    allocationvars: [-8, 5, 0.00390625]
+    allocation: uniform
+    allocationvars: [0, 1]
     from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Linear - Rec.709}
 
   - !<ColorSpace>
@@ -2601,10 +2601,9 @@ colorspaces:
     description: |
       The Curve - Rec.709 color space
     isdata: false
-    allocation: lg2
-    allocationvars: [-8, 5, 0.00390625]
+    allocation: uniform
+    allocationvars: [0, 1]
     to_reference: !<FileTransform> {src: rec709_to_linear.spi1d, interpolation: linear}
-    from_reference: !<FileTransform> {src: rec709_to_linear.spi1d, interpolation: linear, direction: inverse}
 
   - !<ColorSpace>
     name: crv_rec709
@@ -2614,10 +2613,9 @@ colorspaces:
     description: |
       The Curve - Rec.709 color space
     isdata: false
-    allocation: lg2
-    allocationvars: [-8, 5, 0.00390625]
+    allocation: uniform
+    allocationvars: [0, 1]
     to_reference: !<ColorSpaceTransform> {src: Curve - Rec.709, dst: ACES2065-1}
-    from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Curve - Rec.709}
 
   - !<ColorSpace>
     name: Rec.709
@@ -2627,9 +2625,8 @@ colorspaces:
     description: |
       The Rec.709 color space
     isdata: false
-    allocation: lg2
-    allocationvars: [-8, 5, 0.00390625]
-    to_reference: !<FileTransform> {src: rec709_to_linear.spi1d, interpolation: linear}
+    allocation: uniform
+    allocationvars: [0, 1]
     from_reference: !<GroupTransform>
       children:
         - !<MatrixTransform> {matrix: [0.952552, 0, 9.36786e-05, 0, 0.343966, 0.728166, -0.0721325, 0, 0, 0, 1.00883, 0, 0, 0, 0, 1]}
@@ -2644,9 +2641,8 @@ colorspaces:
     description: |
       The Rec.709 color space
     isdata: false
-    allocation: lg2
-    allocationvars: [-8, 5, 0.00390625]
-    to_reference: !<ColorSpaceTransform> {src: Rec.709, dst: ACES2065-1}
+    allocation: uniform
+    allocationvars: [0, 1]
     from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Rec.709}
 
   - !<ColorSpace>
@@ -2657,23 +2653,23 @@ colorspaces:
     description: |
       The Linear - sRGB color space
     isdata: false
-    allocation: lg2
-    allocationvars: [-8, 5, 0.00390625]
+    allocation: uniform
+    allocationvars: [0, 1]
     from_reference: !<GroupTransform>
       children:
         - !<MatrixTransform> {matrix: [0.952552, 0, 9.36786e-05, 0, 0.343966, 0.728166, -0.0721325, 0, 0, 0, 1.00883, 0, 0, 0, 0, 1]}
         - !<MatrixTransform> {matrix: [3.24097, -1.53738, -0.498611, 0, -0.969244, 1.87597, 0.0415551, 0, 0.0556301, -0.203977, 1.05697, 0, 0, 0, 0, 1]}
 
   - !<ColorSpace>
-    name: lin_sRGB
+    name: lin_srgb
     family: Aliases
     equalitygroup: Linear - sRGB
     bitdepth: 32f
     description: |
       The Linear - sRGB color space
     isdata: false
-    allocation: lg2
-    allocationvars: [-8, 5, 0.00390625]
+    allocation: uniform
+    allocationvars: [0, 1]
     from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Linear - sRGB}
 
   - !<ColorSpace>
@@ -2684,36 +2680,37 @@ colorspaces:
     description: |
       The Curve - sRGB color space
     isdata: false
-    allocation: lg2
-    allocationvars: [-8, 5, 0.00390625]
+    allocation: uniform
+    allocationvars: [0, 1]
     to_reference: !<FileTransform> {src: sRGB_to_linear.spi1d, interpolation: linear}
-    from_reference: !<FileTransform> {src: sRGB_to_linear.spi1d, interpolation: linear, direction: inverse}
 
   - !<ColorSpace>
-    name: crv_sRGB
+    name: crv_srgb
     family: Aliases
     equalitygroup: Curve - sRGB
     bitdepth: 32f
     description: |
       The Curve - sRGB color space
     isdata: false
-    allocation: lg2
-    allocationvars: [-8, 5, 0.00390625]
+    allocation: uniform
+    allocationvars: [0, 1]
     to_reference: !<ColorSpaceTransform> {src: Curve - sRGB, dst: ACES2065-1}
-    from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Curve - sRGB}
 
   - !<ColorSpace>
     name: sRGB
-    family: Aliases
+    family: Utility
     equalitygroup: sRGB
     bitdepth: 32f
     description: |
       The sRGB color space
     isdata: false
-    allocation: lg2
-    allocationvars: [-8, 5, 0.00390625]
-    to_reference: !<ColorSpaceTransform> {src: sRGB, dst: ACES2065-1}
-    from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: sRGB}
+    allocation: uniform
+    allocationvars: [0, 1]
+    from_reference: !<GroupTransform>
+      children:
+        - !<MatrixTransform> {matrix: [0.952552, 0, 9.36786e-05, 0, 0.343966, 0.728166, -0.0721325, 0, 0, 0, 1.00883, 0, 0, 0, 0, 1]}
+        - !<MatrixTransform> {matrix: [3.24097, -1.53738, -0.498611, 0, -0.969244, 1.87597, 0.0415551, 0, 0.0556301, -0.203977, 1.05697, 0, 0, 0, 0, 1]}
+        - !<FileTransform> {src: sRGB_to_linear.spi1d, interpolation: linear, direction: inverse}
 
   - !<ColorSpace>
     name: Linear - Rec.1886
@@ -2723,8 +2720,8 @@ colorspaces:
     description: |
       The Linear - Rec.1886 color space
     isdata: false
-    allocation: lg2
-    allocationvars: [-8, 5, 0.00390625]
+    allocation: uniform
+    allocationvars: [0, 1]
     from_reference: !<GroupTransform>
       children:
         - !<MatrixTransform> {matrix: [0.952552, 0, 9.36786e-05, 0, 0.343966, 0.728166, -0.0721325, 0, 0, 0, 1.00883, 0, 0, 0, 0, 1]}
@@ -2738,8 +2735,8 @@ colorspaces:
     description: |
       The Linear - Rec.1886 color space
     isdata: false
-    allocation: lg2
-    allocationvars: [-8, 5, 0.00390625]
+    allocation: uniform
+    allocationvars: [0, 1]
     from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Linear - Rec.1886}
 
   - !<ColorSpace>
@@ -2750,10 +2747,9 @@ colorspaces:
     description: |
       The Curve - Rec.1886 color space
     isdata: false
-    allocation: lg2
-    allocationvars: [-8, 5, 0.00390625]
+    allocation: uniform
+    allocationvars: [0, 1]
     to_reference: !<FileTransform> {src: rec1886_to_linear.spi1d, interpolation: linear}
-    from_reference: !<FileTransform> {src: rec1886_to_linear.spi1d, interpolation: linear, direction: inverse}
 
   - !<ColorSpace>
     name: crv_rec1886
@@ -2763,10 +2759,9 @@ colorspaces:
     description: |
       The Curve - Rec.1886 color space
     isdata: false
-    allocation: lg2
-    allocationvars: [-8, 5, 0.00390625]
+    allocation: uniform
+    allocationvars: [0, 1]
     to_reference: !<ColorSpaceTransform> {src: Curve - Rec.1886, dst: ACES2065-1}
-    from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Curve - Rec.1886}
 
   - !<ColorSpace>
     name: Rec.1886
@@ -2776,9 +2771,8 @@ colorspaces:
     description: |
       The Rec.1886 color space
     isdata: false
-    allocation: lg2
-    allocationvars: [-8, 5, 0.00390625]
-    to_reference: !<FileTransform> {src: rec1886_to_linear.spi1d, interpolation: linear}
+    allocation: uniform
+    allocationvars: [0, 1]
     from_reference: !<GroupTransform>
       children:
         - !<MatrixTransform> {matrix: [0.952552, 0, 9.36786e-05, 0, 0.343966, 0.728166, -0.0721325, 0, 0, 0, 1.00883, 0, 0, 0, 0, 1]}
@@ -2793,9 +2787,8 @@ colorspaces:
     description: |
       The Rec.1886 color space
     isdata: false
-    allocation: lg2
-    allocationvars: [-8, 5, 0.00390625]
-    to_reference: !<ColorSpaceTransform> {src: Rec.1886, dst: ACES2065-1}
+    allocation: uniform
+    allocationvars: [0, 1]
     from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Rec.1886}
 
   - !<ColorSpace>
@@ -2806,8 +2799,8 @@ colorspaces:
     description: |
       The Linear - Rec.2020 color space
     isdata: false
-    allocation: lg2
-    allocationvars: [-8, 5, 0.00390625]
+    allocation: uniform
+    allocationvars: [0, 1]
     from_reference: !<GroupTransform>
       children:
         - !<MatrixTransform> {matrix: [0.952552, 0, 9.36786e-05, 0, 0.343966, 0.728166, -0.0721325, 0, 0, 0, 1.00883, 0, 0, 0, 0, 1]}
@@ -2821,8 +2814,8 @@ colorspaces:
     description: |
       The Linear - Rec.2020 color space
     isdata: false
-    allocation: lg2
-    allocationvars: [-8, 5, 0.00390625]
+    allocation: uniform
+    allocationvars: [0, 1]
     from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Linear - Rec.2020}
 
   - !<ColorSpace>
@@ -2833,10 +2826,9 @@ colorspaces:
     description: |
       The Curve - Rec.2020 - 10 bit color space
     isdata: false
-    allocation: lg2
-    allocationvars: [-8, 5, 0.00390625]
+    allocation: uniform
+    allocationvars: [0, 1]
     to_reference: !<FileTransform> {src: rec2020_to_linear.spi1d, interpolation: linear}
-    from_reference: !<FileTransform> {src: rec2020_to_linear.spi1d, interpolation: linear, direction: inverse}
 
   - !<ColorSpace>
     name: crv_rec202010bit
@@ -2846,10 +2838,9 @@ colorspaces:
     description: |
       The Curve - Rec.2020 - 10 bit color space
     isdata: false
-    allocation: lg2
-    allocationvars: [-8, 5, 0.00390625]
+    allocation: uniform
+    allocationvars: [0, 1]
     to_reference: !<ColorSpaceTransform> {src: Curve - Rec.2020 - 10 bit, dst: ACES2065-1}
-    from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Curve - Rec.2020 - 10 bit}
 
   - !<ColorSpace>
     name: Rec.2020 10 bit - Rec.2020
@@ -2859,9 +2850,8 @@ colorspaces:
     description: |
       The Rec.2020 10 bit - Rec.2020 color space
     isdata: false
-    allocation: lg2
-    allocationvars: [-8, 5, 0.00390625]
-    to_reference: !<FileTransform> {src: rec2020_to_linear.spi1d, interpolation: linear}
+    allocation: uniform
+    allocationvars: [0, 1]
     from_reference: !<GroupTransform>
       children:
         - !<MatrixTransform> {matrix: [0.952552, 0, 9.36786e-05, 0, 0.343966, 0.728166, -0.0721325, 0, 0, 0, 1.00883, 0, 0, 0, 0, 1]}
@@ -2876,9 +2866,8 @@ colorspaces:
     description: |
       The Rec.2020 10 bit - Rec.2020 color space
     isdata: false
-    allocation: lg2
-    allocationvars: [-8, 5, 0.00390625]
-    to_reference: !<ColorSpaceTransform> {src: Rec.2020 10 bit - Rec.2020, dst: ACES2065-1}
+    allocation: uniform
+    allocationvars: [0, 1]
     from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Rec.2020 10 bit - Rec.2020}
 
   - !<ColorSpace>
@@ -2889,10 +2878,9 @@ colorspaces:
     description: |
       The Curve - Rec.2020 - 12 bit color space
     isdata: false
-    allocation: lg2
-    allocationvars: [-8, 5, 0.00390625]
+    allocation: uniform
+    allocationvars: [0, 1]
     to_reference: !<FileTransform> {src: rec2020_to_linear.spi1d, interpolation: linear}
-    from_reference: !<FileTransform> {src: rec2020_to_linear.spi1d, interpolation: linear, direction: inverse}
 
   - !<ColorSpace>
     name: crv_rec202012bit
@@ -2902,10 +2890,9 @@ colorspaces:
     description: |
       The Curve - Rec.2020 - 12 bit color space
     isdata: false
-    allocation: lg2
-    allocationvars: [-8, 5, 0.00390625]
+    allocation: uniform
+    allocationvars: [0, 1]
     to_reference: !<ColorSpaceTransform> {src: Curve - Rec.2020 - 12 bit, dst: ACES2065-1}
-    from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Curve - Rec.2020 - 12 bit}
 
   - !<ColorSpace>
     name: Rec.2020 12 bit - Rec.2020
@@ -2915,9 +2902,8 @@ colorspaces:
     description: |
       The Rec.2020 12 bit - Rec.2020 color space
     isdata: false
-    allocation: lg2
-    allocationvars: [-8, 5, 0.00390625]
-    to_reference: !<FileTransform> {src: rec2020_to_linear.spi1d, interpolation: linear}
+    allocation: uniform
+    allocationvars: [0, 1]
     from_reference: !<GroupTransform>
       children:
         - !<MatrixTransform> {matrix: [0.952552, 0, 9.36786e-05, 0, 0.343966, 0.728166, -0.0721325, 0, 0, 0, 1.00883, 0, 0, 0, 0, 1]}
@@ -2932,9 +2918,8 @@ colorspaces:
     description: |
       The Rec.2020 12 bit - Rec.2020 color space
     isdata: false
-    allocation: lg2
-    allocationvars: [-8, 5, 0.00390625]
-    to_reference: !<ColorSpaceTransform> {src: Rec.2020 12 bit - Rec.2020, dst: ACES2065-1}
+    allocation: uniform
+    allocationvars: [0, 1]
     from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Rec.2020 12 bit - Rec.2020}
 
   - !<ColorSpace>
@@ -2945,8 +2930,8 @@ colorspaces:
     description: |
       The Linear - RIMM ROMM (ProPhoto) color space
     isdata: false
-    allocation: lg2
-    allocationvars: [-8, 5, 0.00390625]
+    allocation: uniform
+    allocationvars: [0, 1]
     from_reference: !<MatrixTransform> {matrix: [1.24124, -0.168569, -0.0726675, 0, 0.00612031, 1.08315, -0.0892715, 0, -0.00328533, 0.00997964, 0.993306, 0, 0, 0, 0, 1]}
 
   - !<ColorSpace>
@@ -2957,8 +2942,8 @@ colorspaces:
     description: |
       The Linear - RIMM ROMM (ProPhoto) color space
     isdata: false
-    allocation: lg2
-    allocationvars: [-8, 5, 0.00390625]
+    allocation: uniform
+    allocationvars: [0, 1]
     from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Linear - RIMM ROMM (ProPhoto)}
 
   - !<ColorSpace>
@@ -2969,8 +2954,8 @@ colorspaces:
     description: |
       The Linear - RIMM ROMM (ProPhoto) color space
     isdata: false
-    allocation: lg2
-    allocationvars: [-8, 5, 0.00390625]
+    allocation: uniform
+    allocationvars: [0, 1]
     from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Linear - RIMM ROMM (ProPhoto)}
 
   - !<ColorSpace>
@@ -2981,8 +2966,8 @@ colorspaces:
     description: |
       The Linear - Adobe RGB color space
     isdata: false
-    allocation: lg2
-    allocationvars: [-8, 5, 0.00390625]
+    allocation: uniform
+    allocationvars: [0, 1]
     from_reference: !<MatrixTransform> {matrix: [1.72456, -0.419994, -0.304567, 0, -0.27648, 1.37272, -0.0962392, 0, -0.0261255, -0.0901748, 1.1163, 0, 0, 0, 0, 1]}
 
   - !<ColorSpace>
@@ -2993,8 +2978,8 @@ colorspaces:
     description: |
       The Linear - Adobe RGB color space
     isdata: false
-    allocation: lg2
-    allocationvars: [-8, 5, 0.00390625]
+    allocation: uniform
+    allocationvars: [0, 1]
     from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Linear - Adobe RGB}
 
   - !<ColorSpace>
@@ -3005,8 +2990,8 @@ colorspaces:
     description: |
       The Linear - Adobe Wide Gamut RGB color space
     isdata: false
-    allocation: lg2
-    allocationvars: [-8, 5, 0.00390625]
+    allocation: uniform
+    allocationvars: [0, 1]
     from_reference: !<MatrixTransform> {matrix: [1.38098, -0.115859, -0.265122, 0, 0.00570155, 1.04029, -0.0459965, 0, -0.00389087, -0.0597092, 1.0636, 0, 0, 0, 0, 1]}
 
   - !<ColorSpace>
@@ -3017,8 +3002,8 @@ colorspaces:
     description: |
       The Linear - Adobe Wide Gamut RGB color space
     isdata: false
-    allocation: lg2
-    allocationvars: [-8, 5, 0.00390625]
+    allocation: uniform
+    allocationvars: [0, 1]
     from_reference: !<ColorSpaceTransform> {src: ACES2065-1, dst: Linear - Adobe Wide Gamut RGB}
 
   - !<ColorSpace>

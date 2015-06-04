@@ -62,8 +62,8 @@ def create_matrix_colorspace(name='matrix',
     cs.is_data = False
 
     # A linear space needs allocation variables
-    cs.allocation_type = ocio.Constants.ALLOCATION_LG2
-    cs.allocation_vars = [-8, 5, 0.00390625]
+    cs.allocation_type = ocio.Constants.ALLOCATION_UNIFORM
+    cs.allocation_vars = [0, 1]
 
     cs.to_reference_transforms = []
     if to_reference_values:
@@ -84,7 +84,70 @@ def create_matrix_colorspace(name='matrix',
     return cs
 
 # -------------------------------------------------------------------------
-# *Matrix Transform*
+# *Transfer Function Transform*
+# -------------------------------------------------------------------------
+def create_transfer_colorspace(name='transfer',
+                               transfer_function_name='transfer_function',
+                               transfer_function=lambda x: x,
+                               lut_directory='/tmp',
+                               lut_resolution_1d=1024,
+                               aliases=[]):
+    """
+    Object description.
+
+    Parameters
+    ----------
+    parameter : type
+        Parameter description.
+
+    Returns
+    -------
+    type
+         Return value description.
+    """
+
+    cs = ColorSpace(name)
+    cs.description = 'The %s color space' % name
+    cs.aliases = aliases
+    cs.equality_group = name
+    cs.family = 'Utility'
+    cs.is_data = False
+
+    # A linear space needs allocation variables
+    cs.allocation_type = ocio.Constants.ALLOCATION_UNIFORM
+    cs.allocation_vars = [0, 1]
+
+    # Sample the transfer function
+    data = array.array('f', '\0' * lut_resolution_1d * 4)
+    for c in range(lut_resolution_1d):
+        data[c] = transfer_function(c / (lut_resolution_1d - 1))
+
+    # Write the sampled data to a LUT
+    lut = '%s_to_linear.spi1d' % transfer_function_name
+    genlut.write_SPI_1d(
+        os.path.join(lut_directory, lut),
+        0,
+        1,
+        data,
+        lut_resolution_1d,
+        1)
+
+    # Create the 'to_reference' transforms
+    cs.to_reference_transforms = []
+    cs.to_reference_transforms.append({
+        'type': 'lutFile',
+        'path': lut,
+        'interpolation': 'linear',
+        'direction': 'forward'})
+
+    # Create the 'from_reference' transforms
+    cs.from_reference_transforms = []
+
+    return cs
+# create_transfer_colorspace
+
+# -------------------------------------------------------------------------
+# *Transfer Function + Matrix Transform*
 # -------------------------------------------------------------------------
 def create_matrix_plus_transfer_colorspace(name='matrix_plus_transfer',
                                            transfer_function_name='transfer_function',
@@ -122,8 +185,8 @@ def create_matrix_plus_transfer_colorspace(name='matrix_plus_transfer',
     cs.is_data = False
 
     # A linear space needs allocation variables
-    cs.allocation_type = ocio.Constants.ALLOCATION_LG2
-    cs.allocation_vars = [-8, 5, 0.00390625]
+    cs.allocation_type = ocio.Constants.ALLOCATION_UNIFORM
+    cs.allocation_vars = [0, 1]
 
     # Sample the transfer function
     data = array.array('f', '\0' * lut_resolution_1d * 4)
@@ -142,13 +205,13 @@ def create_matrix_plus_transfer_colorspace(name='matrix_plus_transfer',
 
     # Create the 'to_reference' transforms
     cs.to_reference_transforms = []
-    cs.to_reference_transforms.append({
-        'type': 'lutFile',
-        'path': lut,
-        'interpolation': 'linear',
-        'direction': 'forward'})
-
     if to_reference_values:
+        cs.to_reference_transforms.append({
+            'type': 'lutFile',
+            'path': lut,
+            'interpolation': 'linear',
+            'direction': 'forward'})
+
         for matrix in to_reference_values:
             cs.to_reference_transforms.append({
                 'type': 'matrix',
@@ -164,13 +227,14 @@ def create_matrix_plus_transfer_colorspace(name='matrix_plus_transfer',
                 'matrix': mat44_from_mat33(matrix),
                 'direction': 'forward'})
 
-    cs.from_reference_transforms.append({
-        'type': 'lutFile',
-        'path': lut,
-        'interpolation': 'linear',
-        'direction': 'inverse'})
+        cs.from_reference_transforms.append({
+            'type': 'lutFile',
+            'path': lut,
+            'interpolation': 'linear',
+            'direction': 'inverse'})
 
     return cs
+# create_matrix_plus_transfer_colorspace
 
 # Transfer functions for standard color spaces
 def transfer_function_sRGB_to_linear(v):
@@ -311,7 +375,7 @@ def create_colorspaces(lut_directory,
     colorspaces.append(cs)
 
     # *Linear* to *Rec. 709* Transfer Function*
-    cs = create_matrix_plus_transfer_colorspace(
+    cs = create_transfer_colorspace(
         'Curve - Rec.709',
         'rec709',
         transfer_function_Rec709_to_linear,
@@ -343,17 +407,17 @@ def create_colorspaces(lut_directory,
     cs = create_matrix_colorspace(
         'Linear - sRGB',
         from_reference_values=[aces.ACES_AP0_TO_XYZ, XYZ_to_Rec709],
-        aliases=["lin_sRGB"])
+        aliases=["lin_srgb"])
     colorspaces.append(cs)
 
     # *Linear* to *sRGB* Transfer Function*
-    cs = create_matrix_plus_transfer_colorspace(
+    cs = create_transfer_colorspace(
         'Curve - sRGB',
         'sRGB',
         transfer_function_sRGB_to_linear,
         lut_directory,
         lut_resolution_1d,
-        aliases=["crv_sRGB"])
+        aliases=["crv_srgb"])
     colorspaces.append(cs)
 
     # *ACES* to *sRGB* Primaries + Transfer Function*
@@ -364,7 +428,7 @@ def create_colorspaces(lut_directory,
         lut_directory,
         lut_resolution_1d,
         from_reference_values=[aces.ACES_AP0_TO_XYZ, XYZ_to_Rec709],
-        aliases=["sRGB"])
+        aliases=["srgb"])
     colorspaces.append(cs)
 
     #
@@ -383,7 +447,7 @@ def create_colorspaces(lut_directory,
     colorspaces.append(cs)
 
     # *Linear* to *sRGB* Transfer Function*
-    cs = create_matrix_plus_transfer_colorspace(
+    cs = create_transfer_colorspace(
         'Curve - Rec.1886',
         'rec1886',
         transfer_function_Rec1886_to_linear,
@@ -418,7 +482,7 @@ def create_colorspaces(lut_directory,
     colorspaces.append(cs)
 
     # *Linear* to *Rec. 2020 10 bit* Transfer Function*
-    cs = create_matrix_plus_transfer_colorspace(
+    cs = create_transfer_colorspace(
         'Curve - Rec.2020 - 10 bit',
         'rec2020',
         transfer_function_Rec2020_10bit_to_linear,
@@ -439,7 +503,7 @@ def create_colorspaces(lut_directory,
     colorspaces.append(cs)
 
     # *Linear* to *Rec. 2020 10 bit* Transfer Function*
-    cs = create_matrix_plus_transfer_colorspace(
+    cs = create_transfer_colorspace(
         'Curve - Rec.2020 - 12 bit',
         'rec2020',
         transfer_function_Rec2020_12bit_to_linear,

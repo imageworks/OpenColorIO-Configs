@@ -52,7 +52,7 @@ def create_s_log(gamut,
     if transfer_function == '':
         name = 'Linear - %s' % gamut
     if gamut == '':
-        name = '%s' % transfer_function
+        name = 'Curve - %s' % transfer_function
 
     cs = ColorSpace(name)
     cs.description = name

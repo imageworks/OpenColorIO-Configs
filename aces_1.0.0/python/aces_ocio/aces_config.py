@@ -259,7 +259,7 @@ def add_colorspace_alias(config,
     """
 
     for alias_name in colorspace_alias_names:
-        if alias_name == colorspace.name.lower():
+        if alias_name.lower() == colorspace.name.lower():
             print('Skipping alias creation for %s, alias %s, because lower cased names match' % (
                 colorspace.name, alias_name) )
             return

@@ -1524,7 +1524,7 @@ def create_colorspaces(aces_ctl_directory,
              'default': ACES.name,
              'matte_paint': ACEScc.name,
              'reference': '',
-             'scene_linear': ACES.name,
+             'scene_linear': ACEScg.name,
              'texture_paint': ''}
 
     return ACES, colorspaces, displays, ACEScc, roles, defaultDisplay

@@ -21,6 +21,7 @@ from aces_ocio.colorspaces import red
 from aces_ocio.colorspaces import sony
 from aces_ocio.process import Process
 
+from aces_ocio.utilities import replace
 
 __author__ = 'ACES Developers'
 __copyright__ = 'Copyright (C) 2014 - 2015 - ACES Developers'
@@ -303,8 +304,11 @@ def add_colorspace_alias(config,
 
         config.addColorSpace(ocio_colorspace_alias)
 
+def colorspace_prefixed_name(colorspace):
+    prefix = colorspace.family.replace("/", " - ")
+    return "%s - %s" % (prefix, colorspace.name)
 
-def create_config(config_data, gui=False):
+def create_config(config_data, aliases=False, prefix=False):
     """
     Object description.
 
@@ -319,6 +323,9 @@ def create_config(config_data, gui=False):
          Return value description.
     """
 
+    prefixed_names = {}
+    alias_colorspaces = []
+
     # Creating the *OCIO* configuration.
     config = ocio.Config()
 
@@ -328,6 +335,14 @@ def create_config(config_data, gui=False):
 
     # Defining the reference colorspace.
     reference_data = config_data['referenceColorSpace']
+
+    # Adding the color space Family into the name
+    # Helps with applications that present colorspaces as one long list
+    if prefix:
+        prefixed_name = colorspace_prefixed_name(reference_data)
+        prefixed_names[reference_data.name] = prefixed_name
+        reference_data.name = prefixed_name
+
     print('Adding the reference color space : %s' % reference_data.name)
 
     reference = ocio.ColorSpace(
@@ -343,17 +358,29 @@ def create_config(config_data, gui=False):
     config.addColorSpace(reference)
 
     # Add alias
-    #if not gui:
-    if reference_data.aliases != []:
-        add_colorspace_alias(config, reference_data,
-                             reference_data, reference_data.aliases)
+    if aliases:
+        if reference_data.aliases != []:
+            #add_colorspace_alias(config, reference_data,
+            #                     reference_data, reference_data.aliases)
+            # defer adding alias colorspaces until end. Helps with some applications
+            alias_colorspaces.append([reference_data, reference_data, reference_data.aliases])
+
 
     print("")
 
     #print( "color spaces : %s" % [x.name for x in sorted(config_data['colorSpaces'])])
 
+    print('Adding the regular color spaces')
+
     # Creating the remaining colorspaces.
     for colorspace in sorted(config_data['colorSpaces']):
+        # Adding the color space Family into the name
+        # Helps with applications that present colorspaces as one long list
+        if prefix:
+            prefixed_name = colorspace_prefixed_name(colorspace)
+            prefixed_names[colorspace.name] = prefixed_name
+            colorspace.name = prefixed_name
+
         print('Creating new color space : %s' % colorspace.name)
 
         ocio_colorspace = ocio.ColorSpace(
@@ -387,18 +414,34 @@ def create_config(config_data, gui=False):
         #
         # Add alias to normal colorspace, using compact name
         #
-        #if not gui:
-        if colorspace.aliases != []:
-            #print('Adding alias color spaces : %s' % colorspace.aliases)
-            add_colorspace_alias(config, reference_data,
-                                 colorspace, colorspace.aliases)
+        if aliases:
+            if colorspace.aliases != []:
+                #add_colorspace_alias(config, reference_data,
+                #                     colorspace, colorspace.aliases)
+                # defer adding alias colorspaces until end. Helps with some applications
+                alias_colorspaces.append([reference_data, colorspace, colorspace.aliases])
 
         print('')
+
+    print("")
+
+    # We add these at the end as some applications use the order of the colorspaces
+    # definitions in the config to order the colorspaces in their selection lists.
+    # Other go alphabetically. This should keep the alias colorspaces out of the way
+    # for the apps that use the order of definition in the config.
+    print('Adding the alias colorspaces')
+    for reference, colorspace, aliases in alias_colorspaces:
+        add_colorspace_alias(config, reference, colorspace, aliases)
+
+    print("")
+
+    print('Adding the diplays and views')
 
     # Defining the *views* and *displays*.
     displays = []
     views = []
 
+    '''
     # Defining a *generic* *display* and *view* setup.
     if not gui:
         for display, view_list in config_data['displays'].iteritems():
@@ -408,54 +451,97 @@ def create_config(config_data, gui=False):
                     views.append(view_name)
             displays.append(display)
 
-    # Defining the set of *views* and *displays* useful in a *GUI* context.
     else:
-        display_name = 'ACES'
-        displays.append(display_name)
+    '''
+    # Defining the set of *views* and *displays* useful in a *GUI* context.
+    #display_name = 'ACES'
+    display_name = config_data['roles']['scene_linear']
+    displays.append(display_name)
 
-        display_names = sorted(config_data['displays'])
+    display_names = sorted(config_data['displays'])
 
-        # Make sure the default display is first
-        default_display = config_data['defaultDisplay']
-        display_names.insert(0, display_names.pop(display_names.index(default_display)))
+    # Make sure the default display is first
+    default_display = config_data['defaultDisplay']
+    display_names.insert(0, display_names.pop(display_names.index(default_display)))
 
-        for display in display_names:
-            view_list = config_data['displays'][display]
-            for view_name, colorspace in view_list.iteritems():
-                if view_name == 'Output Transform':
-                    config.addDisplay(display_name, display, colorspace.name)
-                    if not (display in views):
-                        views.append(display)
+    for display in display_names:
+        view_list = config_data['displays'][display]
+        for view_name, colorspace in view_list.iteritems():
+            if view_name == 'Output Transform':
+                display_cleaned = replace(display, {')': '', '(': ''})
+                config.addDisplay(display_name, display_cleaned, colorspace.name)
+                if not (display_cleaned in views):
+                    views.append(display_cleaned)
 
-        # Works with Nuke Studio and Mari, but not Nuke
-        # display_name = 'Utility'
-        # displays.append(display_name)
+    # Works with Nuke Studio and Mari, but not Nuke
+    # display_name = 'Utility'
+    # displays.append(display_name)
 
-        linear_display_space_name = config_data['roles']['scene_linear']
-        log_display_space_name = config_data['roles']['compositing_log']
+    linear_display_space_name = config_data['roles']['scene_linear']
+    log_display_space_name = config_data['roles']['compositing_log']
 
-        config.addDisplay(display_name, 'Linear', linear_display_space_name)
-        views.append('Linear')
-        config.addDisplay(display_name, 'Log', log_display_space_name)
-        views.append('Log')
+    # Find the newly-prefixed colorspace names
+    if prefix:
+        #print( prefixed_names )
+        linear_display_space_name = prefixed_names[linear_display_space_name]
+        log_display_space_name = prefixed_names[log_display_space_name]
+
+    config.addDisplay(display_name, 'Linear', linear_display_space_name)
+    views.append('Linear')
+    config.addDisplay(display_name, 'Log', log_display_space_name)
+    views.append('Log')
 
     # Setting the active *displays* and *views*.
     config.setActiveDisplays(','.join(sorted(displays)))
     config.setActiveViews(','.join(views))
 
-    set_config_default_roles(
-        config,
-        color_picking=config_data['roles']['color_picking'],
-        color_timing=config_data['roles']['color_timing'],
-        compositing_log=config_data['roles']['compositing_log'],
-        data=config_data['roles']['data'],
-        default=config_data['roles']['default'],
-        matte_paint=config_data['roles']['matte_paint'],
-        reference=config_data['roles']['reference'],
-        scene_linear=config_data['roles']['scene_linear'],
-        texture_paint=config_data['roles']['texture_paint'])
+    print("")
 
+    print('Setting the roles')
+
+    if prefix:
+        set_config_default_roles(
+            config,
+            color_picking=prefixed_names[config_data['roles']['color_picking']],
+            color_timing=prefixed_names[config_data['roles']['color_timing']],
+            compositing_log=prefixed_names[config_data['roles']['compositing_log']],
+            data=prefixed_names[config_data['roles']['data']],
+            default=prefixed_names[config_data['roles']['default']],
+            matte_paint=prefixed_names[config_data['roles']['matte_paint']],
+            reference=prefixed_names[config_data['roles']['reference']],
+            scene_linear=prefixed_names[config_data['roles']['scene_linear']],
+            texture_paint=prefixed_names[config_data['roles']['texture_paint']])
+    else:
+        set_config_default_roles(
+            config,
+            color_picking=config_data['roles']['color_picking'],
+            color_timing=config_data['roles']['color_timing'],
+            compositing_log=config_data['roles']['compositing_log'],
+            data=config_data['roles']['data'],
+            default=config_data['roles']['default'],
+            matte_paint=config_data['roles']['matte_paint'],
+            reference=config_data['roles']['reference'],
+            scene_linear=config_data['roles']['scene_linear'],
+            texture_paint=config_data['roles']['texture_paint'])
+
+    print("")
+
+    # Make sure we didn't create a bad config
     config.sanityCheck()
+
+    # Reset the colorspace names back to their non-prefixed versions
+    if prefix:
+        # Build the reverse lookup
+        prefixed_names_inverse = {}
+        for original, prefixed in prefixed_names.iteritems():
+            prefixed_names_inverse[prefixed] = original
+
+        # Reet the reference colorspace name
+        reference_data.name = prefixed_names_inverse[reference_data.name]
+
+        # Reset the rest of the colorspace names
+        for colorspace in config_data['colorSpaces']:
+            colorspace.name = prefixed_names_inverse[colorspace.name]
 
     return config
 
@@ -792,21 +878,35 @@ def create_ACES_config(aces_ctl_directory,
                                 lut_resolution_3d,
                                 cleanup)
 
-    '''
-    print('Creating "generic" config')
-    config = create_config(config_data)
-    print('\n\n\n')
-
-    write_config(config,
-                 os.path.join(config_directory, 'config.ocio'))
-    '''
-
-    print('Creating "GUI" config')
-    gui_config = create_config(config_data, gui=True)
+    print('Creating config - with prefixes, with aliases')
+    gui_config = create_config(config_data, prefix=True, aliases=True)
     print('\n\n\n')
 
     write_config(gui_config,
                  os.path.join(config_directory, 'config.ocio'))
+
+    '''
+    print('Creating config - with prefixes, without aliases')
+    gui_config = create_config(config_data, prefix=True, aliases=False)
+    print('\n\n\n')
+
+    write_config(gui_config,
+                 os.path.join(config_directory, 'config_w_prefixes_no_aliases.ocio'))
+
+    print('Creating config - without prefixes, with aliases')
+    gui_config = create_config(config_data, prefix=False, aliases=True)
+    print('\n\n\n')
+
+    write_config(gui_config,
+                 os.path.join(config_directory, 'config_no_prefixes_w_aliases.ocio'))
+
+    print('Creating config - without prefixes, without aliases')
+    gui_config = create_config(config_data, prefix=False, aliases=False)
+    print('\n\n\n')
+
+    write_config(gui_config,
+                 os.path.join(config_directory, 'config_no_prefixes_no_aliases.ocio'))
+    '''
 
     if bake_secondary_LUTs:
         generate_baked_LUTs(odt_info,

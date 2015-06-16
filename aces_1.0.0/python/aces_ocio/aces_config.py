@@ -308,7 +308,10 @@ def colorspace_prefixed_name(colorspace):
     prefix = colorspace.family.replace("/", " - ")
     return "%s - %s" % (prefix, colorspace.name)
 
-def create_config(config_data, aliases=False, prefix=False):
+def create_config(config_data, 
+    aliases=False, 
+    prefix=False,
+    multiple_displays=False):
     """
     Object description.
 
@@ -441,9 +444,9 @@ def create_config(config_data, aliases=False, prefix=False):
     displays = []
     views = []
 
-    '''
+
     # Defining a *generic* *display* and *view* setup.
-    if not gui:
+    if multiple_displays:
         for display, view_list in config_data['displays'].iteritems():
             for view_name, colorspace in view_list.iteritems():
                 config.addDisplay(display, view_name, colorspace.name)
@@ -452,44 +455,43 @@ def create_config(config_data, aliases=False, prefix=False):
             displays.append(display)
 
     else:
-    '''
-    # Defining the set of *views* and *displays* useful in a *GUI* context.
-    #display_name = 'ACES'
-    display_name = config_data['roles']['scene_linear']
-    displays.append(display_name)
+        # Defining the set of *views* and *displays* useful in a *GUI* context.
+        #display_name = 'ACES'
+        display_name = config_data['roles']['scene_linear']
+        displays.append(display_name)
 
-    display_names = sorted(config_data['displays'])
+        display_names = sorted(config_data['displays'])
 
-    # Make sure the default display is first
-    default_display = config_data['defaultDisplay']
-    display_names.insert(0, display_names.pop(display_names.index(default_display)))
+        # Make sure the default display is first
+        default_display = config_data['defaultDisplay']
+        display_names.insert(0, display_names.pop(display_names.index(default_display)))
 
-    for display in display_names:
-        view_list = config_data['displays'][display]
-        for view_name, colorspace in view_list.iteritems():
-            if view_name == 'Output Transform':
-                display_cleaned = replace(display, {')': '', '(': ''})
-                config.addDisplay(display_name, display_cleaned, colorspace.name)
-                if not (display_cleaned in views):
-                    views.append(display_cleaned)
+        for display in display_names:
+            view_list = config_data['displays'][display]
+            for view_name, colorspace in view_list.iteritems():
+                if view_name == 'Output Transform':
+                    display_cleaned = replace(display, {')': '', '(': ''})
+                    config.addDisplay(display_name, display_cleaned, colorspace.name)
+                    if not (display_cleaned in views):
+                        views.append(display_cleaned)
 
-    # Works with Nuke Studio and Mari, but not Nuke
-    # display_name = 'Utility'
-    # displays.append(display_name)
+        # Works with Nuke Studio and Mari, but not Nuke
+        # display_name = 'Utility'
+        # displays.append(display_name)
 
-    linear_display_space_name = config_data['roles']['scene_linear']
-    log_display_space_name = config_data['roles']['compositing_log']
+        linear_display_space_name = config_data['roles']['scene_linear']
+        log_display_space_name = config_data['roles']['compositing_log']
 
-    # Find the newly-prefixed colorspace names
-    if prefix:
-        #print( prefixed_names )
-        linear_display_space_name = prefixed_names[linear_display_space_name]
-        log_display_space_name = prefixed_names[log_display_space_name]
+        # Find the newly-prefixed colorspace names
+        if prefix:
+            #print( prefixed_names )
+            linear_display_space_name = prefixed_names[linear_display_space_name]
+            log_display_space_name = prefixed_names[log_display_space_name]
 
-    config.addDisplay(display_name, 'Linear', linear_display_space_name)
-    views.append('Linear')
-    config.addDisplay(display_name, 'Log', log_display_space_name)
-    views.append('Log')
+        config.addDisplay(display_name, 'Linear', linear_display_space_name)
+        views.append('Linear')
+        config.addDisplay(display_name, 'Log', log_display_space_name)
+        views.append('Log')
 
     # Setting the active *displays* and *views*.
     config.setActiveDisplays(','.join(sorted(displays)))
@@ -848,6 +850,7 @@ def create_ACES_config(aces_ctl_directory,
                        lut_resolution_1d=4096,
                        lut_resolution_3d=64,
                        bake_secondary_LUTs=True,
+                       multiple_displays=False,
                        cleanup=True):
     """
     Creates the ACES configuration.
@@ -879,34 +882,12 @@ def create_ACES_config(aces_ctl_directory,
                                 cleanup)
 
     print('Creating config - with prefixes, with aliases')
-    gui_config = create_config(config_data, prefix=True, aliases=True)
+    config = create_config(config_data, 
+        prefix=True, aliases=True, multiple_displays=multiple_displays)
     print('\n\n\n')
 
-    write_config(gui_config,
+    write_config(config,
                  os.path.join(config_directory, 'config.ocio'))
-
-    '''
-    print('Creating config - with prefixes, without aliases')
-    gui_config = create_config(config_data, prefix=True, aliases=False)
-    print('\n\n\n')
-
-    write_config(gui_config,
-                 os.path.join(config_directory, 'config_w_prefixes_no_aliases.ocio'))
-
-    print('Creating config - without prefixes, with aliases')
-    gui_config = create_config(config_data, prefix=False, aliases=True)
-    print('\n\n\n')
-
-    write_config(gui_config,
-                 os.path.join(config_directory, 'config_no_prefixes_w_aliases.ocio'))
-
-    print('Creating config - without prefixes, without aliases')
-    gui_config = create_config(config_data, prefix=False, aliases=False)
-    print('\n\n\n')
-
-    write_config(gui_config,
-                 os.path.join(config_directory, 'config_no_prefixes_no_aliases.ocio'))
-    '''
 
     if bake_secondary_LUTs:
         generate_baked_LUTs(odt_info,
@@ -937,18 +918,32 @@ def main():
 
     import optparse
 
-    p = optparse.OptionParser(description='An OCIO config generation script',
-                              prog='createACESConfig',
-                              version='createACESConfig 0.1',
-                              usage='%prog [options]')
+    usage  = '%prog [options]\n'
+    usage += '\n'
+    usage += 'An OCIO config generation script for ACES 1.0\n'
+    usage += '\n'
+    usage += 'Command line examples'
+    usage += '\n'
+    usage += 'Create a GUI-friendly ACES 1.0 config with no secondary, baked LUTs : \n'
+    usage += '\tcreate_aces_config -a /path/to/aces-dev/transforms/ctl --lutResolution1d 1024 --lutResolution3d 33 -c aces_1.0.0 --dontBakeSecondaryLUTs'
+    usage += '\n'
+    usage += 'Create a traditional ACES 1.0 config with secondary, baked LUTs : \n'
+    usage += '\tcreate_aces_config -a /path/to/aces-dev/transforms/ctl --lutResolution1d 1024 --lutResolution3d 33 -c aces_1.0.0 --createMultipleDisplays'
+    usage += '\n'
+
+    p = optparse.OptionParser(description='',
+                              prog='create_aces_config',
+                              version='create_aces_config 1.0',
+                              usage=usage)
     p.add_option('--acesCTLDir', '-a', default=os.environ.get(
         ACES_OCIO_CTL_DIRECTORY_ENVIRON, None))
     p.add_option('--configDir', '-c', default=os.environ.get(
         ACES_OCIO_CONFIGURATION_DIRECTORY_ENVIRON, None))
     p.add_option('--lutResolution1d', default=4096)
     p.add_option('--lutResolution3d', default=64)
-    p.add_option('--dontBakeSecondaryLUTs', action='store_true')
-    p.add_option('--keepTempImages', action='store_true')
+    p.add_option('--dontBakeSecondaryLUTs', action='store_true', default=False)
+    p.add_option('--keepTempImages', action='store_true', default=False)
+    p.add_option('--createMultipleDisplays', action='store_true', default=False)
 
     options, arguments = p.parse_args()
 
@@ -958,6 +953,7 @@ def main():
     lut_resolution_3d = int(options.lutResolution3d)
     bake_secondary_luts = not options.dontBakeSecondaryLUTs
     cleanup_temp_images = not options.keepTempImages
+    multiple_displays = options.createMultipleDisplays
 
     # TODO: Investigate the following statements.
     try:
@@ -984,8 +980,8 @@ def main():
                               lut_resolution_1d,
                               lut_resolution_3d,
                               bake_secondary_luts,
+                              multiple_displays,
                               cleanup_temp_images)
-
 
 if __name__ == '__main__':
     main()

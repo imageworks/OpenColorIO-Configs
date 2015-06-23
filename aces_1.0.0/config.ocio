@@ -35,11 +35,11 @@ displays:
     - !<View> {name: Rec.709 D60 sim. - Legal, colorspace: Output - Rec.709 (D60 sim.) - Legal}
     - !<View> {name: Rec.709 - Full, colorspace: Output - Rec.709 - Full}
     - !<View> {name: Rec.709 - Legal, colorspace: Output - Rec.709 - Legal}
-    - !<View> {name: Linear, colorspace: ACES - ACEScg}
+    - !<View> {name: Raw, colorspace: ACES - ACEScg}
     - !<View> {name: Log, colorspace: ACES - ACEScc}
 
 active_displays: [ACEScg]
-active_views: [sRGB D60 sim., DCDM, DCDM P3 gamut clip, P3-D60, P3-D60 PQ 1000 nits, P3-D60 PQ 2000 nits, P3-D60 PQ 4000 nits, P3-DCI, Rec.2020 - Full, Rec.2020 - Legal, Rec.709 D60 sim. - Full, Rec.709 D60 sim. - Legal, Rec.709 - Full, Rec.709 - Legal, Linear, Log]
+active_views: [sRGB D60 sim., DCDM, DCDM P3 gamut clip, P3-D60, P3-D60 PQ 1000 nits, P3-D60 PQ 2000 nits, P3-D60 PQ 4000 nits, P3-DCI, Rec.2020 - Full, Rec.2020 - Legal, Rec.709 D60 sim. - Full, Rec.709 D60 sim. - Legal, Rec.709 - Full, Rec.709 - Legal, Raw, Log]
 
 colorspaces:
   - !<ColorSpace>
@@ -313,23 +313,23 @@ colorspaces:
         - !<FileTransform> {src: Output_Shaper.RRT.a1.0.0.DCDM.spi3d, interpolation: tetrahedral}
 
   - !<ColorSpace>
-    name: Output - P3-D60
+    name: Output - Rec.2020 - Full
     family: Output
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      ACES 1.0 Output - P3-D60 Output Transform
+      ACES 1.0 Output - Rec.2020 - Full Output Transform
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: InvRRT.a1.0.0.P3-D60.Output_Shaper.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: InvRRT.a1.0.0.Rec.2020_-_Full.Output_Shaper.spi3d, interpolation: tetrahedral}
         - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear}
     from_reference: !<GroupTransform>
       children:
         - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
-        - !<FileTransform> {src: Output_Shaper.RRT.a1.0.0.P3-D60.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Output_Shaper.RRT.a1.0.0.Rec.2020_-_Full.spi3d, interpolation: tetrahedral}
 
   - !<ColorSpace>
     name: Output - P3-D60 PQ (1000 nits)
@@ -351,25 +351,6 @@ colorspaces:
         - !<FileTransform> {src: Output_Shaper.RRT.a1.0.0.P3-D60_PQ__1000_nits_.spi3d, interpolation: tetrahedral}
 
   - !<ColorSpace>
-    name: Output - P3-D60 PQ (4000 nits)
-    family: Output
-    equalitygroup: ""
-    bitdepth: 32f
-    description: |
-      ACES 1.0 Output - P3-D60 PQ (4000 nits) Output Transform
-    isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
-    to_reference: !<GroupTransform>
-      children:
-        - !<FileTransform> {src: InvRRT.a1.0.0.P3-D60_PQ__4000_nits_.Output_Shaper.spi3d, interpolation: tetrahedral}
-        - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear}
-    from_reference: !<GroupTransform>
-      children:
-        - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
-        - !<FileTransform> {src: Output_Shaper.RRT.a1.0.0.P3-D60_PQ__4000_nits_.spi3d, interpolation: tetrahedral}
-
-  - !<ColorSpace>
     name: Output - P3-D60 PQ (2000 nits)
     family: Output
     equalitygroup: ""
@@ -389,6 +370,44 @@ colorspaces:
         - !<FileTransform> {src: Output_Shaper.RRT.a1.0.0.P3-D60_PQ__2000_nits_.spi3d, interpolation: tetrahedral}
 
   - !<ColorSpace>
+    name: Output - P3-D60
+    family: Output
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      ACES 1.0 Output - P3-D60 Output Transform
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: InvRRT.a1.0.0.P3-D60.Output_Shaper.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear}
+    from_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
+        - !<FileTransform> {src: Output_Shaper.RRT.a1.0.0.P3-D60.spi3d, interpolation: tetrahedral}
+
+  - !<ColorSpace>
+    name: Output - P3-D60 PQ (4000 nits)
+    family: Output
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      ACES 1.0 Output - P3-D60 PQ (4000 nits) Output Transform
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: InvRRT.a1.0.0.P3-D60_PQ__4000_nits_.Output_Shaper.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear}
+    from_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
+        - !<FileTransform> {src: Output_Shaper.RRT.a1.0.0.P3-D60_PQ__4000_nits_.spi3d, interpolation: tetrahedral}
+
+  - !<ColorSpace>
     name: Output - P3-DCI
     family: Output
     equalitygroup: ""
@@ -406,25 +425,6 @@ colorspaces:
       children:
         - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
         - !<FileTransform> {src: Output_Shaper.RRT.a1.0.0.P3-DCI.spi3d, interpolation: tetrahedral}
-
-  - !<ColorSpace>
-    name: Output - Rec.2020 - Full
-    family: Output
-    equalitygroup: ""
-    bitdepth: 32f
-    description: |
-      ACES 1.0 Output - Rec.2020 - Full Output Transform
-    isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
-    to_reference: !<GroupTransform>
-      children:
-        - !<FileTransform> {src: InvRRT.a1.0.0.Rec.2020_-_Full.Output_Shaper.spi3d, interpolation: tetrahedral}
-        - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear}
-    from_reference: !<GroupTransform>
-      children:
-        - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
-        - !<FileTransform> {src: Output_Shaper.RRT.a1.0.0.Rec.2020_-_Full.spi3d, interpolation: tetrahedral}
 
   - !<ColorSpace>
     name: Output - Rec.2020 - Legal
@@ -946,7 +946,10 @@ colorspaces:
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
-    to_reference: !<FileTransform> {src: Protune_Flat_to_linear.spi1d, interpolation: linear}
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: Protune_Flat_to_linear.spi1d, interpolation: linear}
+        - !<MatrixTransform> {matrix: [0.533448, 0.324139, 0.142412, 0, -0.0507299, 1.07572, -0.0249904, 0, 0.0714197, -0.290522, 1.2191, 0, 0, 0, 0, 1]}
 
   - !<ColorSpace>
     name: Input - GoPro - Curve - Protune Flat
@@ -970,6 +973,7 @@ colorspaces:
     isdata: false
     allocation: lg2
     allocationvars: [-8, 5, 0.00390625]
+    to_reference: !<MatrixTransform> {matrix: [0.533448, 0.324139, 0.142412, 0, -0.0507299, 1.07572, -0.0249904, 0, 0.0714197, -0.290522, 1.2191, 0, 0, 0, 0, 1]}
 
   - !<ColorSpace>
     name: Input - Panasonic - V-Log - V-Gamut
@@ -1668,6 +1672,18 @@ colorspaces:
     allocationvars: [-8, 5, 0.00390625]
 
   - !<ColorSpace>
+    name: acescc
+    family: Aliases
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      The ACEScc color space
+    isdata: false
+    allocation: uniform
+    allocationvars: [-0.3584, 1.468]
+    to_reference: !<ColorSpaceTransform> {src: ACES - ACEScc, dst: ACES - ACES2065-1}
+
+  - !<ColorSpace>
     name: acescc_ap1
     family: Aliases
     equalitygroup: ""
@@ -1680,6 +1696,18 @@ colorspaces:
     to_reference: !<ColorSpaceTransform> {src: ACES - ACEScc, dst: ACES - ACES2065-1}
 
   - !<ColorSpace>
+    name: acesproxy
+    family: Aliases
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      The ACESproxy color space
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<ColorSpaceTransform> {src: ACES - ACESproxy, dst: ACES - ACES2065-1}
+
+  - !<ColorSpace>
     name: acesproxy_ap1
     family: Aliases
     equalitygroup: ""
@@ -1690,6 +1718,18 @@ colorspaces:
     allocation: uniform
     allocationvars: [0, 1]
     to_reference: !<ColorSpaceTransform> {src: ACES - ACESproxy, dst: ACES - ACES2065-1}
+
+  - !<ColorSpace>
+    name: acescg
+    family: Aliases
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      The ACEScg color space
+    isdata: false
+    allocation: lg2
+    allocationvars: [-8, 5, 0.00390625]
+    to_reference: !<ColorSpaceTransform> {src: ACES - ACEScg, dst: ACES - ACES2065-1}
 
   - !<ColorSpace>
     name: lin_ap1
@@ -1886,17 +1926,17 @@ colorspaces:
     from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: Output - DCDM}
 
   - !<ColorSpace>
-    name: out_p3d60
+    name: out_rec2020full
     family: Aliases
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      ACES 1.0 Output - P3-D60 Output Transform
+      ACES 1.0 Output - Rec.2020 - Full Output Transform
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
-    to_reference: !<ColorSpaceTransform> {src: Output - P3-D60, dst: ACES - ACES2065-1}
-    from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: Output - P3-D60}
+    to_reference: !<ColorSpaceTransform> {src: Output - Rec.2020 - Full, dst: ACES - ACES2065-1}
+    from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: Output - Rec.2020 - Full}
 
   - !<ColorSpace>
     name: out_p3d60pq1000nits
@@ -1912,19 +1952,6 @@ colorspaces:
     from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: Output - P3-D60 PQ (1000 nits)}
 
   - !<ColorSpace>
-    name: out_p3d60pq4000nits
-    family: Aliases
-    equalitygroup: ""
-    bitdepth: 32f
-    description: |
-      ACES 1.0 Output - P3-D60 PQ (4000 nits) Output Transform
-    isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
-    to_reference: !<ColorSpaceTransform> {src: Output - P3-D60 PQ (4000 nits), dst: ACES - ACES2065-1}
-    from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: Output - P3-D60 PQ (4000 nits)}
-
-  - !<ColorSpace>
     name: out_p3d60pq2000nits
     family: Aliases
     equalitygroup: ""
@@ -1938,6 +1965,32 @@ colorspaces:
     from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: Output - P3-D60 PQ (2000 nits)}
 
   - !<ColorSpace>
+    name: out_p3d60
+    family: Aliases
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      ACES 1.0 Output - P3-D60 Output Transform
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<ColorSpaceTransform> {src: Output - P3-D60, dst: ACES - ACES2065-1}
+    from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: Output - P3-D60}
+
+  - !<ColorSpace>
+    name: out_p3d60pq4000nits
+    family: Aliases
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      ACES 1.0 Output - P3-D60 PQ (4000 nits) Output Transform
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<ColorSpaceTransform> {src: Output - P3-D60 PQ (4000 nits), dst: ACES - ACES2065-1}
+    from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: Output - P3-D60 PQ (4000 nits)}
+
+  - !<ColorSpace>
     name: out_p3dci
     family: Aliases
     equalitygroup: ""
@@ -1949,19 +2002,6 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<ColorSpaceTransform> {src: Output - P3-DCI, dst: ACES - ACES2065-1}
     from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: Output - P3-DCI}
-
-  - !<ColorSpace>
-    name: out_rec2020full
-    family: Aliases
-    equalitygroup: ""
-    bitdepth: 32f
-    description: |
-      ACES 1.0 Output - Rec.2020 - Full Output Transform
-    isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
-    to_reference: !<ColorSpaceTransform> {src: Output - Rec.2020 - Full, dst: ACES - ACES2065-1}
-    from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: Output - Rec.2020 - Full}
 
   - !<ColorSpace>
     name: out_rec2020legal
@@ -2411,6 +2451,7 @@ colorspaces:
     isdata: false
     allocation: lg2
     allocationvars: [-8, 5, 0.00390625]
+    to_reference: !<ColorSpaceTransform> {src: Input - GoPro - Linear - Protune Native - Experimental, dst: ACES - ACES2065-1}
 
   - !<ColorSpace>
     name: vlog_vgamut

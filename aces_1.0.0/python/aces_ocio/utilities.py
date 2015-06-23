@@ -39,7 +39,7 @@ class ColorSpace(object):
                  aliases=[],
                  description=None,
                  bit_depth=ocio.Constants.BIT_DEPTH_F32,
-                 equality_group=None,
+                 equality_group='',
                  family=None,
                  is_data=False,
                  to_reference_transforms=[],
@@ -61,7 +61,7 @@ class ColorSpace(object):
         """
 
         self.name = name
-        self.aliases = []
+        self.aliases = aliases
         self.bit_depth = bit_depth
         self.description = description
         self.equality_group = equality_group

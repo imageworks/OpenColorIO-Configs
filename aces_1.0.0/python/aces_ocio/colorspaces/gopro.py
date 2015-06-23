@@ -99,7 +99,7 @@ def create_protune(gamut,
             'interpolation': 'linear',
             'direction': 'forward'})
 
-    if gamut == 'Protune Gamut':
+    if gamut == 'Protune Native':
         cs.to_reference_transforms.append({
             'type': 'matrix',
             'matrix': [0.533448429, 0.32413911, 0.142412421, 0,

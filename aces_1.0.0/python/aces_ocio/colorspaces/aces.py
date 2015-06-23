@@ -125,7 +125,7 @@ def create_ACEScc(aces_ctl_directory,
 
     cs = ColorSpace(name)
     cs.description = 'The %s color space' % name
-    cs.aliases = ["acescc_ap1"]
+    cs.aliases = ["acescc", "acescc_ap1"]
     cs.equality_group = ''
     cs.family = 'ACES'
     cs.is_data = False
@@ -191,7 +191,7 @@ def create_ACESproxy(aces_ctl_directory,
 
     cs = ColorSpace(name)
     cs.description = 'The %s color space' % name
-    cs.aliases = ["acesproxy_ap1"]
+    cs.aliases = ["acesproxy", "acesproxy_ap1"]
     cs.equality_group = ''
     cs.family = 'ACES'
     cs.is_data = False
@@ -264,7 +264,7 @@ def create_ACEScg(aces_ctl_directory,
 
     cs = ColorSpace(name)
     cs.description = 'The %s color space' % name
-    cs.aliases = ["lin_ap1"]
+    cs.aliases = ["acescg", "lin_ap1"]
     cs.equality_group = ''
     cs.family = 'ACES'
     cs.is_data = False

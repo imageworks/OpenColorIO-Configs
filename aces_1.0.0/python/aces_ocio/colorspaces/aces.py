@@ -1199,7 +1199,7 @@ def create_ODTs(aces_ctl_directory,
         colorspaces.append(cs)
 
         displays[odt_name_legal] = {
-            'Linear': linear_display_space,
+            'Raw': linear_display_space,
             'Log': log_display_space,
             'Output Transform': cs}
 
@@ -1228,7 +1228,7 @@ def create_ODTs(aces_ctl_directory,
             colorspaces.append(cs_full)
 
             displays[odt_name_full] = {
-                'Linear': linear_display_space,
+                'Raw': linear_display_space,
                 'Log': log_display_space,
                 'Output Transform': cs_full}
 

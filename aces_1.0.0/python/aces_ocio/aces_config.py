@@ -809,8 +809,8 @@ def create_config(config_data,
             linear_display_space_name = prefixed_names[linear_display_space_name]
             log_display_space_name = prefixed_names[log_display_space_name]
 
-        config.addDisplay(single_display_name, 'Linear', linear_display_space_name)
-        views.append('Linear')
+        config.addDisplay(single_display_name, 'Raw', linear_display_space_name)
+        views.append('Raw')
         config.addDisplay(single_display_name, 'Log', log_display_space_name)
         views.append('Log')
 

@@ -800,16 +800,16 @@ def create_config(config_data,
         # single_display_name = 'Utility'
         # displays.append(single_display_name)
 
-        linear_display_space_name = config_data['roles']['scene_linear']
+        raw_display_space_name = config_data['roles']['data']        
         log_display_space_name = config_data['roles']['compositing_log']
 
         # Find the newly-prefixed colorspace names
         if prefix:
             #print( prefixed_names )
-            linear_display_space_name = prefixed_names[linear_display_space_name]
+            raw_display_space_name = prefixed_names[raw_display_space_name]
             log_display_space_name = prefixed_names[log_display_space_name]
 
-        config.addDisplay(single_display_name, 'Raw', linear_display_space_name)
+        config.addDisplay(single_display_name, 'Raw', raw_display_space_name)
         views.append('Raw')
         config.addDisplay(single_display_name, 'Log', log_display_space_name)
         views.append('Log')

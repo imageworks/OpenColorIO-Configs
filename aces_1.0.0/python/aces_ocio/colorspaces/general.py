@@ -316,20 +316,10 @@ def create_colorspaces(lut_directory,
     #
     # XYZ
     #
-    cs = create_matrix_colorspace('XYZ',
+    cs = create_matrix_colorspace('XYZ-D60',
                                to_reference_values=[aces.ACES_XYZ_TO_AP0],
                                from_reference_values=[aces.ACES_AP0_TO_XYZ],
-                               aliases=["lin_xyz"])
-    colorspaces.append(cs)
-
-    #
-    # AP1
-    #
-    cs = create_matrix_colorspace(
-        'Linear - AP1',
-        to_reference_values=[aces.ACES_AP1_TO_AP0],
-        from_reference_values=[aces.ACES_AP0_TO_AP1],
-        aliases=["lin_ap1"])
+                               aliases=["lin_xyz_d60"])
     colorspaces.append(cs)
 
     #
@@ -434,19 +424,8 @@ def create_colorspaces(lut_directory,
     #
     # Rec 1886
     #
-    # *ACES* to *Linear*, *Rec. 709* primaries.
-    # Rec 1886 and Rec 709 use the same gamut
-    XYZ_to_Rec709 = [3.2409699419, -1.5373831776, -0.4986107603,
-                     -0.9692436363, 1.8759675015, 0.0415550574,
-                     0.0556300797, -0.2039769589, 1.0569715142]
 
-    cs = create_matrix_colorspace(
-        'Linear - Rec.1886',
-        from_reference_values=[aces.ACES_AP0_TO_XYZ, XYZ_to_Rec709],
-        aliases=["lin_rec1886"])
-    colorspaces.append(cs)
-
-    # *Linear* to *sRGB* Transfer Function*
+    # *Linear* to *Rec.2020* Transfer Function*
     cs = create_transfer_colorspace(
         'Curve - Rec.1886',
         'rec1886',
@@ -454,17 +433,6 @@ def create_colorspaces(lut_directory,
         lut_directory,
         lut_resolution_1d,
         aliases=["crv_rec1886"])
-    colorspaces.append(cs)
-
-    # *ACES* to *sRGB* Primaries + Transfer Function*
-    cs = create_matrix_plus_transfer_colorspace(
-        'Rec.1886',
-        'rec1886',
-        transfer_function_Rec1886_to_linear,
-        lut_directory,
-        lut_resolution_1d,
-        from_reference_values=[aces.ACES_AP0_TO_XYZ, XYZ_to_Rec709],
-        aliases=["rec1886"])
     colorspaces.append(cs)
 
     #

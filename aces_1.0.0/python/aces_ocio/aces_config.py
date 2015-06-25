@@ -319,10 +319,14 @@ def add_colorspace_alias(config,
 
         compact_family_name = 'Aliases'
 
+        description = colorspace.description
+        if colorspace.aces_transform_id:
+            description += "\n\nACES Transform ID : %s" % colorspace.aces_transform_id
+
         ocio_colorspace_alias = ocio.ColorSpace(
             name=alias_name,
             bitDepth=colorspace.bit_depth,
-            description=colorspace.description,
+            description=description,
             equalityGroup=colorspace.equality_group,
             family=compact_family_name,
             isData=colorspace.is_data,
@@ -642,10 +646,14 @@ def create_config(config_data,
 
         print('Creating new color space : %s' % colorspace.name)
 
+        description = colorspace.description
+        if colorspace.aces_transform_id:
+            description += "\n\nACES Transform ID : %s" % colorspace.aces_transform_id
+
         ocio_colorspace = ocio.ColorSpace(
             name=colorspace.name,
             bitDepth=colorspace.bit_depth,
-            description=colorspace.description,
+            description=description,
             equalityGroup=colorspace.equality_group,
             family=colorspace.family,
             isData=colorspace.is_data,

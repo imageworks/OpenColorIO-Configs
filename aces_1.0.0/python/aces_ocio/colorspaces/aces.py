@@ -131,6 +131,7 @@ def create_ACEScc(aces_ctl_directory,
     cs.is_data = False
     cs.allocation_type = ocio.Constants.ALLOCATION_UNIFORM
     cs.allocation_vars = [min_value, max_value]
+    cs.aces_transform_id = "ACEScsc.ACEScc_to_ACES.a1.0.0"
 
     ctls = [os.path.join(aces_ctl_directory,
                          'ACEScc',
@@ -195,6 +196,8 @@ def create_ACESproxy(aces_ctl_directory,
     cs.equality_group = ''
     cs.family = 'ACES'
     cs.is_data = False
+
+    cs.aces_transform_id = "ACEScsc.ACESproxy10i_to_ACES.a1.0.0"
 
     ctls = [os.path.join(aces_ctl_directory,
                          'ACESproxy',
@@ -271,6 +274,8 @@ def create_ACEScg(aces_ctl_directory,
     cs.allocation_type = ocio.Constants.ALLOCATION_LG2
     cs.allocation_vars = [-8, 5, 0.00390625]
 
+    cs.aces_transform_id = "ACEScsc.ACEScg_to_ACES.a1.0.0"
+
     cs.to_reference_transforms = []
 
     # *AP1* primaries to *AP0* primaries.
@@ -280,6 +285,13 @@ def create_ACEScg(aces_ctl_directory,
         'direction': 'forward'})
 
     cs.from_reference_transforms = []
+
+    # *AP1* primaries to *AP0* primaries.
+    cs.from_reference_transforms.append({
+        'type': 'matrix',
+        'matrix': mat44_from_mat33(ACES_AP0_TO_AP1),
+        'direction': 'forward'})
+
     return cs
 
 
@@ -313,6 +325,8 @@ def create_ADX(lut_directory,
     cs.is_data = False
 
     if bit_depth == 10:
+        cs.aces_transform_id = "ACEScsc.ADX10_to_ACES.a1.0.0"
+
         cs.bit_depth = ocio.Constants.BIT_DEPTH_UINT10
         ADX_to_CDD = [1023 / 500, 0, 0, 0,
                       0, 1023 / 500, 0, 0,
@@ -320,6 +334,8 @@ def create_ADX(lut_directory,
                       0, 0, 0, 1]
         offset = [-95 / 500, -95 / 500, -95 / 500, 0]
     elif bit_depth == 16:
+        cs.aces_transform_id = "ACEScsc.ADX16_to_ACES.a1.0.0"
+
         cs.bit_depth = ocio.Constants.BIT_DEPTH_UINT16
         ADX_to_CDD = [65535 / 8000, 0, 0, 0,
                       0, 65535 / 8000, 0, 0,
@@ -858,6 +874,8 @@ def create_ACES_RRT_plus_ODT(odt_name,
     cs.equality_group = ''
     cs.family = 'Output'
     cs.is_data = False
+
+    cs.aces_transform_id = odt_values['transformID']
 
     pprint.pprint(odt_values)
 

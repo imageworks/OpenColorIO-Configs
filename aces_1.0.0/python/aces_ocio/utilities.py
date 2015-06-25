@@ -45,7 +45,8 @@ class ColorSpace(object):
                  to_reference_transforms=[],
                  from_reference_transforms=[],
                  allocation_type=ocio.Constants.ALLOCATION_UNIFORM,
-                 allocation_vars=[0, 1]):
+                 allocation_vars=[0, 1],
+                 aces_transform_id=None):
         """
         Object description.
 
@@ -71,7 +72,7 @@ class ColorSpace(object):
         self.from_reference_transforms = from_reference_transforms
         self.allocation_type = allocation_type
         self.allocation_vars = allocation_vars
-
+        self.aces_transform_id = aces_transform_id
 
 def mat44_from_mat33(mat33):
     """

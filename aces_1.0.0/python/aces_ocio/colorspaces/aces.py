@@ -135,7 +135,13 @@ def create_ACEScc(aces_ctl_directory,
 
     ctls = [os.path.join(aces_ctl_directory,
                          'ACEScc',
-                         'ACEScsc.ACEScc_to_ACES.a1.0.0.ctl')]
+                         'ACEScsc.ACEScc_to_ACES.a1.0.0.ctl'),
+            # This transform gets back to the *AP1* primaries.
+            # Useful as the 1d LUT is only covering the transfer function.
+            # The primaries switch is covered by the matrix below:
+            os.path.join(aces_ctl_directory,
+                         'ACEScg',
+                         'ACEScsc.ACES_to_ACEScg.a1.0.0.ctl')]
     lut = '%s_to_linear.spi1d' % name
 
     lut = sanitize(lut)
@@ -147,7 +153,7 @@ def create_ACEScc(aces_ctl_directory,
         'float',
         input_scale,
         1,
-        {'transferFunctionOnly': 1},
+        {},
         cleanup,
         aces_ctl_directory,
         min_value,
@@ -216,8 +222,8 @@ def create_ACESproxy(aces_ctl_directory,
         os.path.join(lut_directory, lut),
         ctls,
         lut_resolution_1d,
-        'uint16',
-        64,
+        'float',
+        1,
         1,
         {},
         cleanup,
@@ -490,7 +496,7 @@ def create_generic_log(aces_ctl_directory,
     ctls = [os.path.join(
         aces_ctl_directory,
         'utilities',
-        'ACESlib.OCIO_shaper_log2_to_lin_param.a1.0.0.ctl')]
+        'ACESlib.Log2_to_Lin_param.a1.0.0.ctl')]
     lut = '%s_to_linear.spi1d' % name
 
     lut = sanitize(lut)
@@ -544,7 +550,7 @@ def create_dolbypq(aces_CTL_directory,
     ctls = [os.path.join(
         aces_CTL_directory,
         'utilities',
-        'ACESlib.OCIO_shaper_dolbypq_to_lin.a1.0.0.ctl')]
+        'ACESlib.DolbyPQ_to_Lin.a1.0.0.ctl')]
     lut = '%s_to_linear.spi1d' % name
 
     lut = sanitize(lut)
@@ -598,7 +604,7 @@ def create_dolbypq_scaled(aces_CTL_directory,
     ctls = [os.path.join(
         aces_CTL_directory,
         'utilities',
-        'ACESlib.OCIO_shaper_dolbypq_to_lin_param.a1.0.0.ctl')]
+        'ACESlib.DolbyPQ_to_lin_param.a1.0.0.ctl')]
     lut = '%s_to_linear.spi1d' % name
 
     lut = sanitize(lut)
@@ -811,10 +817,10 @@ def create_LMTs(aces_ctl_directory,
         lmt_shaper_name,
         os.path.join('%s',
                      'utilities',
-                     'ACESlib.OCIO_shaper_log2_to_lin_param.a1.0.0.ctl'),
+                     'ACESlib.Log2_to_Lin_param.a1.0.0.ctl'),
         os.path.join('%s',
                      'utilities',
-                     'ACESlib.OCIO_shaper_lin_to_log2_param.a1.0.0.ctl'),
+                     'ACESlib.Lin_to_Log2_param.a1.0.0.ctl'),
         shaper_input_scale_generic_log2,
         lmt_params]
 
@@ -1064,10 +1070,10 @@ def create_ODTs(aces_ctl_directory,
         log2_shaper_name,
         os.path.join('%s',
                      'utilities',
-                     'ACESlib.OCIO_shaper_log2_to_lin_param.a1.0.0.ctl'),
+                     'ACESlib.Log2_to_Lin_param.a1.0.0.ctl'),
         os.path.join('%s',
                      'utilities',
-                     'ACESlib.OCIO_shaper_lin_to_log2_param.a1.0.0.ctl'),
+                     'ACESlib.Lin_to_Log2_param.a1.0.0.ctl'),
         shaper_input_scale_generic_log2,
         log2_params]
 
@@ -1143,10 +1149,10 @@ def create_ODTs(aces_ctl_directory,
         dolbypq_shaper_name,
         os.path.join('%s',
                      'utilities',
-                     'ACESlib.OCIO_shaper_dolbypq_to_lin.a1.0.0.ctl'),
+                     'ACESlib.DolbyPQ_to_Lin.a1.0.0.ctl'),
         os.path.join('%s',
                      'utilities',
-                     'ACESlib.OCIO_shaper_lin_to_dolbypq.a1.0.0.ctl'),
+                     'ACESlib.Lin_to_DolbyPQ.a1.0.0.ctl'),
         1.0,
         {}]
 
@@ -1171,10 +1177,10 @@ def create_ODTs(aces_ctl_directory,
         dolbypq_scaled_shaper_name,
         os.path.join('%s',
                      'utilities',
-                     'ACESlib.OCIO_shaper_dolbypq_to_lin_param.a1.0.0.ctl'),
+                     'ACESlib.DolbyPQ_to_Lin_param.a1.0.0.ctl'),
         os.path.join('%s',
                      'utilities',
-                     'ACESlib.OCIO_shaper_lin_to_dolbypq_param.a1.0.0.ctl'),
+                     'ACESlib.Lin_to_DolbyPQ_param.a1.0.0.ctl'),
         1.0,
         log2_params]
 

@@ -1198,15 +1198,20 @@ def create_ODTs(aces_ctl_directory,
     for odt in sorted_odts:
         (odt_name, odt_values) = odt
 
-        # Generating legal range transform for *ODTs* that can generate 
+        # Generating only full range transform for *ODTs* that can generate 
         # either *legal* or *full* output.
+
+        # Uncomment these lines and the lower section and flip the 'legalRange' value to 1
+        # to recover the old behavior, where both legal and full range LUTs were generated
         if odt_values['transformHasFullLegalSwitch']:
-            odt_name_legal = '%s - Legal' % odt_values['transformUserName']
-        else:
-            odt_name_legal = odt_values['transformUserName']
+            #odt_name_legal = '%s - Legal' % odt_values['transformUserName']
+            odt_legal['legalRange'] = 0
+        #else:
+        #    odt_name_legal = odt_values['transformUserName']
+ 
+        odt_name_legal = odt_values['transformUserName']
 
         odt_legal = odt_values.copy()
-        odt_legal['legalRange'] = 1
 
         odt_aliases = ["out_%s" % compact(odt_name_legal)]
 
@@ -1227,7 +1232,7 @@ def create_ODTs(aces_ctl_directory,
             'Log': log_display_space,
             'Output Transform': cs}
 
-
+        '''
         # Generating full range transform for *ODTs* that can generate 
         # either *legal* or *full* output.
         if odt_values['transformHasFullLegalSwitch']:
@@ -1255,6 +1260,7 @@ def create_ODTs(aces_ctl_directory,
                 'Raw': linear_display_space,
                 'Log': log_display_space,
                 'Output Transform': cs_full}
+        '''
 
     return (colorspaces, displays)
 

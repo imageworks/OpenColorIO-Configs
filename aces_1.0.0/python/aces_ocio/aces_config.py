@@ -290,10 +290,11 @@ def generate_OCIO_transform(transforms):
     return transform
 
 
-def add_colorspace_alias(config,
-                         reference_colorspace,
-                         colorspace,
-                         colorspace_alias_names):
+def add_colorspace_aliases(config,
+                           reference_colorspace,
+                           colorspace,
+                           colorspace_alias_names,
+                           family='Aliases'):
     """
     Object description.
 
@@ -312,12 +313,12 @@ def add_colorspace_alias(config,
         if alias_name.lower() == colorspace.name.lower():
             print('Skipping alias creation for %s, alias %s, because lower cased names match' % (
                 colorspace.name, alias_name) )
-            return
+            continue
 
         print('Adding alias colorspace space %s, alias to %s' % (
             alias_name, colorspace.name))
 
-        compact_family_name = 'Aliases'
+        compact_family_name = family
 
         description = colorspace.description
         if colorspace.aces_transform_id:
@@ -692,13 +693,90 @@ def create_config(config_data,
 
     print("")
 
+    #
+    # We add roles early so we can create alias colorspaces with the names of the roles
+    # before the rest of the colorspace aliases are added to the config.
+    #
+    print('Setting the roles')
+
+    if prefix:
+        set_config_default_roles(
+            config,
+            color_picking=prefixed_names[config_data['roles']['color_picking']],
+            color_timing=prefixed_names[config_data['roles']['color_timing']],
+            compositing_log=prefixed_names[config_data['roles']['compositing_log']],
+            data=prefixed_names[config_data['roles']['data']],
+            default=prefixed_names[config_data['roles']['default']],
+            matte_paint=prefixed_names[config_data['roles']['matte_paint']],
+            reference=prefixed_names[config_data['roles']['reference']],
+            scene_linear=prefixed_names[config_data['roles']['scene_linear']],
+            texture_paint=prefixed_names[config_data['roles']['texture_paint']])
+ 
+        # Not allowed for the moment. role names can not overlap with colorspace names.
+        '''
+        # Add the aliased colorspaces for each role
+        for role_name, role_colorspace_name in config_data['roles'].iteritems():
+            role_colorspace_prefixed_name = prefixed_names[role_colorspace_name]
+
+            print( "Finding colorspace : %s" % role_colorspace_prefixed_name )
+            # Find the colorspace pointed to by the role
+            role_colorspaces = [colorspace for colorspace in config_data['colorSpaces'] if colorspace.name == role_colorspace_prefixed_name]
+            role_colorspace = None
+            if len(role_colorspaces) > 0:
+                role_colorspace = role_colorspaces[0]
+            else:
+                if reference_data.name == role_colorspace_prefixed_name:
+                    role_colorspace = reference_data
+
+            if role_colorspace:
+                print( "Adding an alias colorspace named %s, pointing to %s" % (
+                    role_name, role_colorspace.name))
+
+                add_colorspace_aliases(config, reference_data, role_colorspace, [role_name], 'Roles')
+        '''
+
+    else:
+        set_config_default_roles(
+            config,
+            color_picking=config_data['roles']['color_picking'],
+            color_timing=config_data['roles']['color_timing'],
+            compositing_log=config_data['roles']['compositing_log'],
+            data=config_data['roles']['data'],
+            default=config_data['roles']['default'],
+            matte_paint=config_data['roles']['matte_paint'],
+            reference=config_data['roles']['reference'],
+            scene_linear=config_data['roles']['scene_linear'],
+            texture_paint=config_data['roles']['texture_paint'])
+
+        # Not allowed for the moment. role names can not overlap with colorspace names.
+        '''
+        # Add the aliased colorspaces for each role
+        for role_name, role_colorspace_name in config_data['roles'].iteritems():
+            # Find the colorspace pointed to by the role
+            role_colorspaces = [colorspace for colorspace in config_data['colorSpaces'] if colorspace.name == role_colorspace_name]
+            role_colorspace = None
+            if len(role_colorspaces) > 0:
+                role_colorspace = role_colorspaces[0]
+            else:
+                if reference_data.name == role_colorspace_name:
+                    role_colorspace = reference_data
+
+            if role_colorspace:
+                print( "Adding an alias colorspace named %s, pointing to %s" % (
+                    role_name, role_colorspace.name))
+
+                add_colorspace_aliases(config, reference_data, role_colorspace, [role_name], 'Roles')
+        '''
+
+    print("")
+
     # We add these at the end as some applications use the order of the colorspaces
     # definitions in the config to order the colorspaces in their selection lists.
     # Other go alphabetically. This should keep the alias colorspaces out of the way
     # for the apps that use the order of definition in the config.
     print('Adding the alias colorspaces')
     for reference, colorspace, aliases in alias_colorspaces:
-        add_colorspace_alias(config, reference, colorspace, aliases)
+        add_colorspace_aliases(config, reference, colorspace, aliases)
 
     print("")
 
@@ -733,10 +811,10 @@ def create_config(config_data,
                     views.append(view_name)
             displays.append(display)
 
+    # Defining the set of *views* and *displays* useful in a *GUI* context.
     else:
-        # Defining the set of *views* and *displays* useful in a *GUI* context.
-        #display_name = 'ACES'
-        single_display_name = config_data['roles']['scene_linear']
+        single_display_name = 'ACES'
+        #single_display_name = config_data['roles']['scene_linear']
         displays.append(single_display_name)
 
         display_names = sorted(config_data['displays'])
@@ -828,35 +906,6 @@ def create_config(config_data,
 
     print("")
 
-    print('Setting the roles')
-
-    if prefix:
-        set_config_default_roles(
-            config,
-            color_picking=prefixed_names[config_data['roles']['color_picking']],
-            color_timing=prefixed_names[config_data['roles']['color_timing']],
-            compositing_log=prefixed_names[config_data['roles']['compositing_log']],
-            data=prefixed_names[config_data['roles']['data']],
-            default=prefixed_names[config_data['roles']['default']],
-            matte_paint=prefixed_names[config_data['roles']['matte_paint']],
-            reference=prefixed_names[config_data['roles']['reference']],
-            scene_linear=prefixed_names[config_data['roles']['scene_linear']],
-            texture_paint=prefixed_names[config_data['roles']['texture_paint']])
-    else:
-        set_config_default_roles(
-            config,
-            color_picking=config_data['roles']['color_picking'],
-            color_timing=config_data['roles']['color_timing'],
-            compositing_log=config_data['roles']['compositing_log'],
-            data=config_data['roles']['data'],
-            default=config_data['roles']['default'],
-            matte_paint=config_data['roles']['matte_paint'],
-            reference=config_data['roles']['reference'],
-            scene_linear=config_data['roles']['scene_linear'],
-            texture_paint=config_data['roles']['texture_paint'])
-
-    print("")
-
     # Make sure we didn't create a bad config
     config.sanityCheck()
 
@@ -867,12 +916,24 @@ def create_config(config_data,
         for original, prefixed in prefixed_names.iteritems():
             prefixed_names_inverse[prefixed] = original
 
-        # Reet the reference colorspace name
+        # Reset the reference colorspace name
         reference_data.name = prefixed_names_inverse[reference_data.name]
 
         # Reset the rest of the colorspace names
-        for colorspace in config_data['colorSpaces']:
-            colorspace.name = prefixed_names_inverse[colorspace.name]
+        try:
+            for colorspace in config_data['colorSpaces']:
+                colorspace.name = prefixed_names_inverse[colorspace.name]
+        except:
+            print( "Prefixed names")
+            for original, prefixed in prefixed_names.iteritems():
+                print( "%s, %s" % (original, prefixed) )
+
+            print( "\n")
+
+            print( "Inverse Lookup")
+            for prefixed, original in prefixed_names_inverse.iteritems():
+                print( "%s, %s" % (prefixed, original) )
+            raise
 
     return config
 
@@ -1023,8 +1084,12 @@ def generate_baked_LUTs(odt_info,
          Return value description.
     """
 
-    # Create two entries for ODTs that have full and legal range support
     odt_info_C = dict(odt_info)
+
+    # Uncomment if you would like to support the older behavior where ODTs
+    # that have support for full and legal range output generate a LUT for each.
+    '''
+    # Create two entries for ODTs that have full and legal range support
     for odt_ctl_name, odt_values in odt_info.iteritems():
         if odt_values['transformHasFullLegalSwitch']:
             odt_name = odt_values['transformUserName']
@@ -1038,6 +1103,7 @@ def generate_baked_LUTs(odt_info,
             odt_info_C['%s - Full' % odt_ctl_name] = odt_values_full
 
             del (odt_info_C[odt_ctl_name])
+    '''
 
     # Generate appropriate LUTs for each ODT
     for odt_ctl_name, odt_values in odt_info_C.iteritems():

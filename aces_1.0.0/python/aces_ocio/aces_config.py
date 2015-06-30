@@ -782,10 +782,18 @@ def create_config(config_data,
 
     print('Adding the diplays and views')
 
+    # Set the color_picking role to be the first Display's Output Transform View
+    default_display_name = config_data['defaultDisplay']
+    default_display_views = config_data['displays'][default_display_name]
+    default_display_colorspace = default_display_views['Output Transform']
+
+    set_config_default_roles(
+        config,
+        color_picking=default_display_colorspace.name)
+
     # Defining the *views* and *displays*.
     displays = []
     views = []
-
 
     # Defining a *generic* *display* and *view* setup.
     if multiple_displays:
@@ -793,6 +801,9 @@ def create_config(config_data,
         looks = config_data['looks'] if ('looks' in config_data) else []
         looks = ", ".join(looks)
         print( "Creating multiple displays, with looks : %s" % looks)
+
+        # Note: We don't reorder the Displays to put the 'defaultDisplay' first
+        # because OCIO will order them alphabetically when the config is written to disk.
 
         # Create Displays, Views
         for display, view_list in config_data['displays'].iteritems():
@@ -817,11 +828,9 @@ def create_config(config_data,
         #single_display_name = config_data['roles']['scene_linear']
         displays.append(single_display_name)
 
-        display_names = sorted(config_data['displays'])
-
         # Make sure the default display is first
-        default_display = config_data['defaultDisplay']
-        display_names.insert(0, display_names.pop(display_names.index(default_display)))
+        display_names = sorted(config_data['displays'])
+        display_names.insert(0, display_names.pop(display_names.index(default_display_name)))
 
         # Built list of looks to add to Displays
         looks = config_data['looks'] if ('looks' in config_data) else []
@@ -834,14 +843,14 @@ def create_config(config_data,
             view_list = config_data['displays'][display]
             for view_name, colorspace in view_list.iteritems():
                 if 'Output Transform' in view_name:
-                    #print( "Adding view for %s" % view_name )
-
-                    # Maya 2016 doesn't like parentheses in View names
-                    display_cleaned = replace(display, {')': '', '(': ''})
+                    #print( "Adding view for %s" % colorspace.name )
 
                     # We use the Display names as the View names in this case
                     # as there is a single Display that contains all views.
                     # This works for more applications than not, as of the time of this implementation.
+
+                    # Maya 2016 doesn't like parentheses in View names
+                    display_cleaned = replace(display, {')': '', '(': ''})
 
                     # If View includes looks
                     if 'with' in view_name:
@@ -871,6 +880,7 @@ def create_config(config_data,
                             views.append(display_cleaned)
 
         # Add to config any display, view combinations that were saved for later
+        # This list will be empty unless viewsWithLooksAtEnd is set to True above 
         for display_view_colorspace in displays_views_colorspaces:
             single_display_name, display_cleaned, colorspace_name = display_view_colorspace
 
@@ -930,7 +940,7 @@ def create_config(config_data,
 
             print( "\n")
 
-            print( "Inverse Lookup")
+            print( "Inverse Lookup of Prefixed names")
             for prefixed, original in prefixed_names_inverse.iteritems():
                 print( "%s, %s" % (prefixed, original) )
             raise

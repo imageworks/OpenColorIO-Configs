@@ -64,6 +64,9 @@ def create_log_c(gamut,
     cs.family = 'Input/ARRI'
     cs.is_data = False
 
+    if gamut and transfer_function:
+        cs.aces_transform_id = "IDT.ARRI.Alexa-v3-logC-EI%s.a1.v1" % exposure_index
+
     # A linear space needs allocation variables
     if transfer_function == '':
         cs.allocation_type = ocio.Constants.ALLOCATION_LG2

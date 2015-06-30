@@ -672,6 +672,7 @@ def create_ACES_LMT(lmt_name,
     cs.is_data = False
     cs.allocation_type = ocio.Constants.ALLOCATION_LG2
     cs.allocation_vars = [-8, 5, 0.00390625]
+    cs.aces_transform_id = lmt_values['transformID']
 
     pprint.pprint(lmt_values)
 

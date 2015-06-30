@@ -61,6 +61,10 @@ def create_s_log(gamut,
     cs.family = 'Input/Sony'
     cs.is_data = False
 
+    if gamut and transfer_function:
+        cs.aces_transform_id = "IDT.Sony.%s_%s_10i.a1.v1" % (
+            transfer_function.replace('-', ''), gamut.replace('-', '').replace(' ', '_'))
+
     # A linear space needs allocation variables
     if transfer_function == '':
         cs.allocation_type = ocio.Constants.ALLOCATION_LG2

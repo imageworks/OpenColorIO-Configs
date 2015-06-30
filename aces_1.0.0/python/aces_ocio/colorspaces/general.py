@@ -351,41 +351,6 @@ def create_colorspaces(lut_directory,
     colorspaces.append(cs)
 
     #
-    # Rec 709
-    #
-    # *ACES* to *Linear*, *Rec. 709* primaries.
-    XYZ_to_Rec709 = [3.2409699419, -1.5373831776, -0.4986107603,
-                     -0.9692436363, 1.8759675015, 0.0415550574,
-                     0.0556300797, -0.2039769589, 1.0569715142]
-
-    cs = create_matrix_colorspace(
-        'Linear - Rec.709',
-        from_reference_values=[aces.ACES_AP0_TO_XYZ, XYZ_to_Rec709],
-        aliases=["lin_rec709"])
-    colorspaces.append(cs)
-
-    # *Linear* to *Rec. 709* Transfer Function*
-    cs = create_transfer_colorspace(
-        'Curve - Rec.709',
-        'rec709',
-        transfer_function_Rec709_to_linear,
-        lut_directory,
-        lut_resolution_1d,
-        aliases=["crv_rec709"])
-    colorspaces.append(cs)
-
-    # *ACES* to *Rec. 709* Primaries + Transfer Function*
-    cs = create_matrix_plus_transfer_colorspace(
-        'Rec.709',
-        'rec709',
-        transfer_function_Rec709_to_linear,
-        lut_directory,
-        lut_resolution_1d,
-        from_reference_values=[aces.ACES_AP0_TO_XYZ, XYZ_to_Rec709],
-        aliases=["rec709"])
-    colorspaces.append(cs)
-
-    #
     # sRGB
     #
     # *ACES* to *Linear*, *Rec. 709* primaries.
@@ -422,17 +387,38 @@ def create_colorspaces(lut_directory,
     colorspaces.append(cs)
 
     #
-    # Rec 1886
+    # Rec 709
     #
+    # *ACES* to *Linear*, *Rec. 709* primaries.
+    XYZ_to_Rec709 = [3.2409699419, -1.5373831776, -0.4986107603,
+                     -0.9692436363, 1.8759675015, 0.0415550574,
+                     0.0556300797, -0.2039769589, 1.0569715142]
 
-    # *Linear* to *Rec.2020* Transfer Function*
+    cs = create_matrix_colorspace(
+        'Linear - Rec.709',
+        from_reference_values=[aces.ACES_AP0_TO_XYZ, XYZ_to_Rec709],
+        aliases=["lin_rec709"])
+    colorspaces.append(cs)
+
+    # *Linear* to *Rec. 709* Transfer Function*
     cs = create_transfer_colorspace(
-        'Curve - Rec.1886',
-        'rec1886',
-        transfer_function_Rec1886_to_linear,
+        'Curve - Rec.709',
+        'rec709',
+        transfer_function_Rec709_to_linear,
         lut_directory,
         lut_resolution_1d,
-        aliases=["crv_rec1886"])
+        aliases=["crv_rec709"])
+    colorspaces.append(cs)
+
+    # *ACES* to *Rec. 709* Primaries + Transfer Function*
+    cs = create_matrix_plus_transfer_colorspace(
+        'Rec.709 - Camera',
+        'rec709',
+        transfer_function_Rec709_to_linear,
+        lut_directory,
+        lut_resolution_1d,
+        from_reference_values=[aces.ACES_AP0_TO_XYZ, XYZ_to_Rec709],
+        aliases=["rec709_camera"])
     colorspaces.append(cs)
 
     #
@@ -461,13 +447,49 @@ def create_colorspaces(lut_directory,
 
     # *ACES* to *Rec. 2020 10 bit* Primaries + Transfer Function*
     cs = create_matrix_plus_transfer_colorspace(
-        'Rec.2020',
+        'Rec.2020 - Camera',
         'rec2020',
         transfer_function_Rec2020_10bit_to_linear,
         lut_directory,
         lut_resolution_1d,
         from_reference_values=[aces.ACES_AP0_TO_XYZ, XYZ_to_Rec2020],
-        aliases=["rec2020"])
+        aliases=["rec2020_camera"])
+    colorspaces.append(cs)
+
+    #
+    # Rec 1886
+    #
+
+    # *Linear* to *Rec.1886* Transfer Function*
+    cs = create_transfer_colorspace(
+        'Curve - Rec.1886',
+        'rec1886',
+        transfer_function_Rec1886_to_linear,
+        lut_directory,
+        lut_resolution_1d,
+        aliases=["crv_rec1886"])
+    colorspaces.append(cs)
+
+    # *ACES* to *sRGB* Primaries + Transfer Function*
+    cs = create_matrix_plus_transfer_colorspace(
+        'Rec.709 - Display',
+        'rec1886',
+        transfer_function_Rec1886_to_linear,
+        lut_directory,
+        lut_resolution_1d,
+        from_reference_values=[aces.ACES_AP0_TO_XYZ, XYZ_to_Rec709],
+        aliases=["rec709_display"])
+    colorspaces.append(cs)
+
+    # *ACES* to *sRGB* Primaries + Transfer Function*
+    cs = create_matrix_plus_transfer_colorspace(
+        'Rec.2020 - Display',
+        'rec1886',
+        transfer_function_Rec1886_to_linear,
+        lut_directory,
+        lut_resolution_1d,
+        from_reference_values=[aces.ACES_AP0_TO_XYZ, XYZ_to_Rec2020],
+        aliases=["rec2020_display"])
     colorspaces.append(cs)
 
     #

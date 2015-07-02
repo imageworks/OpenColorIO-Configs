@@ -543,7 +543,7 @@ def create_raw():
     name = "Raw"
     raw = ColorSpace(name)
     raw.description = 'The %s color space' % name
-    raw.aliases = []
+    raw.aliases = ["raw"]
     raw.equality_group = name
     raw.family = 'Utility'
     raw.is_data = True

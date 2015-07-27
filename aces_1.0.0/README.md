@@ -233,8 +233,30 @@ The *Python* configuration generation package depends on the following
 libraries:
 
 - **OpenImageIO**: http://openimageio.org
-- **OpenColorIO**: http://opencolorio.org/
+	- Detailed build instructions can be found here: [OpenImageIO Build Instructions](https://sites.google.com/site/openimageio/checking-out-and-building-openimageio)
+- **OpenColorIO**: http://opencolorio.org
+	- Detailed build instructions can be found here: [OpenColorIO Build Instructions](http://opencolorio.org/installation.html)
+- **CTL**: https://github.com/ampas/CTL
 
+
+Building on Mac OSX
+- 
+Use the following commands to build these packages on Mac OSX
+
+- OpenColorIO
+	- brew install -vd opencolorio --with-python
+- Update the homebrew repository of install scripts to make sure that OpenImageIO is included.
+	- brew tap homebrew/science
+- Optional Dependencies for OpenImageIO
+	- brew install -vd libRaw
+	- brew install -vd OpenCV
+- OpenImageIO
+	- brew install -vd openimageio --with-python
+- CTL
+	- brew install -vd CTL
+- OpenColorIO, a second time. *ociolutimage* will build with *openimageio* installed.
+	- brew uninstall -vd opencolorio
+	- brew install -vd opencolorio --with-python
 
 Thanks
 ------

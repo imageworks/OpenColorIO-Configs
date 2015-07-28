@@ -63,7 +63,8 @@ def create_s_log(gamut,
 
     if gamut and transfer_function:
         cs.aces_transform_id = "IDT.Sony.%s_%s_10i.a1.v1" % (
-            transfer_function.replace('-', ''), gamut.replace('-', '').replace(' ', '_'))
+            transfer_function.replace('-', ''),
+            gamut.replace('-', '').replace(' ', '_'))
 
     # A linear space needs allocation variables
     if transfer_function == '':

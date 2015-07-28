@@ -16,7 +16,6 @@ import PyOpenColorIO as ocio
 import aces_ocio.generate_lut as genlut
 from aces_ocio.utilities import ColorSpace, mat44_from_mat33, sanitize
 
-
 __author__ = 'ACES Developers'
 __copyright__ = 'Copyright (C) 2014 - 2015 - ACES Developers'
 __license__ = ''

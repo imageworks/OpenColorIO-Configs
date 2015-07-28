@@ -16,7 +16,6 @@ import aces_ocio.generate_lut as genlut
 from aces_ocio.colorspaces import aces
 from aces_ocio.utilities import ColorSpace, mat44_from_mat33
 
-
 __author__ = 'ACES Developers'
 __copyright__ = 'Copyright (C) 2014 - 2015 - ACES Developers'
 __license__ = ''
@@ -26,6 +25,7 @@ __status__ = 'Production'
 
 __all__ = ['create_matrix_colorspace',
            'create_colorspaces']
+
 
 # -------------------------------------------------------------------------
 # *Matrix Transform*
@@ -82,6 +82,7 @@ def create_matrix_colorspace(name='matrix',
                 'direction': 'forward'})
 
     return cs
+
 
 # -------------------------------------------------------------------------
 # *Transfer Function Transform*
@@ -144,6 +145,8 @@ def create_transfer_colorspace(name='transfer',
     cs.from_reference_transforms = []
 
     return cs
+
+
 # create_transfer_colorspace
 
 # -------------------------------------------------------------------------
@@ -234,6 +237,8 @@ def create_matrix_plus_transfer_colorspace(name='matrix_plus_transfer',
             'direction': 'inverse'})
 
     return cs
+
+
 # create_matrix_plus_transfer_colorspace
 
 # Transfer functions for standard color spaces
@@ -244,41 +249,45 @@ def transfer_function_sRGB_to_linear(v):
     g = 2.4
 
     if v < b:
-        return v/d
+        return v / d
     return pow(((v + (a - 1)) / a), g)
+
 
 def transfer_function_Rec709_to_linear(v):
     a = 1.099
     b = 0.018
     d = 4.5
-    g = (1.0/0.45)
+    g = (1.0 / 0.45)
 
-    if v < b*d:
-        return v/d
+    if v < b * d:
+        return v / d
 
     return pow(((v + (a - 1)) / a), g)
+
 
 def transfer_function_Rec2020_10bit_to_linear(v):
     a = 1.099
     b = 0.018
     d = 4.5
-    g = (1.0/0.45)
+    g = (1.0 / 0.45)
 
-    if v < b*d:
-        return v/d
+    if v < b * d:
+        return v / d
 
     return pow(((v + (a - 1)) / a), g)
+
 
 def transfer_function_Rec2020_12bit_to_linear(v):
     a = 1.0993
     b = 0.0181
     d = 4.5
-    g = (1.0/0.45)
+    g = (1.0 / 0.45)
 
-    if v < b*d:
-        return v/d
+    if v < b * d:
+        return v / d
 
     return pow(((v + (a - 1)) / a), g)
+
 
 def transfer_function_Rec1886_to_linear(v):
     g = 2.4
@@ -286,13 +295,14 @@ def transfer_function_Rec1886_to_linear(v):
     Lb = 0
 
     # Ignoring legal to full scaling for now
-    #v = (1023.0*v - 64.0)/876.0
+    # v = (1023.0*v - 64.0)/876.0
 
-    t = pow(Lw, 1.0/g) - pow(Lb, 1.0/g)
+    t = pow(Lw, 1.0 / g) - pow(Lb, 1.0 / g)
     a = pow(t, g)
-    b = pow(Lb, 1.0/g)/t
+    b = pow(Lb, 1.0 / g) / t
 
-    return a*pow(max((v + b), 0.0), g)
+    return a * pow(max((v + b), 0.0), g)
+
 
 def create_colorspaces(lut_directory,
                        lut_resolution_1d,
@@ -317,9 +327,9 @@ def create_colorspaces(lut_directory,
     # XYZ
     #
     cs = create_matrix_colorspace('XYZ-D60',
-                               to_reference_values=[aces.ACES_XYZ_TO_AP0],
-                               from_reference_values=[aces.ACES_AP0_TO_XYZ],
-                               aliases=["lin_xyz_d60"])
+                                  to_reference_values=[aces.ACES_XYZ_TO_AP0],
+                                  from_reference_values=[aces.ACES_AP0_TO_XYZ],
+                                  aliases=["lin_xyz_d60"])
     colorspaces.append(cs)
 
     #
@@ -549,5 +559,3 @@ def create_raw():
     raw.is_data = True
 
     return raw
-
-

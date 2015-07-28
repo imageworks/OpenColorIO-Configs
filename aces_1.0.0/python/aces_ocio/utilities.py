@@ -7,6 +7,7 @@ Defines various package utilities objects.
 
 from __future__ import division
 
+import itertools
 import os
 import re
 from collections import OrderedDict
@@ -26,7 +27,9 @@ __all__ = ['ColorSpace',
            'files_walker',
            'replace',
            'sanitize',
-           'compact']
+           'compact',
+           'colorspace_prefixed_name',
+           'unpack_default']
 
 
 class ColorSpace(object):
@@ -73,6 +76,7 @@ class ColorSpace(object):
         self.allocation_type = allocation_type
         self.allocation_vars = allocation_vars
         self.aces_transform_id = aces_transform_id
+
 
 def mat44_from_mat33(mat33):
     """
@@ -233,3 +237,46 @@ def compact(string):
                                 ('___', '_'),
                                 ('__', '_'),
                                 ('_', ''))))
+
+
+def colorspace_prefixed_name(colorspace):
+    """
+    Returns given *OCIO* colorspace prefixed name with its family name.
+
+    Parameters
+    ----------
+    colorspace : Colorspace
+        Colorspace to prefix.
+
+    Returns
+    -------
+    str or unicode
+         Family prefixed *OCIO* colorspace name.
+    """
+    prefix = colorspace.family.replace('/', ' - ')
+
+    return '%s - %s' % (prefix, colorspace.name)
+
+
+def unpack_default(iterable, length=3, default=None):
+    """
+    Unpacks given iterable maintaining given length and filling missing
+    entries with given default.
+
+    Parameters
+    ----------
+    iterable : object
+        Iterable.
+    length : int
+        Iterable length.
+    default : object
+        Filling default object.
+
+    Returns
+    -------
+    iterable
+    """
+
+    return itertools.islice(itertools.chain(iter(iterable),
+                                            itertools.repeat(default)),
+                            length)

@@ -26,7 +26,6 @@ from aces_ocio.utilities import (
     sanitize,
     compact)
 
-
 __author__ = 'ACES Developers'
 __copyright__ = 'Copyright (C) 2014 - 2015 - ACES Developers'
 __license__ = ''
@@ -1084,7 +1083,8 @@ def create_ODTs(aces_ctl_directory,
     log2_shaper_copy_name = "Log2 Shaper"
     log2_shaper_copy_colorspace = ColorSpace(log2_shaper_copy_name)
     log2_shaper_copy_colorspace.description = 'The %s color space' % log2_shaper_copy_name
-    log2_shaper_copy_colorspace.aliases = ["crv_%s" % compact(log2_shaper_copy_name)]
+    log2_shaper_copy_colorspace.aliases = [
+        "crv_%s" % compact(log2_shaper_copy_name)]
     log2_shaper_copy_colorspace.equality_group = log2_shaper_copy_name
     log2_shaper_copy_colorspace.family = log2_shaper_colorspace.family
     log2_shaper_copy_colorspace.is_data = log2_shaper_colorspace.is_data
@@ -1205,11 +1205,11 @@ def create_ODTs(aces_ctl_directory,
         # Uncomment these lines and the lower section and flip the 'legalRange' value to 1
         # to recover the old behavior, where both legal and full range LUTs were generated
         if odt_values['transformHasFullLegalSwitch']:
-            #odt_name_legal = '%s - Legal' % odt_values['transformUserName']
+            # odt_name_legal = '%s - Legal' % odt_values['transformUserName']
             odt_legal['legalRange'] = 0
-        #else:
+        # else:
         #    odt_name_legal = odt_values['transformUserName']
- 
+
         odt_name_legal = odt_values['transformUserName']
 
         odt_legal = odt_values.copy()

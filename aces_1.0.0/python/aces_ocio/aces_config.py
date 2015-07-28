@@ -23,7 +23,12 @@ from aces_ocio.colorspaces import red
 from aces_ocio.colorspaces import sony
 from aces_ocio.process import Process
 
-from aces_ocio.utilities import replace, ColorSpace, compact
+from aces_ocio.utilities import (
+    ColorSpace,
+    colorspace_prefixed_name,
+    compact,
+    replace,
+    unpack_default)
 
 __author__ = 'ACES Developers'
 __copyright__ = 'Copyright (C) 2014 - 2015 - ACES Developers'
@@ -360,11 +365,6 @@ def add_colorspace_aliases(config,
         config.addColorSpace(ocio_colorspace_alias)
 
 
-def colorspace_prefixed_name(colorspace):
-    prefix = colorspace.family.replace("/", " - ")
-    return "%s - %s" % (prefix, colorspace.name)
-
-
 def add_look(config,
              look,
              prefix,
@@ -386,12 +386,7 @@ def add_look(config,
          Return value description.
     """
 
-    look_name = look[0]
-    look_colorspace = look[1]
-    look_lut = look[2]
-    look_cccid = None
-    if len(look) == 4:
-        look_cccid = look[3]
+    look_name, look_colorspace, look_lut, look_cccid = unpack_default(look, 4)
 
     print('Adding look %s - %s' % (look_name, ", ".join(look)))
 

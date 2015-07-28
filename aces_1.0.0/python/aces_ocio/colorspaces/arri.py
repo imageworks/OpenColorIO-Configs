@@ -64,7 +64,7 @@ def create_log_c(gamut,
     cs.is_data = False
 
     if gamut and transfer_function:
-        cs.aces_transform_id = "IDT.ARRI.Alexa-v3-logC-EI%s.a1.v1" % exposure_index
+        cs.aces_transform_id = 'IDT.ARRI.Alexa-v3-logC-EI%s.a1.v1' % exposure_index
 
     # A linear space needs allocation variables
     if transfer_function == '':
@@ -204,7 +204,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
             'LogC',
             lut_directory,
             lut_resolution_1d,
-            ["%sei%s_%s" % ("logc3", str(EI), "arriwide")])
+            ['%sei%s_%s' % ('logc3', str(EI), 'arriwide')])
         colorspaces.append(log_c_EI_full)
 
     # Linearization Only
@@ -216,7 +216,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
             'LogC',
             lut_directory,
             lut_resolution_1d,
-            ["crv_%sei%s" % ("logc3", str(EI))])
+            ['crv_%sei%s' % ('logc3', str(EI))])
         colorspaces.append(log_c_EI_linearization)
 
     # Primaries Only
@@ -227,7 +227,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'LogC',
         lut_directory,
         lut_resolution_1d,
-        ["%s_%s" % ('lin', "arriwide")])
+        ['%s_%s' % ('lin', 'arriwide')])
     colorspaces.append(log_c_EI_primaries)
 
     return colorspaces

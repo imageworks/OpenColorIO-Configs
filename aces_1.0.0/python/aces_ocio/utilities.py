@@ -181,11 +181,11 @@ def replace(string, data):
 
     Examples
     --------
-    >>> patterns = {"John" : "Luke",
-    ...             "Jane" : "Anakin",
-    ...             "Doe" : "Skywalker",
-    ...             "Z6PO" : "R2D2"}
-    >>> data = "Users are: John Doe, Jane Doe, Z6PO."
+    >>> patterns = {'John' : 'Luke',
+    ...             'Jane' : 'Anakin',
+    ...             'Doe' : 'Skywalker',
+    ...             'Z6PO' : 'R2D2'}
+    >>> data = 'Users are: John Doe, Jane Doe, Z6PO.'
     >>> replace(data,patterns )
     u'Users are: Luke Skywalker, Anakin Skywalker, R2D2.'
     """

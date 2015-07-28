@@ -136,7 +136,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'Protune',
         lut_directory,
         lut_resolution_1d,
-        ["protuneflat_protunegamutexp"])
+        ['protuneflat_protunegamutexp'])
     colorspaces.append(protune_1)
 
     # Linearization Only
@@ -146,7 +146,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'Protune',
         lut_directory,
         lut_resolution_1d,
-        ["crv_protuneflat"])
+        ['crv_protuneflat'])
     colorspaces.append(protune_2)
 
     # Primaries Only
@@ -156,7 +156,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'Protune',
         lut_directory,
         lut_resolution_1d,
-        ["lin_protunegamutexp"])
+        ['lin_protunegamutexp'])
     colorspaces.append(protune_3)
 
     return colorspaces

@@ -329,7 +329,7 @@ def create_colorspaces(lut_directory,
     cs = create_matrix_colorspace('XYZ-D60',
                                   to_reference_values=[aces.ACES_XYZ_TO_AP0],
                                   from_reference_values=[aces.ACES_AP0_TO_XYZ],
-                                  aliases=["lin_xyz_d60"])
+                                  aliases=['lin_xyz_d60'])
     colorspaces.append(cs)
 
     #
@@ -343,7 +343,7 @@ def create_colorspaces(lut_directory,
     cs = create_matrix_colorspace(
         'Linear - P3-D60',
         from_reference_values=[aces.ACES_AP0_TO_XYZ, XYZ_to_P3D60],
-        aliases=["lin_p3d60"])
+        aliases=['lin_p3d60'])
     colorspaces.append(cs)
 
     #
@@ -357,7 +357,7 @@ def create_colorspaces(lut_directory,
     cs = create_matrix_colorspace(
         'Linear - P3-DCI',
         from_reference_values=[aces.ACES_AP0_TO_XYZ, XYZ_to_P3DCI],
-        aliases=["lin_p3dci"])
+        aliases=['lin_p3dci'])
     colorspaces.append(cs)
 
     #
@@ -372,7 +372,7 @@ def create_colorspaces(lut_directory,
     cs = create_matrix_colorspace(
         'Linear - sRGB',
         from_reference_values=[aces.ACES_AP0_TO_XYZ, XYZ_to_Rec709],
-        aliases=["lin_srgb"])
+        aliases=['lin_srgb'])
     colorspaces.append(cs)
 
     # *Linear* to *sRGB* Transfer Function*
@@ -382,7 +382,7 @@ def create_colorspaces(lut_directory,
         transfer_function_sRGB_to_linear,
         lut_directory,
         lut_resolution_1d,
-        aliases=["crv_srgb"])
+        aliases=['crv_srgb'])
     colorspaces.append(cs)
 
     # *ACES* to *sRGB* Primaries + Transfer Function*
@@ -393,7 +393,7 @@ def create_colorspaces(lut_directory,
         lut_directory,
         lut_resolution_1d,
         from_reference_values=[aces.ACES_AP0_TO_XYZ, XYZ_to_Rec709],
-        aliases=["srgb"])
+        aliases=['srgb'])
     colorspaces.append(cs)
 
     #
@@ -407,7 +407,7 @@ def create_colorspaces(lut_directory,
     cs = create_matrix_colorspace(
         'Linear - Rec.709',
         from_reference_values=[aces.ACES_AP0_TO_XYZ, XYZ_to_Rec709],
-        aliases=["lin_rec709"])
+        aliases=['lin_rec709'])
     colorspaces.append(cs)
 
     # *Linear* to *Rec. 709* Transfer Function*
@@ -417,7 +417,7 @@ def create_colorspaces(lut_directory,
         transfer_function_Rec709_to_linear,
         lut_directory,
         lut_resolution_1d,
-        aliases=["crv_rec709"])
+        aliases=['crv_rec709'])
     colorspaces.append(cs)
 
     # *ACES* to *Rec. 709* Primaries + Transfer Function*
@@ -428,7 +428,7 @@ def create_colorspaces(lut_directory,
         lut_directory,
         lut_resolution_1d,
         from_reference_values=[aces.ACES_AP0_TO_XYZ, XYZ_to_Rec709],
-        aliases=["rec709_camera"])
+        aliases=['rec709_camera'])
     colorspaces.append(cs)
 
     #
@@ -442,7 +442,7 @@ def create_colorspaces(lut_directory,
     cs = create_matrix_colorspace(
         'Linear - Rec.2020',
         from_reference_values=[aces.ACES_AP0_TO_XYZ, XYZ_to_Rec2020],
-        aliases=["lin_rec2020"])
+        aliases=['lin_rec2020'])
     colorspaces.append(cs)
 
     # *Linear* to *Rec. 2020 10 bit* Transfer Function*
@@ -452,7 +452,7 @@ def create_colorspaces(lut_directory,
         transfer_function_Rec2020_10bit_to_linear,
         lut_directory,
         lut_resolution_1d,
-        aliases=["crv_rec2020"])
+        aliases=['crv_rec2020'])
     colorspaces.append(cs)
 
     # *ACES* to *Rec. 2020 10 bit* Primaries + Transfer Function*
@@ -463,7 +463,7 @@ def create_colorspaces(lut_directory,
         lut_directory,
         lut_resolution_1d,
         from_reference_values=[aces.ACES_AP0_TO_XYZ, XYZ_to_Rec2020],
-        aliases=["rec2020_camera"])
+        aliases=['rec2020_camera'])
     colorspaces.append(cs)
 
     #
@@ -477,7 +477,7 @@ def create_colorspaces(lut_directory,
         transfer_function_Rec1886_to_linear,
         lut_directory,
         lut_resolution_1d,
-        aliases=["crv_rec1886"])
+        aliases=['crv_rec1886'])
     colorspaces.append(cs)
 
     # *ACES* to *sRGB* Primaries + Transfer Function*
@@ -488,7 +488,7 @@ def create_colorspaces(lut_directory,
         lut_directory,
         lut_resolution_1d,
         from_reference_values=[aces.ACES_AP0_TO_XYZ, XYZ_to_Rec709],
-        aliases=["rec709_display"])
+        aliases=['rec709_display'])
     colorspaces.append(cs)
 
     # *ACES* to *sRGB* Primaries + Transfer Function*
@@ -499,7 +499,7 @@ def create_colorspaces(lut_directory,
         lut_directory,
         lut_resolution_1d,
         from_reference_values=[aces.ACES_AP0_TO_XYZ, XYZ_to_Rec2020],
-        aliases=["rec2020_display"])
+        aliases=['rec2020_display'])
     colorspaces.append(cs)
 
     #
@@ -513,7 +513,7 @@ def create_colorspaces(lut_directory,
     cs = create_matrix_colorspace(
         'Linear - RIMM ROMM (ProPhoto)',
         from_reference_values=[AP0_to_RIMM],
-        aliases=["lin_prophoto", "lin_rimm"])
+        aliases=['lin_prophoto', 'lin_rimm'])
     colorspaces.append(cs)
 
     #
@@ -527,7 +527,7 @@ def create_colorspaces(lut_directory,
     cs = create_matrix_colorspace(
         'Linear - Adobe RGB',
         from_reference_values=[AP0_to_ADOBERGB],
-        aliases=["lin_adobergb"])
+        aliases=['lin_adobergb'])
     colorspaces.append(cs)
 
     #
@@ -542,7 +542,7 @@ def create_colorspaces(lut_directory,
     cs = create_matrix_colorspace(
         'Linear - Adobe Wide Gamut RGB',
         from_reference_values=[AP0_to_ADOBERGB],
-        aliases=["lin_adobewidegamutrgb"])
+        aliases=['lin_adobewidegamutrgb'])
     colorspaces.append(cs)
 
     return colorspaces
@@ -550,10 +550,10 @@ def create_colorspaces(lut_directory,
 
 def create_raw():
     # *Raw* utility space
-    name = "Raw"
+    name = 'Raw'
     raw = ColorSpace(name)
     raw.description = 'The %s color space' % name
-    raw.aliases = ["raw"]
+    raw.aliases = ['raw']
     raw.equality_group = name
     raw.family = 'Utility'
     raw.is_data = True

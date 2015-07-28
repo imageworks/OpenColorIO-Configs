@@ -134,7 +134,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'V-Log',
         lut_directory,
         lut_resolution_1d,
-        ["vlog_vgamut"])
+        ['vlog_vgamut'])
     colorspaces.append(v_log_1)
 
     # Linearization Only
@@ -144,7 +144,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'V-Log',
         lut_directory,
         lut_resolution_1d,
-        ["crv_vlog"])
+        ['crv_vlog'])
     colorspaces.append(v_log_2)
 
     # Primaries Only
@@ -154,7 +154,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'V-Log',
         lut_directory,
         lut_resolution_1d,
-        ["lin_vgamut"])
+        ['lin_vgamut'])
     colorspaces.append(v_log_3)
 
     return colorspaces

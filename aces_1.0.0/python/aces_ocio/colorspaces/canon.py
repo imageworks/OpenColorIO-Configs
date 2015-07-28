@@ -180,7 +180,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'Canon-Log',
         lut_directory,
         lut_resolution_1d,
-        ["canonlog_rec709day"])
+        ['canonlog_rec709day'])
     colorspaces.append(c_log_1)
 
     c_log_2 = create_c_log(
@@ -189,7 +189,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'Canon-Log',
         lut_directory,
         lut_resolution_1d,
-        ["canonlog_rec709tung"])
+        ['canonlog_rec709tung'])
     colorspaces.append(c_log_2)
 
     c_log_3 = create_c_log(
@@ -198,7 +198,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'Canon-Log',
         lut_directory,
         lut_resolution_1d,
-        ["canonlog_dcip3day"])
+        ['canonlog_dcip3day'])
     colorspaces.append(c_log_3)
 
     c_log_4 = create_c_log(
@@ -207,7 +207,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'Canon-Log',
         lut_directory,
         lut_resolution_1d,
-        ["canonlog_dcip3tung"])
+        ['canonlog_dcip3tung'])
     colorspaces.append(c_log_4)
 
     c_log_5 = create_c_log(
@@ -216,7 +216,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'Canon-Log',
         lut_directory,
         lut_resolution_1d,
-        ["canonlog_cgamutday"])
+        ['canonlog_cgamutday'])
     colorspaces.append(c_log_5)
 
     c_log_6 = create_c_log(
@@ -225,7 +225,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'Canon-Log',
         lut_directory,
         lut_resolution_1d,
-        ["canonlog_cgamuttung"])
+        ['canonlog_cgamuttung'])
     colorspaces.append(c_log_6)
 
     # Linearization Only
@@ -235,7 +235,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'Canon-Log',
         lut_directory,
         lut_resolution_1d,
-        ["crv_canonlog"])
+        ['crv_canonlog'])
     colorspaces.append(c_log_7)
 
     # Primaries Only
@@ -245,7 +245,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'Canon-Log',
         lut_directory,
         lut_resolution_1d,
-        ["lin_canonrec709day"])
+        ['lin_canonrec709day'])
     colorspaces.append(c_log_8)
 
     c_log_9 = create_c_log(
@@ -254,7 +254,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'Canon-Log',
         lut_directory,
         lut_resolution_1d,
-        ["lin_canonrec709tung"])
+        ['lin_canonrec709tung'])
     colorspaces.append(c_log_9)
 
     c_log_10 = create_c_log(
@@ -263,7 +263,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'Canon-Log',
         lut_directory,
         lut_resolution_1d,
-        ["lin_canondcip3day"])
+        ['lin_canondcip3day'])
     colorspaces.append(c_log_10)
 
     c_log_11 = create_c_log(
@@ -272,7 +272,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'Canon-Log',
         lut_directory,
         lut_resolution_1d,
-        ["lin_canondcip3tung"])
+        ['lin_canondcip3tung'])
     colorspaces.append(c_log_11)
 
     c_log_12 = create_c_log(
@@ -281,7 +281,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'Canon-Log',
         lut_directory,
         lut_resolution_1d,
-        ["lin_canoncgamutday"])
+        ['lin_canoncgamutday'])
     colorspaces.append(c_log_12)
 
     c_log_13 = create_c_log(
@@ -290,7 +290,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'Canon-Log',
         lut_directory,
         lut_resolution_1d,
-        ["lin_canoncgamuttung"])
+        ['lin_canoncgamuttung'])
     colorspaces.append(c_log_13)
 
     return colorspaces

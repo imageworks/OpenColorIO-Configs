@@ -91,7 +91,7 @@ def create_ACES():
     aces2065_1.description = (
         'The Academy Color Encoding System reference color space')
     aces2065_1.equality_group = ''
-    aces2065_1.aliases = ["lin_ap0", "aces"]
+    aces2065_1.aliases = ['lin_ap0', 'aces']
     aces2065_1.family = 'ACES'
     aces2065_1.is_data = False
     aces2065_1.allocation_type = ocio.Constants.ALLOCATION_LG2
@@ -124,13 +124,13 @@ def create_ACEScc(aces_ctl_directory,
 
     cs = ColorSpace(name)
     cs.description = 'The %s color space' % name
-    cs.aliases = ["acescc", "acescc_ap1"]
+    cs.aliases = ['acescc', 'acescc_ap1']
     cs.equality_group = ''
     cs.family = 'ACES'
     cs.is_data = False
     cs.allocation_type = ocio.Constants.ALLOCATION_UNIFORM
     cs.allocation_vars = [min_value, max_value]
-    cs.aces_transform_id = "ACEScsc.ACEScc_to_ACES.a1.0.0"
+    cs.aces_transform_id = 'ACEScsc.ACEScc_to_ACES.a1.0.0'
 
     ctls = [os.path.join(aces_ctl_directory,
                          'ACEScc',
@@ -197,12 +197,12 @@ def create_ACESproxy(aces_ctl_directory,
 
     cs = ColorSpace(name)
     cs.description = 'The %s color space' % name
-    cs.aliases = ["acesproxy", "acesproxy_ap1"]
+    cs.aliases = ['acesproxy', 'acesproxy_ap1']
     cs.equality_group = ''
     cs.family = 'ACES'
     cs.is_data = False
 
-    cs.aces_transform_id = "ACEScsc.ACESproxy10i_to_ACES.a1.0.0"
+    cs.aces_transform_id = 'ACEScsc.ACESproxy10i_to_ACES.a1.0.0'
 
     ctls = [os.path.join(aces_ctl_directory,
                          'ACESproxy',
@@ -272,14 +272,14 @@ def create_ACEScg(aces_ctl_directory,
 
     cs = ColorSpace(name)
     cs.description = 'The %s color space' % name
-    cs.aliases = ["acescg", "lin_ap1"]
+    cs.aliases = ['acescg', 'lin_ap1']
     cs.equality_group = ''
     cs.family = 'ACES'
     cs.is_data = False
     cs.allocation_type = ocio.Constants.ALLOCATION_LG2
     cs.allocation_vars = [-8, 5, 0.00390625]
 
-    cs.aces_transform_id = "ACEScsc.ACEScg_to_ACES.a1.0.0"
+    cs.aces_transform_id = 'ACEScsc.ACEScg_to_ACES.a1.0.0'
 
     cs.to_reference_transforms = []
 
@@ -324,13 +324,13 @@ def create_ADX(lut_directory,
     name = '%s%s' % (name, bit_depth)
     cs = ColorSpace(name)
     cs.description = '%s color space - used for film scans' % name
-    cs.aliases = ["adx%s" % str(bit_depth)]
+    cs.aliases = ['adx%s' % str(bit_depth)]
     cs.equality_group = ''
     cs.family = 'ADX'
     cs.is_data = False
 
     if bit_depth == 10:
-        cs.aces_transform_id = "ACEScsc.ADX10_to_ACES.a1.0.0"
+        cs.aces_transform_id = 'ACEScsc.ADX10_to_ACES.a1.0.0'
 
         cs.bit_depth = ocio.Constants.BIT_DEPTH_UINT10
         ADX_to_CDD = [1023 / 500, 0, 0, 0,
@@ -339,7 +339,7 @@ def create_ADX(lut_directory,
                       0, 0, 0, 1]
         offset = [-95 / 500, -95 / 500, -95 / 500, 0]
     elif bit_depth == 16:
-        cs.aces_transform_id = "ACEScsc.ADX16_to_ACES.a1.0.0"
+        cs.aces_transform_id = 'ACEScsc.ADX16_to_ACES.a1.0.0'
 
         cs.bit_depth = ocio.Constants.BIT_DEPTH_UINT16
         ADX_to_CDD = [65535 / 8000, 0, 0, 0,
@@ -828,7 +828,7 @@ def create_LMTs(aces_ctl_directory,
     print(sorted_LMTs)
     for lmt in sorted_LMTs:
         lmt_name, lmt_values = lmt
-        lmt_aliases = ["look_%s" % compact(lmt_values['transformUserName'])]
+        lmt_aliases = ['look_%s' % compact(lmt_values['transformUserName'])]
         cs = create_ACES_LMT(
             lmt_values['transformUserName'],
             lmt_values,
@@ -1045,7 +1045,7 @@ def create_ODTs(aces_ctl_directory,
 
     # Defining the *Log 2* shaper.
     log2_shaper_name = shaper_name
-    log2_shaper_name_aliases = ["crv_%s" % compact(log2_shaper_name)]
+    log2_shaper_name_aliases = ['crv_%s' % compact(log2_shaper_name)]
     log2_params = {
         'middleGrey': 0.18,
         'minExposure': -6,
@@ -1080,11 +1080,11 @@ def create_ODTs(aces_ctl_directory,
     shaper_data[log2_shaper_name] = log2_shaper_data
 
     # Space with a more user-friendly name. Direct copy otherwise.
-    log2_shaper_copy_name = "Log2 Shaper"
+    log2_shaper_copy_name = 'Log2 Shaper'
     log2_shaper_copy_colorspace = ColorSpace(log2_shaper_copy_name)
     log2_shaper_copy_colorspace.description = 'The %s color space' % log2_shaper_copy_name
     log2_shaper_copy_colorspace.aliases = [
-        "crv_%s" % compact(log2_shaper_copy_name)]
+        'crv_%s' % compact(log2_shaper_copy_name)]
     log2_shaper_copy_colorspace.equality_group = log2_shaper_copy_name
     log2_shaper_copy_colorspace.family = log2_shaper_colorspace.family
     log2_shaper_copy_colorspace.is_data = log2_shaper_colorspace.is_data
@@ -1095,11 +1095,11 @@ def create_ODTs(aces_ctl_directory,
     colorspaces.append(log2_shaper_copy_colorspace)
 
     # Defining the *Log2 shaper that includes the AP1* primaries.
-    log2_shaper_api1_name = "%s - AP1" % "Log2 Shaper"
+    log2_shaper_api1_name = '%s - AP1' % 'Log2 Shaper'
     log2_shaper_api1_colorspace = ColorSpace(log2_shaper_api1_name)
     log2_shaper_api1_colorspace.description = 'The %s color space' % log2_shaper_api1_name
     log2_shaper_api1_colorspace.aliases = [
-        "%s_ap1" % compact(log2_shaper_copy_name)]
+        '%s_ap1' % compact(log2_shaper_copy_name)]
     log2_shaper_api1_colorspace.equality_group = log2_shaper_api1_name
     log2_shaper_api1_colorspace.family = log2_shaper_colorspace.family
     log2_shaper_api1_colorspace.is_data = log2_shaper_colorspace.is_data
@@ -1118,10 +1118,10 @@ def create_ODTs(aces_ctl_directory,
 
     # Defining the *Log2 shaper that includes the AP1* primaries.
     # Named with 'shaper_name' variable. Needed for some LUT baking steps.
-    shaper_api1_name = "%s - AP1" % shaper_name
+    shaper_api1_name = '%s - AP1' % shaper_name
     shaper_api1_colorspace = ColorSpace(shaper_api1_name)
     shaper_api1_colorspace.description = 'The %s color space' % shaper_api1_name
-    shaper_api1_colorspace.aliases = ["%s_ap1" % compact(shaper_name)]
+    shaper_api1_colorspace.aliases = ['%s_ap1' % compact(shaper_name)]
     shaper_api1_colorspace.equality_group = shaper_api1_name
     shaper_api1_colorspace.family = log2_shaper_colorspace.family
     shaper_api1_colorspace.is_data = log2_shaper_colorspace.is_data
@@ -1133,8 +1133,8 @@ def create_ODTs(aces_ctl_directory,
 
     # Define the base *Dolby PQ Shaper*
     #
-    dolbypq_shaper_name = "Dolby PQ 10000"
-    dolbypq_shaper_name_aliases = ["crv_%s" % "dolbypq_10000"]
+    dolbypq_shaper_name = 'Dolby PQ 10000'
+    dolbypq_shaper_name_aliases = ['crv_%s' % 'dolbypq_10000']
 
     dolbypq_shaper_colorspace = create_dolbypq(
         aces_ctl_directory,
@@ -1161,8 +1161,8 @@ def create_ODTs(aces_ctl_directory,
 
     # Define the *Dolby PQ Shaper that considers a fixed linear range*
     #
-    dolbypq_scaled_shaper_name = "Dolby PQ Scaled"
-    dolbypq_scaled_shaper_name_aliases = ["crv_%s" % "dolbypq_scaled"]
+    dolbypq_scaled_shaper_name = 'Dolby PQ Scaled'
+    dolbypq_scaled_shaper_name_aliases = ['crv_%s' % 'dolbypq_scaled']
 
     dolbypq_scaled_shaper_colorspace = create_dolbypq_scaled(
         aces_ctl_directory,
@@ -1214,7 +1214,7 @@ def create_ODTs(aces_ctl_directory,
 
         odt_legal = odt_values.copy()
 
-        odt_aliases = ["out_%s" % compact(odt_name_legal)]
+        odt_aliases = ['out_%s' % compact(odt_name_legal)]
 
         cs = create_ACES_RRT_plus_ODT(
             odt_name_legal,
@@ -1233,7 +1233,7 @@ def create_ODTs(aces_ctl_directory,
             'Log': log_display_space,
             'Output Transform': cs}
 
-        '''
+        """
         # Generating full range transform for *ODTs* that can generate 
         # either *legal* or *full* output.
         if odt_values['transformHasFullLegalSwitch']:
@@ -1243,7 +1243,7 @@ def create_ODTs(aces_ctl_directory,
             odt_full = odt_values.copy()
             odt_full['legalRange'] = 0
 
-            odt_full_aliases = ["out_%s" % compact(odt_name_full)]
+            odt_full_aliases = ['out_%s' % compact(odt_name_full)]
 
             cs_full = create_ACES_RRT_plus_ODT(
                 odt_name_full,
@@ -1261,7 +1261,7 @@ def create_ODTs(aces_ctl_directory,
                 'Raw': linear_display_space,
                 'Log': log_display_space,
                 'Output Transform': cs_full}
-        '''
+        """
 
     return (colorspaces, displays)
 
@@ -1294,8 +1294,8 @@ def get_transform_info(ctl_transform):
     # Figuring out if this transform has options for processing full and legal range
     transform_full_legal_switch = False
     for line in lines:
-        if line.strip() == "input varying int legalRange = 0":
-            # print( "%s has legal range flag" % transform_user_name)
+        if line.strip() == 'input varying int legalRange = 0':
+            # print( '%s has legal range flag' % transform_user_name)
             transform_full_legal_switch = True
             break
 
@@ -1546,7 +1546,7 @@ def create_colorspaces(aces_ctl_directory,
     colorspaces.extend(odts)
 
     # Wish there was an automatic way to get this from the CTL
-    defaultDisplay = "sRGB (D60 sim.)"
+    defaultDisplay = 'sRGB (D60 sim.)'
 
     roles = {'color_picking': ACEScg.name,
              'color_timing': ACEScc.name,

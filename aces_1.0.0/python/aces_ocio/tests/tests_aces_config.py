@@ -40,7 +40,7 @@ __all__ = ['REFERENCE_CONFIG_ROOT_DIRECTORY',
 # tests.
 REFERENCE_CONFIG_ROOT_DIRECTORY = os.path.abspath(
     os.path.join(os.path.dirname(__file__), '..', '..', '..'))
-# REFERENCE_CONFIG_ROOT_DIRECTORY = '/colour-science/colour-ramblings/ocio/aces'
+REFERENCE_CONFIG_ROOT_DIRECTORY = '/colour-science/colour-ramblings/ocio/aces'
 
 HASH_TEST_PATTERNS = ('\.3dl', '\.lut', '\.csp')
 UNHASHABLE_TEST_PATTERNS = ('\.icc', '\.ocio')

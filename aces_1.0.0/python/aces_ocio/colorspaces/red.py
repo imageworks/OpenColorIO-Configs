@@ -172,7 +172,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'REDlogFilm',
         lut_directory,
         lut_resolution_1d,
-        ["rlf_dgn"])
+        ['rlf_dgn'])
     colorspaces.append(RED_log_film_dragon)
 
     RED_log_film_dragon2 = create_RED_log_film(
@@ -181,7 +181,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'REDlogFilm',
         lut_directory,
         lut_resolution_1d,
-        ["rlf_dgn2"])
+        ['rlf_dgn2'])
     colorspaces.append(RED_log_film_dragon2)
 
     RED_log_film_color = create_RED_log_film(
@@ -190,7 +190,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'REDlogFilm',
         lut_directory,
         lut_resolution_1d,
-        ["rlf_rc"])
+        ['rlf_rc'])
     colorspaces.append(RED_log_film_color)
 
     RED_log_film_color2 = create_RED_log_film(
@@ -199,7 +199,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'REDlogFilm',
         lut_directory,
         lut_resolution_1d,
-        ["rlf_rc2"])
+        ['rlf_rc2'])
     colorspaces.append(RED_log_film_color2)
 
     RED_log_film_color3 = create_RED_log_film(
@@ -208,7 +208,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'REDlogFilm',
         lut_directory,
         lut_resolution_1d,
-        ["rlf_rc3"])
+        ['rlf_rc3'])
     colorspaces.append(RED_log_film_color3)
 
     RED_log_film_color4 = create_RED_log_film(
@@ -217,7 +217,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'REDlogFilm',
         lut_directory,
         lut_resolution_1d,
-        ["rlf_rc4"])
+        ['rlf_rc4'])
     colorspaces.append(RED_log_film_color4)
 
     # Linearization only
@@ -227,7 +227,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'REDlogFilm',
         lut_directory,
         lut_resolution_1d,
-        ["crv_rlf"])
+        ['crv_rlf'])
     colorspaces.append(RED_log_film)
 
     # Primaries only
@@ -237,7 +237,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'REDlogFilm',
         lut_directory,
         lut_resolution_1d,
-        ["lin_dgn"])
+        ['lin_dgn'])
     colorspaces.append(RED_dragon)
 
     RED_dragon2 = create_RED_log_film(
@@ -246,7 +246,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'REDlogFilm',
         lut_directory,
         lut_resolution_1d,
-        ["lin_dgn2"])
+        ['lin_dgn2'])
     colorspaces.append(RED_dragon2)
 
     RED_color = create_RED_log_film(
@@ -255,7 +255,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'REDlogFilm',
         lut_directory,
         lut_resolution_1d,
-        ["lin_rc"])
+        ['lin_rc'])
     colorspaces.append(RED_color)
 
     RED_color2 = create_RED_log_film(
@@ -264,7 +264,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'REDlogFilm',
         lut_directory,
         lut_resolution_1d,
-        ["lin_rc2"])
+        ['lin_rc2'])
     colorspaces.append(RED_color2)
 
     RED_color3 = create_RED_log_film(
@@ -273,7 +273,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'REDlogFilm',
         lut_directory,
         lut_resolution_1d,
-        ["lin_rc3"])
+        ['lin_rc3'])
     colorspaces.append(RED_color3)
 
     RED_color4 = create_RED_log_film(
@@ -282,7 +282,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         'REDlogFilm',
         lut_directory,
         lut_resolution_1d,
-        ["lin_rc4"])
+        ['lin_rc4'])
     colorspaces.append(RED_color4)
 
     return colorspaces

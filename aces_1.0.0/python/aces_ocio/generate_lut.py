@@ -822,13 +822,6 @@ def main():
         for param in options.ctlRenderParam:
             params[param[0]] = float(param[1])
 
-    try:
-        args_start = sys.argv.index('--') + 1
-        args = sys.argv[args_start:]
-    except:
-        args_start = len(sys.argv) + 1
-        args = []
-
     if generate_1d:
         print('1D LUT generation options')
     else:

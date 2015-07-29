@@ -722,7 +722,6 @@ def main():
         args_start = sys.argv.index('--') + 1
         args = sys.argv[args_start:]
     except:
-        args_start = len(sys.argv) + 1
         args = []
 
     if cmd is None:

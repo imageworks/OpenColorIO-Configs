@@ -1479,14 +1479,6 @@ def main():
 
     print(look_info)
 
-    # TODO: Investigate the following statements.
-    try:
-        args_start = sys.argv.index('--') + 1
-        args = sys.argv[args_start:]
-    except:
-        args_start = len(sys.argv) + 1
-        args = []
-
     print('command line : \n%s\n' % ' '.join(sys.argv))
 
     assert aces_ctl_directory is not None, (

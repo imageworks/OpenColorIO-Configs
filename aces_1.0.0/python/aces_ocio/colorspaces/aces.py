@@ -751,9 +751,7 @@ def create_ACES_LMT(lmt_name,
             shaper_params,
             cleanup,
             aces_ctl_directory,
-            0,
-            1,
-            1)
+            0)
 
         cs.to_reference_transforms.append({
             'type': 'lutFile',

@@ -605,7 +605,7 @@ def create_config(config_data,
 
     # Add alias
     if aliases:
-        if reference_data.aliases != []:
+        if reference_data.aliases:
             # add_colorspace_alias(config, reference_data,
             #                     reference_data, reference_data.aliases)
             # defer adding alias colorspaces until end. Helps with some applications
@@ -619,7 +619,7 @@ def create_config(config_data,
     #
     # Add Looks and Look colorspaces
     #
-    if look_info != []:
+    if look_info:
         print('Adding looks')
 
         config_data['looks'] = []
@@ -691,7 +691,7 @@ def create_config(config_data,
         # Add alias to normal colorspace, using compact name
         #
         if aliases:
-            if colorspace.aliases != []:
+            if colorspace.aliases:
                 # add_colorspace_alias(config, reference_data,
                 #                     colorspace, colorspace.aliases)
                 # defer adding alias colorspaces until end. Helps with some applications

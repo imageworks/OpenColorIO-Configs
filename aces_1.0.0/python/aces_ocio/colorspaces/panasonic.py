@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-Implements support for *Panasonic* colorspaces conversions and transfer functions.
+Implements support for *Panasonic* colorspaces conversions and transfer
+functions.
 """
 
 import array

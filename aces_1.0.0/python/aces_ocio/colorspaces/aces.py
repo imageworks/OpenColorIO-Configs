@@ -1089,7 +1089,8 @@ def create_ODTs(aces_ctl_directory,
     # Space with a more user-friendly name. Direct copy otherwise.
     log2_shaper_copy_name = 'Log2 Shaper'
     log2_shaper_copy_colorspace = ColorSpace(log2_shaper_copy_name)
-    log2_shaper_copy_colorspace.description = 'The %s color space' % log2_shaper_copy_name
+    log2_shaper_copy_colorspace.description = (
+        'The %s color space' % log2_shaper_copy_name)
     log2_shaper_copy_colorspace.aliases = [
         'crv_%s' % compact(log2_shaper_copy_name)]
     log2_shaper_copy_colorspace.equality_group = log2_shaper_copy_name
@@ -1104,7 +1105,8 @@ def create_ODTs(aces_ctl_directory,
     # Defining the *Log2 shaper that includes the AP1* primaries.
     log2_shaper_api1_name = '%s - AP1' % 'Log2 Shaper'
     log2_shaper_api1_colorspace = ColorSpace(log2_shaper_api1_name)
-    log2_shaper_api1_colorspace.description = 'The %s color space' % log2_shaper_api1_name
+    log2_shaper_api1_colorspace.description = (
+        'The %s color space' % log2_shaper_api1_name)
     log2_shaper_api1_colorspace.aliases = [
         '%s_ap1' % compact(log2_shaper_copy_name)]
     log2_shaper_api1_colorspace.equality_group = log2_shaper_api1_name
@@ -1127,7 +1129,8 @@ def create_ODTs(aces_ctl_directory,
     # Named with 'shaper_name' variable. Needed for some LUT baking steps.
     shaper_api1_name = '%s - AP1' % shaper_name
     shaper_api1_colorspace = ColorSpace(shaper_api1_name)
-    shaper_api1_colorspace.description = 'The %s color space' % shaper_api1_name
+    shaper_api1_colorspace.description = (
+        'The %s color space' % shaper_api1_name)
     shaper_api1_colorspace.aliases = ['%s_ap1' % compact(shaper_name)]
     shaper_api1_colorspace.equality_group = shaper_api1_name
     shaper_api1_colorspace.family = log2_shaper_colorspace.family
@@ -1209,8 +1212,9 @@ def create_ODTs(aces_ctl_directory,
         # Generating only full range transform for *ODTs* that can generate 
         # either *legal* or *full* output.
 
-        # Uncomment these lines and the lower section and flip the 'legalRange' value to 1
-        # to recover the old behavior, where both legal and full range LUTs were generated
+        # Uncomment these lines and the lower section and
+        # flip the 'legalRange' value to 1 to recover the old behavior,
+        # where both legal and full range LUTs were generated.
         if odt_values['transformHasFullLegalSwitch']:
             # odt_name_legal = '%s - Legal' % odt_values['transformUserName']
             odt_legal['legalRange'] = 0
@@ -1298,7 +1302,8 @@ def get_transform_info(ctl_transform):
     transform_user_name_prefix = (
         lines[2][3:].split('<')[1].split('>')[1].split('-')[0].strip())
 
-    # Figuring out if this transform has options for processing full and legal range
+    # Figuring out if this transform has options
+    # for processing full and legal range.
     transform_full_legal_switch = False
     for line in lines:
         if line.strip() == 'input varying int legalRange = 0':

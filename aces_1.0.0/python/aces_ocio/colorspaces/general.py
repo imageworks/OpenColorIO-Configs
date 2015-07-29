@@ -158,14 +158,15 @@ def create_transfer_colorspace(name='transfer',
 # -------------------------------------------------------------------------
 # *Transfer Function + Matrix Transform*
 # -------------------------------------------------------------------------
-def create_matrix_plus_transfer_colorspace(name='matrix_plus_transfer',
-                                           transfer_function_name='transfer_function',
-                                           transfer_function=lambda x: x,
-                                           lut_directory='/tmp',
-                                           lut_resolution_1d=1024,
-                                           from_reference_values=None,
-                                           to_reference_values=None,
-                                           aliases=None):
+def create_matrix_plus_transfer_colorspace(
+        name='matrix_plus_transfer',
+        transfer_function_name='transfer_function',
+        transfer_function=lambda x: x,
+        lut_directory='/tmp',
+        lut_resolution_1d=1024,
+        from_reference_values=None,
+        to_reference_values=None,
+        aliases=None):
     """
     Object description.
 

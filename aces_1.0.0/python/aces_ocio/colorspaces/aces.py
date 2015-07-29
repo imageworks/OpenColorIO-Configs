@@ -1274,7 +1274,7 @@ def create_ODTs(aces_ctl_directory,
                 'Output Transform': cs_full}
         """
 
-    return (colorspaces, displays)
+    return colorspaces, displays
 
 
 def get_transform_info(ctl_transform):

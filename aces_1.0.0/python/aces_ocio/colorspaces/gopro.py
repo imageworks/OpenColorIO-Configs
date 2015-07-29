@@ -72,7 +72,7 @@ def create_protune(gamut,
         c1 = 113.0
         c2 = 1.0
         c3 = 112.0
-        linear = ((pow(c1, (normalized_code_value)) - c2) / c3)
+        linear = ((pow(c1, normalized_code_value) - c2) / c3)
 
         return linear
 

@@ -71,7 +71,7 @@ def create_v_log(gamut,
         c = 0.241514
         d = 0.598206
 
-        if (x <= cut_inv):
+        if x <= cut_inv:
             return (x - 0.125) / 5.6
         else:
             return pow(10, (x - d) / c) - b

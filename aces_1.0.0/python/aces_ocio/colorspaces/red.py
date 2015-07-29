@@ -31,7 +31,7 @@ def create_RED_log_film(gamut,
                         name,
                         lut_directory,
                         lut_resolution_1d,
-                        aliases=[]):
+                        aliases=None):
     """
     Object description.
 
@@ -47,6 +47,9 @@ def create_RED_log_film(gamut,
     type
          Return value description.
     """
+
+    if aliases is None:
+        aliases = []
 
     name = '%s - %s' % (transfer_function, gamut)
     if transfer_function == '':

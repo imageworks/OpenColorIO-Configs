@@ -39,16 +39,16 @@ class ColorSpace(object):
 
     def __init__(self,
                  name,
-                 aliases=[],
+                 aliases=None,
                  description=None,
                  bit_depth=ocio.Constants.BIT_DEPTH_F32,
                  equality_group='',
                  family=None,
                  is_data=False,
-                 to_reference_transforms=[],
-                 from_reference_transforms=[],
+                 to_reference_transforms=None,
+                 from_reference_transforms=None,
                  allocation_type=ocio.Constants.ALLOCATION_UNIFORM,
-                 allocation_vars=[0, 1],
+                 allocation_vars=None,
                  aces_transform_id=None):
         """
         Object description.
@@ -63,6 +63,18 @@ class ColorSpace(object):
         type
              Return value description.
         """
+
+        if aliases is None:
+            aliases = []
+
+        if to_reference_transforms is None:
+            to_reference_transforms = []
+
+        if from_reference_transforms is None:
+            from_reference_transforms = []
+
+        if allocation_vars is None:
+            allocation_vars = [0, 1]
 
         self.name = name
         self.aliases = aliases

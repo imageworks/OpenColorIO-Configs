@@ -548,7 +548,7 @@ def create_config(config_data,
                   aliases=False,
                   prefix=False,
                   multiple_displays=False,
-                  look_info=[],
+                  look_info=None,
                   custom_lut_dir=None):
     """
     Object description.
@@ -563,6 +563,9 @@ def create_config(config_data,
     type
          Return value description.
     """
+
+    if look_info is None:
+        look_info = []
 
     prefixed_names = {}
     alias_colorspaces = []
@@ -1306,7 +1309,7 @@ def create_ACES_config(aces_ctl_directory,
                        lut_resolution_3d=64,
                        bake_secondary_LUTs=True,
                        multiple_displays=False,
-                       look_info=[],
+                       look_info=None,
                        copy_custom_luts=True,
                        cleanup=True,
                        prefix_colorspaces_with_family_names=True):
@@ -1323,6 +1326,9 @@ def create_ACES_config(aces_ctl_directory,
     type
          Return value description.
     """
+
+    if look_info is None:
+        look_info = []
 
     # Directory for custom LUTs
     custom_lut_dir = None

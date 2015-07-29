@@ -464,7 +464,7 @@ def create_generic_log(aces_ctl_directory,
                        lut_resolution_1d,
                        cleanup,
                        name='log',
-                       aliases=[],
+                       aliases=None,
                        min_value=0,
                        max_value=1,
                        input_scale=1,
@@ -484,6 +484,9 @@ def create_generic_log(aces_ctl_directory,
     Colorspace
          *Generic Log* colorspace.
     """
+
+    if aliases is None:
+        aliases = []
 
     cs = ColorSpace(name)
     cs.description = 'The %s color space' % name
@@ -535,10 +538,13 @@ def create_dolbypq(aces_CTL_directory,
                    lut_resolution_1d,
                    cleanup,
                    name='pq',
-                   aliases=[],
+                   aliases=None,
                    min_value=0.0,
                    max_value=1.0,
                    input_scale=1.0):
+    if aliases is None:
+        aliases = []
+
     cs = ColorSpace(name)
     cs.description = 'The %s color space' % name
     cs.aliases = aliases
@@ -586,13 +592,16 @@ def create_dolbypq_scaled(aces_CTL_directory,
                           lut_resolution_1d,
                           cleanup,
                           name='pq',
-                          aliases=[],
+                          aliases=None,
                           min_value=0.0,
                           max_value=1.0,
                           input_scale=1.0,
                           middle_grey=0.18,
                           min_exposure=-6.0,
                           max_exposure=6.5):
+    if aliases is None:
+        aliases = []
+
     cs = ColorSpace(name)
     cs.description = 'The %s color space' % name
     cs.aliases = aliases

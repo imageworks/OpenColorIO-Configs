@@ -33,7 +33,7 @@ __all__ = ['create_matrix_colorspace',
 def create_matrix_colorspace(name='matrix',
                              from_reference_values=None,
                              to_reference_values=None,
-                             aliases=[]):
+                             aliases=None):
     """
     Object description.
 
@@ -53,6 +53,9 @@ def create_matrix_colorspace(name='matrix',
 
     if to_reference_values is None:
         to_reference_values = []
+
+    if aliases is None:
+        aliases = []
 
     cs = ColorSpace(name)
     cs.description = 'The %s color space' % name
@@ -92,7 +95,7 @@ def create_transfer_colorspace(name='transfer',
                                transfer_function=lambda x: x,
                                lut_directory='/tmp',
                                lut_resolution_1d=1024,
-                               aliases=[]):
+                               aliases=None):
     """
     Object description.
 
@@ -106,6 +109,9 @@ def create_transfer_colorspace(name='transfer',
     type
          Return value description.
     """
+
+    if aliases is None:
+        aliases = []
 
     cs = ColorSpace(name)
     cs.description = 'The %s color space' % name
@@ -159,7 +165,7 @@ def create_matrix_plus_transfer_colorspace(name='matrix_plus_transfer',
                                            lut_resolution_1d=1024,
                                            from_reference_values=None,
                                            to_reference_values=None,
-                                           aliases=[]):
+                                           aliases=None):
     """
     Object description.
 
@@ -179,6 +185,9 @@ def create_matrix_plus_transfer_colorspace(name='matrix_plus_transfer',
 
     if to_reference_values is None:
         to_reference_values = []
+
+    if aliases is None:
+        aliases = []
 
     cs = ColorSpace(name)
     cs.description = 'The %s color space' % name

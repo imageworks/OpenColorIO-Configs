@@ -447,7 +447,7 @@ def add_look(config,
     # Add this colorspace into the main list of colorspaces
     config_data['colorSpaces'].append(colorspace)
 
-    print('')
+    print()
 
 
 def integrate_looks_into_views(config,
@@ -612,7 +612,7 @@ def create_config(config_data,
             alias_colorspaces.append(
                 [reference_data, reference_data, reference_data.aliases])
 
-    print('')
+    print()
 
     # print( 'color spaces : %s' % [x.name for x in sorted(config_data['colorSpaces'])])
 
@@ -640,7 +640,7 @@ def create_config(config_data,
                                    config_data,
                                    multiple_displays)
 
-        print('')
+        print()
 
     print('Adding the regular color spaces')
 
@@ -698,9 +698,9 @@ def create_config(config_data,
                 alias_colorspaces.append(
                     [reference_data, colorspace, colorspace.aliases])
 
-        print('')
+        print()
 
-    print('')
+    print()
 
     #
     # We add roles early so we can create alias colorspaces with the names of the roles
@@ -780,7 +780,7 @@ def create_config(config_data,
                 add_colorspace_aliases(config, reference_data, role_colorspace, [role_name], 'Roles')
         """
 
-    print('')
+    print()
 
     # We add these at the end as some applications use the order of the colorspaces
     # definitions in the config to order the colorspaces in their selection lists.
@@ -790,7 +790,7 @@ def create_config(config_data,
     for reference, colorspace, aliases in alias_colorspaces:
         add_colorspace_aliases(config, reference, colorspace, aliases)
 
-    print('')
+    print()
 
     print('Adding the diplays and views')
 
@@ -934,7 +934,7 @@ def create_config(config_data,
     config.setActiveDisplays(','.join(sorted(displays)))
     config.setActiveViews(','.join(views))
 
-    print('')
+    print()
 
     # Make sure we didn't create a bad config
     config.sanityCheck()

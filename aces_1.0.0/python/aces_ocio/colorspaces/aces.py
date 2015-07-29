@@ -737,6 +737,7 @@ def create_ACES_LMT(lmt_name,
         ctls = [os.path.join(aces_ctl_directory,
                              lmt_values['transformCTLInverse']),
                 shaper_from_aces_ctl % aces_ctl_directory]
+        # TODO: Investigate unresolved `odt_name` reference.
         lut = 'Inverse.%s.%s.spi3d' % (odt_name, shaper_name)
 
         lut = sanitize(lut)

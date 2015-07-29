@@ -66,12 +66,12 @@ def create_v_log(gamut,
         cs.allocation_vars = [-8, 5, 0.00390625]
 
     def v_log_to_linear(x):
-        cutInv = 0.181
+        cut_inv = 0.181
         b = 0.00873
         c = 0.241514
         d = 0.598206
 
-        if (x <= cutInv):
+        if (x <= cut_inv):
             return (x - 0.125) / 5.6
         else:
             return pow(10, (x - d) / c) - b

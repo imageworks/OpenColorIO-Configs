@@ -581,10 +581,10 @@ def create_config(config_data,
     config.setDescription('An ACES config generated from python')
 
     # Setting configuration search path.
-    searchPath = ['luts']
+    search_path = ['luts']
     if custom_lut_dir:
-        searchPath.append('custom')
-    config.setSearchPath(':'.join(searchPath))
+        search_path.append('custom')
+    config.setSearchPath(':'.join(search_path))
 
     # Defining the reference colorspace.
     reference_data = config_data['referenceColorSpace']
@@ -895,10 +895,10 @@ def create_config(config_data,
                         display_cleaned = '%s with %s' % (
                         display_cleaned, look_names)
 
-                        viewsWithLooksAtEnd = False
+                        views_with_looks_at_end = False
                         # Storing combo of display, view and colorspace name
                         # in a list so we can add them to the end of the list.
-                        if viewsWithLooksAtEnd:
+                        if views_with_looks_at_end:
                             displays_views_colorspaces.append(
                                 [single_display_name, display_cleaned,
                                  colorspace.name])
@@ -922,7 +922,7 @@ def create_config(config_data,
                             views.append(display_cleaned)
 
         # Add to config any display, view combinations that were saved
-        # for later. This list will be empty unless viewsWithLooksAtEnd is
+        # for later. This list will be empty unless views_with_looks_at_end is
         # set to True above.
         for display_view_colorspace in displays_views_colorspaces:
             single_display_name, display_cleaned, colorspace_name = (
@@ -1060,9 +1060,9 @@ def generate_LUTs(odt_info,
     # -------------------------------------------------------------------------
 
     # *ARRI Log-C* to *ACES*.
-    arri_colorSpaces = arri.create_colorspaces(lut_directory,
+    arri_colorspaces = arri.create_colorspaces(lut_directory,
                                                lut_resolution_1d)
-    for cs in arri_colorSpaces:
+    for cs in arri_colorspaces:
         config_data['colorSpaces'].append(cs)
 
     # *Canon-Log* to *ACES*.
@@ -1078,9 +1078,9 @@ def generate_LUTs(odt_info,
         config_data['colorSpaces'].append(cs)
 
     # *Panasonic V-Log* to *ACES*.
-    panasonic_colorSpaces = panasonic.create_colorspaces(lut_directory,
+    panasonic_colorspaces = panasonic.create_colorspaces(lut_directory,
                                                          lut_resolution_1d)
-    for cs in panasonic_colorSpaces:
+    for cs in panasonic_colorspaces:
         config_data['colorSpaces'].append(cs)
 
     # *RED* colorspaces to *ACES*.
@@ -1090,18 +1090,18 @@ def generate_LUTs(odt_info,
         config_data['colorSpaces'].append(cs)
 
     # *S-Log* to *ACES*.
-    sony_colorSpaces = sony.create_colorspaces(lut_directory,
+    sony_colorspaces = sony.create_colorspaces(lut_directory,
                                                lut_resolution_1d)
-    for cs in sony_colorSpaces:
+    for cs in sony_colorspaces:
         config_data['colorSpaces'].append(cs)
 
     # -------------------------------------------------------------------------
     # General Color Spaces
     # -------------------------------------------------------------------------
-    general_colorSpaces = general.create_colorspaces(lut_directory,
+    general_colorspaces = general.create_colorspaces(lut_directory,
                                                      lut_resolution_1d,
                                                      lut_resolution_3d)
-    for cs in general_colorSpaces:
+    for cs in general_colorspaces:
         config_data['colorSpaces'].append(cs)
 
     # The *Raw* color space
@@ -1290,7 +1290,7 @@ def generate_baked_LUTs(odt_info,
 
 
 def create_config_dir(config_directory,
-                      bake_secondary_LUTs=False,
+                      bake_secondary_luts=False,
                       custom_lut_dir=None):
     """
     Object description.
@@ -1309,7 +1309,7 @@ def create_config_dir(config_directory,
     lut_directory = os.path.join(config_directory, 'luts')
     dirs = [config_directory, lut_directory]
 
-    if bake_secondary_LUTs:
+    if bake_secondary_luts:
         dirs.extend([os.path.join(config_directory, 'baked'),
                      os.path.join(config_directory, 'baked', 'flame'),
                      os.path.join(config_directory, 'baked', 'photoshop'),
@@ -1330,7 +1330,7 @@ def create_ACES_config(aces_ctl_directory,
                        config_directory,
                        lut_resolution_1d=4096,
                        lut_resolution_3d=64,
-                       bake_secondary_LUTs=True,
+                       bake_secondary_luts=True,
                        multiple_displays=False,
                        look_info=None,
                        copy_custom_luts=True,
@@ -1359,7 +1359,7 @@ def create_ACES_config(aces_ctl_directory,
         custom_lut_dir = os.path.join(config_directory, 'custom')
 
     lut_directory = create_config_dir(config_directory,
-                                      bake_secondary_LUTs,
+                                      bake_secondary_luts,
                                       custom_lut_dir)
 
     odt_info = aces.get_ODTs_info(aces_ctl_directory)
@@ -1387,7 +1387,7 @@ def create_ACES_config(aces_ctl_directory,
     write_config(config,
                  os.path.join(config_directory, 'config.ocio'))
 
-    if bake_secondary_LUTs:
+    if bake_secondary_luts:
         generate_baked_LUTs(odt_info,
                             shaper_name,
                             os.path.join(config_directory, 'baked'),

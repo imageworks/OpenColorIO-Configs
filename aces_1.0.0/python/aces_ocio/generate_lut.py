@@ -10,7 +10,6 @@ from __future__ import division
 
 import array
 import os
-import sys
 
 import OpenImageIO as oiio
 

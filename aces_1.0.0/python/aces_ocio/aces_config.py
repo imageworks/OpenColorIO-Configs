@@ -313,7 +313,7 @@ def add_colorspace_aliases(config,
         if alias_name.lower() == colorspace.name.lower():
             print('Skipping alias creation for %s, alias %s, '
                   'because lower cased names match' % (
-                colorspace.name, alias_name))
+                      colorspace.name, alias_name))
             continue
 
         print('Adding alias colorspace space %s, alias to %s' % (
@@ -518,7 +518,7 @@ def integrate_looks_into_views(looks,
 
                     look_names_string = ', '.join(look_names)
                     output_colorspace_c.name = '%s with %s' % (
-                    output_colorspace.name, look_names_string)
+                        output_colorspace.name, look_names_string)
                     output_colorspace_c.aliases = [
                         'out_%s' % compact(output_colorspace_c.name)]
 
@@ -883,7 +883,7 @@ def create_config(config_data,
                     if 'with' in view_name:
                         # Integrate looks into view name
                         display_cleaned = '%s with %s' % (
-                        display_cleaned, look_names)
+                            display_cleaned, look_names)
 
                         views_with_looks_at_end = False
                         # Storing combo of display, view and colorspace name

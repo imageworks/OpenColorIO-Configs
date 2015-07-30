@@ -531,14 +531,14 @@ def create_generic_log(aces_ctl_directory,
 # *base Dolby PQ Transform*
 # -------------------------------------------------------------------------
 def create_Dolby_PQ(aces_ctl_directory,
-                   lut_directory,
-                   lut_resolution_1d,
-                   cleanup,
-                   name='pq',
-                   aliases=None,
-                   min_value=0.0,
-                   max_value=1.0,
-                   input_scale=1.0):
+                    lut_directory,
+                    lut_resolution_1d,
+                    cleanup,
+                    name='pq',
+                    aliases=None,
+                    min_value=0.0,
+                    max_value=1.0,
+                    input_scale=1.0):
     if aliases is None:
         aliases = []
 
@@ -585,17 +585,17 @@ def create_Dolby_PQ(aces_ctl_directory,
 # *Dolby PQ Transform that considers a fixed linear range*
 # -------------------------------------------------------------------------
 def create_Dolby_PQ_scaled(aces_ctl_directory,
-                          lut_directory,
-                          lut_resolution_1d,
-                          cleanup,
-                          name='pq',
-                          aliases=None,
-                          min_value=0.0,
-                          max_value=1.0,
-                          input_scale=1.0,
-                          middle_grey=0.18,
-                          min_exposure=-6.0,
-                          max_exposure=6.5):
+                           lut_directory,
+                           lut_resolution_1d,
+                           cleanup,
+                           name='pq',
+                           aliases=None,
+                           min_value=0.0,
+                           max_value=1.0,
+                           input_scale=1.0,
+                           middle_grey=0.18,
+                           min_exposure=-6.0,
+                           max_exposure=6.5):
     if aliases is None:
         aliases = []
 

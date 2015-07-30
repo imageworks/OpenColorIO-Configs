@@ -166,7 +166,7 @@ def create_ACEScc(aces_ctl_directory,
         'interpolation': 'linear',
         'direction': 'forward'})
 
-    # *AP1* primaries to *AP0* primaries.
+    # *AP1* primaries to *AP0* primaries
     cs.to_reference_transforms.append({
         'type': 'matrix',
         'matrix': mat44_from_mat33(ACES_AP1_TO_AP0),
@@ -238,7 +238,7 @@ def create_ACESproxy(aces_ctl_directory,
         'interpolation': 'linear',
         'direction': 'forward'})
 
-    # *AP1* primaries to *AP0* primaries.
+    # *AP1* primaries to *AP0* primaries
     cs.to_reference_transforms.append({
         'type': 'matrix',
         'matrix': mat44_from_mat33(ACES_AP1_TO_AP0),
@@ -281,7 +281,7 @@ def create_ACEScg():
 
     cs.to_reference_transforms = []
 
-    # *AP1* primaries to *AP0* primaries.
+    # *AP1* primaries to *AP0* primaries
     cs.to_reference_transforms.append({
         'type': 'matrix',
         'matrix': mat44_from_mat33(ACES_AP1_TO_AP0),
@@ -289,7 +289,7 @@ def create_ACEScg():
 
     cs.from_reference_transforms = []
 
-    # *AP1* primaries to *AP0* primaries.
+    # *AP1* primaries to *AP0* primaries
     cs.from_reference_transforms.append({
         'type': 'matrix',
         'matrix': mat44_from_mat33(ACES_AP0_TO_AP1),
@@ -354,7 +354,8 @@ def create_ADX(lut_directory,
         'offset': offset,
         'direction': 'forward'})
 
-    # Convert from Channel-Dependent Density to Channel-Independent Density
+    # Converting from *Channel-Dependent Density* to
+    # *Channel-Independent Density*.
     cs.to_reference_transforms.append({
         'type': 'matrix',
         'matrix': [0.75573, 0.22197, 0.02230, 0,
@@ -454,7 +455,7 @@ def create_ADX(lut_directory,
 
 
 # -------------------------------------------------------------------------
-# *Generic Log Transform*
+# Generic *Log* Transform
 # -------------------------------------------------------------------------
 def create_generic_log(aces_ctl_directory,
                        lut_directory,
@@ -528,7 +529,7 @@ def create_generic_log(aces_ctl_directory,
 
 
 # -------------------------------------------------------------------------
-# *base Dolby PQ Transform*
+# Base *Dolby PQ* Transform
 # -------------------------------------------------------------------------
 def create_Dolby_PQ(aces_ctl_directory,
                     lut_directory,
@@ -582,7 +583,7 @@ def create_Dolby_PQ(aces_ctl_directory,
 
 
 # -------------------------------------------------------------------------
-# *Dolby PQ Transform that considers a fixed linear range*
+# *Dolby PQ* Transform - Fixed Linear Range
 # -------------------------------------------------------------------------
 def create_Dolby_PQ_scaled(aces_ctl_directory,
                            lut_directory,
@@ -641,7 +642,7 @@ def create_Dolby_PQ_scaled(aces_ctl_directory,
 
 
 # -------------------------------------------------------------------------
-# *Individual LMT*
+# Individual *LMT*
 # -------------------------------------------------------------------------
 def create_ACES_LMT(lmt_name,
                     lmt_values,
@@ -687,7 +688,6 @@ def create_ACES_LMT(lmt_name,
      shaper_input_scale,
      shaper_params) = shaper_info
 
-    # Add the shaper transform
     shaper_lut = '%s_to_linear.spi1d' % shaper_name
     shaper_lut = sanitize(shaper_lut)
 
@@ -898,7 +898,6 @@ def create_ACES_RRT_plus_ODT(odt_name,
     else:
         shaper_params['legalRange'] = 0
 
-    # Add the shaper transform
     shaper_lut = '%s_to_linear.spi1d' % shaper_name
     shaper_lut = sanitize(shaper_lut)
 
@@ -938,7 +937,6 @@ def create_ACES_RRT_plus_ODT(odt_name,
 
         generate_3d_LUT_from_CTL(
             os.path.join(lut_directory, lut),
-            # shaperLUT,
             ctls,
             lut_resolution_3d,
             'float',
@@ -987,7 +985,6 @@ def create_ACES_RRT_plus_ODT(odt_name,
 
         generate_3d_LUT_from_CTL(
             os.path.join(lut_directory, lut),
-            # None,
             ctls,
             lut_resolution_3d,
             'half',
@@ -1111,7 +1108,7 @@ def create_ODTs(aces_ctl_directory,
     log2_shaper_api1_colorspace.from_reference_transforms = list(
         log2_shaper_colorspace.from_reference_transforms)
 
-    # *AP1* primaries to *AP0* primaries.
+    # *AP1* primaries to *AP0* primaries
     log2_shaper_api1_colorspace.to_reference_transforms.append({
         'type': 'matrix',
         'matrix': mat44_from_mat33(ACES_AP1_TO_AP0),
@@ -1119,8 +1116,8 @@ def create_ODTs(aces_ctl_directory,
     })
     colorspaces.append(log2_shaper_api1_colorspace)
 
-    # Defining the *Log2 shaper that includes the AP1* primaries.
-    # Named with 'shaper_name' variable. Needed for some LUT baking steps.
+    # Defining the *Log2* shaper that includes the *AP1* primaries.
+    # Named with `shaper_name` variable and needed for some *LUT* baking steps.
     shaper_api1_name = '%s - AP1' % shaper_name
     shaper_api1_colorspace = ColorSpace(shaper_api1_name)
     shaper_api1_colorspace.description = (
@@ -1137,7 +1134,7 @@ def create_ODTs(aces_ctl_directory,
 
     # Define the base *Dolby PQ Shaper*
     #
-    dolbypq_shaper_name = 'Dolby PQ 10000'
+    dolby_pq_shaper_name = 'Dolby PQ 10000'
     dolbypq_shaper_name_aliases = ['crv_%s' % 'dolbypq_10000']
 
     dolbypq_shaper_colorspace = create_Dolby_PQ(
@@ -1145,13 +1142,13 @@ def create_ODTs(aces_ctl_directory,
         lut_directory,
         lut_resolution_1d,
         cleanup,
-        name=dolbypq_shaper_name,
+        name=dolby_pq_shaper_name,
         aliases=dolbypq_shaper_name_aliases)
     colorspaces.append(dolbypq_shaper_colorspace)
 
     # *Dolby PQ* shaper name and *CTL* transforms bundled up.
     dolbypq_shaper_data = [
-        dolbypq_shaper_name,
+        dolby_pq_shaper_name,
         os.path.join('%s',
                      'utilities',
                      'ACESlib.DolbyPQ_to_Lin.a1.0.0.ctl'),
@@ -1161,11 +1158,10 @@ def create_ODTs(aces_ctl_directory,
         1.0,
         {}]
 
-    shaper_data[dolbypq_shaper_name] = dolbypq_shaper_data
+    shaper_data[dolby_pq_shaper_name] = dolbypq_shaper_data
 
     # Define the *Dolby PQ Shaper that considers a fixed linear range*
-    #
-    dolbypq_scaled_shaper_name = 'Dolby PQ Scaled'
+    dolby_pq_scaled_shaper_name = 'Dolby PQ Scaled'
     dolbypq_scaled_shaper_name_aliases = ['crv_%s' % 'dolbypq_scaled']
 
     dolbypq_scaled_shaper_colorspace = create_Dolby_PQ_scaled(
@@ -1173,13 +1169,13 @@ def create_ODTs(aces_ctl_directory,
         lut_directory,
         lut_resolution_1d,
         cleanup,
-        name=dolbypq_scaled_shaper_name,
+        name=dolby_pq_scaled_shaper_name,
         aliases=dolbypq_scaled_shaper_name_aliases)
     colorspaces.append(dolbypq_scaled_shaper_colorspace)
 
     # *Dolby PQ* shaper name and *CTL* transforms bundled up.
     dolbypq_scaled_shaper_data = [
-        dolbypq_scaled_shaper_name,
+        dolby_pq_scaled_shaper_name,
         os.path.join('%s',
                      'utilities',
                      'ACESlib.DolbyPQ_to_Lin_param.a1.0.0.ctl'),
@@ -1189,11 +1185,8 @@ def create_ODTs(aces_ctl_directory,
         1.0,
         log2_params]
 
-    shaper_data[dolbypq_scaled_shaper_name] = dolbypq_scaled_shaper_data
+    shaper_data[dolby_pq_scaled_shaper_name] = dolbypq_scaled_shaper_data
 
-    #
-    # Pick a specific shaper
-    #
     rrt_shaper = log2_shaper_data
     # rrt_shaper = dolbypq_scaled_shaper_data
 
@@ -1203,12 +1196,12 @@ def create_ODTs(aces_ctl_directory,
     for odt in sorted_odts:
         (odt_name, odt_values) = odt
 
-        # Generating only full range transform for *ODTs* that can generate 
+        # Defining full range transform for *ODTs* that can only generate
         # either *legal* or *full* output.
 
         # Uncomment these lines and the lower section and
-        # flip the 'legalRange' value to 1 to recover the old behavior,
-        # where both legal and full range LUTs were generated.
+        # flip the `legalRange` value to 1 to restore the old behavior,
+        # where both *legal* or *full* range *LUTs* were generated.
         if odt_values['transformHasFullLegalSwitch']:
             # odt_name_legal = '%s - Legal' % odt_values['transformUserName']
             odt_legal['legalRange'] = 0
@@ -1295,8 +1288,8 @@ def get_transform_info(ctl_transform):
     transform_user_name_prefix = (
         lines[2][3:].split('<')[1].split('>')[1].split('-')[0].strip())
 
-    # Figuring out if this transform has options
-    # for processing full and legal range.
+    # Figuring out if this transform has options for processing *full* and
+    # *legal* ranges.
     transform_full_legal_switch = False
     for line in lines:
         if line.strip() == 'input varying int legalRange = 0':
@@ -1348,7 +1341,7 @@ def get_ODTs_info(aces_ctl_directory):
             odt_path_tokens = os.path.split(odt_path_tokens[-2])
             odt_dir = os.path.join(odt_path_tokens[-1], odt_dir)
 
-        # Building full name,
+        # Building full name.
         transform_ctl = odt_tokens[-1]
         odt_name = string.join(transform_ctl.split('.')[1:-1], '.')
 
@@ -1365,7 +1358,7 @@ def get_ODTs_info(aces_ctl_directory):
                 os.path.join(odt_tokens[-2], transform_ctl_inverse)):
             transform_ctl_inverse = None
 
-        # Add to list of ODTs
+        # Adding to list of *ODTs*.
         odts[odt_name] = {}
         odts[odt_name]['transformCTL'] = os.path.join(odt_dir, transform_ctl)
         if transform_ctl_inverse is not None:
@@ -1548,7 +1541,7 @@ def create_colorspaces(aces_ctl_directory,
                                  ACEScc)
     colorspaces.extend(odts)
 
-    # Wish there was an automatic way to get this from the CTL
+    # TODO: Investigate if there is a way to retrieve the value from *CTL*.
     default_display = 'sRGB (D60 sim.)'
 
     roles = {'color_picking': ACEScg.name,

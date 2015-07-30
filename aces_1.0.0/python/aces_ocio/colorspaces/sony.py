@@ -65,7 +65,7 @@ def create_S_Log(gamut,
             transfer_function.replace('-', ''),
             gamut.replace('-', '').replace(' ', '_'))
 
-    # A linear space needs allocation variables
+    # A linear space needs allocation variables.
     if transfer_function == '':
         cs.allocation_type = ocio.Constants.ALLOCATION_LG2
         cs.allocation_vars = [-8, 5, 0.00390625]

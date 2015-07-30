@@ -64,7 +64,7 @@ def create_matrix_colorspace(name='matrix',
     cs.family = 'Utility'
     cs.is_data = False
 
-    # A linear space needs allocation variables
+    # A linear space needs allocation variables.
     cs.allocation_type = ocio.Constants.ALLOCATION_UNIFORM
     cs.allocation_vars = [0, 1]
 
@@ -120,16 +120,16 @@ def create_transfer_colorspace(name='transfer',
     cs.family = 'Utility'
     cs.is_data = False
 
-    # A linear space needs allocation variables
+    # A linear space needs allocation variables.
     cs.allocation_type = ocio.Constants.ALLOCATION_UNIFORM
     cs.allocation_vars = [0, 1]
 
-    # Sample the transfer function
+    # Sampling the transfer function.
     data = array.array('f', '\0' * lut_resolution_1d * 4)
     for c in range(lut_resolution_1d):
         data[c] = transfer_function(c / (lut_resolution_1d - 1))
 
-    # Write the sampled data to a LUT
+    # Writing the sampled data to a *LUT*.
     lut = '%s_to_linear.spi1d' % transfer_function_name
     genlut.write_SPI_1d(
         os.path.join(lut_directory, lut),
@@ -139,7 +139,7 @@ def create_transfer_colorspace(name='transfer',
         lut_resolution_1d,
         1)
 
-    # Create the 'to_reference' transforms
+    # Creating the *to_reference* transforms.
     cs.to_reference_transforms = []
     cs.to_reference_transforms.append({
         'type': 'lutFile',
@@ -147,13 +147,11 @@ def create_transfer_colorspace(name='transfer',
         'interpolation': 'linear',
         'direction': 'forward'})
 
-    # Create the 'from_reference' transforms
+    # Creating the *from_reference* transforms.
     cs.from_reference_transforms = []
 
     return cs
 
-
-# create_transfer_colorspace
 
 # -------------------------------------------------------------------------
 # *Transfer Function + Matrix Transform*
@@ -197,16 +195,16 @@ def create_matrix_plus_transfer_colorspace(
     cs.family = 'Utility'
     cs.is_data = False
 
-    # A linear space needs allocation variables
+    # A linear space needs allocation variables.
     cs.allocation_type = ocio.Constants.ALLOCATION_UNIFORM
     cs.allocation_vars = [0, 1]
 
-    # Sample the transfer function
+    # Sampling the transfer function.
     data = array.array('f', '\0' * lut_resolution_1d * 4)
     for c in range(lut_resolution_1d):
         data[c] = transfer_function(c / (lut_resolution_1d - 1))
 
-    # Write the sampled data to a LUT
+    # Writing the sampled data to a *LUT*.
     lut = '%s_to_linear.spi1d' % transfer_function_name
     genlut.write_SPI_1d(
         os.path.join(lut_directory, lut),
@@ -216,7 +214,7 @@ def create_matrix_plus_transfer_colorspace(
         lut_resolution_1d,
         1)
 
-    # Create the 'to_reference' transforms
+    # Creating the *to_reference* transforms.
     cs.to_reference_transforms = []
     if to_reference_values:
         cs.to_reference_transforms.append({
@@ -231,7 +229,7 @@ def create_matrix_plus_transfer_colorspace(
                 'matrix': mat44_from_mat33(matrix),
                 'direction': 'forward'})
 
-    # Create the 'from_reference' transforms
+    # Creating the *from_reference* transforms.
     cs.from_reference_transforms = []
     if from_reference_values:
         for matrix in from_reference_values:
@@ -249,9 +247,7 @@ def create_matrix_plus_transfer_colorspace(
     return cs
 
 
-# create_matrix_plus_transfer_colorspace
-
-# Transfer functions for standard color spaces
+# Transfer functions for standard colorspaces.
 def transfer_function_sRGB_to_linear(v):
     a = 1.055
     b = 0.04045
@@ -304,7 +300,7 @@ def transfer_function_Rec1886_to_linear(v):
     Lw = 1
     Lb = 0
 
-    # Ignoring legal to full scaling for now
+    # Ignoring legal to full scaling for now.
     # v = (1023.0*v - 64.0)/876.0
 
     t = pow(Lw, 1.0 / g) - pow(Lb, 1.0 / g)
@@ -332,19 +328,19 @@ def create_colorspaces(lut_directory,
 
     colorspaces = []
 
-    #
+    # -------------------------------------------------------------------------
     # XYZ
-    #
+    # -------------------------------------------------------------------------
     cs = create_matrix_colorspace('XYZ-D60',
                                   to_reference_values=[aces.ACES_XYZ_TO_AP0],
                                   from_reference_values=[aces.ACES_AP0_TO_XYZ],
                                   aliases=['lin_xyz_d60'])
     colorspaces.append(cs)
 
-    #
+    # -------------------------------------------------------------------------
     # P3-D60
-    #
-    # *ACES* to *Linear*, *P3D60* primaries.
+    # -------------------------------------------------------------------------
+    # *ACES* to *Linear*, *P3D60* primaries
     XYZ_to_P3D60 = [2.4027414142, -0.8974841639, -0.3880533700,
                     -0.8325796487, 1.7692317536, 0.0237127115,
                     0.0388233815, -0.0824996856, 1.0363685997]
@@ -355,10 +351,10 @@ def create_colorspaces(lut_directory,
         aliases=['lin_p3d60'])
     colorspaces.append(cs)
 
-    #
+    # -------------------------------------------------------------------------
     # P3-DCI
-    #
-    # *ACES* to *Linear*, *P3DCI* primaries.
+    # -------------------------------------------------------------------------
+    # *ACES* to *Linear*, *P3DCI* primaries
     XYZ_to_P3DCI = [2.7253940305, -1.0180030062, -0.4401631952,
                     -0.7951680258, 1.6897320548, 0.0226471906,
                     0.0412418914, -0.0876390192, 1.1009293786]
@@ -369,11 +365,11 @@ def create_colorspaces(lut_directory,
         aliases=['lin_p3dci'])
     colorspaces.append(cs)
 
-    #
+    # -------------------------------------------------------------------------
     # sRGB
-    #
+    # -------------------------------------------------------------------------
     # *ACES* to *Linear*, *Rec. 709* primaries.
-    # sRGB and Rec 709 use the same gamut
+    # *sRGB* and *Rec 709* use the same gamut.
     XYZ_to_Rec709 = [3.2409699419, -1.5373831776, -0.4986107603,
                      -0.9692436363, 1.8759675015, 0.0415550574,
                      0.0556300797, -0.2039769589, 1.0569715142]
@@ -405,10 +401,10 @@ def create_colorspaces(lut_directory,
         aliases=['srgb'])
     colorspaces.append(cs)
 
-    #
+    # -------------------------------------------------------------------------
     # Rec 709
-    #
-    # *ACES* to *Linear*, *Rec. 709* primaries.
+    # -------------------------------------------------------------------------
+    # *ACES* to *Linear*, *Rec. 709* primaries
     XYZ_to_Rec709 = [3.2409699419, -1.5373831776, -0.4986107603,
                      -0.9692436363, 1.8759675015, 0.0415550574,
                      0.0556300797, -0.2039769589, 1.0569715142]
@@ -440,10 +436,10 @@ def create_colorspaces(lut_directory,
         aliases=['rec709_camera'])
     colorspaces.append(cs)
 
-    #
+    # -------------------------------------------------------------------------
     # Rec 2020
-    #
-    # *ACES* to *Linear*, *Rec. 2020* primaries.
+    # -------------------------------------------------------------------------
+    # *ACES* to *Linear*, *Rec. 2020* primaries
     XYZ_to_Rec2020 = [1.7166511880, -0.3556707838, -0.2533662814,
                       -0.6666843518, 1.6164812366, 0.0157685458,
                       0.0176398574, -0.0427706133, 0.9421031212]
@@ -475,10 +471,9 @@ def create_colorspaces(lut_directory,
         aliases=['rec2020_camera'])
     colorspaces.append(cs)
 
-    #
+    # -------------------------------------------------------------------------
     # Rec 1886
-    #
-
+    # -------------------------------------------------------------------------
     # *Linear* to *Rec.1886* Transfer Function*
     cs = create_transfer_colorspace(
         'Curve - Rec.1886',
@@ -511,10 +506,10 @@ def create_colorspaces(lut_directory,
         aliases=['rec2020_display'])
     colorspaces.append(cs)
 
-    #
+    # -------------------------------------------------------------------------
     # ProPhoto
-    #
-    # *ACES* to *Linear*, *Pro Photo* primaries.
+    # -------------------------------------------------------------------------
+    # *ACES* to *Linear*, *Pro Photo* primaries
     AP0_to_RIMM = [1.2412367771, -0.1685692287, -0.0726675484,
                    0.0061203066, 1.083151174, -0.0892714806,
                    -0.0032853314, 0.0099796402, 0.9933056912]
@@ -525,10 +520,10 @@ def create_colorspaces(lut_directory,
         aliases=['lin_prophoto', 'lin_rimm'])
     colorspaces.append(cs)
 
-    #
+    # -------------------------------------------------------------------------
     # Adobe RGB
-    #
-    # *ACES* to *Linear*, *Adobe RGB* primaries.
+    # -------------------------------------------------------------------------
+    # *ACES* to *Linear*, *Adobe RGB* primaries
     AP0_to_ADOBERGB = [1.7245603168, -0.4199935942, -0.3045667227,
                        -0.2764799142, 1.3727190877, -0.0962391734,
                        -0.0261255258, -0.0901747807, 1.1163003065]
@@ -539,11 +534,10 @@ def create_colorspaces(lut_directory,
         aliases=['lin_adobergb'])
     colorspaces.append(cs)
 
-    #
+    # -------------------------------------------------------------------------
     # Adobe Wide Gamut RGB
-    #
-
-    # *ACES* to *Linear*, *Adobe Wide Gamut RGB* primaries.
+    # -------------------------------------------------------------------------
+    # *ACES* to *Linear*, *Adobe Wide Gamut RGB* primaries
     AP0_to_ADOBERGB = [1.3809814778, -0.1158594573, -0.2651220205,
                        0.0057015535, 1.0402949043, -0.0459964578,
                        -0.0038908746, -0.0597091815, 1.0636000561]

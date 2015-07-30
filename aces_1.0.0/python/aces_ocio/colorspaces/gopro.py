@@ -47,8 +47,8 @@ def create_protune(gamut,
          Return value description.
     """
 
-    # The gamut should be marked as experimental until
-    # matrices are fully verified
+    # The gamut should be marked as experimental until  matrices are fully
+    # verified.
     name = '%s - %s - Experimental' % (transfer_function, gamut)
     if transfer_function == '':
         name = 'Linear - %s - Experimental' % gamut
@@ -62,7 +62,7 @@ def create_protune(gamut,
     cs.family = 'Input/GoPro'
     cs.is_data = False
 
-    # A linear space needs allocation variables
+    # A linear space needs allocation variables.
     if transfer_function == '':
         cs.allocation_type = ocio.Constants.ALLOCATION_LG2
         cs.allocation_vars = [-8, 5, 0.00390625]

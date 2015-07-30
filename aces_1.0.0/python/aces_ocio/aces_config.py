@@ -115,8 +115,8 @@ def set_config_default_roles(config,
     if texture_paint:
         config.setRole(ocio.Constants.ROLE_TEXTURE_PAINT, texture_paint)
 
-    # 'rendering' and 'compositing_linear' roles default to the 'scene_linear'
-    # value if not set explicitly
+    # *rendering* and *compositing_linear* roles default to the *scene_linear*
+    # value if not set explicitly.
     if rendering:
         config.setRole('rendering', rendering)
     if compositing_linear:
@@ -181,9 +181,8 @@ def generate_OCIO_transform(transforms):
 
     for transform in transforms:
 
-        # lutFile transform
+        # *lutFile* transform
         if transform['type'] == 'lutFile':
-            # Create transforms
             ocio_transform = ocio.FileTransform()
 
             if 'path' in transform:
@@ -203,11 +202,11 @@ def generate_OCIO_transform(transforms):
 
             ocio_transforms.append(ocio_transform)
 
-        # matrix transform
+        # *matrix* transform
         elif transform['type'] == 'matrix':
             ocio_transform = ocio.MatrixTransform()
-            # MatrixTransform member variables can't be initialized directly.
-            # Each must be set individually.
+            # `MatrixTransform` member variables can't be initialized directly,
+            # each must be set individually.
             ocio_transform.setMatrix(transform['matrix'])
 
             if 'offset' in transform:
@@ -219,7 +218,7 @@ def generate_OCIO_transform(transforms):
 
             ocio_transforms.append(ocio_transform)
 
-        # exponent transform
+        # *exponent* transform
         elif transform['type'] == 'exponent':
             ocio_transform = ocio.ExponentTransform()
 
@@ -228,7 +227,7 @@ def generate_OCIO_transform(transforms):
 
             ocio_transforms.append(ocio_transform)
 
-        # log transform
+        # *log* transform
         elif transform['type'] == 'log':
             ocio_transform = ocio.LogTransform()
 
@@ -241,7 +240,7 @@ def generate_OCIO_transform(transforms):
 
             ocio_transforms.append(ocio_transform)
 
-        # color space transform
+        # *colorspace* transform
         elif transform['type'] == 'colorspace':
             ocio_transform = ocio.ColorSpaceTransform()
 
@@ -257,7 +256,7 @@ def generate_OCIO_transform(transforms):
 
             ocio_transforms.append(ocio_transform)
 
-        # look transform
+        # *look* transform
         elif transform['type'] == 'look':
             ocio_transform = ocio.LookTransform()
             if 'look' in transform:
@@ -275,7 +274,7 @@ def generate_OCIO_transform(transforms):
 
             ocio_transforms.append(ocio_transform)
 
-        # unknown type
+        # *unknown* type
         else:
             print('Ignoring unknown transform type : %s' % transform['type'])
 
@@ -384,9 +383,7 @@ def add_look(config,
 
     print('Adding look %s - %s' % (look_name, ', '.join(look)))
 
-    #
-    # Copy look lut
-    #
+    # Copy *look LUT* if `custom_lut_dir` is provided.
     if custom_lut_dir:
         if '$' not in look_lut:
             print('Getting ready to copy look lut : %s' % look_lut)
@@ -395,14 +392,10 @@ def add_look(config,
         else:
             print('Skipping LUT copy because path contains a context variable')
 
-    #
-    # Create OCIO Look
-    #
-    # Look 1
     print('Adding look to config')
-    lk1 = ocio.Look()
-    lk1.setName(look_name)
-    lk1.setProcessSpace(look_colorspace)
+    ocio_look = ocio.Look()
+    ocio_look.setName(look_name)
+    ocio_look.setProcessSpace(look_colorspace)
 
     keys = {'type': 'lutFile',
             'path': look_lut,
@@ -411,18 +404,15 @@ def add_look(config,
         keys['cccid'] = look_cccid
 
     ocio_transform = generate_OCIO_transform([keys])
-    lk1.setTransform(ocio_transform)
+    ocio_look.setTransform(ocio_transform)
 
-    # add to config
-    config.addLook(lk1)
+    config.addLook(ocio_look)
 
     print('Creating aliased colorspace')
 
-    #
-    # Create OCIO colorspace that references that look
-    # - Needed for some implementations that don't process looks well
-    # - Also needed for some implementations that don't expose looks well
-    #
+    # Creating *OCIO* colorspace referencing the look:
+    # - Needed for implementations that don't process looks properly.
+    # - Needed for implementations that don't expose looks properly.
     look_aliases = ['look_%s' % compact(look_name)]
     colorspace = ColorSpace(look_name,
                             aliases=look_aliases,
@@ -438,7 +428,6 @@ def add_look(config,
     print('Adding colorspace %s, alias to look %s to config data' % (
         look_name, look_name))
 
-    # Add this colorspace into the main list of colorspaces
     config_data['colorSpaces'].append(colorspace)
 
     print()
@@ -463,50 +452,50 @@ def integrate_looks_into_views(looks,
     """
     look_names = [look[0] for look in looks]
 
-    # Option 1 - Add a 'look' to each Display
-    # - Assumes there is a Display for each ACES Output Transform
+    # Option 1
+    # - Adding a *look* per *Display*.
+    # - Assuming there is a *Display* for each *ACES* *Output Transform*.
     if multiple_displays:
         for look_name in look_names:
             config_data['looks'].append(look_name)
 
     # Option 2
-    # - Copy each Output Transform colorspace
-    # - For each copy, add a LookTransform at the head of the from_reference
-    #     transform list
-    # - Add these new copied colorspaces for the Displays / Views 
+    # - Copy each *Output Transform* colorspace.
+    # - For each copy, add a *LookTransform* to the head of the
+    # `from_reference` transform list.
+    # - Add these the copy colorspaces for the *Displays* / *Views*.
     else:
         for display, view_list in config_data['displays'].iteritems():
-            output_colorspace_c = None
+            colorspace_c = None
             look_names_string = ''
             for view_name, output_colorspace in view_list.iteritems():
                 if view_name == 'Output Transform':
 
                     print('Adding new View that incorporates looks')
 
-                    # Make a copy of the output colorspace
-                    output_colorspace_c = copy.deepcopy(output_colorspace)
+                    colorspace_c = copy.deepcopy(output_colorspace)
 
-                    # for look_name in look_names:
                     for i, look_name in enumerate(look_names):
                         look_name = look_names[i]
 
-                        # Add the LookTransform to the head of the
-                        # from_reference transform list.
-                        if output_colorspace_c.from_reference_transforms:
-                            output_colorspace_c.from_reference_transforms.insert(
-                                i, {'type': 'look',
-                                    'look': look_name,
-                                    'src': reference_name,
-                                    'dst': reference_name,
-                                    'direction': 'forward'})
+                        # Add the `LookTransform` to the head of the
+                        # `from_reference` transform list.
+                        if colorspace_c.from_reference_transforms:
+                            colorspace_c.from_reference_transforms.insert(
+                                i,
+                                {'type': 'look',
+                                 'look': look_name,
+                                 'src': reference_name,
+                                 'dst': reference_name,
+                                 'direction': 'forward'})
 
-                        # Add the LookTransform to the end of
-                        # the to_reference transform list.
-                        if output_colorspace_c.to_reference_transforms:
+                        # Add the `LookTransform` to the end of
+                        # the `to_reference` transform list.
+                        if colorspace_c.to_reference_transforms:
                             inverse_look_name = look_names[
                                 len(look_names) - 1 - i]
 
-                            output_colorspace_c.to_reference_transforms.append(
+                            colorspace_c.to_reference_transforms.append(
                                 {'type': 'look',
                                  'look': inverse_look_name,
                                  'src': reference_name,
@@ -517,27 +506,24 @@ def integrate_looks_into_views(looks,
                             config_data['looks'].append(look_name)
 
                     look_names_string = ', '.join(look_names)
-                    output_colorspace_c.name = '%s with %s' % (
+                    colorspace_c.name = '%s with %s' % (
                         output_colorspace.name, look_names_string)
-                    output_colorspace_c.aliases = [
-                        'out_%s' % compact(output_colorspace_c.name)]
+                    colorspace_c.aliases = [
+                        'out_%s' % compact(colorspace_c.name)]
 
                     print('Colorspace that incorporates looks '
-                          'created : %s' % output_colorspace_c.name)
+                          'created : %s' % colorspace_c.name)
 
-                    config_data['colorSpaces'].append(output_colorspace_c)
+                    config_data['colorSpaces'].append(colorspace_c)
 
-            if output_colorspace_c:
+            if colorspace_c:
                 print('Adding colorspace that incorporates looks '
                       'into view list')
 
-                # Change the name of the View
+                # Updating the *View* name.
                 view_list['Output Transform with %s' % look_names_string] = (
-                    output_colorspace_c)
+                    colorspace_c)
                 config_data['displays'][display] = view_list
-
-                # print('Display : %s, View List : %s' % (
-                # display, ', '.join(view_list)) )
 
 
 def create_config(config_data,
@@ -566,23 +552,19 @@ def create_config(config_data,
     prefixed_names = {}
     alias_colorspaces = []
 
-    # Creating the *OCIO* configuration.
     config = ocio.Config()
 
-    # Setting configuration description.
     config.setDescription('An ACES config generated from python')
 
-    # Setting configuration search path.
     search_path = ['luts']
     if custom_lut_dir:
         search_path.append('custom')
     config.setSearchPath(':'.join(search_path))
 
-    # Defining the reference colorspace.
     reference_data = config_data['referenceColorSpace']
 
-    # Adding the color space Family into the name
-    # Helps with applications that present colorspaces as one long list
+    # Adding the colorspace *Family* into the name which helps with
+    # applications that presenting colorspaces as one a flat list.
     if prefix:
         prefixed_name = colorspace_prefixed_name(reference_data)
         prefixed_names[reference_data.name] = prefixed_name
@@ -602,30 +584,21 @@ def create_config(config_data,
 
     config.addColorSpace(reference)
 
-    # Add alias
     if aliases:
         if reference_data.aliases:
-            # add_colorspace_alias(config, reference_data,
-            #                     reference_data, reference_data.aliases)
-            # defer adding alias colorspaces until end.
-            # Helps with some applications.
+            # TODO: Explain context for following comment.
+            # Deferring adding alias colorspaces until end, which helps with
+            # some applications.
             alias_colorspaces.append(
                 [reference_data, reference_data, reference_data.aliases])
 
     print()
 
-    # print('color spaces : %s' % [
-    # x.name for x in sorted(config_data['colorSpaces'])])
-
-    #
-    # Add Looks and Look colorspaces
-    #
     if look_info:
         print('Adding looks')
 
         config_data['looks'] = []
 
-        # Add looks and colorspaces
         for look in look_info:
             add_look(config,
                      look,
@@ -633,7 +606,6 @@ def create_config(config_data,
                      reference_data.name,
                      config_data)
 
-        # Integrate looks with displays, views
         integrate_looks_into_views(look_info,
                                    reference_data.name,
                                    config_data,
@@ -641,12 +613,11 @@ def create_config(config_data,
 
         print()
 
-    print('Adding the regular color spaces')
+    print('Adding regular colorspaces')
 
-    # Creating the remaining colorspaces.
     for colorspace in sorted(config_data['colorSpaces']):
-        # Adding the color space Family into the name
-        # Helps with applications that present colorspaces as one long list
+        # Adding the colorspace *Family* into the name which helps with
+        # applications that presenting colorspaces as one a flat list.
         if prefix:
             prefixed_name = colorspace_prefixed_name(colorspace)
             prefixed_names[colorspace.name] = prefixed_name
@@ -687,15 +658,11 @@ def create_config(config_data,
 
         config.addColorSpace(ocio_colorspace)
 
-        #
-        # Add alias to normal colorspace, using compact name
-        #
         if aliases:
             if colorspace.aliases:
-                # add_colorspace_alias(config, reference_data,
-                #                     colorspace, colorspace.aliases)
-                # defer adding alias colorspaces until end.
-                # Helps with some applications.
+                # TODO: Explain context for following comment.
+                # Deferring adding alias colorspaces until end, which helps
+                # with some applications.
                 alias_colorspaces.append(
                     [reference_data, colorspace, colorspace.aliases])
 
@@ -703,10 +670,9 @@ def create_config(config_data,
 
     print()
 
-    #
-    # We add roles early so we can create alias colorspaces with the names
-    # of the roles before the rest of the colorspace aliases are added
-    # to the config.
+    # Adding roles early so that alias colorspaces can be created
+    # with roles names before remaining colorspace aliases are added
+    # to the configuration.
     print('Setting the roles')
 
     if prefix:
@@ -725,7 +691,8 @@ def create_config(config_data,
             texture_paint=prefixed_names[
                 config_data['roles']['texture_paint']])
 
-        # Not allowed for the moment. role names can not overlap
+        # TODO: Should we remove this dead code path?
+        # Not allowed at the moment as role names can not overlap
         # with colorspace names.
         """
         # Add the aliased colorspaces for each role
@@ -765,7 +732,8 @@ def create_config(config_data,
             scene_linear=config_data['roles']['scene_linear'],
             texture_paint=config_data['roles']['texture_paint'])
 
-        # Not allowed for the moment. role names can not overlap
+        # TODO: Should we remove this dead code path?
+        # Not allowed at the moment as role names can not overlap
         # with colorspace names.
         """
         # Add the aliased colorspaces for each role
@@ -782,7 +750,7 @@ def create_config(config_data,
                     role_colorspace = reference_data
 
             if role_colorspace:
-                print( 'Adding an alias colorspace named %s, pointing to %s' % (
+                print('Adding an alias colorspace named %s, pointing to %s' % (
                     role_name, role_colorspace.name))
 
                 add_colorspace_aliases(
@@ -791,11 +759,12 @@ def create_config(config_data,
 
     print()
 
-    # We add these at the end as some applications use the order of the
-    # colorspaces definitions in the config to order the colorspaces
-    # in their selection lists.
-    # Other go alphabetically. This should keep the alias colorspaces out
-    # of the way for the apps that use the order of definition in the config.
+    # Adding alias colorspaces at the end as some applications use
+    # colorspaces definitions order of the configuration to order
+    # the colorspaces in their selection lists, some applications
+    # use alphabetical ordering.
+    # This should keep the alias colorspaces out of the way for applications
+    # using the configuration order.
     print('Adding the alias colorspaces')
     for reference, colorspace, aliases in alias_colorspaces:
         add_colorspace_aliases(config, reference, colorspace, aliases)
@@ -804,8 +773,8 @@ def create_config(config_data,
 
     print('Adding the diplays and views')
 
-    # Set the color_picking role to be
-    # the first Display's Output Transform View.
+    # Setting the *color_picking* role to be the first *Display*'s
+    # *Output Transform* *View*.
     default_display_name = config_data['defaultDisplay']
     default_display_views = config_data['displays'][default_display_name]
     default_display_colorspace = default_display_views['Output Transform']
@@ -814,30 +783,26 @@ def create_config(config_data,
         config,
         color_picking=default_display_colorspace.name)
 
-    # Defining the *views* and *displays*.
-    displays = []
-    views = []
+    # Defining *Displays* and *Views*.
+    displays, views = [], []
 
-    # Defining a *generic* *display* and *view* setup.
+    # Defining a generic *Display* and *View* setup.
     if multiple_displays:
-        # Built list of looks to add to Displays
         looks = config_data['looks'] if ('looks' in config_data) else []
         looks = ', '.join(looks)
         print('Creating multiple displays, with looks : %s' % looks)
 
-        # Note: We don't reorder the Displays to put the 'defaultDisplay' first
-        # because OCIO will order them alphabetically
-        # when the config is written to disk.
-
-        # Create Displays, Views
+        # *Displays* are not reordered to put the *defaultDisplay* first
+        # because *OCIO* will order them alphabetically when the configuration
+        # is written to disk.
         for display, view_list in config_data['displays'].iteritems():
             for view_name, colorspace in view_list.iteritems():
                 config.addDisplay(display, view_name, colorspace.name, looks)
                 if 'Output Transform' in view_name and looks != '':
-                    # Add normal View, without looks
+                    # *Views* without *Looks*.
                     config.addDisplay(display, view_name, colorspace.name)
 
-                    # Add View with looks
+                    # *Views* with *Looks*.
                     view_name_with_looks = '%s with %s' % (view_name, looks)
                     config.addDisplay(display, view_name_with_looks,
                                       colorspace.name, looks)
@@ -847,96 +812,84 @@ def create_config(config_data,
                     views.append(view_name)
             displays.append(display)
 
-    # Defining the set of *views* and *displays* useful in a *GUI* context.
+    # *Displays* and *Views* useful in a *GUI* context.
     else:
         single_display_name = 'ACES'
-        # single_display_name = config_data['roles']['scene_linear']
         displays.append(single_display_name)
 
-        # Make sure the default display is first
+        # Ensuring the *defaultDisplay* is first.
         display_names = sorted(config_data['displays'])
         display_names.insert(0, display_names.pop(
             display_names.index(default_display_name)))
 
-        # Built list of looks to add to Displays
         looks = config_data['looks'] if ('looks' in config_data) else []
         look_names = ', '.join(looks)
 
         displays_views_colorspaces = []
 
-        # Create Displays, Views
         for display in display_names:
             view_list = config_data['displays'][display]
             for view_name, colorspace in view_list.iteritems():
                 if 'Output Transform' in view_name:
-                    # print( 'Adding view for %s' % colorspace.name )
 
-                    # We use the Display names as the View names in this case
-                    # as there is a single Display that contains all views.
-                    # This works for more applications than not,
-                    # as of the time of this implementation.
+                    # We use the *Display* names as the *View* names in this
+                    # case as there is a single *Display* containing all the
+                    # *Views*.
+                    # This works for more applications than not,as of the time
+                    # of this implementation.
 
-                    # Maya 2016 doesn't like parentheses in View names
-                    display_cleaned = replace(display, {')': '', '(': ''})
+                    # Autodesk Maya 2016 doesn't support parentheses in
+                    # *View* names.
+                    sanitised_display = replace(display, {')': '', '(': ''})
 
-                    # If View includes looks
+                    # *View* with *Looks*.
                     if 'with' in view_name:
-                        # Integrate looks into view name
-                        display_cleaned = '%s with %s' % (
-                            display_cleaned, look_names)
+                        sanitised_display = '%s with %s' % (
+                            sanitised_display, look_names)
 
                         views_with_looks_at_end = False
-                        # Storing combo of display, view and colorspace name
-                        # in a list so we can add them to the end of the list.
+                        # Storing combo of *Display*, *View* and *Colorspace*
+                        # name so they can be added to the end of the list.
                         if views_with_looks_at_end:
                             displays_views_colorspaces.append(
-                                [single_display_name, display_cleaned,
+                                [single_display_name, sanitised_display,
                                  colorspace.name])
-
-                        # Or add as normal
                         else:
                             config.addDisplay(single_display_name,
-                                              display_cleaned, colorspace.name)
+                                              sanitised_display,
+                                              colorspace.name)
 
-                            # Add to views list
-                            if not (display_cleaned in views):
-                                views.append(display_cleaned)
+                            if not (sanitised_display in views):
+                                views.append(sanitised_display)
 
-                    # A normal View
+                    # *View* without *Looks*.
                     else:
-                        config.addDisplay(single_display_name, display_cleaned,
+                        config.addDisplay(single_display_name,
+                                          sanitised_display,
                                           colorspace.name)
 
-                        # Add to views list
-                        if not (display_cleaned in views):
-                            views.append(display_cleaned)
+                        if not (sanitised_display in views):
+                            views.append(sanitised_display)
 
-        # Add to config any display, view combinations that were saved
-        # for later. This list will be empty unless views_with_looks_at_end is
-        # set to True above.
+        # Adding to the configuration any *Display*, *View* combinations that
+        # were saved for later.
+        # This list should be empty unless `views_with_looks_at_end` is
+        # set `True` above.
         for display_view_colorspace in displays_views_colorspaces:
-            single_display_name, display_cleaned, colorspace_name = (
+            single_display_name, sanitised_display, colorspace_name = (
                 display_view_colorspace)
 
-            # Add to config
-            config.addDisplay(single_display_name, display_cleaned,
+            config.addDisplay(single_display_name,
+                              sanitised_display,
                               colorspace_name)
 
-            # Add to views list
-            if not (display_cleaned in views):
-                views.append(display_cleaned)
-
-
-        # Works with Nuke Studio and Mari, but not Nuke
-        # single_display_name = 'Utility'
-        # displays.append(single_display_name)
+            if not (sanitised_display in views):
+                views.append(sanitised_display)
 
         raw_display_space_name = config_data['roles']['data']
         log_display_space_name = config_data['roles']['compositing_log']
 
-        # Find the newly-prefixed colorspace names
         if prefix:
-            # print( prefixed_names )
             raw_display_space_name = prefixed_names[raw_display_space_name]
             log_display_space_name = prefixed_names[log_display_space_name]
 
@@ -945,26 +898,22 @@ def create_config(config_data,
         config.addDisplay(single_display_name, 'Log', log_display_space_name)
         views.append('Log')
 
-    # Setting the active *displays* and *views*.
     config.setActiveDisplays(','.join(sorted(displays)))
     config.setActiveViews(','.join(views))
 
     print()
 
-    # Make sure we didn't create a bad config
+    # Ensuring the configuration is valid.
     config.sanityCheck()
 
-    # Reset the colorspace names back to their non-prefixed versions
+    # Resetting colorspace names to their non-prefixed versions.
     if prefix:
-        # Build the reverse lookup
         prefixed_names_inverse = {}
         for original, prefixed in prefixed_names.iteritems():
             prefixed_names_inverse[prefixed] = original
 
-        # Reset the reference colorspace name
         reference_data.name = prefixed_names_inverse[reference_data.name]
 
-        # Reset the rest of the colorspace names
         try:
             for colorspace in config_data['colorSpaces']:
                 colorspace.name = prefixed_names_inverse[colorspace.name]
@@ -1009,7 +958,6 @@ def generate_LUTs(odt_info,
     print('generateLUTs - begin')
     config_data = {}
 
-    # Initialize a few variables
     config_data['displays'] = {}
     config_data['colorSpaces'] = []
 
@@ -1049,60 +997,61 @@ def generate_LUTs(odt_info,
     # *Camera Input Transforms*
     # -------------------------------------------------------------------------
 
-    # *ARRI Log-C* to *ACES*.
+    # *ARRI Log-C* to *ACES*
     arri_colorspaces = arri.create_colorspaces(lut_directory,
                                                lut_resolution_1d)
     for cs in arri_colorspaces:
         config_data['colorSpaces'].append(cs)
 
-    # *Canon-Log* to *ACES*.
+    # *Canon-Log* to *ACES*
     canon_colorspaces = canon.create_colorspaces(lut_directory,
                                                  lut_resolution_1d)
     for cs in canon_colorspaces:
         config_data['colorSpaces'].append(cs)
 
-    # *GoPro Protune* to *ACES*.
+    # *GoPro Protune* to *ACES*
     gopro_colorspaces = gopro.create_colorspaces(lut_directory,
                                                  lut_resolution_1d)
     for cs in gopro_colorspaces:
         config_data['colorSpaces'].append(cs)
 
-    # *Panasonic V-Log* to *ACES*.
+    # *Panasonic V-Log* to *ACES*
     panasonic_colorspaces = panasonic.create_colorspaces(lut_directory,
                                                          lut_resolution_1d)
     for cs in panasonic_colorspaces:
         config_data['colorSpaces'].append(cs)
 
-    # *RED* colorspaces to *ACES*.
+    # *RED* colorspaces to *ACES*
     red_colorspaces = red.create_colorspaces(lut_directory,
                                              lut_resolution_1d)
     for cs in red_colorspaces:
         config_data['colorSpaces'].append(cs)
 
-    # *S-Log* to *ACES*.
+    # *S-Log* to *ACES*
     sony_colorspaces = sony.create_colorspaces(lut_directory,
                                                lut_resolution_1d)
     for cs in sony_colorspaces:
         config_data['colorSpaces'].append(cs)
 
     # -------------------------------------------------------------------------
-    # General Color Spaces
+    # General Colorspaces
     # -------------------------------------------------------------------------
     general_colorspaces = general.create_colorspaces(lut_directory,
                                                      lut_resolution_1d)
     for cs in general_colorspaces:
         config_data['colorSpaces'].append(cs)
 
-    # The *Raw* color space
+    # The *Raw* colorspace
     raw = general.create_raw()
     config_data['colorSpaces'].append(raw)
 
-    # Override certain roles, for now
+    # Overriding various roles
     config_data['roles']['data'] = raw.name
     config_data['roles']['reference'] = raw.name
     config_data['roles']['texture_paint'] = raw.name
 
     print('generateLUTs - end')
+
     return config_data
 
 
@@ -1129,9 +1078,8 @@ def generate_baked_LUTs(odt_info,
 
     odt_info_C = dict(odt_info)
 
-    # Uncomment if you would like to support the older behavior where ODTs
-    # that have support for full and legal range output generate
-    # a LUT for each.
+    # Older behavior for *ODTs* that have support for full and legal ranges,
+    # generating a LUT for both ranges.
     """
     # Create two entries for ODTs that have full and legal range support
     for odt_ctl_name, odt_values in odt_info.iteritems():
@@ -1149,7 +1097,6 @@ def generate_baked_LUTs(odt_info,
             del (odt_info_C[odt_ctl_name])
     """
 
-    # Generate appropriate LUTs for each ODT
     for odt_ctl_name, odt_values in odt_info_C.iteritems():
         odt_prefix = odt_values['transformUserNamePrefix']
         odt_name = odt_values['transformUserName']
@@ -1341,7 +1288,6 @@ def create_ACES_config(aces_ctl_directory,
     if look_info is None:
         look_info = []
 
-    # Directory for custom LUTs
     custom_lut_dir = None
     if copy_custom_luts:
         custom_lut_dir = os.path.join(config_directory, 'custom')

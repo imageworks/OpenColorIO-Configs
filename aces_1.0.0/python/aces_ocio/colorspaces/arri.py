@@ -66,12 +66,11 @@ def create_log_c(gamut,
         cs.aces_transform_id = (
             'IDT.ARRI.Alexa-v3-logC-EI%s.a1.v1' % exposure_index)
 
-    # A linear space needs allocation variables
+    # A linear space needs allocation variables.
     if transfer_function == '':
         cs.allocation_type = ocio.Constants.ALLOCATION_LG2
         cs.allocation_vars = [-8, 5, 0.00390625]
 
-    # Globals.
     IDT_maker_version = '0.08'
 
     nominal_EI = 400

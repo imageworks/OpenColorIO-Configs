@@ -487,7 +487,7 @@ def integrate_looks_into_views(looks,
                     output_colorspace_c = copy.deepcopy(output_colorspace)
 
                     # for look_name in look_names:
-                    for i in range(len(look_names)):
+                    for i, look_name in enumerate(look_names):
                         look_name = look_names[i]
 
                         # Add the LookTransform to the head of the

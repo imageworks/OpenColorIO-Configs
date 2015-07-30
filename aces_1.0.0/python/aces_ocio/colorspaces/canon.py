@@ -28,7 +28,6 @@ __all__ = ['create_c_log',
 
 def create_c_log(gamut,
                  transfer_function,
-                 name,
                  lut_directory,
                  lut_resolution_1d,
                  aliases):
@@ -177,7 +176,6 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
     c_log_1 = create_c_log(
         'Rec. 709 Daylight',
         'Canon-Log',
-        'Canon-Log',
         lut_directory,
         lut_resolution_1d,
         ['canonlog_rec709day'])
@@ -185,7 +183,6 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
 
     c_log_2 = create_c_log(
         'Rec. 709 Tungsten',
-        'Canon-Log',
         'Canon-Log',
         lut_directory,
         lut_resolution_1d,
@@ -195,7 +192,6 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
     c_log_3 = create_c_log(
         'DCI-P3 Daylight',
         'Canon-Log',
-        'Canon-Log',
         lut_directory,
         lut_resolution_1d,
         ['canonlog_dcip3day'])
@@ -203,7 +199,6 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
 
     c_log_4 = create_c_log(
         'DCI-P3 Tungsten',
-        'Canon-Log',
         'Canon-Log',
         lut_directory,
         lut_resolution_1d,
@@ -213,7 +208,6 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
     c_log_5 = create_c_log(
         'Cinema Gamut Daylight',
         'Canon-Log',
-        'Canon-Log',
         lut_directory,
         lut_resolution_1d,
         ['canonlog_cgamutday'])
@@ -221,7 +215,6 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
 
     c_log_6 = create_c_log(
         'Cinema Gamut Tungsten',
-        'Canon-Log',
         'Canon-Log',
         lut_directory,
         lut_resolution_1d,
@@ -232,7 +225,6 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
     c_log_7 = create_c_log(
         '',
         'Canon-Log',
-        'Canon-Log',
         lut_directory,
         lut_resolution_1d,
         ['crv_canonlog'])
@@ -242,7 +234,6 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
     c_log_8 = create_c_log(
         'Rec. 709 Daylight',
         '',
-        'Canon-Log',
         lut_directory,
         lut_resolution_1d,
         ['lin_canonrec709day'])
@@ -251,7 +242,6 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
     c_log_9 = create_c_log(
         'Rec. 709 Tungsten',
         '',
-        'Canon-Log',
         lut_directory,
         lut_resolution_1d,
         ['lin_canonrec709tung'])
@@ -260,7 +250,6 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
     c_log_10 = create_c_log(
         'DCI-P3 Daylight',
         '',
-        'Canon-Log',
         lut_directory,
         lut_resolution_1d,
         ['lin_canondcip3day'])
@@ -269,7 +258,6 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
     c_log_11 = create_c_log(
         'DCI-P3 Tungsten',
         '',
-        'Canon-Log',
         lut_directory,
         lut_resolution_1d,
         ['lin_canondcip3tung'])
@@ -278,7 +266,6 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
     c_log_12 = create_c_log(
         'Cinema Gamut Daylight',
         '',
-        'Canon-Log',
         lut_directory,
         lut_resolution_1d,
         ['lin_canoncgamutday'])
@@ -287,7 +274,6 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
     c_log_13 = create_c_log(
         'Cinema Gamut Tungsten',
         '',
-        'Canon-Log',
         lut_directory,
         lut_resolution_1d,
         ['lin_canoncgamuttung'])

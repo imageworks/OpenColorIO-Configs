@@ -27,7 +27,6 @@ __all__ = ['create_v_log',
 
 def create_v_log(gamut,
                  transfer_function,
-                 name,
                  lut_directory,
                  lut_resolution_1d,
                  aliases):
@@ -132,7 +131,6 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
     v_log_1 = create_v_log(
         'V-Gamut',
         'V-Log',
-        'V-Log',
         lut_directory,
         lut_resolution_1d,
         ['vlog_vgamut'])
@@ -141,7 +139,6 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
     # Linearization Only
     v_log_2 = create_v_log(
         '',
-        'V-Log',
         'V-Log',
         lut_directory,
         lut_resolution_1d,
@@ -152,7 +149,6 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
     v_log_3 = create_v_log(
         'V-Gamut',
         '',
-        'V-Log',
         lut_directory,
         lut_resolution_1d,
         ['lin_vgamut'])

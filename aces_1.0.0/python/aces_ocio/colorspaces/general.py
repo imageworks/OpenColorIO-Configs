@@ -315,8 +315,7 @@ def transfer_function_Rec1886_to_linear(v):
 
 
 def create_colorspaces(lut_directory,
-                       lut_resolution_1d,
-                       lut_resolution_3d):
+                       lut_resolution_1d):
     """
     Generates the colorspace conversions.
 

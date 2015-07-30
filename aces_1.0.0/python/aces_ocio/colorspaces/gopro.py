@@ -28,7 +28,6 @@ __all__ = ['create_protune',
 
 def create_protune(gamut,
                    transfer_function,
-                   name,
                    lut_directory,
                    lut_resolution_1d,
                    aliases):
@@ -133,7 +132,6 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
     protune_1 = create_protune(
         'Protune Native',
         'Protune Flat',
-        'Protune',
         lut_directory,
         lut_resolution_1d,
         ['protuneflat_protunegamutexp'])
@@ -143,7 +141,6 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
     protune_2 = create_protune(
         '',
         'Protune Flat',
-        'Protune',
         lut_directory,
         lut_resolution_1d,
         ['crv_protuneflat'])
@@ -153,7 +150,6 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
     protune_3 = create_protune(
         'Protune Native',
         '',
-        'Protune',
         lut_directory,
         lut_resolution_1d,
         ['lin_protunegamutexp'])

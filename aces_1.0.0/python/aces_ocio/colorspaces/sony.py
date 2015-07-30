@@ -28,7 +28,6 @@ __all__ = ['create_S_Log',
 
 def create_S_Log(gamut,
                  transfer_function,
-                 name,
                  lut_directory,
                  lut_resolution_1d,
                  aliases):
@@ -236,7 +235,6 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
     s_log1_s_gamut = create_S_Log(
         'S-Gamut',
         'S-Log1',
-        'S-Log',
         lut_directory,
         lut_resolution_1d,
         ['slog1_sgamut'])
@@ -246,7 +244,6 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
     s_log2_s_gamut = create_S_Log(
         'S-Gamut',
         'S-Log2',
-        'S-Log2',
         lut_directory,
         lut_resolution_1d,
         ['slog2_sgamut'])
@@ -255,7 +252,6 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
     s_log2_s_gamut_daylight = create_S_Log(
         'S-Gamut Daylight',
         'S-Log2',
-        'S-Log2',
         lut_directory,
         lut_resolution_1d,
         ['slog2_sgamutday'])
@@ -263,7 +259,6 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
 
     s_log2_s_gamut_tungsten = create_S_Log(
         'S-Gamut Tungsten',
-        'S-Log2',
         'S-Log2',
         lut_directory,
         lut_resolution_1d,
@@ -274,7 +269,6 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
     s_log3_s_gamut3Cine = create_S_Log(
         'S-Gamut3.Cine',
         'S-Log3',
-        'S-Log3',
         lut_directory,
         lut_resolution_1d,
         ['slog3_sgamutcine'])
@@ -282,7 +276,6 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
 
     s_log3_s_gamut3 = create_S_Log(
         'S-Gamut3',
-        'S-Log3',
         'S-Log3',
         lut_directory,
         lut_resolution_1d,
@@ -293,7 +286,6 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
     s_log1 = create_S_Log(
         '',
         'S-Log1',
-        'S-Log',
         lut_directory,
         lut_resolution_1d,
         ['crv_slog1'])
@@ -302,7 +294,6 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
     s_log2 = create_S_Log(
         '',
         'S-Log2',
-        'S-Log2',
         lut_directory,
         lut_resolution_1d,
         ['crv_slog2'])
@@ -310,7 +301,6 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
 
     s_log3 = create_S_Log(
         '',
-        'S-Log3',
         'S-Log3',
         lut_directory,
         lut_resolution_1d,
@@ -321,7 +311,6 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
     s_gamut = create_S_Log(
         'S-Gamut',
         '',
-        'S-Log',
         lut_directory,
         lut_resolution_1d,
         ['lin_sgamut'])
@@ -330,7 +319,6 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
     s_gamut_daylight = create_S_Log(
         'S-Gamut Daylight',
         '',
-        'S-Log2',
         lut_directory,
         lut_resolution_1d,
         ['lin_sgamutday'])
@@ -339,7 +327,6 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
     s_gamut_tungsten = create_S_Log(
         'S-Gamut Tungsten',
         '',
-        'S-Log2',
         lut_directory,
         lut_resolution_1d,
         ['lin_sgamuttung'])
@@ -348,7 +335,6 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
     s_gamut3Cine = create_S_Log(
         'S-Gamut3.Cine',
         '',
-        'S-Log3',
         lut_directory,
         lut_resolution_1d,
         ['lin_sgamut3cine'])
@@ -357,7 +343,6 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
     s_gamut3 = create_S_Log(
         'S-Gamut3',
         '',
-        'S-Log3',
         lut_directory,
         lut_resolution_1d,
         ['lin_sgamut3'])

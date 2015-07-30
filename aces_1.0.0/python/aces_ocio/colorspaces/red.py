@@ -28,7 +28,6 @@ __all__ = ['create_RED_log_film',
 
 def create_RED_log_film(gamut,
                         transfer_function,
-                        name,
                         lut_directory,
                         lut_resolution_1d,
                         aliases=None):
@@ -172,7 +171,6 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
     RED_log_film_dragon = create_RED_log_film(
         'DRAGONcolor',
         'REDlogFilm',
-        'REDlogFilm',
         lut_directory,
         lut_resolution_1d,
         ['rlf_dgn'])
@@ -180,7 +178,6 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
 
     RED_log_film_dragon2 = create_RED_log_film(
         'DRAGONcolor2',
-        'REDlogFilm',
         'REDlogFilm',
         lut_directory,
         lut_resolution_1d,
@@ -190,7 +187,6 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
     RED_log_film_color = create_RED_log_film(
         'REDcolor',
         'REDlogFilm',
-        'REDlogFilm',
         lut_directory,
         lut_resolution_1d,
         ['rlf_rc'])
@@ -198,7 +194,6 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
 
     RED_log_film_color2 = create_RED_log_film(
         'REDcolor2',
-        'REDlogFilm',
         'REDlogFilm',
         lut_directory,
         lut_resolution_1d,
@@ -208,7 +203,6 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
     RED_log_film_color3 = create_RED_log_film(
         'REDcolor3',
         'REDlogFilm',
-        'REDlogFilm',
         lut_directory,
         lut_resolution_1d,
         ['rlf_rc3'])
@@ -216,7 +210,6 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
 
     RED_log_film_color4 = create_RED_log_film(
         'REDcolor4',
-        'REDlogFilm',
         'REDlogFilm',
         lut_directory,
         lut_resolution_1d,
@@ -227,7 +220,6 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
     RED_log_film = create_RED_log_film(
         '',
         'REDlogFilm',
-        'REDlogFilm',
         lut_directory,
         lut_resolution_1d,
         ['crv_rlf'])
@@ -237,7 +229,6 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
     RED_dragon = create_RED_log_film(
         'DRAGONcolor',
         '',
-        'REDlogFilm',
         lut_directory,
         lut_resolution_1d,
         ['lin_dgn'])
@@ -246,7 +237,6 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
     RED_dragon2 = create_RED_log_film(
         'DRAGONcolor2',
         '',
-        'REDlogFilm',
         lut_directory,
         lut_resolution_1d,
         ['lin_dgn2'])
@@ -255,7 +245,6 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
     RED_color = create_RED_log_film(
         'REDcolor',
         '',
-        'REDlogFilm',
         lut_directory,
         lut_resolution_1d,
         ['lin_rc'])
@@ -264,7 +253,6 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
     RED_color2 = create_RED_log_film(
         'REDcolor2',
         '',
-        'REDlogFilm',
         lut_directory,
         lut_resolution_1d,
         ['lin_rc2'])
@@ -273,7 +261,6 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
     RED_color3 = create_RED_log_film(
         'REDcolor3',
         '',
-        'REDlogFilm',
         lut_directory,
         lut_resolution_1d,
         ['lin_rc3'])
@@ -282,7 +269,6 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
     RED_color4 = create_RED_log_film(
         'REDcolor4',
         '',
-        'REDlogFilm',
         lut_directory,
         lut_resolution_1d,
         ['lin_rc4'])

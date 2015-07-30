@@ -30,7 +30,6 @@ __all__ = ['create_log_c',
 def create_log_c(gamut,
                  transfer_function,
                  exposure_index,
-                 name,
                  lut_directory,
                  lut_resolution_1d,
                  aliases):
@@ -202,7 +201,6 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
             gamut,
             transfer_function,
             EI,
-            'LogC',
             lut_directory,
             lut_resolution_1d,
             ['%sei%s_%s' % ('logc3', str(EI), 'arriwide')])
@@ -214,7 +212,6 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
             '',
             transfer_function,
             EI,
-            'LogC',
             lut_directory,
             lut_resolution_1d,
             ['crv_%sei%s' % ('logc3', str(EI))])
@@ -225,7 +222,6 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         gamut,
         '',
         default_EI,
-        'LogC',
         lut_directory,
         lut_resolution_1d,
         ['%s_%s' % ('lin', 'arriwide')])

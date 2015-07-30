@@ -173,11 +173,6 @@ def generate_OCIO_transform(transforms):
          Return value description.
     """
 
-    interpolation_options = {
-        'linear': ocio.Constants.INTERP_LINEAR,
-        'nearest': ocio.Constants.INTERP_NEAREST,
-        'tetrahedral': ocio.Constants.INTERP_TETRAHEDRAL}
-
     direction_options = {
         'forward': ocio.Constants.TRANSFORM_DIR_FORWARD,
         'inverse': ocio.Constants.TRANSFORM_DIR_INVERSE}
@@ -368,11 +363,9 @@ def add_colorspace_aliases(config,
 
 def add_look(config,
              look,
-             prefix,
              custom_lut_dir,
              reference_name,
-             config_data,
-             multiple_displays=False):
+             config_data):
     """
     Object description.
 
@@ -451,8 +444,7 @@ def add_look(config,
     print()
 
 
-def integrate_looks_into_views(config,
-                               looks,
+def integrate_looks_into_views(looks,
                                reference_name,
                                config_data,
                                multiple_displays=False):
@@ -637,14 +629,12 @@ def create_config(config_data,
         for look in look_info:
             add_look(config,
                      look,
-                     prefix,
                      custom_lut_dir,
                      reference_data.name,
                      config_data)
 
         # Integrate looks with displays, views
-        integrate_looks_into_views(config,
-                                   look_info,
+        integrate_looks_into_views(look_info,
                                    reference_data.name,
                                    config_data,
                                    multiple_displays)
@@ -1099,8 +1089,7 @@ def generate_LUTs(odt_info,
     # General Color Spaces
     # -------------------------------------------------------------------------
     general_colorspaces = general.create_colorspaces(lut_directory,
-                                                     lut_resolution_1d,
-                                                     lut_resolution_3d)
+                                                     lut_resolution_1d)
     for cs in general_colorspaces:
         config_data['colorSpaces'].append(cs)
 
@@ -1121,7 +1110,6 @@ def generate_baked_LUTs(odt_info,
                         shaper_name,
                         baked_directory,
                         config_path,
-                        lut_resolution_1d,
                         lut_resolution_3d,
                         lut_resolution_shaper=1024,
                         prefix=False):
@@ -1392,7 +1380,6 @@ def create_ACES_config(aces_ctl_directory,
                             shaper_name,
                             os.path.join(config_directory, 'baked'),
                             os.path.join(config_directory, 'config.ocio'),
-                            lut_resolution_1d,
                             lut_resolution_3d,
                             lut_resolution_1d,
                             prefix=prefix_colorspaces_with_family_names)

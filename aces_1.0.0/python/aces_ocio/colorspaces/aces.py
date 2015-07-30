@@ -251,11 +251,7 @@ def create_ACESproxy(aces_ctl_directory,
 # -------------------------------------------------------------------------
 # *ACEScg*
 # -------------------------------------------------------------------------
-def create_ACEScg(aces_ctl_directory,
-                  lut_directory,
-                  lut_resolution_1d,
-                  cleanup,
-                  name='ACEScg'):
+def create_ACEScg():
     """
     Creates the *ACEScg* colorspace.
 
@@ -269,6 +265,8 @@ def create_ACEScg(aces_ctl_directory,
     Colorspace
          *ACEScg* colorspace.
     """
+
+    name = 'ACEScg'
 
     cs = ColorSpace(name)
     cs.description = 'The %s color space' % name
@@ -304,7 +302,6 @@ def create_ACEScg(aces_ctl_directory,
 # *ADX*
 # -------------------------------------------------------------------------
 def create_ADX(lut_directory,
-               lut_resolution_1d,
                bit_depth=10,
                name='ADX'):
     """
@@ -651,7 +648,6 @@ def create_ACES_LMT(lmt_name,
                     shaper_info,
                     aces_ctl_directory,
                     lut_directory,
-                    lut_resolution_1d=1024,
                     lut_resolution_3d=64,
                     cleanup=True,
                     aliases=None):
@@ -775,7 +771,6 @@ def create_LMTs(aces_ctl_directory,
                 lut_resolution_1d,
                 lut_resolution_3d,
                 lmt_info,
-                shaper_name,
                 cleanup):
     """
     Object description.
@@ -843,7 +838,6 @@ def create_LMTs(aces_ctl_directory,
             lmt_shaper_data,
             aces_ctl_directory,
             lut_directory,
-            lmt_lut_resolution_1d,
             lmt_lut_resolution_3d,
             cleanup,
             lmt_aliases)
@@ -860,7 +854,6 @@ def create_ACES_RRT_plus_ODT(odt_name,
                              shaper_info,
                              aces_ctl_directory,
                              lut_directory,
-                             lut_resolution_1d=1024,
                              lut_resolution_3d=64,
                              cleanup=True,
                              aliases=None):
@@ -1234,7 +1227,6 @@ def create_ODTs(aces_ctl_directory,
             rrt_shaper,
             aces_ctl_directory,
             lut_directory,
-            lut_resolution_1d,
             lut_resolution_3d,
             cleanup,
             odt_aliases)
@@ -1528,14 +1520,13 @@ def create_colorspaces(aces_ctl_directory,
                                  lut_resolution_1d, cleanup)
     colorspaces.append(ACESproxy)
 
-    ACEScg = create_ACEScg(aces_ctl_directory, lut_directory,
-                           lut_resolution_1d, cleanup)
+    ACEScg = create_ACEScg()
     colorspaces.append(ACEScg)
 
-    ADX10 = create_ADX(lut_directory, lut_resolution_1d, bit_depth=10)
+    ADX10 = create_ADX(lut_directory, bit_depth=10)
     colorspaces.append(ADX10)
 
-    ADX16 = create_ADX(lut_directory, lut_resolution_1d, bit_depth=16)
+    ADX16 = create_ADX(lut_directory, bit_depth=16)
     colorspaces.append(ADX16)
 
     lmts = create_LMTs(aces_ctl_directory,
@@ -1543,7 +1534,6 @@ def create_colorspaces(aces_ctl_directory,
                        lut_resolution_1d,
                        lut_resolution_3d,
                        lmt_info,
-                       shaper_name,
                        cleanup)
     colorspaces.extend(lmts)
 

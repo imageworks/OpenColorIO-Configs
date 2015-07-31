@@ -16,7 +16,7 @@ import shutil
 
 import PyOpenColorIO as ocio
 
-from aces_ocio.generate_lut import (
+from aces_ocio.lut import (
     generate_1d_LUT_from_CTL,
     generate_3d_LUT_from_CTL,
     write_SPI_1d)

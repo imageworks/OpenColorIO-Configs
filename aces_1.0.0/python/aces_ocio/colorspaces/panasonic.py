@@ -11,7 +11,7 @@ import os
 
 import PyOpenColorIO as ocio
 
-import aces_ocio.generate_lut as genlut
+import aces_ocio.lut as genlut
 from aces_ocio.utilities import ColorSpace
 
 __author__ = 'ACES Developers'

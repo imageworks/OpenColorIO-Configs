@@ -19,7 +19,7 @@ sys.path.append(os.path.abspath(
     os.path.join(os.path.dirname(__file__), '..', '..')))
 
 from aces_ocio.utilities import files_walker
-from aces_ocio.aces_config import (
+from aces_ocio.config import (
     ACES_OCIO_CTL_DIRECTORY_ENVIRON,
     create_ACES_config)
 

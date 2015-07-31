@@ -24,6 +24,9 @@ __status__ = 'Production'
 
 __all__ = ['generate_1d_LUT_image',
            'write_SPI_1d',
+           'write_CSP_1d',
+           'write_CTL_1d',
+           'write_1d',
            'generate_1d_LUT_from_image',
            'generate_3d_LUT_image',
            'generate_3d_LUT_from_image',

@@ -24,7 +24,15 @@ __email__ = 'aces@oscars.org'
 __status__ = 'Production'
 
 __all__ = ['create_matrix_colorspace',
-           'create_colorspaces']
+           'create_transfer_colorspace',
+           'create_matrix_plus_transfer_colorspace',
+           'transfer_function_sRGB_to_linear',
+           'transfer_function_Rec709_to_linear',
+           'transfer_function_Rec2020_10bit_to_linear',
+           'transfer_function_Rec2020_12bit_to_linear',
+           'transfer_function_Rec1886_to_linear',
+           'create_colorspaces',
+           'create_raw']
 
 
 # -------------------------------------------------------------------------

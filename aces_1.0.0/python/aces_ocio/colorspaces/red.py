@@ -226,52 +226,52 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
     colorspaces.append(red_log_film)
 
     # Primaries only
-    RED_dragon = create_red_log_film(
+    red_dragon = create_red_log_film(
         'DRAGONcolor',
         '',
         lut_directory,
         lut_resolution_1d,
         ['lin_dgn'])
-    colorspaces.append(RED_dragon)
+    colorspaces.append(red_dragon)
 
-    RED_dragon2 = create_red_log_film(
+    red_dragon2 = create_red_log_film(
         'DRAGONcolor2',
         '',
         lut_directory,
         lut_resolution_1d,
         ['lin_dgn2'])
-    colorspaces.append(RED_dragon2)
+    colorspaces.append(red_dragon2)
 
-    RED_color = create_red_log_film(
+    red_color = create_red_log_film(
         'REDcolor',
         '',
         lut_directory,
         lut_resolution_1d,
         ['lin_rc'])
-    colorspaces.append(RED_color)
+    colorspaces.append(red_color)
 
-    RED_color2 = create_red_log_film(
+    red_color2 = create_red_log_film(
         'REDcolor2',
         '',
         lut_directory,
         lut_resolution_1d,
         ['lin_rc2'])
-    colorspaces.append(RED_color2)
+    colorspaces.append(red_color2)
 
-    RED_color3 = create_red_log_film(
+    red_color3 = create_red_log_film(
         'REDcolor3',
         '',
         lut_directory,
         lut_resolution_1d,
         ['lin_rc3'])
-    colorspaces.append(RED_color3)
+    colorspaces.append(red_color3)
 
-    RED_color4 = create_red_log_film(
+    red_color4 = create_red_log_film(
         'REDcolor4',
         '',
         lut_directory,
         lut_resolution_1d,
         ['lin_rc4'])
-    colorspaces.append(RED_color4)
+    colorspaces.append(red_color4)
 
     return colorspaces

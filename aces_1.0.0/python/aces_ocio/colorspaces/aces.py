@@ -1139,19 +1139,19 @@ def create_ODTs(aces_ctl_directory,
     # Define the base *Dolby PQ Shaper*
     #
     dolby_pq_shaper_name = 'Dolby PQ 10000'
-    dolbypq_shaper_name_aliases = ['crv_%s' % 'dolbypq_10000']
+    dolby_pq_shaper_name_aliases = ['crv_%s' % 'dolbypq_10000']
 
-    dolbypq_shaper_colorspace = create_Dolby_PQ(
+    dolby_pq_shaper_colorspace = create_Dolby_PQ(
         aces_ctl_directory,
         lut_directory,
         lut_resolution_1d,
         cleanup,
         name=dolby_pq_shaper_name,
-        aliases=dolbypq_shaper_name_aliases)
-    colorspaces.append(dolbypq_shaper_colorspace)
+        aliases=dolby_pq_shaper_name_aliases)
+    colorspaces.append(dolby_pq_shaper_colorspace)
 
     # *Dolby PQ* shaper name and *CTL* transforms bundled up.
-    dolbypq_shaper_data = [
+    dolby_pq_shaper_data = [
         dolby_pq_shaper_name,
         os.path.join('%s',
                      'utilities',
@@ -1162,23 +1162,23 @@ def create_ODTs(aces_ctl_directory,
         1.0,
         {}]
 
-    shaper_data[dolby_pq_shaper_name] = dolbypq_shaper_data
+    shaper_data[dolby_pq_shaper_name] = dolby_pq_shaper_data
 
     # Define the *Dolby PQ Shaper that considers a fixed linear range*
     dolby_pq_scaled_shaper_name = 'Dolby PQ Scaled'
-    dolbypq_scaled_shaper_name_aliases = ['crv_%s' % 'dolbypq_scaled']
+    dolby_pq_scaled_shaper_name_aliases = ['crv_%s' % 'dolbypq_scaled']
 
-    dolbypq_scaled_shaper_colorspace = create_Dolby_PQ_scaled(
+    dolby_pq_scaled_shaper_colorspace = create_Dolby_PQ_scaled(
         aces_ctl_directory,
         lut_directory,
         lut_resolution_1d,
         cleanup,
         name=dolby_pq_scaled_shaper_name,
-        aliases=dolbypq_scaled_shaper_name_aliases)
-    colorspaces.append(dolbypq_scaled_shaper_colorspace)
+        aliases=dolby_pq_scaled_shaper_name_aliases)
+    colorspaces.append(dolby_pq_scaled_shaper_colorspace)
 
     # *Dolby PQ* shaper name and *CTL* transforms bundled up.
-    dolbypq_scaled_shaper_data = [
+    dolby_pq_scaled_shaper_data = [
         dolby_pq_scaled_shaper_name,
         os.path.join('%s',
                      'utilities',
@@ -1189,10 +1189,10 @@ def create_ODTs(aces_ctl_directory,
         1.0,
         log2_params]
 
-    shaper_data[dolby_pq_scaled_shaper_name] = dolbypq_scaled_shaper_data
+    shaper_data[dolby_pq_scaled_shaper_name] = dolby_pq_scaled_shaper_data
 
     rrt_shaper = log2_shaper_data
-    # rrt_shaper = dolbypq_scaled_shaper_data
+    # rrt_shaper = dolby_pq_scaled_shaper_data
 
     # *RRT + ODT* combinations.
     sorted_odts = sorted(odt_info.iteritems(), key=lambda x: x[1])
@@ -1440,15 +1440,15 @@ def get_LMTs_info(aces_ctl_directory):
             lmt_dir = os.path.join(lmt_path_tokens[-1], lmt_dir)
 
         # Building full name.
-        transform_CTL = lmt_tokens[-1]
-        lmt_name = string.join(transform_CTL.split('.')[1:-1], '.')
+        transform_ctl = lmt_tokens[-1]
+        lmt_name = string.join(transform_ctl.split('.')[1:-1], '.')
 
         # Finding id, user name and user name prefix.
         (transform_id,
          transform_user_name,
          transform_user_name_prefix,
          transform_full_legal_switch) = get_transform_info(
-            os.path.join(aces_ctl_directory, lmt_dir, transform_CTL))
+            os.path.join(aces_ctl_directory, lmt_dir, transform_ctl))
 
         # Finding inverse.
         transform_ctl_inverse = 'InvLMT.%s.ctl' % lmt_name
@@ -1457,7 +1457,7 @@ def get_LMTs_info(aces_ctl_directory):
             transform_ctl_inverse = None
 
         lmts[lmt_name] = {}
-        lmts[lmt_name]['transformCTL'] = os.path.join(lmt_dir, transform_CTL)
+        lmts[lmt_name]['transformCTL'] = os.path.join(lmt_dir, transform_ctl)
         if transform_ctl_inverse is not None:
             lmts[lmt_name]['transformCTLInverse'] = os.path.join(
                 lmt_dir, transform_ctl_inverse)

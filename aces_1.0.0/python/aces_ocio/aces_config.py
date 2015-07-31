@@ -41,7 +41,7 @@ __all__ = ['ACES_OCIO_CTL_DIRECTORY_ENVIRON',
            'ACES_OCIO_CONFIGURATION_DIRECTORY_ENVIRON',
            'set_config_default_roles',
            'write_config',
-           'generate_OCIO_transform',
+           'generate_ocio_transform',
            'add_colorspace_aliases',
            'add_look',
            'integrate_looks_into_views',
@@ -160,7 +160,7 @@ def write_config(config, config_path, sanity_check=True):
         fp.write(config.serialize())
 
 
-def generate_OCIO_transform(transforms):
+def generate_ocio_transform(transforms):
     """
     Object description.
 
@@ -339,7 +339,7 @@ def add_colorspace_aliases(config,
 
         if colorspace.to_reference_transforms:
             print('\tGenerating To-Reference transforms')
-            ocio_transform = generate_OCIO_transform(
+            ocio_transform = generate_ocio_transform(
                 [{'type': 'colorspace',
                   'src': colorspace.name,
                   'dst': reference_colorspace.name,
@@ -350,7 +350,7 @@ def add_colorspace_aliases(config,
 
         if colorspace.from_reference_transforms:
             print('\tGenerating From-Reference transforms')
-            ocio_transform = generate_OCIO_transform(
+            ocio_transform = generate_ocio_transform(
                 [{'type': 'colorspace',
                   'src': reference_colorspace.name,
                   'dst': colorspace.name,
@@ -405,7 +405,7 @@ def add_look(config,
     if look_cccid:
         keys['cccid'] = look_cccid
 
-    ocio_transform = generate_OCIO_transform([keys])
+    ocio_transform = generate_ocio_transform([keys])
     ocio_look.setTransform(ocio_transform)
 
     config.addLook(ocio_look)
@@ -644,7 +644,7 @@ def create_config(config_data,
 
         if colorspace.to_reference_transforms:
             print('\tGenerating To-Reference transforms')
-            ocio_transform = generate_OCIO_transform(
+            ocio_transform = generate_ocio_transform(
                 colorspace.to_reference_transforms)
             ocio_colorspace.setTransform(
                 ocio_transform,
@@ -652,7 +652,7 @@ def create_config(config_data,
 
         if colorspace.from_reference_transforms:
             print('\tGenerating From-Reference transforms')
-            ocio_transform = generate_OCIO_transform(
+            ocio_transform = generate_ocio_transform(
                 colorspace.from_reference_transforms)
             ocio_colorspace.setTransform(
                 ocio_transform,

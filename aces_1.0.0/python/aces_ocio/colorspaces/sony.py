@@ -22,11 +22,11 @@ __maintainer__ = 'ACES Developers'
 __email__ = 'aces@oscars.org'
 __status__ = 'Production'
 
-__all__ = ['create_S_Log',
+__all__ = ['create_s_log',
            'create_colorspaces']
 
 
-def create_S_Log(gamut,
+def create_s_log(gamut,
                  transfer_function,
                  lut_directory,
                  lut_resolution_1d,
@@ -232,7 +232,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
     colorspaces = []
 
     # *S-Log1*
-    s_log1_s_gamut = create_S_Log(
+    s_log1_s_gamut = create_s_log(
         'S-Gamut',
         'S-Log1',
         lut_directory,
@@ -241,7 +241,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
     colorspaces.append(s_log1_s_gamut)
 
     # *S-Log2*
-    s_log2_s_gamut = create_S_Log(
+    s_log2_s_gamut = create_s_log(
         'S-Gamut',
         'S-Log2',
         lut_directory,
@@ -249,7 +249,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         ['slog2_sgamut'])
     colorspaces.append(s_log2_s_gamut)
 
-    s_log2_s_gamut_daylight = create_S_Log(
+    s_log2_s_gamut_daylight = create_s_log(
         'S-Gamut Daylight',
         'S-Log2',
         lut_directory,
@@ -257,7 +257,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         ['slog2_sgamutday'])
     colorspaces.append(s_log2_s_gamut_daylight)
 
-    s_log2_s_gamut_tungsten = create_S_Log(
+    s_log2_s_gamut_tungsten = create_s_log(
         'S-Gamut Tungsten',
         'S-Log2',
         lut_directory,
@@ -266,7 +266,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
     colorspaces.append(s_log2_s_gamut_tungsten)
 
     # *S-Log3*
-    s_log3_s_gamut3Cine = create_S_Log(
+    s_log3_s_gamut3Cine = create_s_log(
         'S-Gamut3.Cine',
         'S-Log3',
         lut_directory,
@@ -274,7 +274,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         ['slog3_sgamutcine'])
     colorspaces.append(s_log3_s_gamut3Cine)
 
-    s_log3_s_gamut3 = create_S_Log(
+    s_log3_s_gamut3 = create_s_log(
         'S-Gamut3',
         'S-Log3',
         lut_directory,
@@ -283,7 +283,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
     colorspaces.append(s_log3_s_gamut3)
 
     # Linearization Only
-    s_log1 = create_S_Log(
+    s_log1 = create_s_log(
         '',
         'S-Log1',
         lut_directory,
@@ -291,7 +291,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         ['crv_slog1'])
     colorspaces.append(s_log1)
 
-    s_log2 = create_S_Log(
+    s_log2 = create_s_log(
         '',
         'S-Log2',
         lut_directory,
@@ -299,7 +299,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         ['crv_slog2'])
     colorspaces.append(s_log2)
 
-    s_log3 = create_S_Log(
+    s_log3 = create_s_log(
         '',
         'S-Log3',
         lut_directory,
@@ -308,7 +308,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
     colorspaces.append(s_log3)
 
     # Primaries Only
-    s_gamut = create_S_Log(
+    s_gamut = create_s_log(
         'S-Gamut',
         '',
         lut_directory,
@@ -316,7 +316,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         ['lin_sgamut'])
     colorspaces.append(s_gamut)
 
-    s_gamut_daylight = create_S_Log(
+    s_gamut_daylight = create_s_log(
         'S-Gamut Daylight',
         '',
         lut_directory,
@@ -324,7 +324,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         ['lin_sgamutday'])
     colorspaces.append(s_gamut_daylight)
 
-    s_gamut_tungsten = create_S_Log(
+    s_gamut_tungsten = create_s_log(
         'S-Gamut Tungsten',
         '',
         lut_directory,
@@ -332,7 +332,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         ['lin_sgamuttung'])
     colorspaces.append(s_gamut_tungsten)
 
-    s_gamut3Cine = create_S_Log(
+    s_gamut3Cine = create_s_log(
         'S-Gamut3.Cine',
         '',
         lut_directory,
@@ -340,7 +340,7 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         ['lin_sgamut3cine'])
     colorspaces.append(s_gamut3Cine)
 
-    s_gamut3 = create_S_Log(
+    s_gamut3 = create_s_log(
         'S-Gamut3',
         '',
         lut_directory,

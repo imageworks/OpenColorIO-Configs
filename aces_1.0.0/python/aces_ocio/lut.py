@@ -829,19 +829,19 @@ def main():
     else:
         print('3D LUT generation options')
 
-    print('lut                 : %s' % lut)
-    print('format              : %s' % format)
-    print('ctls                : %s' % ctls)
-    print('lut res 1d          : %s' % lut_resolution_1d)
-    print('lut res 3d          : %s' % lut_resolution_3d)
-    print('min value           : %s' % min_value)
-    print('max value           : %s' % max_value)
-    print('input scale         : %s' % input_scale)
-    print('output scale        : %s' % output_scale)
-    print('ctl render params   : %s' % params)
-    print('ctl release path    : %s' % ctl_release_path)
-    print('bit depth of input  : %s' % bit_depth)
-    print('cleanup temp images : %s' % cleanup)
+    print('Lut                 : %s' % lut)
+    print('Format              : %s' % format)
+    print('CTLs                : %s' % ctls)
+    print('Lut Res 1d          : %s' % lut_resolution_1d)
+    print('Lut Res 3d          : %s' % lut_resolution_3d)
+    print('Min Value           : %s' % min_value)
+    print('Max Value           : %s' % max_value)
+    print('Input Scale         : %s' % input_scale)
+    print('Output Scale        : %s' % output_scale)
+    print('CTL Render Params   : %s' % params)
+    print('CTL Release Path    : %s' % ctl_release_path)
+    print('Input Bit Depth     : %s' % bit_depth)
+    print('Cleanup Temp Images : %s' % cleanup)
 
     if generate_1d:
         generate_1d_LUT_from_CTL(lut,
@@ -869,7 +869,7 @@ def main():
                                  ctl_release_path,
                                  format=format)
     else:
-        print(('\n\nNo LUT generated. '
+        print(('\n\nNo LUT generated! '
                'You must choose either 1D or 3D LUT generation\n\n'))
 
 

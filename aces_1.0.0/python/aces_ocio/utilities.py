@@ -289,6 +289,5 @@ def unpack_default(iterable, length=3, default=None):
     iterable
     """
 
-    return itertools.islice(itertools.chain(iter(iterable),
-                                            itertools.repeat(default)),
-                            length)
+    return itertools.islice(
+        itertools.chain(iter(iterable), itertools.repeat(default)), length)

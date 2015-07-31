@@ -152,8 +152,7 @@ def create_log_c(gamut,
             'type': 'lutFile',
             'path': lut,
             'interpolation': 'linear',
-            'direction': 'forward'
-        })
+            'direction': 'forward'})
 
     if gamut == 'Wide Gamut':
         cs.to_reference_transforms.append({
@@ -161,8 +160,7 @@ def create_log_c(gamut,
             'matrix': mat44_from_mat33([0.680206, 0.236137, 0.083658,
                                         0.085415, 1.017471, -0.102886,
                                         0.002057, -0.062563, 1.060506]),
-            'direction': 'forward'
-        })
+            'direction': 'forward'})
 
     cs.from_reference_transforms = []
     return cs

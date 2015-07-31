@@ -11,10 +11,10 @@ Usage
 Python
 ******
 
->>> from aces_ocio.config import create_ACES_config
+>>> from aces_ocio.config import generate_config
 >>> aces_ctl_directory = '/path/to/github/checkout/releases/v1.0.0/transforms/ctl'
 >>> config_directory = '/path/to/configuration/dir'
->>> create_ACES_config(aces_ctl_directory, config_directory, 1024, 33, True)
+>>> generate_config(aces_ctl_directory, config_directory, 1024, 33, True)
 
 Command Line
 ************

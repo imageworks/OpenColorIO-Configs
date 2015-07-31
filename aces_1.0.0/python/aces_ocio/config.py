@@ -39,140 +39,112 @@ __status__ = 'Production'
 
 __all__ = ['ACES_OCIO_CTL_DIRECTORY_ENVIRON',
            'ACES_OCIO_CONFIGURATION_DIRECTORY_ENVIRON',
-           'set_config_default_roles',
-           'write_config',
-           'generate_ocio_transform',
+           'set_config_roles',
+           'create_ocio_transform',
            'add_colorspace_aliases',
            'add_look',
-           'integrate_looks_into_views',
+           'add_looks_to_views',
            'create_config',
-           'generate_LUTs',
+           'create_config_data',
+           'write_config',
            'generate_baked_LUTs',
-           'create_config_dir',
-           'create_ACES_config',
+           'generate_config_directory',
+           'generate_config',
            'main']
 
 ACES_OCIO_CTL_DIRECTORY_ENVIRON = 'ACES_OCIO_CTL_DIRECTORY'
 ACES_OCIO_CONFIGURATION_DIRECTORY_ENVIRON = 'ACES_OCIO_CONFIGURATION_DIRECTORY'
 
 
-def set_config_default_roles(config,
-                             color_picking='',
-                             color_timing='',
-                             compositing_log='',
-                             data='',
-                             default='',
-                             matte_paint='',
-                             reference='',
-                             scene_linear='',
-                             texture_paint='',
-                             rendering='',
-                             compositing_linear=''):
+def set_config_roles(config,
+                     color_picking=None,
+                     color_timing=None,
+                     compositing_log=None,
+                     data=None,
+                     default=None,
+                     matte_paint=None,
+                     reference=None,
+                     scene_linear=None,
+                     texture_paint=None,
+                     rendering=None,
+                     compositing_linear=None):
     """
-    Sets given *OCIO* configuration default roles.
-
+    Sets given *OCIO* configuration roles to the config.
     Parameters
     ----------
-    config : config
+    config : Config
         *OCIO* configuration.
-    color_picking : str or unicode
+    color_picking : str or unicode, optional
         Color picking role title.
-    color_timing : str or unicode
+    color_timing : str or unicode, optional
         Color timing role title.
-    compositing_log : str or unicode
+    compositing_log : str or unicode, optional
         Compositing log role title.
-    data : str or unicode
+    data : str or unicode, optional
         Data role title.
-    default : str or unicode
+    default : str or unicode, optional
         Default role title.
-    matte_paint : str or unicode
+    matte_paint : str or unicode, optional
         Matte painting role title.
-    reference : str or unicode
+    reference : str or unicode, optional
         Reference role title.
-    scene_linear : str or unicode
+    scene_linear : str or unicode, optional
         Scene linear role title.
-    texture_paint : str or unicode
+    texture_paint : str or unicode, optional
         Texture painting role title.
-
     Returns
     -------
     bool
          Definition success.
     """
 
-    if color_picking:
+    if color_picking is not None:
         config.setRole(ocio.Constants.ROLE_COLOR_PICKING, color_picking)
-    if color_timing:
+    if color_timing is not None:
         config.setRole(ocio.Constants.ROLE_COLOR_TIMING, color_timing)
-    if compositing_log:
+    if compositing_log is not None:
         config.setRole(ocio.Constants.ROLE_COMPOSITING_LOG, compositing_log)
-    if data:
+    if data is not None:
         config.setRole(ocio.Constants.ROLE_DATA, data)
-    if default:
+    if default is not None:
         config.setRole(ocio.Constants.ROLE_DEFAULT, default)
-    if matte_paint:
+    if matte_paint is not None:
         config.setRole(ocio.Constants.ROLE_MATTE_PAINT, matte_paint)
-    if reference:
+    if reference is not None:
         config.setRole(ocio.Constants.ROLE_REFERENCE, reference)
-    if texture_paint:
+    if texture_paint is not None:
         config.setRole(ocio.Constants.ROLE_TEXTURE_PAINT, texture_paint)
 
     # *rendering* and *compositing_linear* roles default to the *scene_linear*
     # value if not set explicitly.
-    if rendering:
+    if rendering is not None:
         config.setRole('rendering', rendering)
-    if compositing_linear:
+    if compositing_linear is not None:
         config.setRole('compositing_linear', compositing_linear)
-    if scene_linear:
+    if scene_linear is not None:
         config.setRole(ocio.Constants.ROLE_SCENE_LINEAR, scene_linear)
-        if not rendering:
+        if rendering is None:
             config.setRole('rendering', scene_linear)
-        if not compositing_linear:
+        if compositing_linear is None:
             config.setRole('compositing_linear', scene_linear)
 
     return True
 
 
-def write_config(config, config_path, sanity_check=True):
+def create_ocio_transform(transforms):
     """
-    Writes the configuration to given path.
+    Returns an *OCIO* transform from given array of transform descriptions.
 
     Parameters
     ----------
-    parameter : type
-        Parameter description.
+    transforms : array_like
+        Transform descriptions as an array_like of dicts:
+        {'type', 'src', 'dst', 'direction'}
 
     Returns
     -------
-    type
-         Return value description.
-    """
-
-    if sanity_check:
-        try:
-            config.sanityCheck()
-        except Exception, e:
-            print e
-            print 'Configuration was not written due to a failed Sanity Check'
-            return
-
-    with open(config_path, mode='w') as fp:
-        fp.write(config.serialize())
-
-
-def generate_ocio_transform(transforms):
-    """
-    Object description.
-
-    Parameters
-    ----------
-    parameter : type
-        Parameter description.
-
-    Returns
-    -------
-    type
-         Return value description.
+    Transform
+         *OCIO* transform.
     """
 
     direction_options = {
@@ -297,17 +269,23 @@ def add_colorspace_aliases(config,
                            colorspace_alias_names,
                            family='Aliases'):
     """
-    Object description.
+    Adds given colorspace aliases to the *OCIO* config.
 
     Parameters
     ----------
-    parameter : type
-        Parameter description.
+    config : Config
+        *OCIO* configuration.
+    reference_colorspace : Colorspace
+        Reference colorspace.
+    colorspace : Colorspace
+        Colorspace to set the aliases into the *OCIO* config.
+    family : unicode
+        Family.
 
     Returns
     -------
-    type
-         Return value description.
+    bool
+        Definition success.
     """
 
     for alias_name in colorspace_alias_names:
@@ -339,7 +317,7 @@ def add_colorspace_aliases(config,
 
         if colorspace.to_reference_transforms:
             print('\tGenerating To-Reference transforms')
-            ocio_transform = generate_ocio_transform(
+            ocio_transform = create_ocio_transform(
                 [{'type': 'colorspace',
                   'src': colorspace.name,
                   'dst': reference_colorspace.name,
@@ -350,7 +328,7 @@ def add_colorspace_aliases(config,
 
         if colorspace.from_reference_transforms:
             print('\tGenerating From-Reference transforms')
-            ocio_transform = generate_ocio_transform(
+            ocio_transform = create_ocio_transform(
                 [{'type': 'colorspace',
                   'src': reference_colorspace.name,
                   'dst': colorspace.name,
@@ -368,17 +346,26 @@ def add_look(config,
              reference_name,
              config_data):
     """
-    Object description.
+    Adds given look to the *OCIO* config.
 
     Parameters
     ----------
-    parameter : type
-        Parameter description.
+    config : Config
+        *OCIO* configuration.
+    look : array_like
+        Look description: {'name', 'colorspace', 'lut', 'cccid'}
+    custom_lut_dir : str or unicode
+        Directory to copy the look lut into.
+    reference_name : str or unicode
+        Reference name.
+    config_data : dict
+        Colorspaces and transforms converting between those colorspaces and
+        the reference colorspace, *ACES*.
 
     Returns
     -------
-    type
-         Return value description.
+    bool
+        Definition success.
     """
 
     look_name, look_colorspace, look_lut, look_cccid = unpack_default(look, 4)
@@ -405,7 +392,7 @@ def add_look(config,
     if look_cccid:
         keys['cccid'] = look_cccid
 
-    ocio_transform = generate_ocio_transform([keys])
+    ocio_transform = create_ocio_transform([keys])
     ocio_look.setTransform(ocio_transform)
 
     config.addLook(ocio_look)
@@ -435,10 +422,10 @@ def add_look(config,
     print()
 
 
-def integrate_looks_into_views(looks,
-                               reference_name,
-                               config_data,
-                               multiple_displays=False):
+def add_looks_to_views(looks,
+                       reference_name,
+                       config_data,
+                       multiple_displays=False):
     """
     Object description.
 
@@ -608,10 +595,10 @@ def create_config(config_data,
                      reference_data.name,
                      config_data)
 
-        integrate_looks_into_views(look_info,
-                                   reference_data.name,
-                                   config_data,
-                                   multiple_displays)
+        add_looks_to_views(look_info,
+                           reference_data.name,
+                           config_data,
+                           multiple_displays)
 
         print()
 
@@ -644,7 +631,7 @@ def create_config(config_data,
 
         if colorspace.to_reference_transforms:
             print('\tGenerating To-Reference transforms')
-            ocio_transform = generate_ocio_transform(
+            ocio_transform = create_ocio_transform(
                 colorspace.to_reference_transforms)
             ocio_colorspace.setTransform(
                 ocio_transform,
@@ -652,7 +639,7 @@ def create_config(config_data,
 
         if colorspace.from_reference_transforms:
             print('\tGenerating From-Reference transforms')
-            ocio_transform = generate_ocio_transform(
+            ocio_transform = create_ocio_transform(
                 colorspace.from_reference_transforms)
             ocio_colorspace.setTransform(
                 ocio_transform,
@@ -678,7 +665,7 @@ def create_config(config_data,
     print('Setting the roles')
 
     if prefix:
-        set_config_default_roles(
+        set_config_roles(
             config,
             color_picking=prefixed_names[
                 config_data['roles']['color_picking']],
@@ -722,7 +709,7 @@ def create_config(config_data,
         """
 
     else:
-        set_config_default_roles(
+        set_config_roles(
             config,
             color_picking=config_data['roles']['color_picking'],
             color_timing=config_data['roles']['color_timing'],
@@ -781,7 +768,7 @@ def create_config(config_data,
     default_display_views = config_data['displays'][default_display_name]
     default_display_colorspace = default_display_views['Output Transform']
 
-    set_config_default_roles(
+    set_config_roles(
         config,
         color_picking=default_display_colorspace.name)
 
@@ -934,14 +921,14 @@ def create_config(config_data,
     return config
 
 
-def generate_LUTs(odt_info,
-                  lmt_info,
-                  shaper_name,
-                  aces_ctl_directory,
-                  lut_directory,
-                  lut_resolution_1d=4096,
-                  lut_resolution_3d=64,
-                  cleanup=True):
+def create_config_data(odt_info,
+                       lmt_info,
+                       shaper_name,
+                       aces_ctl_directory,
+                       lut_directory,
+                       lut_resolution_1d=4096,
+                       lut_resolution_3d=64,
+                       cleanup=True):
     """
     Object description.
 
@@ -957,7 +944,7 @@ def generate_LUTs(odt_info,
          the reference colorspace, *ACES*.
     """
 
-    print('generateLUTs - begin')
+    print('create_config_data - begin')
     config_data = {}
 
     config_data['displays'] = {}
@@ -1052,9 +1039,40 @@ def generate_LUTs(odt_info,
     config_data['roles']['reference'] = raw.name
     config_data['roles']['texture_paint'] = raw.name
 
-    print('generateLUTs - end')
+    print('create_config_data - end')
 
     return config_data
+
+
+def write_config(config, config_path, sanity_check=True):
+    """
+    Writes the configuration to given path.
+
+    Parameters
+    ----------
+    config : Config
+        *OCIO* configuration.
+    config_path : str or unicode
+        Path to write the configuration path.
+    sanity_check : bool
+        Performs configuration sanity checking prior to writing it on disk.
+
+    Returns
+    -------
+    bool
+         Definition success.
+    """
+
+    if sanity_check:
+        try:
+            config.sanityCheck()
+        except Exception, e:
+            print e
+            print 'Configuration was not written due to a failed Sanity Check'
+            return
+
+    with open(config_path, mode='w') as fp:
+        fp.write(config.serialize())
 
 
 def generate_baked_LUTs(odt_info,
@@ -1226,9 +1244,9 @@ def generate_baked_LUTs(odt_info,
             bake_lut.execute()
 
 
-def create_config_dir(config_directory,
-                      bake_secondary_luts=False,
-                      custom_lut_dir=None):
+def generate_config_directory(config_directory,
+                              bake_secondary_luts=False,
+                              custom_lut_dir=None):
     """
     Object description.
 
@@ -1263,16 +1281,16 @@ def create_config_dir(config_directory,
     return lut_directory
 
 
-def create_ACES_config(aces_ctl_directory,
-                       config_directory,
-                       lut_resolution_1d=4096,
-                       lut_resolution_3d=64,
-                       bake_secondary_luts=True,
-                       multiple_displays=False,
-                       look_info=None,
-                       copy_custom_luts=True,
-                       cleanup=True,
-                       prefix_colorspaces_with_family_names=True):
+def generate_config(aces_ctl_directory,
+                    config_directory,
+                    lut_resolution_1d=4096,
+                    lut_resolution_3d=64,
+                    bake_secondary_luts=True,
+                    multiple_displays=False,
+                    look_info=None,
+                    copy_custom_luts=True,
+                    cleanup=True,
+                    prefix_colorspaces_with_family_names=True):
     """
     Creates the ACES configuration.
 
@@ -1294,22 +1312,22 @@ def create_ACES_config(aces_ctl_directory,
     if copy_custom_luts:
         custom_lut_dir = os.path.join(config_directory, 'custom')
 
-    lut_directory = create_config_dir(config_directory,
-                                      bake_secondary_luts,
-                                      custom_lut_dir)
+    lut_directory = generate_config_directory(config_directory,
+                                              bake_secondary_luts,
+                                              custom_lut_dir)
 
     odt_info = aces.get_ODTs_info(aces_ctl_directory)
     lmt_info = aces.get_LMTs_info(aces_ctl_directory)
 
     shaper_name = 'Output Shaper'
-    config_data = generate_LUTs(odt_info,
-                                lmt_info,
-                                shaper_name,
-                                aces_ctl_directory,
-                                lut_directory,
-                                lut_resolution_1d,
-                                lut_resolution_3d,
-                                cleanup)
+    config_data = create_config_data(odt_info,
+                                     lmt_info,
+                                     shaper_name,
+                                     aces_ctl_directory,
+                                     lut_directory,
+                                     lut_resolution_1d,
+                                     lut_resolution_3d,
+                                     cleanup)
 
     print('Creating config - with prefixes, with aliases')
     config = create_config(config_data,
@@ -1472,15 +1490,15 @@ def main():
         'directory specified'.format(
             ACES_OCIO_CONFIGURATION_DIRECTORY_ENVIRON))
 
-    return create_ACES_config(aces_ctl_directory,
-                              config_directory,
-                              lut_resolution_1d,
-                              lut_resolution_3d,
-                              bake_secondary_luts,
-                              multiple_displays,
-                              look_info,
-                              copy_custom_luts,
-                              cleanup_temp_images)
+    return generate_config(aces_ctl_directory,
+                           config_directory,
+                           lut_resolution_1d,
+                           lut_resolution_3d,
+                           bake_secondary_luts,
+                           multiple_displays,
+                           look_info,
+                           copy_custom_luts,
+                           cleanup_temp_images)
 
 
 if __name__ == '__main__':

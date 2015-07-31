@@ -1301,7 +1301,9 @@ def get_transform_info(ctl_transform):
             transform_full_legal_switch = True
             break
 
-    return (transform_id, transform_user_name, transform_user_name_prefix,
+    return (transform_id,
+            transform_user_name,
+            transform_user_name_prefix,
             transform_full_legal_switch)
 
 

@@ -21,7 +21,7 @@ sys.path.append(os.path.abspath(
 from aces_ocio.utilities import files_walker
 from aces_ocio.config import (
     ACES_OCIO_CTL_DIRECTORY_ENVIRON,
-    create_ACES_config)
+    generate_config)
 
 __author__ = 'ACES Developers'
 __copyright__ = 'Copyright (C) 2014 - 2015 - ACES Developers'
@@ -119,8 +119,8 @@ class TestACESConfig(unittest.TestCase):
         generated configuration and comparing them to the existing one.
         """
 
-        self.assertTrue(create_ACES_config(self.__aces_ocio_ctl_directory,
-                                           self.__temporary_directory))
+        self.assertTrue(generate_config(self.__aces_ocio_ctl_directory,
+                                        self.__temporary_directory))
 
         reference_hashes = self.directory_hashes(
             REFERENCE_CONFIG_ROOT_DIRECTORY,

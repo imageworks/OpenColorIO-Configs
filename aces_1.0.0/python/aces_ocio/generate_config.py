@@ -419,7 +419,7 @@ def add_look(config,
 
     config_data['colorSpaces'].append(colorspace)
 
-    print()
+    print('')
 
 
 def add_looks_to_views(looks,
@@ -575,13 +575,20 @@ def create_config(config_data,
 
     if aliases:
         if reference_data.aliases:
-            # TODO: Explain context for following comment.
             # Deferring adding alias colorspaces until end, which helps with
-            # some applications.
+            # applications listing the colorspaces in the order that they were
+            # defined in the configuration: alias colorspaces are usually named
+            # lower case with spaces but normal colorspaces names are longer
+            # and more verbose, thus it becomes harder for user to visually
+            # parse the list of colorspaces when there are names such as
+            # "crv_canonlog" interspersed with names like
+            # "Input - Canon - Curve - Canon-Log".
+            # Moving the alias colorspace definitions to the end of the
+            # configuration avoids the above problem.
             alias_colorspaces.append(
                 [reference_data, reference_data, reference_data.aliases])
 
-    print()
+    print('')
 
     if look_info:
         print('Adding looks')
@@ -600,7 +607,7 @@ def create_config(config_data,
                            config_data,
                            multiple_displays)
 
-        print()
+        print('')
 
     print('Adding regular colorspaces')
 
@@ -649,15 +656,15 @@ def create_config(config_data,
 
         if aliases:
             if colorspace.aliases:
-                # TODO: Explain context for following comment.
                 # Deferring adding alias colorspaces until end, which helps
-                # with some applications.
+                # with applications listing the colorspaces in the order that
+                # they were defined in the configuration.
                 alias_colorspaces.append(
                     [reference_data, colorspace, colorspace.aliases])
 
-        print()
+        print('')
 
-    print()
+    print('')
 
     # Adding roles early so that alias colorspaces can be created
     # with roles names before remaining colorspace aliases are added
@@ -680,7 +687,7 @@ def create_config(config_data,
             texture_paint=prefixed_names[
                 config_data['roles']['texture_paint']])
 
-        # TODO: Should we remove this dead code path?
+        # TODO: Pending code path reactivation.
         # Not allowed at the moment as role names can not overlap
         # with colorspace names.
         """
@@ -721,7 +728,7 @@ def create_config(config_data,
             scene_linear=config_data['roles']['scene_linear'],
             texture_paint=config_data['roles']['texture_paint'])
 
-        # TODO: Should we remove this dead code path?
+        # TODO: Pending code path reactivation.
         # Not allowed at the moment as role names can not overlap
         # with colorspace names.
         """
@@ -746,7 +753,7 @@ def create_config(config_data,
                 config, reference_data, role_colorspace, [role_name], 'Roles')
         """
 
-    print()
+    print('')
 
     # Adding alias colorspaces at the end as some applications use
     # colorspaces definitions order of the configuration to order
@@ -758,7 +765,7 @@ def create_config(config_data,
     for reference, colorspace, aliases in alias_colorspaces:
         add_colorspace_aliases(config, reference, colorspace, aliases)
 
-    print()
+    print('')
 
     print('Adding the diplays and views')
 
@@ -890,7 +897,7 @@ def create_config(config_data,
     config.setActiveDisplays(','.join(sorted(displays)))
     config.setActiveViews(','.join(views))
 
-    print()
+    print('')
 
     # Ensuring the configuration is valid.
     config.sanityCheck()

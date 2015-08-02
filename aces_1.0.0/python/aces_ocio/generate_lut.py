@@ -829,11 +829,11 @@ def main():
     else:
         print('3D LUT generation options')
 
-    print('Lut                 : %s' % lut)
+    print('LUT                 : %s' % lut)
     print('Format              : %s' % format)
     print('CTLs                : %s' % ctls)
-    print('Lut Res 1d          : %s' % lut_resolution_1d)
-    print('Lut Res 3d          : %s' % lut_resolution_3d)
+    print('LUT Res 1d          : %s' % lut_resolution_1d)
+    print('LUT Res 3d          : %s' % lut_resolution_3d)
     print('Min Value           : %s' % min_value)
     print('Max Value           : %s' % max_value)
     print('Input Scale         : %s' % input_scale)

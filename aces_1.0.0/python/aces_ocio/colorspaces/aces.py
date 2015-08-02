@@ -16,7 +16,7 @@ import shutil
 
 import PyOpenColorIO as ocio
 
-from aces_ocio.lut import (
+from aces_ocio.generate_lut import (
     generate_1d_LUT_from_CTL,
     generate_3d_LUT_from_CTL,
     write_SPI_1d)
@@ -737,8 +737,7 @@ def create_ACES_LMT(lmt_name,
         ctls = [os.path.join(aces_ctl_directory,
                              lmt_values['transformCTLInverse']),
                 shaper_from_aces_ctl % aces_ctl_directory]
-        # TODO: Investigate unresolved `odt_name` reference.
-        lut = 'Inverse.%s.%s.spi3d' % (odt_name, shaper_name)
+        lut = 'Inverse.%s.%s.spi3d' % (lmt_name, shaper_name)
 
         lut = sanitize(lut)
 
@@ -1200,8 +1199,8 @@ def create_ODTs(aces_ctl_directory,
     for odt in sorted_odts:
         (odt_name, odt_values) = odt
 
-        # Defining full range transform for *ODTs* that can only generate
-        # either *legal* or *full* output.
+        # Defining full range transform for *ODTs* that can generate either
+        # *legal* or *full* output.
 
         # Uncomment these lines and the lower section and
         # flip the `legalRange` value to 1 to restore the old behavior,

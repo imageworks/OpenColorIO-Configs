@@ -611,7 +611,8 @@ def create_config(config_data,
 
     print('Adding regular colorspaces')
 
-    for colorspace in sorted(config_data['colorSpaces']):
+    for colorspace in sorted(config_data['colorSpaces'],
+        cmp=lambda x,y: cmp(x.family.lower(), y.family.lower())):
         # Adding the colorspace *Family* into the name which helps with
         # applications that presenting colorspaces as one a flat list.
         if prefix:

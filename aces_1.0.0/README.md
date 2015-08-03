@@ -221,10 +221,13 @@ Features exposed for customization by the user include:
 - Two modes of creating the list of OCIO Displays and Views
 
 ### CTL Source
-The configuration depends on the **'hotfixes' fork of the 1.0 ACES CTL** that is available here:
+The configuration depends on the **'hotfixes' fork of the 1.0 ACES CTL**. The fork contains a number of minor bug fixes and small additions in the utilities folder but is otherwise the same as the master ACES 1.0 release. 
+
+The fork is available here:
 
 - https://github.com/ampas/aces-dev/tree/hotfixes/transforms/ctl
-- The fork contains a number of minor bug fixes and small additions in the utilities folder but is otherwise the same as the master ACES 1.0 release.
+- Clone this repo using the following command
+	- git clone --branch hotfixes https://github.com/ampas/aces-dev.git
 
 
 Dependencies

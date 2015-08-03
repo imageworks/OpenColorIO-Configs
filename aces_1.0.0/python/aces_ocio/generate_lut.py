@@ -10,7 +10,6 @@ from __future__ import division
 
 import array
 import os
-import sys
 
 import OpenImageIO as oiio
 
@@ -25,6 +24,9 @@ __status__ = 'Production'
 
 __all__ = ['generate_1d_LUT_image',
            'write_SPI_1d',
+           'write_CSP_1d',
+           'write_CTL_1d',
+           'write_1d',
            'generate_1d_LUT_from_image',
            'generate_3d_LUT_image',
            'generate_3d_LUT_from_image',
@@ -291,15 +293,15 @@ def write_1d(filename,
          Return value description.
     """
 
-    ocioFormatsToExtensions = {'cinespace': 'csp',
-                               'flame': '3dl',
-                               'icc': 'icc',
-                               'houdini': 'lut',
-                               'lustre': '3dl',
-                               'ctl': 'ctl'}
+    ocio_formats_to_extensions = {'cinespace': 'csp',
+                                  'flame': '3dl',
+                                  'icc': 'icc',
+                                  'houdini': 'lut',
+                                  'lustre': '3dl',
+                                  'ctl': 'ctl'}
 
-    if format in ocioFormatsToExtensions:
-        if ocioFormatsToExtensions[format] == 'csp':
+    if format in ocio_formats_to_extensions:
+        if ocio_formats_to_extensions[format] == 'csp':
             write_CSP_1d(filename,
                          from_min,
                          from_max,
@@ -307,7 +309,7 @@ def write_1d(filename,
                          data_entries,
                          data_channels,
                          lut_components)
-        elif ocioFormatsToExtensions[format] == 'ctl':
+        elif ocio_formats_to_extensions[format] == 'ctl':
             write_CTL_1d(filename,
                          from_min,
                          from_max,
@@ -412,13 +414,13 @@ def generate_3d_LUT_from_image(ramp_3d_path,
     if output_path is None:
         output_path = '%s.%s' % (ramp_3d_path, 'spi3d')
 
-    ocioFormatsToExtensions = {'cinespace': 'csp',
-                               'flame': '3dl',
-                               'icc': 'icc',
-                               'houdini': 'lut',
-                               'lustre': '3dl'}
+    ocio_formats_to_extensions = {'cinespace': 'csp',
+                                  'flame': '3dl',
+                                  'icc': 'icc',
+                                  'houdini': 'lut',
+                                  'lustre': '3dl'}
 
-    if format == 'spi3d' or not (format in ocioFormatsToExtensions):
+    if format == 'spi3d' or not (format in ocio_formats_to_extensions):
         # Extract a spi3d LUT
         args = ['--extract',
                 '--cubesize',
@@ -547,7 +549,7 @@ def convert_bit_depth(input_image, output_image, depth):
 def generate_1d_LUT_from_CTL(lut_path,
                              ctl_paths,
                              lut_resolution=1024,
-                             identity_LUT_bit_depth='half',
+                             identity_lut_bit_depth='half',
                              input_scale=1,
                              output_scale=1,
                              global_params=None,
@@ -576,30 +578,30 @@ def generate_1d_LUT_from_CTL(lut_path,
 
     lut_path_base = os.path.splitext(lut_path)[0]
 
-    identity_LUT_image_float = '%s.%s.%s' % (lut_path_base, 'float', 'tiff')
-    generate_1d_LUT_image(identity_LUT_image_float,
+    identity_lut_image_float = '%s.%s.%s' % (lut_path_base, 'float', 'tiff')
+    generate_1d_LUT_image(identity_lut_image_float,
                           lut_resolution,
                           min_value,
                           max_value)
 
-    if identity_LUT_bit_depth not in ['half', 'float']:
-        identity_LUT_image = '%s.%s.%s' % (lut_path_base, 'uint16', 'tiff')
-        convert_bit_depth(identity_LUT_image_float,
-                          identity_LUT_image,
-                          identity_LUT_bit_depth)
+    if identity_lut_bit_depth not in ['half', 'float']:
+        identity_lut_image = '%s.%s.%s' % (lut_path_base, 'uint16', 'tiff')
+        convert_bit_depth(identity_lut_image_float,
+                          identity_lut_image,
+                          identity_lut_bit_depth)
     else:
-        identity_LUT_image = identity_LUT_image_float
+        identity_lut_image = identity_lut_image_float
 
-    transformed_LUT_image = '%s.%s.%s' % (lut_path_base, 'transformed', 'exr')
-    apply_CTL_to_image(identity_LUT_image,
-                       transformed_LUT_image,
+    transformed_lut_image = '%s.%s.%s' % (lut_path_base, 'transformed', 'exr')
+    apply_CTL_to_image(identity_lut_image,
+                       transformed_lut_image,
                        ctl_paths,
                        input_scale,
                        output_scale,
                        global_params,
                        aces_ctl_directory)
 
-    generate_1d_LUT_from_image(transformed_LUT_image,
+    generate_1d_LUT_from_image(transformed_lut_image,
                                lut_path,
                                min_value,
                                max_value,
@@ -607,14 +609,14 @@ def generate_1d_LUT_from_CTL(lut_path,
                                format)
 
     if cleanup:
-        os.remove(identity_LUT_image)
-        if identity_LUT_image != identity_LUT_image_float:
-            os.remove(identity_LUT_image_float)
-        os.remove(transformed_LUT_image)
+        os.remove(identity_lut_image)
+        if identity_lut_image != identity_lut_image_float:
+            os.remove(identity_lut_image_float)
+        os.remove(transformed_lut_image)
 
 
-def correct_LUT_image(transformed_LUT_image,
-                      corrected_LUT_image,
+def correct_LUT_image(transformed_lut_image,
+                      corrected_lut_image,
                       lut_resolution):
     """
     Object description.
@@ -630,7 +632,7 @@ def correct_LUT_image(transformed_LUT_image,
          Return value description.
     """
 
-    transformed = oiio.ImageInput.open(transformed_LUT_image)
+    transformed = oiio.ImageInput.open(transformed_lut_image)
 
     transformed_spec = transformed.spec()
     width = transformed_spec.width
@@ -644,14 +646,14 @@ def correct_LUT_image(transformed_LUT_image,
                   height,
                   lut_resolution * lut_resolution,
                   lut_resolution))
-        print('Generating %s' % corrected_LUT_image)
+        print('Generating %s' % corrected_lut_image)
 
         # Forcibly read data as float, the Python API doesn't handle half-float
         # well yet.
         type = oiio.FLOAT
         source_data = transformed.read_image(type)
 
-        correct = oiio.ImageOutput.create(corrected_LUT_image)
+        correct = oiio.ImageOutput.create(corrected_lut_image)
 
         correct_spec = oiio.ImageSpec()
         correct_spec.set_format(oiio.FLOAT)
@@ -659,7 +661,7 @@ def correct_LUT_image(transformed_LUT_image,
         correct_spec.height = width
         correct_spec.nchannels = channels
 
-        correct.open(corrected_LUT_image, correct_spec, oiio.Create)
+        correct.open(corrected_lut_image, correct_spec, oiio.Create)
 
         dest_data = array.array('f',
                                 ('\0' * correct_spec.width *
@@ -679,17 +681,17 @@ def correct_LUT_image(transformed_LUT_image,
         correct.close()
     else:
         # shutil.copy(transformedLUTImage, correctedLUTImage)
-        corrected_LUT_image = transformed_LUT_image
+        corrected_lut_image = transformed_lut_image
 
     transformed.close()
 
-    return corrected_LUT_image
+    return corrected_lut_image
 
 
 def generate_3d_LUT_from_CTL(lut_path,
                              ctl_paths,
                              lut_resolution=64,
-                             identity_LUT_bit_depth='half',
+                             identity_lut_bit_depth='half',
                              input_scale=1,
                              output_scale=1,
                              global_params=None,
@@ -715,45 +717,45 @@ def generate_3d_LUT_from_CTL(lut_path,
 
     lut_path_base = os.path.splitext(lut_path)[0]
 
-    identity_LUT_image_float = '%s.%s.%s' % (lut_path_base, 'float', 'tiff')
-    generate_3d_LUT_image(identity_LUT_image_float, lut_resolution)
+    identity_lut_image_float = '%s.%s.%s' % (lut_path_base, 'float', 'tiff')
+    generate_3d_LUT_image(identity_lut_image_float, lut_resolution)
 
-    if identity_LUT_bit_depth not in ['half', 'float']:
-        identity_LUT_image = '%s.%s.%s' % (lut_path_base,
-                                           identity_LUT_bit_depth,
+    if identity_lut_bit_depth not in ['half', 'float']:
+        identity_lut_image = '%s.%s.%s' % (lut_path_base,
+                                           identity_lut_bit_depth,
                                            'tiff')
-        convert_bit_depth(identity_LUT_image_float,
-                          identity_LUT_image,
-                          identity_LUT_bit_depth)
+        convert_bit_depth(identity_lut_image_float,
+                          identity_lut_image,
+                          identity_lut_bit_depth)
     else:
-        identity_LUT_image = identity_LUT_image_float
+        identity_lut_image = identity_lut_image_float
 
-    transformed_LUT_image = '%s.%s.%s' % (lut_path_base, 'transformed', 'exr')
-    apply_CTL_to_image(identity_LUT_image,
-                       transformed_LUT_image,
+    transformed_lut_image = '%s.%s.%s' % (lut_path_base, 'transformed', 'exr')
+    apply_CTL_to_image(identity_lut_image,
+                       transformed_lut_image,
                        ctl_paths,
                        input_scale,
                        output_scale,
                        global_params,
                        aces_ctl_directory)
 
-    corrected_LUT_image = '%s.%s.%s' % (lut_path_base, 'correct', 'exr')
-    corrected_LUT_image = correct_LUT_image(transformed_LUT_image,
-                                            corrected_LUT_image,
+    corrected_lut_image = '%s.%s.%s' % (lut_path_base, 'correct', 'exr')
+    corrected_lut_image = correct_LUT_image(transformed_lut_image,
+                                            corrected_lut_image,
                                             lut_resolution)
 
-    generate_3d_LUT_from_image(corrected_LUT_image,
+    generate_3d_LUT_from_image(corrected_lut_image,
                                lut_path,
                                lut_resolution,
                                format)
 
     if cleanup:
-        os.remove(identity_LUT_image)
-        if identity_LUT_image != identity_LUT_image_float:
-            os.remove(identity_LUT_image_float)
-        os.remove(transformed_LUT_image)
-        if corrected_LUT_image != transformed_LUT_image:
-            os.remove(corrected_LUT_image)
+        os.remove(identity_lut_image)
+        if identity_lut_image != identity_lut_image_float:
+            os.remove(identity_lut_image_float)
+        os.remove(transformed_lut_image)
+        if corrected_lut_image != transformed_lut_image:
+            os.remove(corrected_lut_image)
         if format != 'spi3d':
             lut_path_spi3d = '%s.%s' % (lut_path, 'spi3d')
             os.remove(lut_path_spi3d)
@@ -822,31 +824,24 @@ def main():
         for param in options.ctlRenderParam:
             params[param[0]] = float(param[1])
 
-    try:
-        args_start = sys.argv.index('--') + 1
-        args = sys.argv[args_start:]
-    except:
-        args_start = len(sys.argv) + 1
-        args = []
-
     if generate_1d:
         print('1D LUT generation options')
     else:
         print('3D LUT generation options')
 
-    print('lut                 : %s' % lut)
-    print('format              : %s' % format)
-    print('ctls                : %s' % ctls)
-    print('lut res 1d          : %s' % lut_resolution_1d)
-    print('lut res 3d          : %s' % lut_resolution_3d)
-    print('min value           : %s' % min_value)
-    print('max value           : %s' % max_value)
-    print('input scale         : %s' % input_scale)
-    print('output scale        : %s' % output_scale)
-    print('ctl render params   : %s' % params)
-    print('ctl release path    : %s' % ctl_release_path)
-    print('bit depth of input  : %s' % bit_depth)
-    print('cleanup temp images : %s' % cleanup)
+    print('LUT                 : %s' % lut)
+    print('Format              : %s' % format)
+    print('CTLs                : %s' % ctls)
+    print('LUT Res 1d          : %s' % lut_resolution_1d)
+    print('LUT Res 3d          : %s' % lut_resolution_3d)
+    print('Min Value           : %s' % min_value)
+    print('Max Value           : %s' % max_value)
+    print('Input Scale         : %s' % input_scale)
+    print('Output Scale        : %s' % output_scale)
+    print('CTL Render Params   : %s' % params)
+    print('CTL Release Path    : %s' % ctl_release_path)
+    print('Input Bit Depth     : %s' % bit_depth)
+    print('Cleanup Temp Images : %s' % cleanup)
 
     if generate_1d:
         generate_1d_LUT_from_CTL(lut,
@@ -874,10 +869,9 @@ def main():
                                  ctl_release_path,
                                  format=format)
     else:
-        print(('\n\nNo LUT generated. '
+        print(('\n\nNo LUT generated! '
                'You must choose either 1D or 3D LUT generation\n\n'))
 
 
 if __name__ == '__main__':
     main()
-

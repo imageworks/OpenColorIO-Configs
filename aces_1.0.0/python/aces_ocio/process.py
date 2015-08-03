@@ -41,9 +41,13 @@ def read_text(text_file):
          Return value description.
     """
 
-    if text_file != '':
-        with open(text_file, 'rb') as fp:
-            text = (fp.read())
+    # TODO: Investigate if check is needed.
+    if not text_file:
+        return
+
+    with open(text_file, 'rb') as fp:
+        text = (fp.read())
+
     return text
 
 
@@ -62,9 +66,13 @@ def write_text(text, text_file):
          Return value description.
     """
 
-    if text_file != '':
-        with open(text_file, 'wb') as fp:
-            fp.write(text)
+    # TODO: Investigate if check is needed.
+    if not text_file:
+        return
+
+    with open(text_file, 'wb') as fp:
+        fp.write(text)
+
     return text
 
 
@@ -722,7 +730,6 @@ def main():
         args_start = sys.argv.index('--') + 1
         args = sys.argv[args_start:]
     except:
-        args_start = len(sys.argv) + 1
         args = []
 
     if cmd is None:

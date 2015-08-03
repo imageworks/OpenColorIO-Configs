@@ -16,7 +16,6 @@ import PyOpenColorIO as ocio
 import aces_ocio.generate_lut as genlut
 from aces_ocio.utilities import ColorSpace, mat44_from_mat33, sanitize
 
-
 __author__ = 'ACES Developers'
 __copyright__ = 'Copyright (C) 2014 - 2015 - ACES Developers'
 __license__ = ''
@@ -31,7 +30,6 @@ __all__ = ['create_log_c',
 def create_log_c(gamut,
                  transfer_function,
                  exposure_index,
-                 name,
                  lut_directory,
                  lut_resolution_1d,
                  aliases):
@@ -65,14 +63,14 @@ def create_log_c(gamut,
     cs.is_data = False
 
     if gamut and transfer_function:
-        cs.aces_transform_id = "IDT.ARRI.Alexa-v3-logC-EI%s.a1.v1" % exposure_index
+        cs.aces_transform_id = (
+            'IDT.ARRI.Alexa-v3-logC-EI%s.a1.v1' % exposure_index)
 
-    # A linear space needs allocation variables
+    # A linear space needs allocation variables.
     if transfer_function == '':
         cs.allocation_type = ocio.Constants.ALLOCATION_LG2
         cs.allocation_vars = [-8, 5, 0.00390625]
 
-    # Globals.
     IDT_maker_version = '0.08'
 
     nominal_EI = 400
@@ -154,8 +152,7 @@ def create_log_c(gamut,
             'type': 'lutFile',
             'path': lut,
             'interpolation': 'linear',
-            'direction': 'forward'
-        })
+            'direction': 'forward'})
 
     if gamut == 'Wide Gamut':
         cs.to_reference_transforms.append({
@@ -163,8 +160,7 @@ def create_log_c(gamut,
             'matrix': mat44_from_mat33([0.680206, 0.236137, 0.083658,
                                         0.085415, 1.017471, -0.102886,
                                         0.002057, -0.062563, 1.060506]),
-            'direction': 'forward'
-        })
+            'direction': 'forward'})
 
     cs.from_reference_transforms = []
     return cs
@@ -202,10 +198,9 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
             gamut,
             transfer_function,
             EI,
-            'LogC',
             lut_directory,
             lut_resolution_1d,
-            ["%sei%s_%s" % ("logc3", str(EI), "arriwide")])
+            ['%sei%s_%s' % ('logc3', str(EI), 'arriwide')])
         colorspaces.append(log_c_EI_full)
 
     # Linearization Only
@@ -214,10 +209,9 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
             '',
             transfer_function,
             EI,
-            'LogC',
             lut_directory,
             lut_resolution_1d,
-            ["crv_%sei%s" % ("logc3", str(EI))])
+            ['crv_%sei%s' % ('logc3', str(EI))])
         colorspaces.append(log_c_EI_linearization)
 
     # Primaries Only
@@ -225,10 +219,9 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
         gamut,
         '',
         default_EI,
-        'LogC',
         lut_directory,
         lut_resolution_1d,
-        ["%s_%s" % ('lin', "arriwide")])
+        ['%s_%s' % ('lin', 'arriwide')])
     colorspaces.append(log_c_EI_primaries)
 
     return colorspaces

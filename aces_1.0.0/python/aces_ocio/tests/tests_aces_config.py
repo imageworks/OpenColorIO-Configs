@@ -16,12 +16,12 @@ import tempfile
 import unittest
 
 sys.path.append(os.path.abspath(
- os.path.join(os.path.dirname(__file__), '..', '..') ) )
+    os.path.join(os.path.dirname(__file__), '..', '..')))
 
 from aces_ocio.utilities import files_walker
-from aces_ocio.aces_config import (
+from aces_ocio.generate_config import (
     ACES_OCIO_CTL_DIRECTORY_ENVIRON,
-    create_ACES_config)
+    generate_config)
 
 __author__ = 'ACES Developers'
 __copyright__ = 'Copyright (C) 2014 - 2015 - ACES Developers'
@@ -39,8 +39,7 @@ __all__ = ['REFERENCE_CONFIG_ROOT_DIRECTORY',
 # TODO: Investigate how the current config has been generated to use it for
 # tests.
 REFERENCE_CONFIG_ROOT_DIRECTORY = os.path.abspath(
- os.path.join(os.path.dirname(__file__), '..', '..', '..'))
-#REFERENCE_CONFIG_ROOT_DIRECTORY = '/colour-science/colour-ramblings/ocio/aces'
+    os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 
 HASH_TEST_PATTERNS = ('\.3dl', '\.lut', '\.csp')
 UNHASHABLE_TEST_PATTERNS = ('\.icc', '\.ocio')
@@ -119,8 +118,8 @@ class TestACESConfig(unittest.TestCase):
         generated configuration and comparing them to the existing one.
         """
 
-        self.assertTrue(create_ACES_config(self.__aces_ocio_ctl_directory,
-                                           self.__temporary_directory))
+        self.assertTrue(generate_config(self.__aces_ocio_ctl_directory,
+                                        self.__temporary_directory))
 
         reference_hashes = self.directory_hashes(
             REFERENCE_CONFIG_ROOT_DIRECTORY,

@@ -7,6 +7,7 @@ Defines various package utilities objects.
 
 from __future__ import division
 
+import itertools
 import os
 import re
 from collections import OrderedDict
@@ -26,7 +27,9 @@ __all__ = ['ColorSpace',
            'files_walker',
            'replace',
            'sanitize',
-           'compact']
+           'compact',
+           'colorspace_prefixed_name',
+           'unpack_default']
 
 
 class ColorSpace(object):
@@ -36,16 +39,16 @@ class ColorSpace(object):
 
     def __init__(self,
                  name,
-                 aliases=[],
+                 aliases=None,
                  description=None,
                  bit_depth=ocio.Constants.BIT_DEPTH_F32,
                  equality_group='',
                  family=None,
                  is_data=False,
-                 to_reference_transforms=[],
-                 from_reference_transforms=[],
+                 to_reference_transforms=None,
+                 from_reference_transforms=None,
                  allocation_type=ocio.Constants.ALLOCATION_UNIFORM,
-                 allocation_vars=[0, 1],
+                 allocation_vars=None,
                  aces_transform_id=None):
         """
         Object description.
@@ -61,6 +64,18 @@ class ColorSpace(object):
              Return value description.
         """
 
+        if aliases is None:
+            aliases = []
+
+        if to_reference_transforms is None:
+            to_reference_transforms = []
+
+        if from_reference_transforms is None:
+            from_reference_transforms = []
+
+        if allocation_vars is None:
+            allocation_vars = [0, 1]
+
         self.name = name
         self.aliases = aliases
         self.bit_depth = bit_depth
@@ -73,6 +88,7 @@ class ColorSpace(object):
         self.allocation_type = allocation_type
         self.allocation_vars = allocation_vars
         self.aces_transform_id = aces_transform_id
+
 
 def mat44_from_mat33(mat33):
     """
@@ -177,11 +193,11 @@ def replace(string, data):
 
     Examples
     --------
-    >>> patterns = {"John" : "Luke",
-    ...             "Jane" : "Anakin",
-    ...             "Doe" : "Skywalker",
-    ...             "Z6PO" : "R2D2"}
-    >>> data = "Users are: John Doe, Jane Doe, Z6PO."
+    >>> patterns = {'John' : 'Luke',
+    ...             'Jane' : 'Anakin',
+    ...             'Doe' : 'Skywalker',
+    ...             'Z6PO' : 'R2D2'}
+    >>> data = 'Users are: John Doe, Jane Doe, Z6PO.'
     >>> replace(data,patterns )
     u'Users are: Luke Skywalker, Anakin Skywalker, R2D2.'
     """
@@ -233,3 +249,45 @@ def compact(string):
                                 ('___', '_'),
                                 ('__', '_'),
                                 ('_', ''))))
+
+
+def colorspace_prefixed_name(colorspace):
+    """
+    Returns given *OCIO* colorspace prefixed name with its family name.
+
+    Parameters
+    ----------
+    colorspace : Colorspace
+        Colorspace to prefix.
+
+    Returns
+    -------
+    str or unicode
+         Family prefixed *OCIO* colorspace name.
+    """
+    prefix = colorspace.family.replace('/', ' - ')
+
+    return '%s - %s' % (prefix, colorspace.name)
+
+
+def unpack_default(iterable, length=3, default=None):
+    """
+    Unpacks given iterable maintaining given length and filling missing
+    entries with given default.
+
+    Parameters
+    ----------
+    iterable : object
+        Iterable.
+    length : int
+        Iterable length.
+    default : object
+        Filling default object.
+
+    Returns
+    -------
+    iterable
+    """
+
+    return itertools.islice(
+        itertools.chain(iter(iterable), itertools.repeat(default)), length)

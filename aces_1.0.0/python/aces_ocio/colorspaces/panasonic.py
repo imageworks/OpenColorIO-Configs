@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-Implements support for *Panasonic* colorspaces conversions and transfer functions.
+Implements support for *Panasonic* colorspaces conversions and transfer
+functions.
 """
 
 import array
@@ -26,7 +27,6 @@ __all__ = ['create_v_log',
 
 def create_v_log(gamut,
                  transfer_function,
-                 name,
                  lut_directory,
                  lut_resolution_1d,
                  aliases):
@@ -65,12 +65,12 @@ def create_v_log(gamut,
         cs.allocation_vars = [-8, 5, 0.00390625]
 
     def v_log_to_linear(x):
-        cutInv = 0.181
+        cut_inv = 0.181
         b = 0.00873
         c = 0.241514
         d = 0.598206
 
-        if (x <= cutInv):
+        if x <= cut_inv:
             return (x - 0.125) / 5.6
         else:
             return pow(10, (x - d) / c) - b
@@ -131,30 +131,27 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
     v_log_1 = create_v_log(
         'V-Gamut',
         'V-Log',
-        'V-Log',
         lut_directory,
         lut_resolution_1d,
-        ["vlog_vgamut"])
+        ['vlog_vgamut'])
     colorspaces.append(v_log_1)
 
     # Linearization Only
     v_log_2 = create_v_log(
         '',
         'V-Log',
-        'V-Log',
         lut_directory,
         lut_resolution_1d,
-        ["crv_vlog"])
+        ['crv_vlog'])
     colorspaces.append(v_log_2)
 
     # Primaries Only
     v_log_3 = create_v_log(
         'V-Gamut',
         '',
-        'V-Log',
         lut_directory,
         lut_resolution_1d,
-        ["lin_vgamut"])
+        ['lin_vgamut'])
     colorspaces.append(v_log_3)
 
     return colorspaces

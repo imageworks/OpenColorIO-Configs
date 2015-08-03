@@ -28,7 +28,6 @@ __all__ = ['create_protune',
 
 def create_protune(gamut,
                    transfer_function,
-                   name,
                    lut_directory,
                    lut_resolution_1d,
                    aliases):
@@ -48,8 +47,8 @@ def create_protune(gamut,
          Return value description.
     """
 
-    # The gamut should be marked as experimental until
-    # matrices are fully verified
+    # The gamut should be marked as experimental until  matrices are fully
+    # verified.
     name = '%s - %s - Experimental' % (transfer_function, gamut)
     if transfer_function == '':
         name = 'Linear - %s - Experimental' % gamut
@@ -63,7 +62,7 @@ def create_protune(gamut,
     cs.family = 'Input/GoPro'
     cs.is_data = False
 
-    # A linear space needs allocation variables
+    # A linear space needs allocation variables.
     if transfer_function == '':
         cs.allocation_type = ocio.Constants.ALLOCATION_LG2
         cs.allocation_vars = [-8, 5, 0.00390625]
@@ -72,7 +71,7 @@ def create_protune(gamut,
         c1 = 113.0
         c2 = 1.0
         c3 = 112.0
-        linear = ((pow(c1, (normalized_code_value)) - c2) / c3)
+        linear = ((pow(c1, normalized_code_value) - c2) / c3)
 
         return linear
 
@@ -133,30 +132,27 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
     protune_1 = create_protune(
         'Protune Native',
         'Protune Flat',
-        'Protune',
         lut_directory,
         lut_resolution_1d,
-        ["protuneflat_protunegamutexp"])
+        ['protuneflat_protunegamutexp'])
     colorspaces.append(protune_1)
 
     # Linearization Only
     protune_2 = create_protune(
         '',
         'Protune Flat',
-        'Protune',
         lut_directory,
         lut_resolution_1d,
-        ["crv_protuneflat"])
+        ['crv_protuneflat'])
     colorspaces.append(protune_2)
 
     # Primaries Only
     protune_3 = create_protune(
         'Protune Native',
         '',
-        'Protune',
         lut_directory,
         lut_resolution_1d,
-        ["lin_protunegamutexp"])
+        ['lin_protunegamutexp'])
     colorspaces.append(protune_3)
 
     return colorspaces

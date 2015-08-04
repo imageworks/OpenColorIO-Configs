@@ -24,7 +24,7 @@ For ease of use across a broader number of applications, the family name of each
 ### ACES
 
 - Colorspaces
-	- ACES2065
+	- ACES2065-1
 	- ACEScc
 	- ACESproxy
 	- ACEScg
@@ -42,7 +42,7 @@ For ease of use across a broader number of applications, the family name of each
 - Description: Colorspaces and transforms representing the ACES ADX spaces used for film scanning and printing.
 
 - Technical information: Transforms generated based on the [ACES CTL Transforms](https://github.com/ampas/aces-dev/tree/v1.0/transforms/ctl)
-	- [Alex Fry's ACES 0.7.1 OCIO config](https://github.com/imageworks/OpenColorIO-Configs/tree/master/aces_0.7.1) as also a valuable resource.
+	- [Alex Fry's ACES 0.7.1 OCIO config](https://github.com/imageworks/OpenColorIO-Configs/tree/master/aces_0.7.1) was also a valuable resource.
 
 ### Look
 
@@ -52,6 +52,7 @@ For ease of use across a broader number of applications, the family name of each
 	- ACES 1.0 to 0.7 emulation
 
 - Description: Colorspaces and transforms emulating the look of the ACES 0.1, 0.2 and 0.7 release.
+	- Should be applied to data in the ACES2065-1 colorspace.
 	- Should be used before an ACES Output Transform
 
 - Technical information: Transforms generated based on the [ACES CTL Transforms](https://github.com/ampas/aces-dev/tree/v1.0/transforms/ctl)
@@ -129,6 +130,10 @@ For ease of use across a broader number of applications, the family name of each
 	- The colorspaces that start with "Linear - " will convert to or from a specific gamut but not apply a transfer function.
 	- The colorspaces that start with "Curve - " will apply a transfer function but not convert between gamuts.
 
+
+### Roles
+
+- Description: The role colorspaces are aliases to the colorspaces used for the OCIO 'roles' functionality.
 
 ### Aliases
 

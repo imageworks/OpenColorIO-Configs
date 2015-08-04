@@ -1546,10 +1546,11 @@ def create_colorspaces(aces_ctl_directory,
                                  ACEScc)
     colorspaces.extend(odts)
 
-    # TODO: Investigate if there is a way to retrieve the value from *CTL*.
+    # TODO: Investigate if there is a way to retrieve these values from *CTL*.
     default_display = 'sRGB (D60 sim.)'
+    color_picking = 'Rec.709'
 
-    roles = {'color_picking': ACEScg.name,
+    roles = {'color_picking': color_picking,
              'color_timing': ACEScc.name,
              'compositing_log': ACEScc.name,
              'data': '',
@@ -1557,6 +1558,8 @@ def create_colorspaces(aces_ctl_directory,
              'matte_paint': ACEScc.name,
              'reference': '',
              'scene_linear': ACEScg.name,
-             'texture_paint': ''}
+             'texture_paint': '',
+             'compositing_linear': ACEScg.name,
+             'rendering': ACEScg.name}
 
     return ACES, colorspaces, displays, ACEScc, roles, default_display

@@ -685,18 +685,16 @@ def create_config(config_data,
             matte_paint=prefixed_names[config_data['roles']['matte_paint']],
             reference=prefixed_names[config_data['roles']['reference']],
             scene_linear=prefixed_names[config_data['roles']['scene_linear']],
+            compositing_linear=prefixed_names[config_data['roles']['scene_linear']],
+            rendering=prefixed_names[config_data['roles']['scene_linear']],
             texture_paint=prefixed_names[
                 config_data['roles']['texture_paint']])
 
-        # TODO: Pending code path reactivation.
-        # Not allowed at the moment as role names can not overlap
-        # with colorspace names.
-        """
         # Add the aliased colorspaces for each role
         for role_name, role_colorspace_name in config_data['roles'].iteritems():
             role_colorspace_prefixed_name = prefixed_names[role_colorspace_name]
 
-            print( 'Finding colorspace : %s' % role_colorspace_prefixed_name )
+            #print( 'Finding colorspace : %s' % role_colorspace_prefixed_name )
             # Find the colorspace pointed to by the role
             role_colorspaces = [colorspace
                 for colorspace in config_data['colorSpaces']
@@ -709,12 +707,18 @@ def create_config(config_data,
                     role_colorspace = reference_data
 
             if role_colorspace:
-                print( 'Adding an alias colorspace named %s, pointing to %s' % (
-                    role_name, role_colorspace.name))
+                # The alias colorspace shouldn't match the role name exactly
+                role_name_alias1 = "role_%s" % role_name
+                role_name_alias2 = "Role - %s" % role_name
+
+                print( 'Adding a role colorspace named %s, pointing to %s' % (
+                    role_name_alias2, role_colorspace.name))
+
+                alias_colorspaces.append(
+                (reference_data, role_colorspace, [role_name_alias1]))
 
                 add_colorspace_aliases(
-                config, reference_data, role_colorspace, [role_name], 'Roles')
-        """
+                config, reference_data, role_colorspace, [role_name_alias2], 'Roles')
 
     else:
         set_config_roles(
@@ -727,12 +731,10 @@ def create_config(config_data,
             matte_paint=config_data['roles']['matte_paint'],
             reference=config_data['roles']['reference'],
             scene_linear=config_data['roles']['scene_linear'],
+            compositing_linear=config_data['roles']['scene_linear'],
+            rendering=config_data['roles']['scene_linear'],
             texture_paint=config_data['roles']['texture_paint'])
 
-        # TODO: Pending code path reactivation.
-        # Not allowed at the moment as role names can not overlap
-        # with colorspace names.
-        """
         # Add the aliased colorspaces for each role
         for role_name, role_colorspace_name in config_data['roles'].iteritems():
             # Find the colorspace pointed to by the role
@@ -747,12 +749,18 @@ def create_config(config_data,
                     role_colorspace = reference_data
 
             if role_colorspace:
-                print('Adding an alias colorspace named %s, pointing to %s' % (
-                    role_name, role_colorspace.name))
+                # The alias colorspace shouldn't match the role name exactly
+                role_name_alias1 = "role_%s" % role_name
+                role_name_alias2 = "Role - %s" % role_name
+
+                print('Adding a role colorspace named %s, pointing to %s' % (
+                    role_name_alias2, role_colorspace.name))
+
+                alias_colorspaces.append(
+                (reference_data, role_colorspace, [role_name_alias1]))
 
                 add_colorspace_aliases(
-                config, reference_data, role_colorspace, [role_name], 'Roles')
-        """
+                config, reference_data, role_colorspace, [role_name_alias2], 'Roles')
 
     print('')
 
@@ -775,10 +783,6 @@ def create_config(config_data,
     default_display_name = config_data['defaultDisplay']
     default_display_views = config_data['displays'][default_display_name]
     default_display_colorspace = default_display_views['Output Transform']
-
-    set_config_roles(
-        config,
-        color_picking=default_display_colorspace.name)
 
     # Defining *Displays* and *Views*.
     displays, views = [], []

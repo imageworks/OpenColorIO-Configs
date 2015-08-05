@@ -614,7 +614,7 @@ def create_Dolby_PQ_scaled(aces_ctl_directory,
     ctls = [os.path.join(
         aces_ctl_directory,
         'utilities',
-        'ACESlib.OCIOshaper_to_lin_param.a1.0.0.ctl')]
+        'ACESlib.OCIOshaper_to_Lin_param.a1.0.0.ctl')]
     lut = '%s_to_linear.spi1d' % name
 
     lut = sanitize(lut)

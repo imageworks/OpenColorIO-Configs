@@ -614,7 +614,7 @@ def create_Dolby_PQ_scaled(aces_ctl_directory,
     ctls = [os.path.join(
         aces_ctl_directory,
         'utilities',
-        'ACESlib.OCIOShaper_to_lin_param.a1.0.0.ctl')]
+        'ACESlib.OCIOshaper_to_lin_param.a1.0.0.ctl')]
     lut = '%s_to_linear.spi1d' % name
 
     lut = sanitize(lut)
@@ -1181,10 +1181,10 @@ def create_ODTs(aces_ctl_directory,
         dolby_pq_scaled_shaper_name,
         os.path.join('%s',
                      'utilities',
-                     'ACESlib.OCIOShaper_to_Lin_param.a1.0.0.ctl'),
+                     'ACESlib.OCIOshaper_to_Lin_param.a1.0.0.ctl'),
         os.path.join('%s',
                      'utilities',
-                     'ACESlib.Lin_to_OCIOShaper_param.a1.0.0.ctl'),
+                     'ACESlib.Lin_to_OCIOshaper_param.a1.0.0.ctl'),
         1.0,
         log2_params]
 

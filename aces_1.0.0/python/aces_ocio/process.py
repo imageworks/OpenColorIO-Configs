@@ -331,7 +331,7 @@ class Process:
                 log_handle.write(header)
                 if format == 'xml':
                     log_handle.write(']]>\n')
-            self.write_log(log_handle)
+            self.write_log(log_handle, format=format)
             log_handle.close()
 
     def log_line(self, line):

@@ -494,6 +494,10 @@ def apply_CTL_to_image(input_image,
 
     if len(ctl_paths) > 0:
         ctlenv = os.environ
+
+        if "/usr/local/bin" not in ctlenv['PATH'].split(':'):
+            ctlenv['PATH'] = "%s:/usr/local/bin" % ctlenv['PATH']
+
         if aces_ctl_directory is not None:
             if os.path.split(aces_ctl_directory)[1] != 'utilities':
                 ctl_module_path = os.path.join(aces_ctl_directory, 'utilities')

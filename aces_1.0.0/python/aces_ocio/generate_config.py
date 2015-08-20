@@ -1133,6 +1133,15 @@ def generate_baked_LUTs(odt_info,
         odt_prefix = odt_values['transformUserNamePrefix']
         odt_name = odt_values['transformUserName']
 
+        if odt_name in ['P3-D60 PQ (1000 nits)']:
+            odt_shaper = shaper_name.replace("48nits", "1000nits")
+        elif odt_name in ['P3-D60 PQ (2000 nits)']:
+            odt_shaper = shaper_name.replace("48nits", "2000nits")
+        elif odt_name in ['P3-D60 PQ (4000 nits)']:
+            odt_shaper = shaper_name.replace("48nits", "4000nits")
+        else:
+            odt_shaper = shaper_name
+
         # *Photoshop*
         for input_space in ['ACEScc', 'ACESproxy']:
             args = ['--iconfig', config_path,
@@ -1149,10 +1158,10 @@ def generate_baked_LUTs(odt_info,
                                               odt_name,
                                               input_space)]
             if prefix:
-                args += ['--shaperspace', 'Utility - %s' % shaper_name,
+                args += ['--shaperspace', 'Utility - %s' % odt_shaper,
                          '--shapersize', str(lut_resolution_shaper)]
             else:
-                args += ['--shaperspace', shaper_name,
+                args += ['--shaperspace', odt_shaper,
                          '--shapersize', str(lut_resolution_shaper)]
             args += ['--cubesize', str(lut_resolution_3d)]
             args += ['--format',
@@ -1180,10 +1189,10 @@ def generate_baked_LUTs(odt_info,
                      '%s - %s for %s data' % (
                          odt_prefix, odt_name, input_space)]
             if prefix:
-                args += ['--shaperspace', 'Utility - %s' % shaper_name,
+                args += ['--shaperspace', 'Utility - %s' % odt_shaper,
                          '--shapersize', str(lut_resolution_shaper)]
             else:
-                args += ['--shaperspace', shaper_name,
+                args += ['--shaperspace', odt_shaper,
                          '--shapersize', str(lut_resolution_shaper)]
             args += ['--cubesize', str(lut_resolution_3d)]
 
@@ -1223,9 +1232,9 @@ def generate_baked_LUTs(odt_info,
                      '%s - %s for %s data' % (
                          odt_prefix, odt_name, input_space)]
             if input_space == 'ACEScg':
-                lin_shaper_name = '%s - AP1' % shaper_name
+                lin_shaper_name = '%s - AP1' % odt_shaper
             else:
-                lin_shaper_name = shaper_name
+                lin_shaper_name = odt_shaper
             if prefix:
                 lin_shaper_name = 'Utility - %s' % lin_shaper_name
             args += ['--shaperspace', lin_shaper_name,
@@ -1302,7 +1311,8 @@ def generate_config(aces_ctl_directory,
                     look_info=None,
                     copy_custom_luts=True,
                     cleanup=True,
-                    prefix_colorspaces_with_family_names=True):
+                    prefix_colorspaces_with_family_names=True,
+                    shaper_base_name='Log2'):
     """
     Creates the ACES configuration.
 
@@ -1331,7 +1341,11 @@ def generate_config(aces_ctl_directory,
     odt_info = aces.get_ODTs_info(aces_ctl_directory)
     lmt_info = aces.get_LMTs_info(aces_ctl_directory)
 
-    shaper_name = 'Output Shaper'
+    if shaper_base_name == 'DolbyPQ':
+        shaper_name = 'Dolby PQ 48nits Shaper'
+    else:
+        shaper_name = 'Log2 48nits Shaper'
+
     config_data = create_config_data(odt_info,
                                      lmt_info,
                                      shaper_name,
@@ -1436,7 +1450,13 @@ def main():
               'ACEScc colorspace, but the user could choose other spaces '
               'by changing the argument after the name of the look. \n')
     usage += '\n'
-
+    usage += ('Create a GUI-friendly ACES 1.0 config using the Dolby PQ '
+              'transfer function as the shaper: \n')
+    usage += ('\tcreate_aces_config -a /path/to/aces-dev/transforms/ctl '
+              '--lutResolution1d 1024 --lutResolution3d 33 -c aces_1.0.0 '
+              '--shaper DolbyPQ')
+    usage += '\n'
+ 
     look_info = []
 
     def look_info_callback(option, opt_str, value, parser):
@@ -1477,6 +1497,8 @@ def main():
                  action='callback', callback=look_info_callback)
     p.add_option('--copyCustomLUTs', action='store_true', default=False)
 
+    p.add_option('--shaper', '-s', default='Log2')
+
     options, arguments = p.parse_args()
 
     aces_ctl_directory = options.acesCTLDir
@@ -1487,6 +1509,8 @@ def main():
     cleanup_temp_images = not options.keepTempImages
     multiple_displays = options.createMultipleDisplays
     copy_custom_luts = options.copyCustomLUTs
+    shaper_base_name = options.shaper
+    prefix = True
 
     print(look_info)
 
@@ -1510,7 +1534,9 @@ def main():
                            multiple_displays,
                            look_info,
                            copy_custom_luts,
-                           cleanup_temp_images)
+                           cleanup_temp_images,
+                           prefix,
+                           shaper_base_name)
 
 
 if __name__ == '__main__':

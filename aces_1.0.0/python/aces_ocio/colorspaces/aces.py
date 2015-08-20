@@ -7,6 +7,7 @@ Implements support for *ACES* colorspaces conversions and transfer functions.
 
 from __future__ import division
 
+import copy
 import math
 import numpy
 import os
@@ -44,11 +45,14 @@ __all__ = ['ACES_AP1_TO_AP0',
            'create_ADX',
            'create_generic_log',
            'create_Dolby_PQ',
-           'create_Dolby_PQ_scaled',
+           'create_Dolby_PQ_shaper',
            'create_ACES_LMT',
            'create_LMTs',
            'create_ACES_RRT_plus_ODT',
            'create_ODTs',
+           'create_shapers_dolbypq'
+           'create_shapers_log2',
+           'create_shapers',
            'get_transform_info',
            'get_ODTs_info',
            'get_LMTs_info',
@@ -293,11 +297,15 @@ def create_ACEScg():
 
     cs.from_reference_transforms = []
 
+    # Commented out because having specifying the inverse matrix causes
+    # some of OCIO's checks to see if a set of transforms can be collapsed
+    # to fail.
+
     # *AP1* primaries to *AP0* primaries
-    cs.from_reference_transforms.append({
-        'type': 'matrix',
-        'matrix': mat44_from_mat33(ACES_AP0_TO_AP1),
-        'direction': 'forward'})
+    #cs.from_reference_transforms.append({
+    #    'type': 'matrix',
+    #    'matrix': mat44_from_mat33(ACES_AP0_TO_AP1),
+    #    'direction': 'forward'})
 
     return cs
 
@@ -471,7 +479,7 @@ def create_generic_log(aces_ctl_directory,
                        max_value=1,
                        input_scale=1,
                        middle_grey=0.18,
-                       min_exposure=-6,
+                       min_exposure=-6.5,
                        max_exposure=6.5):
     """
     Creates the *Generic Log* colorspace.
@@ -589,7 +597,7 @@ def create_Dolby_PQ(aces_ctl_directory,
 # -------------------------------------------------------------------------
 # *Dolby PQ* Transform - Fixed Linear Range
 # -------------------------------------------------------------------------
-def create_Dolby_PQ_scaled(aces_ctl_directory,
+def create_Dolby_PQ_shaper(aces_ctl_directory,
                            lut_directory,
                            lut_resolution_1d,
                            cleanup,
@@ -599,7 +607,7 @@ def create_Dolby_PQ_scaled(aces_ctl_directory,
                            max_value=1.0,
                            input_scale=1.0,
                            middle_grey=0.18,
-                           min_exposure=-6.0,
+                           min_exposure=-6.5,
                            max_exposure=6.5):
     if aliases is None:
         aliases = []
@@ -614,7 +622,7 @@ def create_Dolby_PQ_scaled(aces_ctl_directory,
     ctls = [os.path.join(
         aces_ctl_directory,
         'utilities',
-        'ACESlib.OCIOshaper_to_lin_param.a1.0.0.ctl')]
+        'ACESlib.OCIOshaper_to_Lin_param.a1.0.0.ctl')]
     lut = '%s_to_linear.spi1d' % name
 
     lut = sanitize(lut)
@@ -1009,6 +1017,300 @@ def create_ACES_RRT_plus_ODT(odt_name,
 
     return cs
 
+# -------------------------------------------------------------------------
+# *Log 2 Shapers*
+# -------------------------------------------------------------------------
+def create_shapers_log2(aces_ctl_directory,
+                        lut_directory,
+                        lut_resolution_1d,
+                        cleanup,
+                        shaper_name,
+                        middle_grey,
+                        min_exposure,
+                        max_exposure):
+    colorspaces = []
+    shaper_data = {}
+
+    # Defining the *Log 2* shaper for *ODTs covering 48 nit output*.
+    log2_shaper_name = shaper_name
+    log2_shaper_name_aliases = ['crv_%s' % compact(log2_shaper_name)]
+    log2_params = {
+        'middleGrey': middle_grey,
+        'minExposure': min_exposure,
+        'maxExposure': max_exposure}
+
+    log2_shaper_colorspace = create_generic_log(
+        aces_ctl_directory,
+        lut_directory,
+        lut_resolution_1d,
+        cleanup,
+        name=log2_shaper_name,
+        middle_grey=log2_params['middleGrey'],
+        min_exposure=log2_params['minExposure'],
+        max_exposure=log2_params['maxExposure'],
+        aliases=log2_shaper_name_aliases)
+    colorspaces.append(log2_shaper_colorspace)
+
+    shaper_input_scale_generic_log2 = 1
+
+    # *Log 2* shaper name and *CTL* transforms bundled up.
+    log2_shaper_data = [
+        log2_shaper_name,
+        os.path.join('%s',
+                     'utilities',
+                     'ACESlib.Log2_to_Lin_param.a1.0.0.ctl'),
+        os.path.join('%s',
+                     'utilities',
+                     'ACESlib.Lin_to_Log2_param.a1.0.0.ctl'),
+        shaper_input_scale_generic_log2,
+        log2_params]
+
+    shaper_data[log2_shaper_name] = log2_shaper_data
+
+    # Defining the *Log2 shaper that includes the AP1* primaries.
+    log2_shaper_api1_name = '%s - AP1' % log2_shaper_name
+    log2_shaper_api1_colorspace = copy.deepcopy(log2_shaper_colorspace)
+
+    log2_shaper_api1_colorspace.name = log2_shaper_api1_name
+    log2_shaper_api1_colorspace.description = (
+        'The %s color space' % log2_shaper_api1_name)
+    log2_shaper_api1_colorspace.aliases = [
+        '%s_ap1' % compact(log2_shaper_name)]
+    log2_shaper_api1_colorspace.equality_group = log2_shaper_api1_name
+
+    # *AP1* primaries to *AP0* primaries
+    log2_shaper_api1_colorspace.to_reference_transforms.append({
+        'type': 'matrix',
+        'matrix': mat44_from_mat33(ACES_AP1_TO_AP0),
+        'direction': 'forward'
+    })
+    colorspaces.append(log2_shaper_api1_colorspace)
+
+    return shaper_data, colorspaces
+
+# -------------------------------------------------------------------------
+# *Dolby PQ-based Shapers*
+# -------------------------------------------------------------------------
+def create_shapers_dolbypq(aces_ctl_directory,
+                           lut_directory,
+                           lut_resolution_1d,
+                           cleanup,
+                           shaper_name,
+                           middle_grey,
+                           min_exposure,
+                           max_exposure):
+    colorspaces = []
+    shaper_data = {}
+
+    # Define the *Dolby PQ Shaper that considers a fixed linear range*
+    dolby_pq_shaper_name = shaper_name
+    dolby_pq_shaper_name_aliases = ['crv_%s' % compact(dolby_pq_shaper_name)]
+
+    dolby_pq_params = {
+        'middleGrey': middle_grey,
+        'minExposure': min_exposure,
+        'maxExposure': max_exposure}
+
+    dolby_pq_shaper_colorspace = create_Dolby_PQ_shaper(
+        aces_ctl_directory,
+        lut_directory,
+        lut_resolution_1d,
+        cleanup,
+        name=dolby_pq_shaper_name,
+        aliases=dolby_pq_shaper_name_aliases,
+        middle_grey=dolby_pq_params['middleGrey'],
+        min_exposure=dolby_pq_params['minExposure'],
+        max_exposure=dolby_pq_params['maxExposure'])
+    colorspaces.append(dolby_pq_shaper_colorspace)
+
+    # *Dolby PQ* shaper name and *CTL* transforms bundled up.
+    dolby_pq_shaper_data = [
+        dolby_pq_shaper_name,
+        os.path.join('%s',
+                     'utilities',
+                     'ACESlib.OCIOshaper_to_Lin_param.a1.0.0.ctl'),
+        os.path.join('%s',
+                     'utilities',
+                     'ACESlib.Lin_to_OCIOshaper_param.a1.0.0.ctl'),
+        1.0,
+        dolby_pq_params]
+
+    shaper_data[dolby_pq_shaper_name] = dolby_pq_shaper_data
+
+    # Defining the *Log2 shaper that includes the AP1* primaries.
+    dolby_pq_shaper_api1_name = '%s - AP1' % dolby_pq_shaper_name
+    dolby_pq_shaper_api1_colorspace = copy.deepcopy(dolby_pq_shaper_colorspace)
+
+    dolby_pq_shaper_api1_colorspace.name = dolby_pq_shaper_api1_name
+    dolby_pq_shaper_api1_colorspace.description = (
+        'The %s color space' % dolby_pq_shaper_api1_name)
+    dolby_pq_shaper_api1_colorspace.aliases = [
+        '%s_ap1' % compact(dolby_pq_shaper_name)]
+    dolby_pq_shaper_api1_colorspace.equality_group = dolby_pq_shaper_api1_name
+
+    # *AP1* primaries to *AP0* primaries
+    dolby_pq_shaper_api1_colorspace.to_reference_transforms.append({
+        'type': 'matrix',
+        'matrix': mat44_from_mat33(ACES_AP1_TO_AP0),
+        'direction': 'forward'
+    })
+    colorspaces.append(dolby_pq_shaper_api1_colorspace)
+
+    return shaper_data, colorspaces
+
+
+# -------------------------------------------------------------------------
+# *Shapers*
+# -------------------------------------------------------------------------
+def create_shapers(aces_ctl_directory,
+                   lut_directory,
+                   lut_resolution_1d,
+                   cleanup):
+
+    colorspaces = []
+    shaper_data = {}
+
+    # Define the base *Log2 48 nits shaper*
+    #
+    (log2_48nits_shaper_data, 
+     log2_48nits_colorspaces) = create_shapers_log2(aces_ctl_directory,
+       lut_directory,
+       lut_resolution_1d,
+       cleanup,
+       'Log2 48nits Shaper',
+       0.18,
+       -6.5,
+       6.5)
+    colorspaces.extend(log2_48nits_colorspaces)
+    shaper_data.update(log2_48nits_shaper_data)
+
+    # Define the base *Log2 1000 nits shaper*
+    #
+    (log2_1000nits_shaper_data, 
+     log2_1000nits_colorspaces) = create_shapers_log2(aces_ctl_directory,
+       lut_directory,
+       lut_resolution_1d,
+       cleanup,
+       'Log2 1000nits Shaper',
+       0.18,
+       -12.0,
+       10.0)
+    colorspaces.extend(log2_1000nits_colorspaces)
+    shaper_data.update(log2_1000nits_shaper_data)
+
+    # Define the base *Log2 2000 nits shaper*
+    #
+    (log2_2000nits_shaper_data, 
+     log2_2000nits_colorspaces) = create_shapers_log2(aces_ctl_directory,
+       lut_directory,
+       lut_resolution_1d,
+       cleanup,
+       'Log2 2000nits Shaper',
+       0.18,
+       -12.0,
+       11.0)
+    colorspaces.extend(log2_2000nits_colorspaces)
+    shaper_data.update(log2_2000nits_shaper_data)
+
+    # Define the base *Log2 4000 nits shaper*
+    #
+    (log2_4000nits_shaper_data, 
+     log2_4000nits_colorspaces) = create_shapers_log2(aces_ctl_directory,
+       lut_directory,
+       lut_resolution_1d,
+       cleanup,
+       'Log2 4000nits Shaper',
+       0.18,
+       -12.0,
+       12.0)
+    colorspaces.extend(log2_4000nits_colorspaces)
+    shaper_data.update(log2_4000nits_shaper_data)
+
+    # Define the base *Dolby PQ transfer function*
+    #
+    dolby_pq_shaper_name = 'Dolby PQ 10000'
+    dolby_pq_shaper_name_aliases = ['crv_%s' % 'dolbypq_10000']
+
+    dolby_pq_shaper_colorspace = create_Dolby_PQ(
+        aces_ctl_directory,
+        lut_directory,
+        lut_resolution_1d,
+        cleanup,
+        name=dolby_pq_shaper_name,
+        aliases=dolby_pq_shaper_name_aliases)
+    colorspaces.append(dolby_pq_shaper_colorspace)
+
+    # *Dolby PQ* shaper name and *CTL* transforms bundled up.
+    dolby_pq_shaper_data = [
+        dolby_pq_shaper_name,
+        os.path.join('%s',
+                     'utilities',
+                     'ACESlib.DolbyPQ_to_Lin.a1.0.0.ctl'),
+        os.path.join('%s',
+                     'utilities',
+                     'ACESlib.Lin_to_DolbyPQ.a1.0.0.ctl'),
+        1.0,
+        {}]
+
+    shaper_data[dolby_pq_shaper_name] = dolby_pq_shaper_data
+
+    # Define the *Dolby PQ 48 nits shaper*
+    #
+    (dolbypq_48nits_shaper_data, 
+     dolbypq_48nits_colorspaces) = create_shapers_dolbypq(aces_ctl_directory,
+       lut_directory,
+       lut_resolution_1d,
+       cleanup,
+       'Dolby PQ 48nits Shaper',
+       0.18,
+       -6.5,
+       6.5)
+    colorspaces.extend(dolbypq_48nits_colorspaces)
+    shaper_data.update(dolbypq_48nits_shaper_data)
+
+    # Define the *Dolby PQ 1000 nits shaper*
+    #
+    (dolbypq_1000nits_shaper_data, 
+     dolbypq_1000nits_colorspaces) = create_shapers_dolbypq(aces_ctl_directory,
+       lut_directory,
+       lut_resolution_1d,
+       cleanup,
+       'Dolby PQ 1000nits Shaper',
+       0.18,
+       -12.0,
+       10.0)
+    colorspaces.extend(dolbypq_1000nits_colorspaces)
+    shaper_data.update(dolbypq_1000nits_shaper_data)
+
+    # Define the *Dolby PQ 2000 nits shaper*
+    #
+    (dolbypq_2000nits_shaper_data, 
+     dolbypq_2000nits_colorspaces) = create_shapers_dolbypq(aces_ctl_directory,
+       lut_directory,
+       lut_resolution_1d,
+       cleanup,
+       'Dolby PQ 2000nits Shaper',
+       0.18,
+       -12.0,
+       11.0)
+    colorspaces.extend(dolbypq_2000nits_colorspaces)
+    shaper_data.update(dolbypq_2000nits_shaper_data)
+
+    # Define the *Dolby PQ 4000 nits shaper*
+    #
+    (dolbypq_4000nits_shaper_data, 
+     dolbypq_4000nits_colorspaces) = create_shapers_dolbypq(aces_ctl_directory,
+       lut_directory,
+       lut_resolution_1d,
+       cleanup,
+       'Dolby PQ 4000nits Shaper',
+       0.18,
+       -12.0,
+       12.0)
+    colorspaces.extend(dolbypq_4000nits_colorspaces)
+    shaper_data.update(dolbypq_4000nits_shaper_data)
+
+    return shaper_data, colorspaces
 
 # -------------------------------------------------------------------------
 # *ODTs*
@@ -1042,156 +1344,19 @@ def create_ODTs(aces_ctl_directory,
     # -------------------------------------------------------------------------
     # *RRT / ODT* Shaper Options
     # -------------------------------------------------------------------------
-    shaper_data = {}
-
-    # Defining the *Log 2* shaper.
-    log2_shaper_name = shaper_name
-    log2_shaper_name_aliases = ['crv_%s' % compact(log2_shaper_name)]
-    log2_params = {
-        'middleGrey': 0.18,
-        'minExposure': -6,
-        'maxExposure': 6.5}
-
-    log2_shaper_colorspace = create_generic_log(
-        aces_ctl_directory,
+    shaper_data, shaper_colorspaces = create_shapers(aces_ctl_directory,
         lut_directory,
         lut_resolution_1d,
-        cleanup,
-        name=log2_shaper_name,
-        middle_grey=log2_params['middleGrey'],
-        min_exposure=log2_params['minExposure'],
-        max_exposure=log2_params['maxExposure'],
-        aliases=log2_shaper_name_aliases)
-    colorspaces.append(log2_shaper_colorspace)
+        cleanup)
 
-    shaper_input_scale_generic_log2 = 1
+    colorspaces.extend(shaper_colorspaces)
 
-    # *Log 2* shaper name and *CTL* transforms bundled up.
-    log2_shaper_data = [
-        log2_shaper_name,
-        os.path.join('%s',
-                     'utilities',
-                     'ACESlib.Log2_to_Lin_param.a1.0.0.ctl'),
-        os.path.join('%s',
-                     'utilities',
-                     'ACESlib.Lin_to_Log2_param.a1.0.0.ctl'),
-        shaper_input_scale_generic_log2,
-        log2_params]
-
-    shaper_data[log2_shaper_name] = log2_shaper_data
-
-    # Space with a more user-friendly name. Direct copy otherwise.
-    log2_shaper_copy_name = 'Log2 Shaper'
-    log2_shaper_copy_colorspace = ColorSpace(log2_shaper_copy_name)
-    log2_shaper_copy_colorspace.description = (
-        'The %s color space' % log2_shaper_copy_name)
-    log2_shaper_copy_colorspace.aliases = [
-        'crv_%s' % compact(log2_shaper_copy_name)]
-    log2_shaper_copy_colorspace.equality_group = log2_shaper_copy_name
-    log2_shaper_copy_colorspace.family = log2_shaper_colorspace.family
-    log2_shaper_copy_colorspace.is_data = log2_shaper_colorspace.is_data
-    log2_shaper_copy_colorspace.to_reference_transforms = list(
-        log2_shaper_colorspace.to_reference_transforms)
-    log2_shaper_copy_colorspace.from_reference_transforms = list(
-        log2_shaper_colorspace.from_reference_transforms)
-    colorspaces.append(log2_shaper_copy_colorspace)
-
-    # Defining the *Log2 shaper that includes the AP1* primaries.
-    log2_shaper_api1_name = '%s - AP1' % 'Log2 Shaper'
-    log2_shaper_api1_colorspace = ColorSpace(log2_shaper_api1_name)
-    log2_shaper_api1_colorspace.description = (
-        'The %s color space' % log2_shaper_api1_name)
-    log2_shaper_api1_colorspace.aliases = [
-        '%s_ap1' % compact(log2_shaper_copy_name)]
-    log2_shaper_api1_colorspace.equality_group = log2_shaper_api1_name
-    log2_shaper_api1_colorspace.family = log2_shaper_colorspace.family
-    log2_shaper_api1_colorspace.is_data = log2_shaper_colorspace.is_data
-    log2_shaper_api1_colorspace.to_reference_transforms = list(
-        log2_shaper_colorspace.to_reference_transforms)
-    log2_shaper_api1_colorspace.from_reference_transforms = list(
-        log2_shaper_colorspace.from_reference_transforms)
-
-    # *AP1* primaries to *AP0* primaries
-    log2_shaper_api1_colorspace.to_reference_transforms.append({
-        'type': 'matrix',
-        'matrix': mat44_from_mat33(ACES_AP1_TO_AP0),
-        'direction': 'forward'
-    })
-    colorspaces.append(log2_shaper_api1_colorspace)
-
-    # Defining the *Log2* shaper that includes the *AP1* primaries.
-    # Named with `shaper_name` variable and needed for some *LUT* baking steps.
-    shaper_api1_name = '%s - AP1' % shaper_name
-    shaper_api1_colorspace = ColorSpace(shaper_api1_name)
-    shaper_api1_colorspace.description = (
-        'The %s color space' % shaper_api1_name)
-    shaper_api1_colorspace.aliases = ['%s_ap1' % compact(shaper_name)]
-    shaper_api1_colorspace.equality_group = shaper_api1_name
-    shaper_api1_colorspace.family = log2_shaper_colorspace.family
-    shaper_api1_colorspace.is_data = log2_shaper_colorspace.is_data
-    shaper_api1_colorspace.to_reference_transforms = list(
-        log2_shaper_api1_colorspace.to_reference_transforms)
-    shaper_api1_colorspace.from_reference_transforms = list(
-        log2_shaper_api1_colorspace.from_reference_transforms)
-    colorspaces.append(shaper_api1_colorspace)
-
-    # Define the base *Dolby PQ Shaper*
-    #
-    dolby_pq_shaper_name = 'Dolby PQ 10000'
-    dolby_pq_shaper_name_aliases = ['crv_%s' % 'dolbypq_10000']
-
-    dolby_pq_shaper_colorspace = create_Dolby_PQ(
-        aces_ctl_directory,
-        lut_directory,
-        lut_resolution_1d,
-        cleanup,
-        name=dolby_pq_shaper_name,
-        aliases=dolby_pq_shaper_name_aliases)
-    colorspaces.append(dolby_pq_shaper_colorspace)
-
-    # *Dolby PQ* shaper name and *CTL* transforms bundled up.
-    dolby_pq_shaper_data = [
-        dolby_pq_shaper_name,
-        os.path.join('%s',
-                     'utilities',
-                     'ACESlib.DolbyPQ_to_Lin.a1.0.0.ctl'),
-        os.path.join('%s',
-                     'utilities',
-                     'ACESlib.Lin_to_DolbyPQ.a1.0.0.ctl'),
-        1.0,
-        {}]
-
-    shaper_data[dolby_pq_shaper_name] = dolby_pq_shaper_data
-
-    # Define the *Dolby PQ Shaper that considers a fixed linear range*
-    dolby_pq_scaled_shaper_name = 'Dolby PQ Scaled'
-    dolby_pq_scaled_shaper_name_aliases = ['crv_%s' % 'dolbypq_scaled']
-
-    dolby_pq_scaled_shaper_colorspace = create_Dolby_PQ_scaled(
-        aces_ctl_directory,
-        lut_directory,
-        lut_resolution_1d,
-        cleanup,
-        name=dolby_pq_scaled_shaper_name,
-        aliases=dolby_pq_scaled_shaper_name_aliases)
-    colorspaces.append(dolby_pq_scaled_shaper_colorspace)
-
-    # *Dolby PQ* shaper name and *CTL* transforms bundled up.
-    dolby_pq_scaled_shaper_data = [
-        dolby_pq_scaled_shaper_name,
-        os.path.join('%s',
-                     'utilities',
-                     'ACESlib.OCIOshaper_to_Lin_param.a1.0.0.ctl'),
-        os.path.join('%s',
-                     'utilities',
-                     'ACESlib.Lin_to_OCIOshaper_param.a1.0.0.ctl'),
-        1.0,
-        log2_params]
-
-    shaper_data[dolby_pq_scaled_shaper_name] = dolby_pq_scaled_shaper_data
-
-    rrt_shaper = log2_shaper_data
-    # rrt_shaper = dolby_pq_scaled_shaper_data
+    # Assumes shaper has variants covering the range expected by the
+    # 48 nit, 1000 nit, 2000 nit and 4000 nit Ouput Transforms 
+    rrt_shaper_48nits = shaper_data[shaper_name]
+    rrt_shaper_1000nits = shaper_data[shaper_name.replace("48nits", "1000nits")]
+    rrt_shaper_2000nits = shaper_data[shaper_name.replace("48nits", "2000nits")]
+    rrt_shaper_4000nits = shaper_data[shaper_name.replace("48nits", "4000nits")]
 
     # *RRT + ODT* combinations.
     sorted_odts = sorted(odt_info.iteritems(), key=lambda x: x[1])
@@ -1199,23 +1364,21 @@ def create_ODTs(aces_ctl_directory,
     for odt in sorted_odts:
         (odt_name, odt_values) = odt
 
-        # Defining full range transform for *ODTs* that can generate either
-        # *legal* or *full* output.
-
-        # Uncomment these lines and the lower section and
-        # flip the `legalRange` value to 1 to restore the old behavior,
-        # where both *legal* or *full* range *LUTs* were generated.
         if odt_values['transformHasFullLegalSwitch']:
-            # odt_name_legal = '%s - Legal' % odt_values['transformUserName']
             odt_legal['legalRange'] = 0
-        # else:
-        #    odt_name_legal = odt_values['transformUserName']
 
         odt_name_legal = odt_values['transformUserName']
-
         odt_legal = odt_values.copy()
-
         odt_aliases = ['out_%s' % compact(odt_name_legal)]
+
+        if odt_name_legal in ['P3-D60 PQ (1000 nits)']:
+            rrt_shaper = rrt_shaper_1000nits
+        elif odt_name_legal in ['P3-D60 PQ (2000 nits)']:
+            rrt_shaper = rrt_shaper_2000nits
+        elif odt_name_legal in ['P3-D60 PQ (4000 nits)']:
+            rrt_shaper = rrt_shaper_4000nits
+        else:
+            rrt_shaper = rrt_shaper_48nits
 
         cs = create_ACES_RRT_plus_ODT(
             odt_name_legal,
@@ -1232,36 +1395,6 @@ def create_ODTs(aces_ctl_directory,
             'Raw': linear_display_space,
             'Log': log_display_space,
             'Output Transform': cs}
-
-        """
-        # Generating full range transform for *ODTs* that can generate 
-        # either *legal* or *full* output.
-        if odt_values['transformHasFullLegalSwitch']:
-            print('Generating full range ODT for %s' % odt_name)
-
-            odt_name_full = '%s - Full' % odt_values['transformUserName']
-            odt_full = odt_values.copy()
-            odt_full['legalRange'] = 0
-
-            odt_full_aliases = ['out_%s' % compact(odt_name_full)]
-
-            cs_full = create_ACES_RRT_plus_ODT(
-                odt_name_full,
-                odt_full,
-                rrt_shaper,
-                aces_ctl_directory,
-                lut_directory,
-                lut_resolution_1d,
-                lut_resolution_3d,
-                cleanup,
-                odt_full_aliases)
-            colorspaces.append(cs_full)
-
-            displays[odt_name_full] = {
-                'Raw': linear_display_space,
-                'Log': log_display_space,
-                'Output Transform': cs_full}
-        """
 
     return colorspaces, displays
 

@@ -97,7 +97,6 @@ colorspaces:
     allocation: lg2
     allocationvars: [-8, 5, 0.00390625]
     to_reference: !<MatrixTransform> {matrix: [0.695452, 0.140679, 0.163869, 0, 0.0447946, 0.859671, 0.0955343, 0, -0.00552588, 0.00402521, 1.0015, 0, 0, 0, 0, 1]}
-    from_reference: !<MatrixTransform> {matrix: [1.45144, -0.236511, -0.214929, 0, -0.0765538, 1.17623, -0.0996759, 0, 0.00831615, -0.00603245, 0.997716, 0, 0, 0, 0, 1]}
 
   - !<ColorSpace>
     name: ADX - ADX10
@@ -1090,8 +1089,8 @@ colorspaces:
     allocationvars: [0, 1]
     from_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
-        - !<FileTransform> {src: Output_Shaper.RRT.a1.0.0.DCDM__P3_gamut_clip_.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Log2_48_nits_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
+        - !<FileTransform> {src: Log2_48_nits_Shaper.RRT.a1.0.0.DCDM__P3_gamut_clip_.spi3d, interpolation: tetrahedral}
 
   - !<ColorSpace>
     name: Output - DCDM
@@ -1107,12 +1106,12 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: InvRRT.a1.0.0.DCDM.Output_Shaper.spi3d, interpolation: tetrahedral}
-        - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear}
+        - !<FileTransform> {src: InvRRT.a1.0.0.DCDM.Log2_48_nits_Shaper.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Log2_48_nits_Shaper_to_linear.spi1d, interpolation: linear}
     from_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
-        - !<FileTransform> {src: Output_Shaper.RRT.a1.0.0.DCDM.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Log2_48_nits_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
+        - !<FileTransform> {src: Log2_48_nits_Shaper.RRT.a1.0.0.DCDM.spi3d, interpolation: tetrahedral}
 
   - !<ColorSpace>
     name: Output - P3-D60 PQ (1000 nits)
@@ -1128,12 +1127,12 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: InvRRT.a1.0.0.P3-D60_PQ__1000_nits_.Output_Shaper.spi3d, interpolation: tetrahedral}
-        - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear}
+        - !<FileTransform> {src: InvRRT.a1.0.0.P3-D60_PQ__1000_nits_.Log2_1000_nits_Shaper.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Log2_1000_nits_Shaper_to_linear.spi1d, interpolation: linear}
     from_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
-        - !<FileTransform> {src: Output_Shaper.RRT.a1.0.0.P3-D60_PQ__1000_nits_.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Log2_1000_nits_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
+        - !<FileTransform> {src: Log2_1000_nits_Shaper.RRT.a1.0.0.P3-D60_PQ__1000_nits_.spi3d, interpolation: tetrahedral}
 
   - !<ColorSpace>
     name: Output - P3-D60 PQ (2000 nits)
@@ -1149,12 +1148,12 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: InvRRT.a1.0.0.P3-D60_PQ__2000_nits_.Output_Shaper.spi3d, interpolation: tetrahedral}
-        - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear}
+        - !<FileTransform> {src: InvRRT.a1.0.0.P3-D60_PQ__2000_nits_.Log2_2000_nits_Shaper.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Log2_2000_nits_Shaper_to_linear.spi1d, interpolation: linear}
     from_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
-        - !<FileTransform> {src: Output_Shaper.RRT.a1.0.0.P3-D60_PQ__2000_nits_.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Log2_2000_nits_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
+        - !<FileTransform> {src: Log2_2000_nits_Shaper.RRT.a1.0.0.P3-D60_PQ__2000_nits_.spi3d, interpolation: tetrahedral}
 
   - !<ColorSpace>
     name: Output - P3-D60 PQ (4000 nits)
@@ -1170,12 +1169,12 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: InvRRT.a1.0.0.P3-D60_PQ__4000_nits_.Output_Shaper.spi3d, interpolation: tetrahedral}
-        - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear}
+        - !<FileTransform> {src: InvRRT.a1.0.0.P3-D60_PQ__4000_nits_.Log2_4000_nits_Shaper.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Log2_4000_nits_Shaper_to_linear.spi1d, interpolation: linear}
     from_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
-        - !<FileTransform> {src: Output_Shaper.RRT.a1.0.0.P3-D60_PQ__4000_nits_.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Log2_4000_nits_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
+        - !<FileTransform> {src: Log2_4000_nits_Shaper.RRT.a1.0.0.P3-D60_PQ__4000_nits_.spi3d, interpolation: tetrahedral}
 
   - !<ColorSpace>
     name: Output - P3-D60
@@ -1191,12 +1190,12 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: InvRRT.a1.0.0.P3-D60.Output_Shaper.spi3d, interpolation: tetrahedral}
-        - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear}
+        - !<FileTransform> {src: InvRRT.a1.0.0.P3-D60.Log2_48_nits_Shaper.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Log2_48_nits_Shaper_to_linear.spi1d, interpolation: linear}
     from_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
-        - !<FileTransform> {src: Output_Shaper.RRT.a1.0.0.P3-D60.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Log2_48_nits_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
+        - !<FileTransform> {src: Log2_48_nits_Shaper.RRT.a1.0.0.P3-D60.spi3d, interpolation: tetrahedral}
 
   - !<ColorSpace>
     name: Output - P3-DCI
@@ -1212,12 +1211,12 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: InvRRT.a1.0.0.P3-DCI.Output_Shaper.spi3d, interpolation: tetrahedral}
-        - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear}
+        - !<FileTransform> {src: InvRRT.a1.0.0.P3-DCI.Log2_48_nits_Shaper.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Log2_48_nits_Shaper_to_linear.spi1d, interpolation: linear}
     from_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
-        - !<FileTransform> {src: Output_Shaper.RRT.a1.0.0.P3-DCI.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Log2_48_nits_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
+        - !<FileTransform> {src: Log2_48_nits_Shaper.RRT.a1.0.0.P3-DCI.spi3d, interpolation: tetrahedral}
 
   - !<ColorSpace>
     name: Output - Rec.2020
@@ -1233,12 +1232,12 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: InvRRT.a1.0.0.Rec.2020.Output_Shaper.spi3d, interpolation: tetrahedral}
-        - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear}
+        - !<FileTransform> {src: InvRRT.a1.0.0.Rec.2020.Log2_48_nits_Shaper.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Log2_48_nits_Shaper_to_linear.spi1d, interpolation: linear}
     from_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
-        - !<FileTransform> {src: Output_Shaper.RRT.a1.0.0.Rec.2020.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Log2_48_nits_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
+        - !<FileTransform> {src: Log2_48_nits_Shaper.RRT.a1.0.0.Rec.2020.spi3d, interpolation: tetrahedral}
 
   - !<ColorSpace>
     name: Output - Rec.709
@@ -1254,12 +1253,12 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: InvRRT.a1.0.0.Rec.709.Output_Shaper.spi3d, interpolation: tetrahedral}
-        - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear}
+        - !<FileTransform> {src: InvRRT.a1.0.0.Rec.709.Log2_48_nits_Shaper.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Log2_48_nits_Shaper_to_linear.spi1d, interpolation: linear}
     from_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
-        - !<FileTransform> {src: Output_Shaper.RRT.a1.0.0.Rec.709.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Log2_48_nits_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
+        - !<FileTransform> {src: Log2_48_nits_Shaper.RRT.a1.0.0.Rec.709.spi3d, interpolation: tetrahedral}
 
   - !<ColorSpace>
     name: Output - Rec.709 (D60 sim.)
@@ -1275,12 +1274,12 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: InvRRT.a1.0.0.Rec.709__D60_sim._.Output_Shaper.spi3d, interpolation: tetrahedral}
-        - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear}
+        - !<FileTransform> {src: InvRRT.a1.0.0.Rec.709__D60_sim._.Log2_48_nits_Shaper.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Log2_48_nits_Shaper_to_linear.spi1d, interpolation: linear}
     from_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
-        - !<FileTransform> {src: Output_Shaper.RRT.a1.0.0.Rec.709__D60_sim._.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Log2_48_nits_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
+        - !<FileTransform> {src: Log2_48_nits_Shaper.RRT.a1.0.0.Rec.709__D60_sim._.spi3d, interpolation: tetrahedral}
 
   - !<ColorSpace>
     name: Output - sRGB (D60 sim.)
@@ -1296,12 +1295,12 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: InvRRT.a1.0.0.sRGB__D60_sim._.Output_Shaper.spi3d, interpolation: tetrahedral}
-        - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear}
+        - !<FileTransform> {src: InvRRT.a1.0.0.sRGB__D60_sim._.Log2_48_nits_Shaper.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Log2_48_nits_Shaper_to_linear.spi1d, interpolation: linear}
     from_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
-        - !<FileTransform> {src: Output_Shaper.RRT.a1.0.0.sRGB__D60_sim._.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Log2_48_nits_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
+        - !<FileTransform> {src: Log2_48_nits_Shaper.RRT.a1.0.0.sRGB__D60_sim._.spi3d, interpolation: tetrahedral}
 
   - !<ColorSpace>
     name: Utility - LMT Shaper
@@ -1316,57 +1315,111 @@ colorspaces:
     to_reference: !<FileTransform> {src: LMT_Shaper_to_linear.spi1d, interpolation: linear}
 
   - !<ColorSpace>
-    name: Utility - Output Shaper
+    name: Utility - Log2 48 nits Shaper
     family: Utility
-    equalitygroup: Output Shaper
+    equalitygroup: Log2 48 nits Shaper
     bitdepth: 32f
     description: |
-      The Output Shaper color space
+      The Log2 48 nits Shaper color space
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
-    to_reference: !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear}
+    to_reference: !<FileTransform> {src: Log2_48_nits_Shaper_to_linear.spi1d, interpolation: linear}
 
   - !<ColorSpace>
-    name: Utility - Log2 Shaper
+    name: Utility - Log2 48 nits Shaper - AP1
     family: Utility
-    equalitygroup: Log2 Shaper
+    equalitygroup: Log2 48 nits Shaper - AP1
     bitdepth: 32f
     description: |
-      The Log2 Shaper color space
-    isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
-    to_reference: !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear}
-
-  - !<ColorSpace>
-    name: Utility - Log2 Shaper - AP1
-    family: Utility
-    equalitygroup: Log2 Shaper - AP1
-    bitdepth: 32f
-    description: |
-      The Log2 Shaper - AP1 color space
+      The Log2 48 nits Shaper - AP1 color space
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear}
+        - !<FileTransform> {src: Log2_48_nits_Shaper_to_linear.spi1d, interpolation: linear}
         - !<MatrixTransform> {matrix: [0.695452, 0.140679, 0.163869, 0, 0.0447946, 0.859671, 0.0955343, 0, -0.00552588, 0.00402521, 1.0015, 0, 0, 0, 0, 1]}
 
   - !<ColorSpace>
-    name: Utility - Output Shaper - AP1
+    name: Utility - Log2 1000 nits Shaper
     family: Utility
-    equalitygroup: Output Shaper - AP1
+    equalitygroup: Log2 1000 nits Shaper
     bitdepth: 32f
     description: |
-      The Output Shaper - AP1 color space
+      The Log2 1000 nits Shaper color space
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<FileTransform> {src: Log2_1000_nits_Shaper_to_linear.spi1d, interpolation: linear}
+
+  - !<ColorSpace>
+    name: Utility - Log2 1000 nits Shaper - AP1
+    family: Utility
+    equalitygroup: Log2 1000 nits Shaper - AP1
+    bitdepth: 32f
+    description: |
+      The Log2 1000 nits Shaper - AP1 color space
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: Output_Shaper_to_linear.spi1d, interpolation: linear}
+        - !<FileTransform> {src: Log2_1000_nits_Shaper_to_linear.spi1d, interpolation: linear}
+        - !<MatrixTransform> {matrix: [0.695452, 0.140679, 0.163869, 0, 0.0447946, 0.859671, 0.0955343, 0, -0.00552588, 0.00402521, 1.0015, 0, 0, 0, 0, 1]}
+
+  - !<ColorSpace>
+    name: Utility - Log2 2000 nits Shaper
+    family: Utility
+    equalitygroup: Log2 2000 nits Shaper
+    bitdepth: 32f
+    description: |
+      The Log2 2000 nits Shaper color space
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<FileTransform> {src: Log2_2000_nits_Shaper_to_linear.spi1d, interpolation: linear}
+
+  - !<ColorSpace>
+    name: Utility - Log2 2000 nits Shaper - AP1
+    family: Utility
+    equalitygroup: Log2 2000 nits Shaper - AP1
+    bitdepth: 32f
+    description: |
+      The Log2 2000 nits Shaper - AP1 color space
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: Log2_2000_nits_Shaper_to_linear.spi1d, interpolation: linear}
+        - !<MatrixTransform> {matrix: [0.695452, 0.140679, 0.163869, 0, 0.0447946, 0.859671, 0.0955343, 0, -0.00552588, 0.00402521, 1.0015, 0, 0, 0, 0, 1]}
+
+  - !<ColorSpace>
+    name: Utility - Log2 4000 nits Shaper
+    family: Utility
+    equalitygroup: Log2 4000 nits Shaper
+    bitdepth: 32f
+    description: |
+      The Log2 4000 nits Shaper color space
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<FileTransform> {src: Log2_4000_nits_Shaper_to_linear.spi1d, interpolation: linear}
+
+  - !<ColorSpace>
+    name: Utility - Log2 4000 nits Shaper - AP1
+    family: Utility
+    equalitygroup: Log2 4000 nits Shaper - AP1
+    bitdepth: 32f
+    description: |
+      The Log2 4000 nits Shaper - AP1 color space
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: Log2_4000_nits_Shaper_to_linear.spi1d, interpolation: linear}
         - !<MatrixTransform> {matrix: [0.695452, 0.140679, 0.163869, 0, 0.0447946, 0.859671, 0.0955343, 0, -0.00552588, 0.00402521, 1.0015, 0, 0, 0, 0, 1]}
 
   - !<ColorSpace>
@@ -1382,16 +1435,112 @@ colorspaces:
     to_reference: !<FileTransform> {src: Dolby_PQ_10000_to_linear.spi1d, interpolation: linear}
 
   - !<ColorSpace>
-    name: Utility - Dolby PQ Scaled
+    name: Utility - Dolby PQ 48 nits Shaper
     family: Utility
-    equalitygroup: Dolby PQ Scaled
+    equalitygroup: Dolby PQ 48 nits Shaper
     bitdepth: 32f
     description: |
-      The Dolby PQ Scaled color space
+      The Dolby PQ 48 nits Shaper color space
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
-    to_reference: !<FileTransform> {src: Dolby_PQ_Scaled_to_linear.spi1d, interpolation: linear}
+    to_reference: !<FileTransform> {src: Dolby_PQ_48_nits_Shaper_to_linear.spi1d, interpolation: linear}
+
+  - !<ColorSpace>
+    name: Utility - Dolby PQ 48 nits Shaper - AP1
+    family: Utility
+    equalitygroup: Dolby PQ 48 nits Shaper - AP1
+    bitdepth: 32f
+    description: |
+      The Dolby PQ 48 nits Shaper - AP1 color space
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: Dolby_PQ_48_nits_Shaper_to_linear.spi1d, interpolation: linear}
+        - !<MatrixTransform> {matrix: [0.695452, 0.140679, 0.163869, 0, 0.0447946, 0.859671, 0.0955343, 0, -0.00552588, 0.00402521, 1.0015, 0, 0, 0, 0, 1]}
+
+  - !<ColorSpace>
+    name: Utility - Dolby PQ 1000 nits Shaper
+    family: Utility
+    equalitygroup: Dolby PQ 1000 nits Shaper
+    bitdepth: 32f
+    description: |
+      The Dolby PQ 1000 nits Shaper color space
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<FileTransform> {src: Dolby_PQ_1000_nits_Shaper_to_linear.spi1d, interpolation: linear}
+
+  - !<ColorSpace>
+    name: Utility - Dolby PQ 1000 nits Shaper - AP1
+    family: Utility
+    equalitygroup: Dolby PQ 1000 nits Shaper - AP1
+    bitdepth: 32f
+    description: |
+      The Dolby PQ 1000 nits Shaper - AP1 color space
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: Dolby_PQ_1000_nits_Shaper_to_linear.spi1d, interpolation: linear}
+        - !<MatrixTransform> {matrix: [0.695452, 0.140679, 0.163869, 0, 0.0447946, 0.859671, 0.0955343, 0, -0.00552588, 0.00402521, 1.0015, 0, 0, 0, 0, 1]}
+
+  - !<ColorSpace>
+    name: Utility - Dolby PQ 2000 nits Shaper
+    family: Utility
+    equalitygroup: Dolby PQ 2000 nits Shaper
+    bitdepth: 32f
+    description: |
+      The Dolby PQ 2000 nits Shaper color space
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<FileTransform> {src: Dolby_PQ_2000_nits_Shaper_to_linear.spi1d, interpolation: linear}
+
+  - !<ColorSpace>
+    name: Utility - Dolby PQ 2000 nits Shaper - AP1
+    family: Utility
+    equalitygroup: Dolby PQ 2000 nits Shaper - AP1
+    bitdepth: 32f
+    description: |
+      The Dolby PQ 2000 nits Shaper - AP1 color space
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: Dolby_PQ_2000_nits_Shaper_to_linear.spi1d, interpolation: linear}
+        - !<MatrixTransform> {matrix: [0.695452, 0.140679, 0.163869, 0, 0.0447946, 0.859671, 0.0955343, 0, -0.00552588, 0.00402521, 1.0015, 0, 0, 0, 0, 1]}
+
+  - !<ColorSpace>
+    name: Utility - Dolby PQ 4000 nits Shaper
+    family: Utility
+    equalitygroup: Dolby PQ 4000 nits Shaper
+    bitdepth: 32f
+    description: |
+      The Dolby PQ 4000 nits Shaper color space
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<FileTransform> {src: Dolby_PQ_4000_nits_Shaper_to_linear.spi1d, interpolation: linear}
+
+  - !<ColorSpace>
+    name: Utility - Dolby PQ 4000 nits Shaper - AP1
+    family: Utility
+    equalitygroup: Dolby PQ 4000 nits Shaper - AP1
+    bitdepth: 32f
+    description: |
+      The Dolby PQ 4000 nits Shaper - AP1 color space
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: Dolby_PQ_4000_nits_Shaper_to_linear.spi1d, interpolation: linear}
+        - !<MatrixTransform> {matrix: [0.695452, 0.140679, 0.163869, 0, 0.0447946, 0.859671, 0.0955343, 0, -0.00552588, 0.00402521, 1.0015, 0, 0, 0, 0, 1]}
 
   - !<ColorSpace>
     name: Utility - XYZ-D60
@@ -1680,7 +1829,6 @@ colorspaces:
     allocation: lg2
     allocationvars: [-8, 5, 0.00390625]
     to_reference: !<ColorSpaceTransform> {src: ACES - ACEScg, dst: ACES - ACES2065-1}
-    from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: ACES - ACEScg}
 
   - !<ColorSpace>
     name: Role - compositing_log
@@ -1709,7 +1857,6 @@ colorspaces:
     allocation: lg2
     allocationvars: [-8, 5, 0.00390625]
     to_reference: !<ColorSpaceTransform> {src: ACES - ACEScg, dst: ACES - ACES2065-1}
-    from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: ACES - ACEScg}
 
   - !<ColorSpace>
     name: Role - scene_linear
@@ -1724,7 +1871,6 @@ colorspaces:
     allocation: lg2
     allocationvars: [-8, 5, 0.00390625]
     to_reference: !<ColorSpaceTransform> {src: ACES - ACEScg, dst: ACES - ACES2065-1}
-    from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: ACES - ACEScg}
 
   - !<ColorSpace>
     name: Role - texture_paint
@@ -1893,7 +2039,6 @@ colorspaces:
     allocation: lg2
     allocationvars: [-8, 5, 0.00390625]
     to_reference: !<ColorSpaceTransform> {src: ACES - ACEScg, dst: ACES - ACES2065-1}
-    from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: ACES - ACEScg}
 
   - !<ColorSpace>
     name: lin_ap1
@@ -1908,7 +2053,6 @@ colorspaces:
     allocation: lg2
     allocationvars: [-8, 5, 0.00390625]
     to_reference: !<ColorSpaceTransform> {src: ACES - ACEScg, dst: ACES - ACES2065-1}
-    from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: ACES - ACEScg}
 
   - !<ColorSpace>
     name: adx10
@@ -2941,52 +3085,100 @@ colorspaces:
     to_reference: !<ColorSpaceTransform> {src: Utility - LMT Shaper, dst: ACES - ACES2065-1}
 
   - !<ColorSpace>
-    name: crv_outputshaper
+    name: crv_log248nitsshaper
     family: Aliases
-    equalitygroup: Output Shaper
+    equalitygroup: Log2 48 nits Shaper
     bitdepth: 32f
     description: |
-      The Output Shaper color space
+      The Log2 48 nits Shaper color space
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
-    to_reference: !<ColorSpaceTransform> {src: Utility - Output Shaper, dst: ACES - ACES2065-1}
+    to_reference: !<ColorSpaceTransform> {src: Utility - Log2 48 nits Shaper, dst: ACES - ACES2065-1}
 
   - !<ColorSpace>
-    name: crv_log2shaper
+    name: log248nitsshaper_ap1
     family: Aliases
-    equalitygroup: Log2 Shaper
+    equalitygroup: Log2 48 nits Shaper - AP1
     bitdepth: 32f
     description: |
-      The Log2 Shaper color space
+      The Log2 48 nits Shaper - AP1 color space
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
-    to_reference: !<ColorSpaceTransform> {src: Utility - Log2 Shaper, dst: ACES - ACES2065-1}
+    to_reference: !<ColorSpaceTransform> {src: Utility - Log2 48 nits Shaper - AP1, dst: ACES - ACES2065-1}
 
   - !<ColorSpace>
-    name: log2shaper_ap1
+    name: crv_log21000nitsshaper
     family: Aliases
-    equalitygroup: Log2 Shaper - AP1
+    equalitygroup: Log2 1000 nits Shaper
     bitdepth: 32f
     description: |
-      The Log2 Shaper - AP1 color space
+      The Log2 1000 nits Shaper color space
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
-    to_reference: !<ColorSpaceTransform> {src: Utility - Log2 Shaper - AP1, dst: ACES - ACES2065-1}
+    to_reference: !<ColorSpaceTransform> {src: Utility - Log2 1000 nits Shaper, dst: ACES - ACES2065-1}
 
   - !<ColorSpace>
-    name: outputshaper_ap1
+    name: log21000nitsshaper_ap1
     family: Aliases
-    equalitygroup: Output Shaper - AP1
+    equalitygroup: Log2 1000 nits Shaper - AP1
     bitdepth: 32f
     description: |
-      The Output Shaper - AP1 color space
+      The Log2 1000 nits Shaper - AP1 color space
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
-    to_reference: !<ColorSpaceTransform> {src: Utility - Output Shaper - AP1, dst: ACES - ACES2065-1}
+    to_reference: !<ColorSpaceTransform> {src: Utility - Log2 1000 nits Shaper - AP1, dst: ACES - ACES2065-1}
+
+  - !<ColorSpace>
+    name: crv_log22000nitsshaper
+    family: Aliases
+    equalitygroup: Log2 2000 nits Shaper
+    bitdepth: 32f
+    description: |
+      The Log2 2000 nits Shaper color space
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<ColorSpaceTransform> {src: Utility - Log2 2000 nits Shaper, dst: ACES - ACES2065-1}
+
+  - !<ColorSpace>
+    name: log22000nitsshaper_ap1
+    family: Aliases
+    equalitygroup: Log2 2000 nits Shaper - AP1
+    bitdepth: 32f
+    description: |
+      The Log2 2000 nits Shaper - AP1 color space
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<ColorSpaceTransform> {src: Utility - Log2 2000 nits Shaper - AP1, dst: ACES - ACES2065-1}
+
+  - !<ColorSpace>
+    name: crv_log24000nitsshaper
+    family: Aliases
+    equalitygroup: Log2 4000 nits Shaper
+    bitdepth: 32f
+    description: |
+      The Log2 4000 nits Shaper color space
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<ColorSpaceTransform> {src: Utility - Log2 4000 nits Shaper, dst: ACES - ACES2065-1}
+
+  - !<ColorSpace>
+    name: log24000nitsshaper_ap1
+    family: Aliases
+    equalitygroup: Log2 4000 nits Shaper - AP1
+    bitdepth: 32f
+    description: |
+      The Log2 4000 nits Shaper - AP1 color space
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<ColorSpaceTransform> {src: Utility - Log2 4000 nits Shaper - AP1, dst: ACES - ACES2065-1}
 
   - !<ColorSpace>
     name: crv_dolbypq_10000
@@ -3001,16 +3193,100 @@ colorspaces:
     to_reference: !<ColorSpaceTransform> {src: Utility - Dolby PQ 10000, dst: ACES - ACES2065-1}
 
   - !<ColorSpace>
-    name: crv_dolbypq_scaled
+    name: crv_dolbypq48nitsshaper
     family: Aliases
-    equalitygroup: Dolby PQ Scaled
+    equalitygroup: Dolby PQ 48 nits Shaper
     bitdepth: 32f
     description: |
-      The Dolby PQ Scaled color space
+      The Dolby PQ 48 nits Shaper color space
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
-    to_reference: !<ColorSpaceTransform> {src: Utility - Dolby PQ Scaled, dst: ACES - ACES2065-1}
+    to_reference: !<ColorSpaceTransform> {src: Utility - Dolby PQ 48 nits Shaper, dst: ACES - ACES2065-1}
+
+  - !<ColorSpace>
+    name: dolbypq48nitsshaper_ap1
+    family: Aliases
+    equalitygroup: Dolby PQ 48 nits Shaper - AP1
+    bitdepth: 32f
+    description: |
+      The Dolby PQ 48 nits Shaper - AP1 color space
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<ColorSpaceTransform> {src: Utility - Dolby PQ 48 nits Shaper - AP1, dst: ACES - ACES2065-1}
+
+  - !<ColorSpace>
+    name: crv_dolbypq1000nitsshaper
+    family: Aliases
+    equalitygroup: Dolby PQ 1000 nits Shaper
+    bitdepth: 32f
+    description: |
+      The Dolby PQ 1000 nits Shaper color space
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<ColorSpaceTransform> {src: Utility - Dolby PQ 1000 nits Shaper, dst: ACES - ACES2065-1}
+
+  - !<ColorSpace>
+    name: dolbypq1000nitsshaper_ap1
+    family: Aliases
+    equalitygroup: Dolby PQ 1000 nits Shaper - AP1
+    bitdepth: 32f
+    description: |
+      The Dolby PQ 1000 nits Shaper - AP1 color space
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<ColorSpaceTransform> {src: Utility - Dolby PQ 1000 nits Shaper - AP1, dst: ACES - ACES2065-1}
+
+  - !<ColorSpace>
+    name: crv_dolbypq2000nitsshaper
+    family: Aliases
+    equalitygroup: Dolby PQ 2000 nits Shaper
+    bitdepth: 32f
+    description: |
+      The Dolby PQ 2000 nits Shaper color space
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<ColorSpaceTransform> {src: Utility - Dolby PQ 2000 nits Shaper, dst: ACES - ACES2065-1}
+
+  - !<ColorSpace>
+    name: dolbypq2000nitsshaper_ap1
+    family: Aliases
+    equalitygroup: Dolby PQ 2000 nits Shaper - AP1
+    bitdepth: 32f
+    description: |
+      The Dolby PQ 2000 nits Shaper - AP1 color space
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<ColorSpaceTransform> {src: Utility - Dolby PQ 2000 nits Shaper - AP1, dst: ACES - ACES2065-1}
+
+  - !<ColorSpace>
+    name: crv_dolbypq4000nitsshaper
+    family: Aliases
+    equalitygroup: Dolby PQ 4000 nits Shaper
+    bitdepth: 32f
+    description: |
+      The Dolby PQ 4000 nits Shaper color space
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<ColorSpaceTransform> {src: Utility - Dolby PQ 4000 nits Shaper, dst: ACES - ACES2065-1}
+
+  - !<ColorSpace>
+    name: dolbypq4000nitsshaper_ap1
+    family: Aliases
+    equalitygroup: Dolby PQ 4000 nits Shaper - AP1
+    bitdepth: 32f
+    description: |
+      The Dolby PQ 4000 nits Shaper - AP1 color space
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<ColorSpaceTransform> {src: Utility - Dolby PQ 4000 nits Shaper - AP1, dst: ACES - ACES2065-1}
 
   - !<ColorSpace>
     name: lin_xyz_d60
@@ -3276,7 +3552,6 @@ colorspaces:
     allocation: lg2
     allocationvars: [-8, 5, 0.00390625]
     to_reference: !<ColorSpaceTransform> {src: ACES - ACEScg, dst: ACES - ACES2065-1}
-    from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: ACES - ACEScg}
 
   - !<ColorSpace>
     name: role_compositing_log
@@ -3305,7 +3580,6 @@ colorspaces:
     allocation: lg2
     allocationvars: [-8, 5, 0.00390625]
     to_reference: !<ColorSpaceTransform> {src: ACES - ACEScg, dst: ACES - ACES2065-1}
-    from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: ACES - ACEScg}
 
   - !<ColorSpace>
     name: role_scene_linear
@@ -3320,7 +3594,6 @@ colorspaces:
     allocation: lg2
     allocationvars: [-8, 5, 0.00390625]
     to_reference: !<ColorSpaceTransform> {src: ACES - ACEScg, dst: ACES - ACES2065-1}
-    from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: ACES - ACEScg}
 
   - !<ColorSpace>
     name: role_texture_paint

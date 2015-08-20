@@ -144,7 +144,7 @@ Roles
 -
 The standard OCIO roles are defined. They role assignments are:
 
-- color_picking: ACEScg
+- color_picking: Output - Rec.709
 - color_timing: ACEScc
 - compositing_log: ACEScc
 - data: Raw
@@ -276,6 +276,7 @@ The script used to generate these transforms and the transforms themselves were 
 - Alex Fry
 - Alex Forsythe
 - Joseph Goldstone
+- Stephen Hill
 - Jim Houston
 - Thomas Mansencal
 - Robert Molholm

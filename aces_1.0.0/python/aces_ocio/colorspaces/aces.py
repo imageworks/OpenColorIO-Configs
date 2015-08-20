@@ -1177,7 +1177,7 @@ def create_shapers(aces_ctl_directory,
        lut_directory,
        lut_resolution_1d,
        cleanup,
-       'Log2 48nits Shaper',
+       'Log2 48 nits Shaper',
        0.18,
        -6.5,
        6.5)
@@ -1191,7 +1191,7 @@ def create_shapers(aces_ctl_directory,
        lut_directory,
        lut_resolution_1d,
        cleanup,
-       'Log2 1000nits Shaper',
+       'Log2 1000 nits Shaper',
        0.18,
        -12.0,
        10.0)
@@ -1205,7 +1205,7 @@ def create_shapers(aces_ctl_directory,
        lut_directory,
        lut_resolution_1d,
        cleanup,
-       'Log2 2000nits Shaper',
+       'Log2 2000 nits Shaper',
        0.18,
        -12.0,
        11.0)
@@ -1219,7 +1219,7 @@ def create_shapers(aces_ctl_directory,
        lut_directory,
        lut_resolution_1d,
        cleanup,
-       'Log2 4000nits Shaper',
+       'Log2 4000 nits Shaper',
        0.18,
        -12.0,
        12.0)
@@ -1261,7 +1261,7 @@ def create_shapers(aces_ctl_directory,
        lut_directory,
        lut_resolution_1d,
        cleanup,
-       'Dolby PQ 48nits Shaper',
+       'Dolby PQ 48 nits Shaper',
        0.18,
        -6.5,
        6.5)
@@ -1275,7 +1275,7 @@ def create_shapers(aces_ctl_directory,
        lut_directory,
        lut_resolution_1d,
        cleanup,
-       'Dolby PQ 1000nits Shaper',
+       'Dolby PQ 1000 nits Shaper',
        0.18,
        -12.0,
        10.0)
@@ -1289,7 +1289,7 @@ def create_shapers(aces_ctl_directory,
        lut_directory,
        lut_resolution_1d,
        cleanup,
-       'Dolby PQ 2000nits Shaper',
+       'Dolby PQ 2000 nits Shaper',
        0.18,
        -12.0,
        11.0)
@@ -1303,7 +1303,7 @@ def create_shapers(aces_ctl_directory,
        lut_directory,
        lut_resolution_1d,
        cleanup,
-       'Dolby PQ 4000nits Shaper',
+       'Dolby PQ 4000 nits Shaper',
        0.18,
        -12.0,
        12.0)
@@ -1354,9 +1354,9 @@ def create_ODTs(aces_ctl_directory,
     # Assumes shaper has variants covering the range expected by the
     # 48 nit, 1000 nit, 2000 nit and 4000 nit Ouput Transforms 
     rrt_shaper_48nits = shaper_data[shaper_name]
-    rrt_shaper_1000nits = shaper_data[shaper_name.replace("48nits", "1000nits")]
-    rrt_shaper_2000nits = shaper_data[shaper_name.replace("48nits", "2000nits")]
-    rrt_shaper_4000nits = shaper_data[shaper_name.replace("48nits", "4000nits")]
+    rrt_shaper_1000nits = shaper_data[shaper_name.replace("48 nits", "1000 nits")]
+    rrt_shaper_2000nits = shaper_data[shaper_name.replace("48 nits", "2000 nits")]
+    rrt_shaper_4000nits = shaper_data[shaper_name.replace("48 nits", "4000 nits")]
 
     # *RRT + ODT* combinations.
     sorted_odts = sorted(odt_info.iteritems(), key=lambda x: x[1])

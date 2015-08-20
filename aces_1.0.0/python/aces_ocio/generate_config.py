@@ -1134,11 +1134,11 @@ def generate_baked_LUTs(odt_info,
         odt_name = odt_values['transformUserName']
 
         if odt_name in ['P3-D60 PQ (1000 nits)']:
-            odt_shaper = shaper_name.replace("48nits", "1000nits")
+            odt_shaper = shaper_name.replace("48 nits", "1000 nits")
         elif odt_name in ['P3-D60 PQ (2000 nits)']:
-            odt_shaper = shaper_name.replace("48nits", "2000nits")
+            odt_shaper = shaper_name.replace("48 nits", "2000 nits")
         elif odt_name in ['P3-D60 PQ (4000 nits)']:
-            odt_shaper = shaper_name.replace("48nits", "4000nits")
+            odt_shaper = shaper_name.replace("48 nits", "4000 nits")
         else:
             odt_shaper = shaper_name
 
@@ -1342,9 +1342,9 @@ def generate_config(aces_ctl_directory,
     lmt_info = aces.get_LMTs_info(aces_ctl_directory)
 
     if shaper_base_name == 'DolbyPQ':
-        shaper_name = 'Dolby PQ 48nits Shaper'
+        shaper_name = 'Dolby PQ 48 nits Shaper'
     else:
-        shaper_name = 'Log2 48nits Shaper'
+        shaper_name = 'Log2 48 nits Shaper'
 
     config_data = create_config_data(odt_info,
                                      lmt_info,

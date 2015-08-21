@@ -297,8 +297,8 @@ def create_ACEScg():
 
     cs.from_reference_transforms = []
 
-    # Commented out because having specifying the inverse matrix causes
-    # some of OCIO's checks to see if a set of transforms can be collapsed
+    # Commented out because specifying the inverse matrix causes some
+    # of OCIO's checks to see if a set of transforms can be collapsed
     # to fail.
 
     # *AP1* primaries to *AP0* primaries

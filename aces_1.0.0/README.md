@@ -125,7 +125,7 @@ For ease of use across a broader number of applications, the family name of each
 - Description: A collection of colorspaces that are used to facilitate the creation of LUTs and other basic functionality.
 
 - Technical information:
-	- The 'Log2 xx nits Shaper' and 'Dolby PQ xx nits Shaper' spaces cover the linear range going centered around 18% grey. The 48 nits spaces cover -6.5 stops (0.0028125) to +6.5 stops(16.291740). The 1000 nits spaces cover -12 stops to +10 stops. The 2000 nits spaces cover -12 stops to +11 stops. The 4000 nits spaces cover -12 stops to +12 stops.
+	- The 'Log2 xx nits Shaper' and 'Dolby PQ xx nits Shaper' spaces cover the linear range centered around 18% grey. The 48 nits spaces cover -6.5 stops (0.0028125) to +6.5 stops(16.291740). The 1000 nits spaces cover -12 stops to +10 stops. The 2000 nits spaces cover -12 stops to +11 stops. The 4000 nits spaces cover -12 stops to +12 stops.
 	- The LMT shaper spaces cover the linear range going from 10 stops below 18% grey (0.00017578125) to 6.5 stops above 18% grey (16.291740)
 	- The colorspaces that start with "Linear - " will convert to or from a specific gamut but not apply a transfer function.
 	- The colorspaces that start with "Curve - " will apply a transfer function but not convert between gamuts.

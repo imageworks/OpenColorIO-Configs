@@ -172,13 +172,15 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
 
     Parameters
     ----------
-    parameter : type
-        Parameter description.
+    lut_directory : str or unicode 
+        The directory to use when generating LUTs
+    lut_resolution_1d : int
+        The resolution of generated 1D LUTs
 
     Returns
     -------
-    type
-         Return value description.
+    list
+         A list of colorspaces for ARRI cameras and encodings 
     """
 
     colorspaces = []

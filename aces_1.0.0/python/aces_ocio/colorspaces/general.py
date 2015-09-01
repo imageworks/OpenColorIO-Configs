@@ -43,17 +43,23 @@ def create_matrix_colorspace(name='matrix',
                              to_reference_values=None,
                              aliases=None):
     """
-    Object description.
+    Creates a ColorSpace that only uses *Matrix Transforms*
 
     Parameters
     ----------
-    parameter : type
-        Parameter description.
+    name : str, optional
+        Aliases for this colorspace
+    from_reference_values : list of matrices
+        List of matrices to convert from the reference colorspace to this space        
+    to_reference_values : list of matrices
+        List of matrices to convert to the reference colorspace from this space
+    aliases : list of str, optional
+        Aliases for this colorspace
 
     Returns
     -------
-    type
-         Return value description.
+    ColorSpace
+         A *Matrix Transform*-based ColorSpace
     """
 
     if from_reference_values is None:
@@ -105,17 +111,27 @@ def create_transfer_colorspace(name='transfer',
                                lut_resolution_1d=1024,
                                aliases=None):
     """
-    Object description.
+    Creates a ColorSpace that only uses transfer functions encoded as 1D LUTs
 
     Parameters
     ----------
-    parameter : type
-        Parameter description.
+    name : str, optional
+        Aliases for this colorspace
+    transfer_function_name : str, optional
+        The name of the transfer function
+    transfer_function : function, optional
+        The transfer function to be evaluated
+    lut_directory : str or unicode 
+        The directory to use when generating LUTs
+    lut_resolution_1d : int
+        The resolution of generated 1D LUTs
+    aliases : list of str
+        Aliases for this colorspace
 
     Returns
     -------
-    type
-         Return value description.
+    ColorSpace
+         A *LUT1D Transform*-based ColorSpace representing a transfer function
     """
 
     if aliases is None:
@@ -174,17 +190,33 @@ def create_matrix_plus_transfer_colorspace(
         to_reference_values=None,
         aliases=None):
     """
-    Object description.
+    Creates a ColorSpace that uses transfer functions encoded as 1D LUTs and
+    matrice
 
     Parameters
     ----------
-    parameter : type
-        Parameter description.
+    name : str, optional
+        Aliases for this colorspace
+    transfer_function_name : str, optional
+        The name of the transfer function
+    transfer_function : function, optional
+        The transfer function to be evaluated
+    lut_directory : str or unicode 
+        The directory to use when generating LUTs
+    lut_resolution_1d : int
+        The resolution of generated 1D LUTs
+    from_reference_values : list of matrices
+        List of matrices to convert from the reference colorspace to this space        
+    to_reference_values : list of matrices
+        List of matrices to convert to the reference colorspace from this space
+    aliases : list of str
+        Aliases for this colorspace
 
     Returns
     -------
-    type
-         Return value description.
+    ColorSpace
+         A *Matrx and LUT1D Transform*-based ColorSpace representing a transfer 
+         function and matrix
     """
 
     if from_reference_values is None:
@@ -257,6 +289,19 @@ def create_matrix_plus_transfer_colorspace(
 
 # Transfer functions for standard colorspaces.
 def transfer_function_sRGB_to_linear(v):
+    """
+    The sRGB (IEC 61966-2-1) transfer function
+
+    Parameters
+    ----------
+    v : float
+        The normalized value to pass through the function
+
+    Returns
+    -------
+    float
+        A converted value
+    """
     a = 1.055
     b = 0.04045
     d = 12.92
@@ -268,6 +313,19 @@ def transfer_function_sRGB_to_linear(v):
 
 
 def transfer_function_Rec709_to_linear(v):
+    """
+    The Rec.709 transfer function
+
+    Parameters
+    ----------
+    v : float
+        The normalized value to pass through the function
+
+    Returns
+    -------
+    float
+        A converted value
+    """
     a = 1.099
     b = 0.018
     d = 4.5
@@ -280,6 +338,19 @@ def transfer_function_Rec709_to_linear(v):
 
 
 def transfer_function_Rec2020_10bit_to_linear(v):
+    """
+    The Rec.2020 10-bit transfer function
+
+    Parameters
+    ----------
+    v : float
+        The normalized value to pass through the function
+
+    Returns
+    -------
+    float
+        A converted value
+    """
     a = 1.099
     b = 0.018
     d = 4.5
@@ -292,6 +363,19 @@ def transfer_function_Rec2020_10bit_to_linear(v):
 
 
 def transfer_function_Rec2020_12bit_to_linear(v):
+    """
+    The Rec.2020 12-bit transfer function
+
+    Parameters
+    ----------
+    v : float
+        The normalized value to pass through the function
+
+    Returns
+    -------
+    float
+        A converted value
+    """
     a = 1.0993
     b = 0.0181
     d = 4.5
@@ -304,6 +388,19 @@ def transfer_function_Rec2020_12bit_to_linear(v):
 
 
 def transfer_function_Rec1886_to_linear(v):
+    """
+    The Rec.1886 transfer function
+
+    Parameters
+    ----------
+    v : float
+        The normalized value to pass through the function
+
+    Returns
+    -------
+    float
+        A converted value
+    """
     g = 2.4
     Lw = 1
     Lb = 0
@@ -325,13 +422,15 @@ def create_colorspaces(lut_directory,
 
     Parameters
     ----------
-    parameter : type
-        Parameter description.
+    lut_directory : str or unicode 
+        The directory to use when generating LUTs
+    lut_resolution_1d : int
+        The resolution of generated 1D LUTs
 
     Returns
     -------
-    type
-         Return value description.
+    list
+         A list of colorspaces for general colorspaces and encodings 
     """
 
     colorspaces = []
@@ -560,6 +659,18 @@ def create_colorspaces(lut_directory,
 
 
 def create_raw():
+    """
+    Creates the *raw* color space
+
+    Parameters
+    ----------
+    None
+
+    Returns
+    -------
+    ColorSpace
+         *raw* and all its identifying information
+    """
     # *Raw* utility space
     name = 'Raw'
     raw = ColorSpace(name)

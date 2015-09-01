@@ -32,19 +32,27 @@ def create_c_log(gamut,
                  lut_resolution_1d,
                  aliases):
     """
-    Object description.
-
-    Canon-Log to ACES.
+    Creates colorspace covering the conversion from CLog to ACES, with various transfer 
+    functions and encoding gamuts covered
 
     Parameters
     ----------
-    parameter : type
-        Parameter description.
+    gamut : str
+        The name of the encoding gamut to use.
+    transfer_function : str
+        The name of the transfer function to use
+    lut_directory : str or unicode 
+        The directory to use when generating LUTs
+    lut_resolution_1d : int
+        The resolution of generated 1D LUTs
+    aliases : list of str
+        Aliases for this colorspace
 
     Returns
     -------
-    type
-         Return value description.
+    ColorSpace
+         A ColorSpace container class referencing the LUTs, matrices and identifying
+         information for the requested colorspace.    
     """
 
     name = '%s - %s' % (transfer_function, gamut)
@@ -161,13 +169,15 @@ def create_colorspaces(lut_directory, lut_resolution_1d):
 
     Parameters
     ----------
-    parameter : type
-        Parameter description.
+    lut_directory : str or unicode 
+        The directory to use when generating LUTs
+    lut_resolution_1d : int
+        The resolution of generated 1D LUTs
 
     Returns
     -------
-    type
-         Return value description.
+    list
+         A list of colorspaces for Canon cameras and encodings 
     """
 
     colorspaces = []

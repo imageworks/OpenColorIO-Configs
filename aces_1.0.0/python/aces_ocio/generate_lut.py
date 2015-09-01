@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Defines objects to generate various kind of 1d, 2d and 3d LUTs in various file
+Defines objects to generate various kind of 1D and 3D LUTs in various file
 formats.
 """
 
@@ -43,17 +43,23 @@ def generate_1d_LUT_image(ramp_1d_path,
                           min_value=0,
                           max_value=1):
     """
-    Object description.
+    Generates a 1D LUT image, i.e. a simple ramp, going from the min_value to 
+    the max_value.
 
     Parameters
     ----------
-    parameter : type
-        Parameter description.
+    ramp_1d_path : str or unicode
+        The path of the 1D ramp image to be written
+    resolution : int, optional
+        The resolution of the 1D ramp image to be written
+    min_value : float, optional
+        The lowest value in the 1D ramp
+    max_value : float, optional
+        The highest value in the 1D ramp
 
     Returns
     -------
-    type
-         Return value description.
+    None
     """
 
     ramp = oiio.ImageOutput.create(ramp_1d_path)
@@ -88,20 +94,31 @@ def write_SPI_1d(filename,
                  channels,
                  components=3):
     """
-    Object description.
+    Writes a 1D LUT in the Sony Pictures Imageworks .spi1d format.
 
     Credit to *Alex Fry* for the original single channel version of the spi1d
     writer.
 
     Parameters
     ----------
-    parameter : type
-        Parameter description.
+    filename : str or unicode
+        The path of the 1D LUT to be written
+    from_min : float
+        The lowest value in the 1D ramp
+    from_max : float
+        The highest value in the 1D ramp
+    data : array of floats
+        The entries in the LUT
+    entries : int
+        The resolution of the LUT, i.e. number of entries in the data set
+    channels : int
+        The number of channels in the data
+    components : int, optional
+        The number of channels in the data to actually write
 
     Returns
     -------
-    type
-         Return value description.
+    None
     """
 
     # May want to use fewer components than there are channels in the data
@@ -130,17 +147,28 @@ def write_CSP_1d(filename,
                  channels,
                  components=3):
     """
-    Object description.
+    Writes a 1D LUT in the Rising Sun Research Cinespace .csp format.
 
     Parameters
     ----------
-    parameter : type
-        Parameter description.
+    filename : str or unicode
+        The path of the 1D LUT to be written
+    from_min : float
+        The lowest value in the 1D ramp
+    from_max : float
+        The highest value in the 1D ramp
+    data : array of floats
+        The entries in the LUT
+    entries : int
+        The resolution of the LUT, i.e. number of entries in the data set
+    channels : int
+        The number of channels in the data
+    components : int, optional
+        The number of channels in the data to actually write
 
     Returns
     -------
-    type
-         Return value description.
+    None
     """
 
     # May want to use fewer components than there are channels in the data
@@ -192,17 +220,28 @@ def write_CTL_1d(filename,
                  channels,
                  components=3):
     """
-    Object description.
+    Writes a 1D LUT in the Academy Color Transformation Language .ctl format.
 
     Parameters
     ----------
-    parameter : type
-        Parameter description.
+    filename : str or unicode
+        The path of the 1D LUT to be written
+    from_min : float
+        The lowest value in the 1D ramp
+    from_max : float
+        The highest value in the 1D ramp
+    data : array of floats
+        The entries in the LUT
+    entries : int
+        The resolution of the LUT, i.e. number of entries in the data set
+    channels : int
+        The number of channels in the data
+    components : int, optional
+        The number of channels in the data to actually write
 
     Returns
     -------
-    type
-         Return value description.
+    None
     """
 
     # May want to use fewer components than there are channels in the data
@@ -280,17 +319,30 @@ def write_1d(filename,
              lut_components=3,
              format='spi1d'):
     """
-    Object description.
+    Writes a 1D LUT in the specified format.
 
     Parameters
     ----------
-    parameter : type
-        Parameter description.
+    filename : str or unicode
+        The path of the 1D LUT to be written
+    from_min : float
+        The lowest value in the 1D ramp
+    from_max : float
+        The highest value in the 1D ramp
+    data : array of floats
+        The entries in the LUT
+    data_entries : int
+        The resolution of the LUT, i.e. number of entries in the data set
+    data_channels : int
+        The number of channels in the data
+    lut_components : int, optional
+        The number of channels in the data to actually use when writing
+    format : str or unicode, optional
+        The format of the the 1D LUT that will be written
 
     Returns
     -------
-    type
-         Return value description.
+    None
     """
 
     ocio_formats_to_extensions = {'cinespace': 'csp',
@@ -334,17 +386,26 @@ def generate_1d_LUT_from_image(ramp_1d_path,
                                channels=3,
                                format='spi1d'):
     """
-    Object description.
+    Reads a 1D LUT image and writes a 1D LUT in the specified format.
 
     Parameters
     ----------
-    parameter : type
-        Parameter description.
+    ramp_1d_path : str or unicode
+        The path of the 1D ramp image to be read
+    output_path : str or unicode, optional
+        The path of the 1D LUT to be written
+    min_value : float, optional
+        The lowest value in the 1D ramp
+    max_value : float, optional
+        The highest value in the 1D ramp
+    channels : int, optional
+        The number of channels in the data
+    format : str or unicode, optional
+        The format of the the 1D LUT that will be written
 
     Returns
     -------
-    type
-         Return value description.
+    None
     """
 
     if output_path is None:
@@ -367,17 +428,19 @@ def generate_1d_LUT_from_image(ramp_1d_path,
 
 def generate_3d_LUT_image(ramp_3d_path, resolution=32):
     """
-    Object description.
+    Generates a 3D LUT image covering the specified resolution
+    Relies on OCIO's ociolutimage command
 
     Parameters
     ----------
-    parameter : type
-        Parameter description.
+    ramp_3d_path : str or unicode
+        The path of the 3D ramp image to be written
+    resolution : int, optional
+        The resolution of the 3D ramp image to be written
 
     Returns
     -------
-    type
-         Return value description.
+    None
     """
 
     args = ['--generate',
@@ -398,17 +461,23 @@ def generate_3d_LUT_from_image(ramp_3d_path,
                                resolution=32,
                                format='spi3d'):
     """
-    Object description.
+    Reads a 3D LUT image and writes a 3D LUT in the specified format.
+    Relies on OCIO's ociolutimage command
 
     Parameters
     ----------
-    parameter : type
-        Parameter description.
+    ramp_3d_path : str or unicode
+        The path of the 3D ramp image to be read
+    output_path : str or unicode, optional
+        The path of the 1D LUT to be written
+    resolution : int, optional
+        The resolution of the 3D LUT represented in the image
+    format : str or unicode, optional
+        The format of the the 3D LUT that will be written
 
     Returns
     -------
-    type
-         Return value description.
+    None
     """
 
     if output_path is None:
@@ -474,17 +543,39 @@ def apply_CTL_to_image(input_image,
                        global_params=None,
                        aces_ctl_directory=None):
     """
-    Object description.
+    Applies a set of Academy Color Transformation Language .ctl files to 
+    an input image and writes a new image.
+    Relies on the ACES ctlrender command
 
     Parameters
     ----------
-    parameter : type
-        Parameter description.
+    input_image : str or unicode
+        The path to the image to transform using the CTL files
+    output_image : str or unicode
+        The path to write the result of the transforms
+    ctl_paths : array of str or unicode, optional
+        The path to write the result of the transforms
+    input_scale : float, optional
+        The argument to the ctlrender -input_scale parameter
+        For images with integer bit depths, this divides image code values 
+        before they are sent to the ctl commands
+        For images with float or half bit depths, this multiplies image code 
+        values before they are sent to the ctl commands
+    output_scale : float, optional
+        The argument to the ctlrender -output_scale parameter
+        For images with integer bit depths, this multiplies image code values 
+        before they are written to a file.
+        For images with float or half bit depths, this divides image code values 
+        before they are sent to the ctl commands
+    global_params : dict of key value pairs, optional
+        The set of parameter names and values to pass to the ctlrender 
+        -global_param1 parameter
+    aces_ctl_directory : str or unicode, optional
+        The path to the aces 'transforms/ctl/utilities'
 
     Returns
     -------
-    type
-         Return value description.
+    None
     """
 
     if ctl_paths is None:
@@ -526,17 +617,22 @@ def apply_CTL_to_image(input_image,
 
 def convert_bit_depth(input_image, output_image, depth):
     """
-    Object description.
+    Convert the input image to the specified bit depth and write a new image
+    Relies on the OIIO oiiotool command
 
     Parameters
     ----------
-    parameter : type
-        Parameter description.
+    input_image : str or unicode
+        The path to the image to transform using the CTL files
+    output_image : str or unicode
+        The path to write the result of the transforms
+    depth : str or unicode
+        The bit depth of the output image
+        Data types include: uint8, sint8, uint10, uint12, uint16, sint16, half, float, double
 
     Returns
     -------
-    type
-         Return value description.
+    None
     """
 
     args = [input_image,
@@ -564,17 +660,51 @@ def generate_1d_LUT_from_CTL(lut_path,
                              channels=3,
                              format='spi1d'):
     """
-    Object description.
+    Creates a 1D LUT from the specified CTL files by creating a 1D LUT image,
+    applying the CTL files and then extracting and writing a LUT based on the
+    resulting image
 
     Parameters
     ----------
-    parameter : type
-        Parameter description.
+    lut_path : str or unicode
+        The path to write the 1D LUT
+    ctl_paths : array of str or unicode
+        The CTL files to apply
+    lut_resolution : int, optional
+        The resolution of the 1D LUT to generate
+    identity_lut_bit_depth : string, optional
+        The bit depth to use for the intermediate 1D LUT image
+    input_scale : float, optional
+        The argument to the ctlrender -input_scale parameter
+        For images with integer bit depths, this divides image code values 
+        before they are sent to the ctl commands
+        For images with float or half bit depths, this multiplies image code 
+        values before they are sent to the ctl commands
+    output_scale : float, optional
+        The argument to the ctlrender -output_scale parameter
+        For images with integer bit depths, this multiplies image code values 
+        before they are written to a file.
+        For images with float or half bit depths, this divides image code values 
+        before they are sent to the ctl commands
+    global_params : dict of key, value pairs, optional
+        The set of parameter names and values to pass to the ctlrender 
+        -global_param1 parameter
+    cleanup : bool, optional
+        Whether or not to clean up the intermediate images 
+    aces_ctl_directory : str or unicode, optional
+        The path to the aces 'transforms/ctl/utilities'
+    min_value : float, optional
+        The minimum value to consider as input to the LUT
+    max_value : float, optional
+        The maximum value to consider as input to the LUT
+    channels : int, optional
+        The number of channels to use for the LUT. 1 or 3 are valid.
+    format : str or unicode, optional
+        The format to use when writing the LUT
 
     Returns
     -------
-    type
-         Return value description.
+    None
     """
 
     if global_params is None:
@@ -623,17 +753,27 @@ def correct_LUT_image(transformed_lut_image,
                       corrected_lut_image,
                       lut_resolution):
     """
-    Object description.
+    For some combinations of resolution and bit depth, ctlrender would generate
+    images with the right number of pixels but with the values for width and 
+    height transposed. This function generating a new, corrected image based on
+    the original. The function acts as a pass through if the problem is not
+    detected.
 
     Parameters
     ----------
-    parameter : type
-        Parameter description.
+    transformed_lut_image : str or unicode
+        The path to an image generated by cltrender
+    corrected_lut_image : str or unicode
+        The path to an 'corrected' image to be generated
+    lut_resolution : int
+        The resolution of the 3D LUT that should be contained in 
+        transformed_lut_image
 
     Returns
     -------
-    type
-         Return value description.
+    str or unicode
+        The path to the corrected image, or the original, if no correction was
+        needed.
     """
 
     transformed = oiio.ImageInput.open(transformed_lut_image)
@@ -703,17 +843,45 @@ def generate_3d_LUT_from_CTL(lut_path,
                              aces_ctl_directory=None,
                              format='spi3d'):
     """
-    Object description.
+    Creates a 3D LUT from the specified CTL files by creating a 3D LUT image,
+    applying the CTL files and then extracting and writing a LUT based on the
+    resulting image
 
     Parameters
     ----------
-    parameter : type
-        Parameter description.
+    lut_path : str or unicode
+        The path to write the 1D LUT
+    ctl_paths : array of str or unicode
+        The CTL files to apply
+    lut_resolution : int, optional
+        The resolution of the 1D LUT to generate
+    identity_lut_bit_depth : string, optional
+        The bit depth to use for the intermediate 1D LUT image
+    input_scale : float, optional
+        The argument to the ctlrender -input_scale parameter
+        For images with integer bit depths, this divides image code values 
+        before they are sent to the ctl commands
+        For images with float or half bit depths, this multiplies image code 
+        values before they are sent to the ctl commands
+    output_scale : float, optional
+        The argument to the ctlrender -output_scale parameter
+        For images with integer bit depths, this multiplies image code values 
+        before they are written to a file.
+        For images with float or half bit depths, this divides image code values 
+        before they are sent to the ctl commands
+    global_params : dict of key, value pairs, optional
+        The set of parameter names and values to pass to the ctlrender 
+        -global_param1 parameter
+    cleanup : bool, optional
+        Whether or not to clean up the intermediate images 
+    aces_ctl_directory : str or unicode, optional
+        The path to the aces 'transforms/ctl/utilities'
+    format : str or unicode, optional
+        The format to use when writing the LUT
 
     Returns
     -------
-    type
-         Return value description.
+    None
     """
 
     if global_params is None:
@@ -767,17 +935,16 @@ def generate_3d_LUT_from_CTL(lut_path,
 
 def main():
     """
-    Object description.
+    A simple main that allows the user to exercise the various functions
+    defined in this file
 
     Parameters
     ----------
-    parameter : type
-        Parameter description.
+    None
 
     Returns
     -------
-    type
-         Return value description.
+    None
     """
 
     import optparse

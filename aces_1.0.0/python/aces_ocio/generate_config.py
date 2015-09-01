@@ -75,23 +75,27 @@ def set_config_roles(config,
     config : Config
         *OCIO* configuration.
     color_picking : str or unicode, optional
-        Color picking role title.
+        Color Picking role title.
     color_timing : str or unicode, optional
-        Color timing role title.
+        Color Timing role title.
     compositing_log : str or unicode, optional
-        Compositing log role title.
+        Compositing Log role title.
     data : str or unicode, optional
         Data role title.
     default : str or unicode, optional
         Default role title.
     matte_paint : str or unicode, optional
-        Matte painting role title.
+        Matte Painting role title.
     reference : str or unicode, optional
         Reference role title.
     scene_linear : str or unicode, optional
-        Scene linear role title.
+        Scene Linear role title.
     texture_paint : str or unicode, optional
-        Texture painting role title.
+        Texture Painting role title.
+    rendering : str or unicode, optional
+        Rendering role title.
+    compositing_linear : str or unicode, optional
+        Compositing Linear role title.
     Returns
     -------
     bool
@@ -427,17 +431,26 @@ def add_looks_to_views(looks,
                        config_data,
                        multiple_displays=False):
     """
-    Object description.
+    Integrates a set of looks into the *OCIO* config's Displays and Views
 
     Parameters
     ----------
-    parameter : type
-        Parameter description.
+    looks : array of str or unicode
+        Names of looks
+    reference_name : str or unicode
+        The name of the *OCIO* reference colorspace
+    config_data : dict
+        Colorspaces and transforms converting between those colorspaces and
+        the reference colorspace, *ACES*.
+    multiple_displays : bool
+        If true, looks are added to the config_data looks list
+        If false, looks are integrated directly into the list of displays and 
+        views. This may be necessary due to limitations of some applications' 
+        currently implementation of OCIO, ex. Maya 2016.
 
     Returns
     -------
-    type
-         Return value description.
+    None
     """
     look_names = [look[0] for look in looks]
 
@@ -522,17 +535,30 @@ def create_config(config_data,
                   look_info=None,
                   custom_lut_dir=None):
     """
-    Object description.
+    Create the *OCIO* config based on the configuration data
 
     Parameters
     ----------
-    parameter : type
-        Parameter description.
+    config_data : dict
+        Colorspaces and transforms converting between those colorspaces and
+        the reference colorspace, *ACES*, along with other data needed to 
+        generate a complete *OCIO* configuration
+    aliases : bool, optional
+        Whether or not to include Alias colorspaces 
+    prefix : bool, optional
+        Whether or not to prefix the colorspace names with their Family names
+    multiple_displays : bool, optional
+        Whether to create a single display named *ACES* with Views for each
+        Output Transform or multiple displays, one for each Output Transform
+    look_info : array of str or unicode, optional
+        Paths and names for look data
+    custom_lut_dir : str or unicode, optional
+        Directory to use for storing custom look files
 
     Returns
     -------
-    type
-         Return value description.
+    *OCIO* config
+         The constructed OCIO configuration
     """
 
     if look_info is None:
@@ -942,18 +968,34 @@ def create_config_data(odt_info,
                        lut_resolution_3d=64,
                        cleanup=True):
     """
-    Object description.
+    Create the *ACES* LUTs and data structures needed for later *OCIO* 
+    configuration generation
 
     Parameters
     ----------
-    parameter : type
-        Parameter description.
+    odt_info : array of dicts of str or unicode
+        Descriptions of the *ACES* Output Transforms
+    lmt_info : array of dicts of str or unicode
+        Descriptions of the *ACES* Look Transforms
+    shaper_name : str or unicode
+        The name of the Shaper function to use when generating LUTs. 
+        Options: Log2, DolbyPQ
+    aces_ctl_directory : str or unicode
+        The path to the aces 'transforms/ctl/utilities'
+    lut_directory : str or unicode
+        The path to use when writing LUTs
+    lut_resolution_1d : int, optional
+        The resolution of generated 1D LUTs
+    lut_resolution_3d : int, optional
+        The resolution of generated 3D LUTs
+    cleanup : bool
+        Whether or not to clean up the intermediate images 
 
     Returns
     -------
     dict
-         Colorspaces and transforms converting between those colorspaces and
-         the reference colorspace, *ACES*.
+         Colorspaces, LUT paths and transforms converting between those 
+         colorspaces and the reference colorspace, *ACES*.
     """
 
     print('create_config_data - begin')
@@ -1095,17 +1137,31 @@ def generate_baked_LUTs(odt_info,
                         lut_resolution_shaper=1024,
                         prefix=False):
     """
-    Object description.
+    Generate baked representations of the transforms from the *ACES* *OCIO*
+    configuration
 
     Parameters
     ----------
-    parameter : type
-        Parameter description.
+    odt_info : array of dicts of str or unicode
+        Descriptions of the *ACES* Output Transforms
+    shaper_name : str or unicode
+        The name of the Shaper function to use when generating LUTs. 
+        Options: Log2, DolbyPQ
+    baked_directory : str or unicode
+        The path to use when writing baked LUTs
+    config_path : str or unicode
+        The path to the *OCIO* configuration
+    lut_resolution_3d : int, optional
+        The resolution of generated 3D LUTs
+    lut_resolution_shaper : int, optional
+        The resolution of shaper used as part of some 3D LUTs
+    prefix : bool, optional
+        Whether or not colorspace names will use their Family names as prefixes
+        in the *OCIO* config
 
     Returns
     -------
-    type
-         Return value description.
+    None
     """
 
     odt_info_C = dict(odt_info)
@@ -1269,17 +1325,20 @@ def generate_config_directory(config_directory,
                               bake_secondary_luts=False,
                               custom_lut_dir=None):
     """
-    Object description.
+    Create the directories needed for configuration generation
 
     Parameters
     ----------
-    parameter : type
-        Parameter description.
+    config_directory : str or unicode
+        The base config directory
+    bake_secondary_luts : bool, optional
+        Whether or not to create directories for baked LUTs
+    custom_lut_dir : bool, optional
+        Whether or not to create directories for custom Look LUTs
 
     Returns
     -------
-    type
-         Return value description.
+    None
     """
 
     lut_directory = os.path.join(config_directory, 'luts')
@@ -1318,13 +1377,37 @@ def generate_config(aces_ctl_directory,
 
     Parameters
     ----------
-    parameter : type
-        Parameter description.
+    aces_ctl_directory : str or unicode
+        The path to the aces 'transforms/ctl/utilities'
+    config_directory : str or unicode
+        The directory that will hold the generated configuration and LUTs
+    lut_resolution_1d : int, optional
+        The resolution of generated 1D LUTs
+    lut_resolution_3d : int, optional
+        The resolution of generated 3D LUTs
+    bake_secondary_luts : bool, optional
+        Whether or not to create directories for baked LUTs
+    multiple_displays : bool, optional
+        Whether to create a single display named *ACES* with Views for each
+        Output Transform or multiple displays, one for each Output Transform
+    look_info : array of str or unicode, optional
+        Paths and names for look data
+    copy_custom_luts : bool, optional
+        Whether to reference custom look LUTs directly or to copy them into a 
+        directory within the generated configuration
+    cleanup : bool, optional
+        Whether or not to clean up the intermediate images 
+    prefix_colorspaces_with_family_names : bool, optional
+        Whether or not colorspace names will use their Family names as prefixes
+        in the *OCIO* config
+    shaper_base_name : str or unicode
+        The name of the Shaper function to use when generating LUTs. 
+        Options: Log2, DolbyPQ
 
     Returns
     -------
-    type
-         Return value description.
+    bool
+         Success or failure of configuration generation process
     """
 
     if look_info is None:
@@ -1337,7 +1420,6 @@ def generate_config(aces_ctl_directory,
     lut_directory = generate_config_directory(config_directory,
                                               bake_secondary_luts,
                                               custom_lut_dir)
-
     odt_info = aces.get_ODTs_info(aces_ctl_directory)
     lmt_info = aces.get_LMTs_info(aces_ctl_directory)
 
@@ -1381,17 +1463,16 @@ def generate_config(aces_ctl_directory,
 
 def main():
     """
-    Object description.
+    A simple main that allows the user to exercise the various functions
+    defined in this file
 
     Parameters
     ----------
-    parameter : type
-        Parameter description.
+    None
 
     Returns
     -------
-    type
-         Return value description.
+    None
     """
 
     import optparse

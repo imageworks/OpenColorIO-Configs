@@ -51,17 +51,17 @@ class ColorSpace(object):
                  allocation_vars=None,
                  aces_transform_id=None):
         """
-        Object description.
+        Constructor for ColorSpace container class
 
         Parameters
         ----------
-        parameter : type
-            Parameter description.
+        name : str or unicode
+            Name of the colorspace
+        All other arguments are optional
 
         Returns
         -------
-        type
-             Return value description.
+        None
         """
 
         if aliases is None:
@@ -96,13 +96,13 @@ def mat44_from_mat33(mat33):
 
     Parameters
     ----------
-    parameter : type
-        Parameter description.
+    mat33 : array of float
+        A 3x3 matrix
 
     Returns
     -------
-    type
-         Return value description.
+    array of float
+         A 4x4 matrix
     """
 
     return [mat33[0], mat33[1], mat33[2], 0,
@@ -113,17 +113,23 @@ def mat44_from_mat33(mat33):
 
 def filter_words(words, filters_in=None, filters_out=None, flags=0):
     """
-    Object description.
+    A function to filter strings in an array
 
     Parameters
     ----------
-    parameter : type
-        Parameter description.
+    words : array of str or unicode
+        Array of strings
+    filters_in : array of str or unicode, optional
+        Words to match
+    filters_out : array of str or unicode, optional
+        Words to NOT match
+    flags : int, optional
+        Flags for re.search
 
     Returns
     -------
-    type
-         Return value description.
+    array of str or unicode
+         An array of matched or unmatched strings
     """
 
     filtered_words = []
@@ -151,17 +157,24 @@ def filter_words(words, filters_in=None, filters_out=None, flags=0):
 
 def files_walker(directory, filters_in=None, filters_out=None, flags=0):
     """
-    Object description.
+    A function to walk a directory hierarchy, only returning items that do or
+    do not match the specified filters
 
     Parameters
     ----------
-    parameter : type
-        Parameter description.
+    directory : str or unicode
+        The starting point for directory walking
+    filters_in : array of str or unicode, optional
+        File or directory names to match
+    filters_out : array of str or unicode, optional
+        File or directory names to NOT match
+    flags : int, optional
+        Flags for re.search
 
     Returns
     -------
-    type
-         Return value description.
+    iterable
+         The next matching file or directory name
     """
 
     for parent_directory, directories, files in os.walk(
@@ -209,17 +222,17 @@ def replace(string, data):
 
 def sanitize(path):
     """
-    Object description.
+    Replaces occurrences of ' ', '(', or ')' in the string with an underscore.
 
     Parameters
     ----------
-    parameter : type
-        Parameter description.
+    path : str or unicode
+        Path string to manipulate.
 
     Returns
     -------
-    type
-         Return value description.
+    unicode
+        Manipulated string.
     """
 
     return replace(path, {' ': '_', ')': '_', '(': '_'})

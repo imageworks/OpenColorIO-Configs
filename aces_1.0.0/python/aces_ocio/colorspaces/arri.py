@@ -34,19 +34,29 @@ def create_log_c(gamut,
                  lut_resolution_1d,
                  aliases):
     """
-    Object description.
-
-    LogC to ACES.
+    Creates colorspace covering the conversion from LogC to ACES, with various transfer 
+    functions and encoding gamuts covered
 
     Parameters
     ----------
-    parameter : type
-        Parameter description.
+    gamut : str
+        The name of the encoding gamut to use.
+    transfer_function : str
+        The name of the transfer function to use
+    exposure_index : str
+        The exposure index to use
+    lut_directory : str or unicode 
+        The directory to use when generating LUTs
+    lut_resolution_1d : int
+        The resolution of generated 1D LUTs
+    aliases : list of str
+        Aliases for this colorspace
 
     Returns
     -------
-    type
-         Return value description.
+    ColorSpace
+         A ColorSpace container class referencing the LUTs, matrices and identifying
+         information for the requested colorspace.
     """
 
     name = '%s (EI%s) - %s' % (transfer_function, exposure_index, gamut)

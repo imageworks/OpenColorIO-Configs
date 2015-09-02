@@ -1613,12 +1613,12 @@ colorspaces:
     to_reference: !<FileTransform> {src: sRGB_to_linear.spi1d, interpolation: linear}
 
   - !<ColorSpace>
-    name: Utility - sRGB
+    name: Utility - sRGB - Texture
     family: Utility
-    equalitygroup: sRGB
+    equalitygroup: sRGB - Texture
     bitdepth: 32f
     description: |
-      The sRGB color space
+      The sRGB - Texture color space
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
@@ -3350,16 +3350,16 @@ colorspaces:
     to_reference: !<ColorSpaceTransform> {src: Utility - Curve - sRGB, dst: ACES - ACES2065-1}
 
   - !<ColorSpace>
-    name: srgb
+    name: srgb_texture
     family: Aliases
-    equalitygroup: sRGB
+    equalitygroup: sRGB - Texture
     bitdepth: 32f
     description: |
-      The sRGB color space
+      The sRGB - Texture color space
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
-    from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: Utility - sRGB}
+    from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: Utility - sRGB - Texture}
 
   - !<ColorSpace>
     name: lin_rec709

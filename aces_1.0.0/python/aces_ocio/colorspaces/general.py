@@ -502,13 +502,13 @@ def create_colorspaces(lut_directory,
 
     # *ACES* to *sRGB* Primaries + Transfer Function*
     cs = create_matrix_plus_transfer_colorspace(
-        'sRGB',
+        'sRGB - Texture',
         'sRGB',
         transfer_function_sRGB_to_linear,
         lut_directory,
         lut_resolution_1d,
         from_reference_values=[aces.ACES_AP0_TO_XYZ, XYZ_to_Rec709],
-        aliases=['srgb'])
+        aliases=['srgb_texture'])
     colorspaces.append(cs)
 
     # -------------------------------------------------------------------------

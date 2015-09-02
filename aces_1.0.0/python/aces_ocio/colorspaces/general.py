@@ -438,7 +438,7 @@ def create_colorspaces(lut_directory,
     # -------------------------------------------------------------------------
     # XYZ
     # -------------------------------------------------------------------------
-    cs = create_matrix_colorspace('XYZ-D60',
+    cs = create_matrix_colorspace('XYZ - D60',
                                   to_reference_values=[aces.ACES_XYZ_TO_AP0],
                                   from_reference_values=[aces.ACES_AP0_TO_XYZ],
                                   aliases=['lin_xyz_d60'])
@@ -461,10 +461,11 @@ def create_colorspaces(lut_directory,
     # -------------------------------------------------------------------------
     # P3-DCI
     # -------------------------------------------------------------------------
-    # *ACES* to *Linear*, *P3DCI* primaries
-    XYZ_to_P3DCI = [2.7253940305, -1.0180030062, -0.4401631952,
-                    -0.7951680258, 1.6897320548, 0.0226471906,
-                    0.0412418914, -0.0876390192, 1.1009293786]
+    # *ACES* to *Linear*, *P3DCI* primaries, using Bradford chromatic 
+    # adaptation
+    XYZ_to_P3DCI = [2.66286135, -1.11031783, -0.42271635,
+                    -0.82282376, 1.75861704, 0.02502194,
+                    0.03932561, -0.08383448, 1.0372175]
 
     cs = create_matrix_colorspace(
         'Linear - P3-DCI',
@@ -475,11 +476,13 @@ def create_colorspaces(lut_directory,
     # -------------------------------------------------------------------------
     # sRGB
     # -------------------------------------------------------------------------
-    # *ACES* to *Linear*, *Rec. 709* primaries.
     # *sRGB* and *Rec 709* use the same gamut.
-    XYZ_to_Rec709 = [3.2409699419, -1.5373831776, -0.4986107603,
-                     -0.9692436363, 1.8759675015, 0.0415550574,
-                     0.0556300797, -0.2039769589, 1.0569715142]
+
+    # *ACES* to *Linear*, *Rec. 709* primaries, D65 white point, using 
+    # Bradford chromatic adaptation
+    XYZ_to_Rec709 = [3.20959735, -1.55742955, -0.49580497,
+                     -0.97098887, 1.88517118, 0.03948941,
+                     0.05971934, -0.21010444, 1.14312482]
 
     cs = create_matrix_colorspace(
         'Linear - sRGB',
@@ -511,11 +514,7 @@ def create_colorspaces(lut_directory,
     # -------------------------------------------------------------------------
     # Rec 709
     # -------------------------------------------------------------------------
-    # *ACES* to *Linear*, *Rec. 709* primaries
-    XYZ_to_Rec709 = [3.2409699419, -1.5373831776, -0.4986107603,
-                     -0.9692436363, 1.8759675015, 0.0415550574,
-                     0.0556300797, -0.2039769589, 1.0569715142]
-
+    # *sRGB* and *Rec 709* use the same gamut.
     cs = create_matrix_colorspace(
         'Linear - Rec.709',
         from_reference_values=[aces.ACES_AP0_TO_XYZ, XYZ_to_Rec709],
@@ -546,10 +545,11 @@ def create_colorspaces(lut_directory,
     # -------------------------------------------------------------------------
     # Rec 2020
     # -------------------------------------------------------------------------
-    # *ACES* to *Linear*, *Rec. 2020* primaries
-    XYZ_to_Rec2020 = [1.7166511880, -0.3556707838, -0.2533662814,
-                      -0.6666843518, 1.6164812366, 0.0157685458,
-                      0.0176398574, -0.0427706133, 0.9421031212]
+    # *ACES* to *Linear*, *Rec. 2020* primaries, D65 white point, using 
+    # Bradford chromatic adaptation
+    XYZ_to_Rec2020 = [1.69662619, -0.36551982, -0.24857099,
+                      -0.67039877, 1.62348187, 0.01503821,
+                      0.02063163, -0.04775634, 1.01910818]
 
     cs = create_matrix_colorspace(
         'Linear - Rec.2020',
@@ -591,7 +591,7 @@ def create_colorspaces(lut_directory,
         aliases=['crv_rec1886'])
     colorspaces.append(cs)
 
-    # *ACES* to *sRGB* Primaries + Transfer Function*
+    # *ACES* to *Rec. 709* Primaries + Transfer Function*
     cs = create_matrix_plus_transfer_colorspace(
         'Rec.709 - Display',
         'rec1886',
@@ -602,7 +602,7 @@ def create_colorspaces(lut_directory,
         aliases=['rec709_display'])
     colorspaces.append(cs)
 
-    # *ACES* to *sRGB* Primaries + Transfer Function*
+    # *ACES* to *Rec. 2020* Primaries + Transfer Function*
     cs = create_matrix_plus_transfer_colorspace(
         'Rec.2020 - Display',
         'rec1886',
@@ -616,7 +616,8 @@ def create_colorspaces(lut_directory,
     # -------------------------------------------------------------------------
     # ProPhoto
     # -------------------------------------------------------------------------
-    # *ACES* to *Linear*, *Pro Photo* primaries
+    # *ACES* to *Linear*, *Pro Photo* primaries, D50 white point, using 
+    # Bradford chromatic adaptation
     AP0_to_RIMM = [1.2412367771, -0.1685692287, -0.0726675484,
                    0.0061203066, 1.083151174, -0.0892714806,
                    -0.0032853314, 0.0099796402, 0.9933056912]
@@ -630,7 +631,8 @@ def create_colorspaces(lut_directory,
     # -------------------------------------------------------------------------
     # Adobe RGB
     # -------------------------------------------------------------------------
-    # *ACES* to *Linear*, *Adobe RGB* primaries
+    # *ACES* to *Linear*, *Adobe RGB* primaries, D65 white point, using 
+    # Bradford chromatic adaptation
     AP0_to_ADOBERGB = [1.7245603168, -0.4199935942, -0.3045667227,
                        -0.2764799142, 1.3727190877, -0.0962391734,
                        -0.0261255258, -0.0901747807, 1.1163003065]
@@ -644,14 +646,15 @@ def create_colorspaces(lut_directory,
     # -------------------------------------------------------------------------
     # Adobe Wide Gamut RGB
     # -------------------------------------------------------------------------
-    # *ACES* to *Linear*, *Adobe Wide Gamut RGB* primaries
-    AP0_to_ADOBERGB = [1.3809814778, -0.1158594573, -0.2651220205,
-                       0.0057015535, 1.0402949043, -0.0459964578,
-                       -0.0038908746, -0.0597091815, 1.0636000561]
+    # *ACES* to *Linear*, *Adobe Wide Gamut RGB* primaries, D50 white point, 
+    # using Bradford chromatic adaptation
+    AP0_to_ADOBEWIDEGAMUT = [1.3809814778, -0.1158594573, -0.2651220205,
+                             0.0057015535, 1.0402949043, -0.0459964578,
+                            -0.0038908746, -0.0597091815, 1.0636000561]
 
     cs = create_matrix_colorspace(
         'Linear - Adobe Wide Gamut RGB',
-        from_reference_values=[AP0_to_ADOBERGB],
+        from_reference_values=[AP0_to_ADOBEWIDEGAMUT],
         aliases=['lin_adobewidegamutrgb'])
     colorspaces.append(cs)
 

@@ -151,17 +151,17 @@ def create_ACEScc(aces_ctl_directory,
     cs.is_data = False
     cs.allocation_type = ocio.Constants.ALLOCATION_UNIFORM
     cs.allocation_vars = [min_value, max_value]
-    cs.aces_transform_id = 'ACEScsc.ACEScc_to_ACES.a1.0.0'
+    cs.aces_transform_id = 'ACEScsc.ACEScc_to_ACES.a1.0.1'
 
     ctls = [os.path.join(aces_ctl_directory,
                          'ACEScc',
-                         'ACEScsc.ACEScc_to_ACES.a1.0.0.ctl'),
+                         'ACEScsc.ACEScc_to_ACES.a1.0.1.ctl'),
             # This transform gets back to the *AP1* primaries.
             # Useful as the 1d LUT is only covering the transfer function.
             # The primaries switch is covered by the matrix below:
             os.path.join(aces_ctl_directory,
                          'ACEScg',
-                         'ACEScsc.ACES_to_ACEScg.a1.0.0.ctl')]
+                         'ACEScsc.ACES_to_ACEScg.a1.0.1.ctl')]
     lut = '%s_to_linear.spi1d' % name
 
     lut = sanitize(lut)
@@ -231,17 +231,17 @@ def create_ACESproxy(aces_ctl_directory,
     cs.family = 'ACES'
     cs.is_data = False
 
-    cs.aces_transform_id = 'ACEScsc.ACESproxy10i_to_ACES.a1.0.0'
+    cs.aces_transform_id = 'ACEScsc.ACESproxy10i_to_ACES.a1.0.1'
 
     ctls = [os.path.join(aces_ctl_directory,
                          'ACESproxy',
-                         'ACEScsc.ACESproxy10i_to_ACES.a1.0.0.ctl'),
+                         'ACEScsc.ACESproxy10i_to_ACES.a1.0.1.ctl'),
             # This transform gets back to the *AP1* primaries.
             # Useful as the 1d LUT is only covering the transfer function.
             # The primaries switch is covered by the matrix below:
             os.path.join(aces_ctl_directory,
                          'ACEScg',
-                         'ACEScsc.ACES_to_ACEScg.a1.0.0.ctl')]
+                         'ACEScsc.ACES_to_ACEScg.a1.0.1.ctl')]
     lut = '%s_to_linear.spi1d' % name
 
     lut = sanitize(lut)
@@ -305,7 +305,7 @@ def create_ACEScg():
     cs.allocation_type = ocio.Constants.ALLOCATION_LG2
     cs.allocation_vars = [-8, 5, 0.00390625]
 
-    cs.aces_transform_id = 'ACEScsc.ACEScg_to_ACES.a1.0.0'
+    cs.aces_transform_id = 'ACEScsc.ACEScg_to_ACES.a1.0.1'
 
     cs.to_reference_transforms = []
 
@@ -363,7 +363,7 @@ def create_ADX(lut_directory,
     cs.is_data = False
 
     if bit_depth == 10:
-        cs.aces_transform_id = 'ACEScsc.ADX10_to_ACES.a1.0.0'
+        cs.aces_transform_id = 'ACEScsc.ADX10_to_ACES.a1.0.1'
 
         cs.bit_depth = ocio.Constants.BIT_DEPTH_UINT10
         ADX_to_CDD = [1023 / 500, 0, 0, 0,
@@ -372,7 +372,7 @@ def create_ADX(lut_directory,
                       0, 0, 0, 1]
         offset = [-95 / 500, -95 / 500, -95 / 500, 0]
     elif bit_depth == 16:
-        cs.aces_transform_id = 'ACEScsc.ADX16_to_ACES.a1.0.0'
+        cs.aces_transform_id = 'ACEScsc.ADX16_to_ACES.a1.0.1'
 
         cs.bit_depth = ocio.Constants.BIT_DEPTH_UINT16
         ADX_to_CDD = [65535 / 8000, 0, 0, 0,
@@ -556,7 +556,7 @@ def create_generic_log(aces_ctl_directory,
     ctls = [os.path.join(
         aces_ctl_directory,
         'utilities',
-        'ACESlib.Log2_to_Lin_param.a1.0.0.ctl')]
+        'ACESlib.Log2_to_Lin_param.a1.0.1.ctl')]
     lut = '%s_to_linear.spi1d' % name
 
     lut = sanitize(lut)
@@ -643,7 +643,7 @@ def create_Dolby_PQ(aces_ctl_directory,
     ctls = [os.path.join(
         aces_ctl_directory,
         'utilities',
-        'ACESlib.DolbyPQ_to_Lin.a1.0.0.ctl')]
+        'ACESlib.DolbyPQ_to_Lin.a1.0.1.ctl')]
     lut = '%s_to_linear.spi1d' % name
 
     lut = sanitize(lut)
@@ -738,7 +738,7 @@ def create_Dolby_PQ_shaper(aces_ctl_directory,
     ctls = [os.path.join(
         aces_ctl_directory,
         'utilities',
-        'ACESlib.OCIOshaper_to_Lin_param.a1.0.0.ctl')]
+        'ACESlib.OCIOshaper_to_Lin_param.a1.0.1.ctl')]
     lut = '%s_to_linear.spi1d' % name
 
     lut = sanitize(lut)
@@ -975,10 +975,10 @@ def create_LMTs(aces_ctl_directory,
         lmt_shaper_name,
         os.path.join('%s',
                      'utilities',
-                     'ACESlib.Log2_to_Lin_param.a1.0.0.ctl'),
+                     'ACESlib.Log2_to_Lin_param.a1.0.1.ctl'),
         os.path.join('%s',
                      'utilities',
-                     'ACESlib.Lin_to_Log2_param.a1.0.0.ctl'),
+                     'ACESlib.Lin_to_Log2_param.a1.0.1.ctl'),
         shaper_input_scale_generic_log2,
         lmt_params]
 
@@ -1097,11 +1097,11 @@ def create_ACES_RRT_plus_ODT(odt_name,
             shaper_to_aces_ctl % aces_ctl_directory,
             os.path.join(aces_ctl_directory,
                          'rrt',
-                         'RRT.a1.0.0.ctl'),
+                         'RRT.a1.0.1.ctl'),
             os.path.join(aces_ctl_directory,
                          'odt',
                          odt_values['transformCTL'])]
-        lut = '%s.RRT.a1.0.0.%s.spi3d' % (shaper_name, odt_name)
+        lut = '%s.RRT.a1.0.1.%s.spi3d' % (shaper_name, odt_name)
 
         lut = sanitize(lut)
 
@@ -1147,9 +1147,9 @@ def create_ACES_RRT_plus_ODT(odt_name,
                              odt_values['transformCTLInverse']),
                 os.path.join(aces_ctl_directory,
                              'rrt',
-                             'InvRRT.a1.0.0.ctl'),
+                             'InvRRT.a1.0.1.ctl'),
                 shaper_from_aces_ctl % aces_ctl_directory]
-        lut = 'InvRRT.a1.0.0.%s.%s.spi3d' % (odt_name, shaper_name)
+        lut = 'InvRRT.a1.0.1.%s.%s.spi3d' % (odt_name, shaper_name)
 
         lut = sanitize(lut)
 
@@ -1247,10 +1247,10 @@ def create_shapers_log2(aces_ctl_directory,
         log2_shaper_name,
         os.path.join('%s',
                      'utilities',
-                     'ACESlib.Log2_to_Lin_param.a1.0.0.ctl'),
+                     'ACESlib.Log2_to_Lin_param.a1.0.1.ctl'),
         os.path.join('%s',
                      'utilities',
-                     'ACESlib.Lin_to_Log2_param.a1.0.0.ctl'),
+                     'ACESlib.Lin_to_Log2_param.a1.0.1.ctl'),
         shaper_input_scale_generic_log2,
         log2_params]
 
@@ -1349,10 +1349,10 @@ def create_shapers_dolbypq(aces_ctl_directory,
         dolby_pq_shaper_name,
         os.path.join('%s',
                      'utilities',
-                     'ACESlib.OCIOshaper_to_Lin_param.a1.0.0.ctl'),
+                     'ACESlib.OCIOshaper_to_Lin_param.a1.0.1.ctl'),
         os.path.join('%s',
                      'utilities',
-                     'ACESlib.Lin_to_OCIOshaper_param.a1.0.0.ctl'),
+                     'ACESlib.Lin_to_OCIOshaper_param.a1.0.1.ctl'),
         1.0,
         dolby_pq_params]
 
@@ -1491,10 +1491,10 @@ def create_shapers(aces_ctl_directory,
         dolby_pq_shaper_name,
         os.path.join('%s',
                      'utilities',
-                     'ACESlib.DolbyPQ_to_Lin.a1.0.0.ctl'),
+                     'ACESlib.DolbyPQ_to_Lin.a1.0.1.ctl'),
         os.path.join('%s',
                      'utilities',
-                     'ACESlib.Lin_to_DolbyPQ.a1.0.0.ctl'),
+                     'ACESlib.Lin_to_DolbyPQ.a1.0.1.ctl'),
         1.0,
         {}]
 
@@ -1637,11 +1637,11 @@ def create_ODTs(aces_ctl_directory,
         odt_legal = odt_values.copy()
         odt_aliases = ['out_%s' % compact(odt_name_legal)]
 
-        if odt_name_legal in ['P3-D60 PQ (1000 nits)']:
+        if odt_name_legal in ['P3-D60 ST2048 (1000 nits)', 'Rec.2020 ST2048 (1000 nits)']:
             rrt_shaper = rrt_shaper_1000nits
-        elif odt_name_legal in ['P3-D60 PQ (2000 nits)']:
+        elif odt_name_legal in ['P3-D60 ST2048 (2000 nits)']:
             rrt_shaper = rrt_shaper_2000nits
-        elif odt_name_legal in ['P3-D60 PQ (4000 nits)']:
+        elif odt_name_legal in ['P3-D60 ST2048 (4000 nits)']:
             rrt_shaper = rrt_shaper_4000nits
         else:
             rrt_shaper = rrt_shaper_48nits

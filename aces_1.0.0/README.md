@@ -64,11 +64,12 @@ For ease of use across a broader number of applications, the family name of each
 	- Rec.709
 	- Rec.709 (D60 sim.)
 	- Rec.2020
+	- Rec.2020 ST2048 (1000 nits)
 	- DCDM (P3 gamut clip)
 	- DCDM
-	- P3-D60 PQ (1000 nits)
-	- P3-D60 PQ (2000 nits)
-	- P3-D60 PQ (4000 nits)
+	- P3-D60 ST2048 (1000 nits)
+	- P3-D60 ST2048 (2000 nits)
+	- P3-D60 ST2048 (4000 nits)
 	- P3-D60
 	- P3-DCI
 
@@ -173,6 +174,7 @@ The default config has one Display named **ACES**, which contains the following 
 - P3-D60 PQ 4000 nits, colorspace: P3-D60 PQ (4000 nits)
 - P3-DCI, colorspace: P3-DCI
 - Rec.2020, colorspace: Rec.2020
+- Rec.2020 ST2048 1000 nits, colorspace: Rec.2020 ST2048 (1000 nits)
 - Rec.709, colorspace: Rec.709
 - Rec.709 D60 sim., colorspace: Rec.709 (D60 sim.)
 - Raw, colorspace: Raw
@@ -223,15 +225,16 @@ Features exposed for customization by the user include:
 - The resolution of 1D and 3D LUTs
 - Inclusion of custom Looks
 - Two modes of creating the list of OCIO Displays and Views
+- Selection of shaper function: Log2 or Dolby PQ
 
 ### CTL Source
-The configuration depends on the **'hotfixes' fork of the 1.0 ACES CTL**. The fork contains a number of minor bug fixes and small additions in the utilities folder but is otherwise the same as the master ACES 1.0 release. 
+The configuration depends on the **1.0.1 ACES CTL**. The release contains a number of minor bug fixes and small additions in the utilities folder but is otherwise the same as the master ACES 1.0 release. 
 
-The fork is available here:
+The release is available here:
 
-- https://github.com/ampas/aces-dev/tree/hotfixes/transforms/ctl
+- https://github.com/ampas/aces-dev/tree/v1.0.1/transforms/ctl
 - Clone this repo using the following command
-	- git clone --branch hotfixes https://github.com/ampas/aces-dev.git
+	- git clone --branch v1.0.1 https://github.com/ampas/aces-dev.git
 
 
 Dependencies

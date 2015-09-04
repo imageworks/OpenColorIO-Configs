@@ -945,7 +945,7 @@ def create_config(config_data,
             for colorspace in config_data['colorSpaces']:
                 colorspace.name = prefixed_names_inverse[colorspace.name]
         except:
-            print('Prefixed names')
+            print('Error with Prefixed names')
             for original, prefixed in prefixed_names.iteritems():
                 print('%s, %s' % (original, prefixed))
 
@@ -1189,11 +1189,11 @@ def generate_baked_LUTs(odt_info,
         odt_prefix = odt_values['transformUserNamePrefix']
         odt_name = odt_values['transformUserName']
 
-        if odt_name in ['P3-D60 PQ (1000 nits)']:
+        if odt_name in ['P3-D60 ST2048 (1000 nits)', 'Rec.2020 ST2048 (1000 nits)']:
             odt_shaper = shaper_name.replace("48 nits", "1000 nits")
-        elif odt_name in ['P3-D60 PQ (2000 nits)']:
+        elif odt_name in ['P3-D60 ST2048 (2000 nits)']:
             odt_shaper = shaper_name.replace("48 nits", "2000 nits")
-        elif odt_name in ['P3-D60 PQ (4000 nits)']:
+        elif odt_name in ['P3-D60 ST2048 (4000 nits)']:
             odt_shaper = shaper_name.replace("48 nits", "4000 nits")
         else:
             odt_shaper = shaper_name
@@ -1373,7 +1373,8 @@ def generate_config(aces_ctl_directory,
                     prefix_colorspaces_with_family_names=True,
                     shaper_base_name='Log2'):
     """
-    Creates the ACES configuration.
+    Generates LUTs, matrices and configuration data and then creates the 
+    *ACES* configuration.
 
     Parameters
     ----------

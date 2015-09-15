@@ -12,16 +12,16 @@ Python
 ******
 
 >>> from aces_ocio.generate_config import generate_config
->>> aces_ctl_directory = '/path/to/github/checkout/releases/v1.0.0/transforms/ctl'
+>>> aces_ctl_directory = '/path/to/github/checkout/releases/v1.0.1/transforms/ctl'
 >>> config_directory = '/path/to/configuration/dir'
->>> generate_config(aces_ctl_directory, config_directory, 1024, 33, True)
+>>> generate_config(aces_ctl_directory, config_directory, 4096, 65, True)
 
 Command Line
 ************
 
 Using the *create_aces_config* binary:
 
-$ create_aces_config -a '/path/to/github/checkout/releases/v0.7.1/transforms/ctl' -c '/path/to/config/dir' --lutResolution1d 1024 --lutResolution3d 33 --keepTempImages
+$ create_aces_config -a '/path/to/github/checkout/releases/v1.0.1/transforms/ctl' -c '/path/to/config/dir' --lutResolution1d 4096 --lutResolution3d 65 --keepTempImages
 
 It is possible to set the following environment variables to avoid passing
 the paths to the binary:
@@ -31,7 +31,7 @@ the paths to the binary:
 
 The above command line call would be done as follows:
 
-$ create_aces_config --lutResolution1d 1024 --lutResolution3d 33 --keepTempImages
+$ create_aces_config --lutResolution1d 4096 --lutResolution3d 65 --keepTempImages
 
 Testing the generated configuration is needs the
 *ACES_OCIO_CTL_DIRECTORY* environment variable to be set and is done as
@@ -85,7 +85,7 @@ __status__ = 'Production'
 
 __major_version__ = '1'
 __minor_version__ = '0'
-__change_version__ = '0'
+__change_version__ = '1'
 __version__ = '.'.join((__major_version__,
                         __minor_version__,
                         __change_version__))

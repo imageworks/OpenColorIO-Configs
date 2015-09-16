@@ -1482,15 +1482,15 @@ def main():
     usage += '\n'
     usage += 'An OCIO config generation script for ACES 1.0.1\n'
     usage += '\n'
-    usage += 'Command line examples'
+    usage += 'Command-line examples'
     usage += '\n'
     usage += ('Create a GUI-friendly ACES 1.0.1 config with no secondary, '
-              'baked LUTs : \n')
+              'baked LUTs: \n')
     usage += ('\tcreate_aces_config -a /path/to/aces-dev/transforms/ctl '
               '--lutResolution1d 4096 --lutResolution3d 65 -c aces_1.0.1 '
               '--dontBakeSecondaryLUTs')
     usage += '\n'
-    usage += 'Create a more OCIO-compliant ACES 1.0.1 config : \n'
+    usage += 'Create a more OCIO-compliant ACES 1.0.1 config: \n'
     usage += ('\tcreate_aces_config -a /path/to/aces-dev/transforms/ctl '
               '--lutResolution1d 4096 --lutResolution3d 65 -c aces_1.0.1 '
               '--createMultipleDisplays')
@@ -1505,7 +1505,7 @@ def main():
               '\n\t\t--addACESLookCDL ACESCDLName '
               '/path/to/SampleCDL.ccc cc03345')
     usage += '\n'
-    usage += 'Create a GUI-friendly ACES 1.0.1 config with an general CDL: \n'
+    usage += 'Create a GUI-friendly ACES 1.0.1 config with a general CDL: \n'
     usage += ('\tcreate_aces_config -a /path/to/aces-dev/transforms/ctl '
               '--lutResolution1d 4096 --lutResolution3d 65 -c aces_1.0.1 '
               '\n\t\t--addCustomLookCDL CustomCDLName "ACES - ACEScc" '
@@ -1522,7 +1522,7 @@ def main():
               '\n\t\t--addACESLookLUT ACESLUTName '
               '/path/to/SampleCDL.ccc cc03345')
     usage += '\n'
-    usage += 'Create a GUI-friendly ACES 1.0.1 config with an general LUT: \n'
+    usage += 'Create a GUI-friendly ACES 1.0.1 config with a general LUT: \n'
     usage += ('\tcreate_aces_config -a /path/to/aces-dev/transforms/ctl '
               '--lutResolution1d 4096 --lutResolution3d 65 -c aces_1.0.1 '
               '\n\t\t--addCustomLookLUT CustomLUTName "ACES - ACEScc" '

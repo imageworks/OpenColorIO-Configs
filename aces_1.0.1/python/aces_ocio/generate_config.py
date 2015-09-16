@@ -1480,34 +1480,34 @@ def main():
 
     usage = '%prog [options]\n'
     usage += '\n'
-    usage += 'An OCIO config generation script for ACES 1.0\n'
+    usage += 'An OCIO config generation script for ACES 1.0.1\n'
     usage += '\n'
     usage += 'Command line examples'
     usage += '\n'
-    usage += ('Create a GUI-friendly ACES 1.0 config with no secondary, '
+    usage += ('Create a GUI-friendly ACES 1.0.1 config with no secondary, '
               'baked LUTs : \n')
     usage += ('\tcreate_aces_config -a /path/to/aces-dev/transforms/ctl '
-              '--lutResolution1d 1024 --lutResolution3d 33 -c aces_1.0.0 '
+              '--lutResolution1d 4096 --lutResolution3d 65 -c aces_1.0.1 '
               '--dontBakeSecondaryLUTs')
     usage += '\n'
-    usage += 'Create a more OCIO-compliant ACES 1.0 config : \n'
+    usage += 'Create a more OCIO-compliant ACES 1.0.1 config : \n'
     usage += ('\tcreate_aces_config -a /path/to/aces-dev/transforms/ctl '
-              '--lutResolution1d 1024 --lutResolution3d 33 -c aces_1.0.0 '
+              '--lutResolution1d 4096 --lutResolution3d 65 -c aces_1.0.1 '
               '--createMultipleDisplays')
     usage += '\n'
     usage += '\n'
     usage += 'Adding custom looks'
     usage += '\n'
-    usage += ('Create a GUI-friendly ACES 1.0 config with an ACES-style CDL '
+    usage += ('Create a GUI-friendly ACES 1.0.1 config with an ACES-style CDL '
               '(will be applied in the ACEScc colorspace): \n')
     usage += ('\tcreate_aces_config -a /path/to/aces-dev/transforms/ctl '
-              '--lutResolution1d 1024 --lutResolution3d 33 -c aces_1.0.0 '
+              '--lutResolution1d 4096 --lutResolution3d 65 -c aces_1.0.1 '
               '\n\t\t--addACESLookCDL ACESCDLName '
               '/path/to/SampleCDL.ccc cc03345')
     usage += '\n'
-    usage += 'Create a GUI-friendly ACES 1.0 config with an general CDL: \n'
+    usage += 'Create a GUI-friendly ACES 1.0.1 config with an general CDL: \n'
     usage += ('\tcreate_aces_config -a /path/to/aces-dev/transforms/ctl '
-              '--lutResolution1d 1024 --lutResolution3d 33 -c aces_1.0.0 '
+              '--lutResolution1d 4096 --lutResolution3d 65 -c aces_1.0.1 '
               '\n\t\t--addCustomLookCDL CustomCDLName "ACES - ACEScc" '
               '/path/to/SampleCDL.ccc cc03345')
     usage += '\n'
@@ -1515,16 +1515,16 @@ def main():
               'ACEScc colorspace, but the user could choose other spaces '
               'by changing the argument after the name of the look. \n')
     usage += '\n'
-    usage += ('Create a GUI-friendly ACES 1.0 config with an ACES-style LUT '
+    usage += ('Create a GUI-friendly ACES 1.0.1 config with an ACES-style LUT '
               '(will be applied in the ACEScc colorspace): \n')
     usage += ('\tcreate_aces_config -a /path/to/aces-dev/transforms/ctl '
-              '--lutResolution1d 1024 --lutResolution3d 33 -c aces_1.0.0 '
+              '--lutResolution1d 4096 --lutResolution3d 65 -c aces_1.0.1 '
               '\n\t\t--addACESLookLUT ACESLUTName '
               '/path/to/SampleCDL.ccc cc03345')
     usage += '\n'
-    usage += 'Create a GUI-friendly ACES 1.0 config with an general LUT: \n'
+    usage += 'Create a GUI-friendly ACES 1.0.1 config with an general LUT: \n'
     usage += ('\tcreate_aces_config -a /path/to/aces-dev/transforms/ctl '
-              '--lutResolution1d 1024 --lutResolution3d 33 -c aces_1.0.0 '
+              '--lutResolution1d 4096 --lutResolution3d 65 -c aces_1.0.1 '
               '\n\t\t--addCustomLookLUT CustomLUTName "ACES - ACEScc" '
               '/path/to/SampleCDL.ccc cc03345')
     usage += '\n'
@@ -1532,10 +1532,10 @@ def main():
               'ACEScc colorspace, but the user could choose other spaces '
               'by changing the argument after the name of the look. \n')
     usage += '\n'
-    usage += ('Create a GUI-friendly ACES 1.0 config using the Dolby PQ '
+    usage += ('Create a GUI-friendly ACES 1.0.1 config using the Dolby PQ '
               'transfer function as the shaper: \n')
     usage += ('\tcreate_aces_config -a /path/to/aces-dev/transforms/ctl '
-              '--lutResolution1d 1024 --lutResolution3d 33 -c aces_1.0.0 '
+              '--lutResolution1d 4096 --lutResolution3d 65 -c aces_1.0.1 '
               '--shaper DolbyPQ')
     usage += '\n'
  

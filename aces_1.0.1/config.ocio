@@ -1572,8 +1572,8 @@ colorspaces:
     description: |
       The XYZ - D60 color space
     isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
+    allocation: lg2
+    allocationvars: [-8, 5, 0.00390625]
     to_reference: !<MatrixTransform> {matrix: [1.04981, 0, -9.74845e-05, 0, -0.495903, 1.37331, 0.09824, 0, 0, 0, 0.991252, 0, 0, 0, 0, 1]}
     from_reference: !<MatrixTransform> {matrix: [0.952552, 0, 9.36786e-05, 0, 0.343966, 0.728166, -0.0721325, 0, 0, 0, 1.00883, 0, 0, 0, 0, 1]}
 
@@ -1585,8 +1585,8 @@ colorspaces:
     description: |
       The Linear - P3-D60 color space
     isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
+    allocation: lg2
+    allocationvars: [-8, 5, 0.00390625]
     from_reference: !<GroupTransform>
       children:
         - !<MatrixTransform> {matrix: [0.952552, 0, 9.36786e-05, 0, 0.343966, 0.728166, -0.0721325, 0, 0, 0, 1.00883, 0, 0, 0, 0, 1]}
@@ -1600,8 +1600,8 @@ colorspaces:
     description: |
       The Linear - P3-DCI color space
     isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
+    allocation: lg2
+    allocationvars: [-8, 5, 0.00390625]
     from_reference: !<GroupTransform>
       children:
         - !<MatrixTransform> {matrix: [0.952552, 0, 9.36786e-05, 0, 0.343966, 0.728166, -0.0721325, 0, 0, 0, 1.00883, 0, 0, 0, 0, 1]}
@@ -1615,8 +1615,8 @@ colorspaces:
     description: |
       The Linear - sRGB color space
     isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
+    allocation: lg2
+    allocationvars: [-8, 5, 0.00390625]
     from_reference: !<GroupTransform>
       children:
         - !<MatrixTransform> {matrix: [0.952552, 0, 9.36786e-05, 0, 0.343966, 0.728166, -0.0721325, 0, 0, 0, 1.00883, 0, 0, 0, 0, 1]}
@@ -1658,8 +1658,8 @@ colorspaces:
     description: |
       The Linear - Rec.709 color space
     isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
+    allocation: lg2
+    allocationvars: [-8, 5, 0.00390625]
     from_reference: !<GroupTransform>
       children:
         - !<MatrixTransform> {matrix: [0.952552, 0, 9.36786e-05, 0, 0.343966, 0.728166, -0.0721325, 0, 0, 0, 1.00883, 0, 0, 0, 0, 1]}
@@ -1701,8 +1701,8 @@ colorspaces:
     description: |
       The Linear - Rec.2020 color space
     isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
+    allocation: lg2
+    allocationvars: [-8, 5, 0.00390625]
     from_reference: !<GroupTransform>
       children:
         - !<MatrixTransform> {matrix: [0.952552, 0, 9.36786e-05, 0, 0.343966, 0.728166, -0.0721325, 0, 0, 0, 1.00883, 0, 0, 0, 0, 1]}
@@ -1788,8 +1788,8 @@ colorspaces:
     description: |
       The Linear - RIMM ROMM (ProPhoto) color space
     isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
+    allocation: lg2
+    allocationvars: [-8, 5, 0.00390625]
     from_reference: !<MatrixTransform> {matrix: [1.24124, -0.168569, -0.0726675, 0, 0.00612031, 1.08315, -0.0892715, 0, -0.00328533, 0.00997964, 0.993306, 0, 0, 0, 0, 1]}
 
   - !<ColorSpace>
@@ -1800,8 +1800,8 @@ colorspaces:
     description: |
       The Linear - Adobe RGB color space
     isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
+    allocation: lg2
+    allocationvars: [-8, 5, 0.00390625]
     from_reference: !<MatrixTransform> {matrix: [1.72456, -0.419994, -0.304567, 0, -0.27648, 1.37272, -0.0962392, 0, -0.0261255, -0.0901748, 1.1163, 0, 0, 0, 0, 1]}
 
   - !<ColorSpace>
@@ -1812,8 +1812,8 @@ colorspaces:
     description: |
       The Linear - Adobe Wide Gamut RGB color space
     isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
+    allocation: lg2
+    allocationvars: [-8, 5, 0.00390625]
     from_reference: !<MatrixTransform> {matrix: [1.38098, -0.115859, -0.265122, 0, 0.00570155, 1.04029, -0.0459965, 0, -0.00389087, -0.0597092, 1.0636, 0, 0, 0, 0, 1]}
 
   - !<ColorSpace>
@@ -3333,8 +3333,8 @@ colorspaces:
     description: |
       The XYZ - D60 color space
     isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
+    allocation: lg2
+    allocationvars: [-8, 5, 0.00390625]
     to_reference: !<ColorSpaceTransform> {src: Utility - XYZ - D60, dst: ACES - ACES2065-1}
     from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: Utility - XYZ - D60}
 
@@ -3346,8 +3346,8 @@ colorspaces:
     description: |
       The Linear - P3-D60 color space
     isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
+    allocation: lg2
+    allocationvars: [-8, 5, 0.00390625]
     from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: Utility - Linear - P3-D60}
 
   - !<ColorSpace>
@@ -3358,8 +3358,8 @@ colorspaces:
     description: |
       The Linear - P3-DCI color space
     isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
+    allocation: lg2
+    allocationvars: [-8, 5, 0.00390625]
     from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: Utility - Linear - P3-DCI}
 
   - !<ColorSpace>
@@ -3370,8 +3370,8 @@ colorspaces:
     description: |
       The Linear - sRGB color space
     isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
+    allocation: lg2
+    allocationvars: [-8, 5, 0.00390625]
     from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: Utility - Linear - sRGB}
 
   - !<ColorSpace>
@@ -3406,8 +3406,8 @@ colorspaces:
     description: |
       The Linear - Rec.709 color space
     isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
+    allocation: lg2
+    allocationvars: [-8, 5, 0.00390625]
     from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: Utility - Linear - Rec.709}
 
   - !<ColorSpace>
@@ -3442,8 +3442,8 @@ colorspaces:
     description: |
       The Linear - Rec.2020 color space
     isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
+    allocation: lg2
+    allocationvars: [-8, 5, 0.00390625]
     from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: Utility - Linear - Rec.2020}
 
   - !<ColorSpace>
@@ -3514,8 +3514,8 @@ colorspaces:
     description: |
       The Linear - RIMM ROMM (ProPhoto) color space
     isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
+    allocation: lg2
+    allocationvars: [-8, 5, 0.00390625]
     from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: Utility - Linear - RIMM ROMM (ProPhoto)}
 
   - !<ColorSpace>
@@ -3526,8 +3526,8 @@ colorspaces:
     description: |
       The Linear - RIMM ROMM (ProPhoto) color space
     isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
+    allocation: lg2
+    allocationvars: [-8, 5, 0.00390625]
     from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: Utility - Linear - RIMM ROMM (ProPhoto)}
 
   - !<ColorSpace>
@@ -3538,8 +3538,8 @@ colorspaces:
     description: |
       The Linear - Adobe RGB color space
     isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
+    allocation: lg2
+    allocationvars: [-8, 5, 0.00390625]
     from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: Utility - Linear - Adobe RGB}
 
   - !<ColorSpace>
@@ -3550,8 +3550,8 @@ colorspaces:
     description: |
       The Linear - Adobe Wide Gamut RGB color space
     isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
+    allocation: lg2
+    allocationvars: [-8, 5, 0.00390625]
     from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: Utility - Linear - Adobe Wide Gamut RGB}
 
   - !<ColorSpace>

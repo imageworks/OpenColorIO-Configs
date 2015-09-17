@@ -79,8 +79,8 @@ def create_matrix_colorspace(name='matrix',
     cs.is_data = False
 
     # A linear space needs allocation variables.
-    cs.allocation_type = ocio.Constants.ALLOCATION_UNIFORM
-    cs.allocation_vars = [0, 1]
+    cs.allocation_type = ocio.Constants.ALLOCATION_LG2
+    cs.allocation_vars = [-8, 5, 0.00390625]
 
     cs.to_reference_transforms = []
     if to_reference_values:

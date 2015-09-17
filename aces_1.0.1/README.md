@@ -264,13 +264,15 @@ Features exposed for customization by the user include:
 - Selection of shaper function: Log2 or Dolby PQ
 
 ### CTL Source
-The configuration depends on the **1.0.1 ACES CTL**. The release contains a number of minor bug fixes and small additions in the utilities folder but is otherwise the same as the master ACES 1.0 release. 
+The configuration depends on the **ACES 1.0.1 + Hotfixes CTL**. The release contains a number of minor bug fixes and small additions in the utilities folder but is otherwise the same as the master **ACES 1.0.1** release. 
 
-The release is available here:
+The CTL is available here:
 
-- https://github.com/ampas/aces-dev/tree/v1.0.1/transforms/ctl
-- Clone this repo using the following command
-	- git clone --branch v1.0.1 https://github.com/ampas/aces-dev.git
+- https://github.com/ampas/aces-dev/tree/hotfixes/transforms/ctl
+
+Clone this repo using the following command:
+
+- git clone --branch hotfixes https://github.com/ampas/aces-dev.git
 
 
 Dependencies

@@ -227,7 +227,7 @@ Considerations for custom config generation:
 LUTs
 -
 
-The default resolution is 33x33x33 for the 3D LUTs and 1024 for the 1D LUTs. 
+The default resolution is 64x64x64 for the 3D LUTs and 4096 for the 1D LUTs. 
 
 ### OCIO LUTs
 The LUTs used internally by OCIO can be can be retrieved [from the repository here.](https://github.com/hpd/OpenColorIO-Configs/tree/master/aces_1.0.1/luts) 

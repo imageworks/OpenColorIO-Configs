@@ -1188,7 +1188,8 @@ def create_shapers_log2(aces_ctl_directory,
                         min_exposure,
                         max_exposure):
     """
-    Creates a *Log base 2* colorspace that covers a specific dynamic range
+    Creates two *Log base 2* colorspaces, that cover a specific dynamic range. 
+    One has no gamut conversion. The other with has conversion from *ACES* *AP0* to *AP1*.
 
     Parameters
     ----------
@@ -1289,8 +1290,8 @@ def create_shapers_dolbypq(aces_ctl_directory,
                            min_exposure,
                            max_exposure):
     """
-    Creates two *Dolby PQ* colorspaces, one with now gamut conversion, the other with
-    the conversion from *ACES* *AP0* to *AP1*
+    Creates two *Dolby PQ* colorspaces, that cover a specific dynamic range. 
+    One has no gamut conversion. The other with has conversion from *ACES* *AP0* to *AP1*.
 
     Parameters
     ----------
@@ -1618,11 +1619,14 @@ def create_ODTs(aces_ctl_directory,
     colorspaces.extend(shaper_colorspaces)
 
     # Assumes shaper has variants covering the range expected by the
-    # 48 nit, 1000 nit, 2000 nit and 4000 nit Ouput Transforms 
+    # 48 nit, 1000 nit, 2000 nit and 4000 nit Output Transforms 
     rrt_shaper_48nits = shaper_data[shaper_name]
-    rrt_shaper_1000nits = shaper_data[shaper_name.replace("48 nits", "1000 nits")]
-    rrt_shaper_2000nits = shaper_data[shaper_name.replace("48 nits", "2000 nits")]
-    rrt_shaper_4000nits = shaper_data[shaper_name.replace("48 nits", "4000 nits")]
+
+    # Override 1000, 2000 and 4000 nits to always use the PQ shapers
+    pq_shaper_name = ("%s %s" % ('Dolby PQ', ' '.join(shaper_name.split(' ')[-3:])) )
+    rrt_shaper_1000nits = shaper_data[pq_shaper_name.replace("48 nits", "1000 nits")]
+    rrt_shaper_2000nits = shaper_data[pq_shaper_name.replace("48 nits", "2000 nits")]
+    rrt_shaper_4000nits = shaper_data[pq_shaper_name.replace("48 nits", "4000 nits")]
 
     # *RRT + ODT* combinations.
     sorted_odts = sorted(odt_info.iteritems(), key=lambda x: x[1])
@@ -1637,11 +1641,11 @@ def create_ODTs(aces_ctl_directory,
         odt_legal = odt_values.copy()
         odt_aliases = ['out_%s' % compact(odt_name_legal)]
 
-        if odt_name_legal in ['P3-D60 ST2048 (1000 nits)', 'Rec.2020 ST2048 (1000 nits)']:
+        if '1000 nits' in odt_name_legal:
             rrt_shaper = rrt_shaper_1000nits
-        elif odt_name_legal in ['P3-D60 ST2048 (2000 nits)']:
+        elif '2000 nits' in odt_name_legal:
             rrt_shaper = rrt_shaper_2000nits
-        elif odt_name_legal in ['P3-D60 ST2048 (4000 nits)']:
+        elif '4000 nits' in odt_name_legal:
             rrt_shaper = rrt_shaper_4000nits
         else:
             rrt_shaper = rrt_shaper_48nits

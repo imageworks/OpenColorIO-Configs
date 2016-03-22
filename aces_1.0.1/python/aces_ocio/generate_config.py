@@ -1189,12 +1189,14 @@ def generate_baked_LUTs(odt_info,
         odt_prefix = odt_values['transformUserNamePrefix']
         odt_name = odt_values['transformUserName']
 
-        if odt_name in ['P3-D60 ST2048 (1000 nits)', 'Rec.2020 ST2048 (1000 nits)']:
-            odt_shaper = shaper_name.replace("48 nits", "1000 nits")
-        elif odt_name in ['P3-D60 ST2048 (2000 nits)']:
-            odt_shaper = shaper_name.replace("48 nits", "2000 nits")
-        elif odt_name in ['P3-D60 ST2048 (4000 nits)']:
-            odt_shaper = shaper_name.replace("48 nits", "4000 nits")
+        pq_shaper_name = ("%s %s" % ('Dolby PQ', ' '.join(shaper_name.split(' ')[-3:])) )
+
+        if '1000 nits' in odt_name:
+            odt_shaper = pq_shaper_name.replace("48 nits", "1000 nits")
+        elif '2000 nits' in odt_name:
+            odt_shaper = pq_shaper_name.replace("48 nits", "2000 nits")
+        elif '4000 nits' in odt_name:
+            odt_shaper = pq_shaper_name.replace("48 nits", "4000 nits")
         else:
             odt_shaper = shaper_name
 

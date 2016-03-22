@@ -1128,12 +1128,12 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: InvRRT.a1.0.1.P3-D60_ST2084__1000_nits_.Log2_48_nits_Shaper.spi3d, interpolation: tetrahedral}
-        - !<FileTransform> {src: Log2_48_nits_Shaper_to_linear.spi1d, interpolation: linear}
+        - !<FileTransform> {src: InvRRT.a1.0.1.P3-D60_ST2084__1000_nits_.Dolby_PQ_1000_nits_Shaper.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Dolby_PQ_1000_nits_Shaper_to_linear.spi1d, interpolation: linear}
     from_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: Log2_48_nits_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
-        - !<FileTransform> {src: Log2_48_nits_Shaper.RRT.a1.0.1.P3-D60_ST2084__1000_nits_.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Dolby_PQ_1000_nits_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
+        - !<FileTransform> {src: Dolby_PQ_1000_nits_Shaper.RRT.a1.0.1.P3-D60_ST2084__1000_nits_.spi3d, interpolation: tetrahedral}
 
   - !<ColorSpace>
     name: Output - P3-D60 ST2084 (2000 nits)
@@ -1149,12 +1149,12 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: InvRRT.a1.0.1.P3-D60_ST2084__2000_nits_.Log2_48_nits_Shaper.spi3d, interpolation: tetrahedral}
-        - !<FileTransform> {src: Log2_48_nits_Shaper_to_linear.spi1d, interpolation: linear}
+        - !<FileTransform> {src: InvRRT.a1.0.1.P3-D60_ST2084__2000_nits_.Dolby_PQ_2000_nits_Shaper.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Dolby_PQ_2000_nits_Shaper_to_linear.spi1d, interpolation: linear}
     from_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: Log2_48_nits_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
-        - !<FileTransform> {src: Log2_48_nits_Shaper.RRT.a1.0.1.P3-D60_ST2084__2000_nits_.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Dolby_PQ_2000_nits_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
+        - !<FileTransform> {src: Dolby_PQ_2000_nits_Shaper.RRT.a1.0.1.P3-D60_ST2084__2000_nits_.spi3d, interpolation: tetrahedral}
 
   - !<ColorSpace>
     name: Output - P3-D60 ST2084 (4000 nits)
@@ -1170,12 +1170,12 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: InvRRT.a1.0.1.P3-D60_ST2084__4000_nits_.Log2_48_nits_Shaper.spi3d, interpolation: tetrahedral}
-        - !<FileTransform> {src: Log2_48_nits_Shaper_to_linear.spi1d, interpolation: linear}
+        - !<FileTransform> {src: InvRRT.a1.0.1.P3-D60_ST2084__4000_nits_.Dolby_PQ_4000_nits_Shaper.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Dolby_PQ_4000_nits_Shaper_to_linear.spi1d, interpolation: linear}
     from_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: Log2_48_nits_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
-        - !<FileTransform> {src: Log2_48_nits_Shaper.RRT.a1.0.1.P3-D60_ST2084__4000_nits_.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Dolby_PQ_4000_nits_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
+        - !<FileTransform> {src: Dolby_PQ_4000_nits_Shaper.RRT.a1.0.1.P3-D60_ST2084__4000_nits_.spi3d, interpolation: tetrahedral}
 
   - !<ColorSpace>
     name: Output - Rec.2020 ST2084 (1000 nits)
@@ -1191,12 +1191,12 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: InvRRT.a1.0.1.Rec.2020_ST2084__1000_nits_.Log2_48_nits_Shaper.spi3d, interpolation: tetrahedral}
-        - !<FileTransform> {src: Log2_48_nits_Shaper_to_linear.spi1d, interpolation: linear}
+        - !<FileTransform> {src: InvRRT.a1.0.1.Rec.2020_ST2084__1000_nits_.Dolby_PQ_1000_nits_Shaper.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Dolby_PQ_1000_nits_Shaper_to_linear.spi1d, interpolation: linear}
     from_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: Log2_48_nits_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
-        - !<FileTransform> {src: Log2_48_nits_Shaper.RRT.a1.0.1.Rec.2020_ST2084__1000_nits_.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Dolby_PQ_1000_nits_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
+        - !<FileTransform> {src: Dolby_PQ_1000_nits_Shaper.RRT.a1.0.1.Rec.2020_ST2084__1000_nits_.spi3d, interpolation: tetrahedral}
 
   - !<ColorSpace>
     name: Output - P3-D60

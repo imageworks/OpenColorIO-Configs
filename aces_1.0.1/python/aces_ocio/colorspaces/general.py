@@ -459,6 +459,20 @@ def create_colorspaces(lut_directory,
     colorspaces.append(cs)
 
     # -------------------------------------------------------------------------
+    # P3-D65
+    # -------------------------------------------------------------------------
+    # *ACES* to *Linear*, *P3D65* primaries
+    XYZ_to_P3D65 = [2.46741247, -0.94626093, -0.40077353,
+                    -0.83221072, 1.77089071, 0.02171988,
+                    0.03890671, -0.08141143, 1.03521109]
+
+    cs = create_matrix_colorspace(
+        'Linear - P3-D65',
+        from_reference_values=[aces.ACES_AP0_TO_XYZ, XYZ_to_P3D65],
+        aliases=['lin_p3d65'])
+    colorspaces.append(cs)
+
+    # -------------------------------------------------------------------------
     # P3-DCI
     # -------------------------------------------------------------------------
     # *ACES* to *Linear*, *P3DCI* primaries, using Bradford chromatic 

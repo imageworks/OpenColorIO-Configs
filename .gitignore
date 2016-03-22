@@ -1,0 +1,6 @@
+*.float.tiff
+*.pyc
+*.transformed.exr
+.DS_Store
+.idea
+__pycache__

@@ -36,7 +36,7 @@ Colorspaces and transforms representing the core ACES working and interchange co
 
 ##### Technical information
 
-Transforms generated based on the [ACES CTL Transforms](https://github.com/ampas/aces-dev/tree/v1.0/transforms/ctl)
+Transforms generated based on the [ACES CTL Transforms](https://github.com/ampas/aces-dev/tree/v1.0.2/transforms/ctl)
 
 ### ADX
 
@@ -51,7 +51,7 @@ Colorspaces and transforms representing the ACES ADX spaces used for film scanni
 
 ##### Technical information
 
-- Transforms generated based on the [ACES CTL Transforms](https://github.com/ampas/aces-dev/tree/v1.0/transforms/ctl)
+- Transforms generated based on the [ACES CTL Transforms](https://github.com/ampas/aces-dev/tree/v1.0.2/transforms/ctl)
 - [Alex Fry's ACES 0.7.1 OCIO config](https://github.com/imageworks/OpenColorIO-Configs/tree/master/aces_0.7.1) was also a valuable resource.
 
 ### Look
@@ -71,7 +71,7 @@ Colorspaces and transforms emulating the look of the ACES 0.1, 0.2 and 0.7 relea
 
 ##### Technical information
 
-Transforms generated based on the [ACES CTL Transforms](https://github.com/ampas/aces-dev/tree/v1.0/transforms/ctl)
+Transforms generated based on the [ACES CTL Transforms](https://github.com/ampas/aces-dev/tree/v1.0.2/transforms/ctl)
 
 ### Output
 
@@ -95,7 +95,7 @@ Transforms generated based on the [ACES CTL Transforms](https://github.com/ampas
 Colorspaces and transforms implementing the ACES Output Transforms. These colorspaces produce code values ready for display on hardware devices calibrated to the standard used to name the colorspace.
 
 ##### Technical information
-- Transforms generated based on the [ACES CTL Transforms](https://github.com/ampas/aces-dev/tree/v1.0/transforms/ctl)
+- Transforms generated based on the [ACES CTL Transforms](https://github.com/ampas/aces-dev/tree/v1.0.2/transforms/ctl)
 - All transforms produce full-range output. Host applications should be used to apply an full-to-legal scaling needed.
 
 ### Input
@@ -119,7 +119,7 @@ References and descriptions are provided for each group of Input Transforms belo
 - The colorspaces that start with 'Curve - ' will apply a transfer function but not convert between gamuts.
 
 #### ARRI
-- [ARRI Input Transforms](https://github.com/ampas/aces-dev/tree/v1.0/transforms/ctl/idt/vendorSupplied/arri/alexa)
+- [ARRI Input Transforms](https://github.com/ampas/aces-dev/tree/v1.0.2/transforms/ctl/idt/vendorSupplied/arri/alexa)
 - Conversations with Joseph Goldstone of ARRI
 
 #### Canon
@@ -140,7 +140,7 @@ References and descriptions are provided for each group of Input Transforms belo
 - Conversations with Graeme Nattress of RED
 
 #### Sony
-- [Sony Input Transforms](https://github.com/ampas/aces-dev/tree/v1.0/transforms/ctl/idt/vendorSupplied/sony)
+- [Sony Input Transforms](https://github.com/ampas/aces-dev/tree/v1.0.2/transforms/ctl/idt/vendorSupplied/sony)
 
 #### GoPro Experimental
 - The quality and consistency of these transforms has not been verified.

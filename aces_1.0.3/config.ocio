@@ -537,7 +537,7 @@ colorspaces:
     to_reference: !<GroupTransform>
       children:
         - !<FileTransform> {src: Canon-Log_to_linear.spi1d, interpolation: linear}
-        - !<MatrixTransform> {matrix: [0.724489, 0.115141, 0.160371, 0, 0.0106593, 0.839605, 0.149735, 0, 0.0145602, 0.0285621, 1.014, 0, 0, 0, 0, 1]}
+        - !<MatrixTransform> {matrix: [0.724489, 0.115141, 0.160371, 0, 0.0106593, 0.839605, 0.149735, 0, 0.0145602, -0.0285621, 1.014, 0, 0, 0, 0, 1]}
 
   - !<ColorSpace>
     name: Input - Canon - Canon-Log2 - Rec. 2020 Daylight
@@ -567,7 +567,7 @@ colorspaces:
     to_reference: !<GroupTransform>
       children:
         - !<FileTransform> {src: Canon-Log2_to_linear.spi1d, interpolation: linear}
-        - !<MatrixTransform> {matrix: [0.724489, 0.115141, 0.160371, 0, 0.0106593, 0.839605, 0.149735, 0, 0.0145602, 0.0285621, 1.014, 0, 0, 0, 0, 1]}
+        - !<MatrixTransform> {matrix: [0.724489, 0.115141, 0.160371, 0, 0.0106593, 0.839605, 0.149735, 0, 0.0145602, -0.0285621, 1.014, 0, 0, 0, 0, 1]}
 
   - !<ColorSpace>
     name: Input - Canon - Canon-Log2 - Cinema Gamut Daylight
@@ -627,7 +627,7 @@ colorspaces:
     to_reference: !<GroupTransform>
       children:
         - !<FileTransform> {src: Canon-Log3_to_linear.spi1d, interpolation: linear}
-        - !<MatrixTransform> {matrix: [0.724489, 0.115141, 0.160371, 0, 0.0106593, 0.839605, 0.149735, 0, 0.0145602, 0.0285621, 1.014, 0, 0, 0, 0, 1]}
+        - !<MatrixTransform> {matrix: [0.724489, 0.115141, 0.160371, 0, 0.0106593, 0.839605, 0.149735, 0, 0.0145602, -0.0285621, 1.014, 0, 0, 0, 0, 1]}
 
   - !<ColorSpace>
     name: Input - Canon - Canon-Log3 - Cinema Gamut Daylight
@@ -789,7 +789,7 @@ colorspaces:
     isdata: false
     allocation: lg2
     allocationvars: [-8, 5, 0.00390625]
-    to_reference: !<MatrixTransform> {matrix: [0.724489, 0.115141, 0.160371, 0, 0.0106593, 0.839605, 0.149735, 0, 0.0145602, 0.0285621, 1.014, 0, 0, 0, 0, 1]}
+    to_reference: !<MatrixTransform> {matrix: [0.724489, 0.115141, 0.160371, 0, 0.0106593, 0.839605, 0.149735, 0, 0.0145602, -0.0285621, 1.014, 0, 0, 0, 0, 1]}
 
   - !<ColorSpace>
     name: Input - Generic - sRGB - Texture

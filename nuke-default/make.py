@@ -95,27 +95,27 @@ t = OCIO.FileTransform('srgb.spi1d', interpolation=OCIO.Constants.INTERP_LINEAR)
 cs.setTransform(t, OCIO.Constants.COLORSPACE_DIR_TO_REFERENCE)
 config.addColorSpace(cs)
 
-
-NUM_SAMPLES = 2**16+25
-RANGE = (-0.125, 4.875)
-data = []
-for i in xrange(NUM_SAMPLES):
-    x = i/(NUM_SAMPLES-1.0)
-    x = Fit(x, 0.0, 1.0, RANGE[0], RANGE[1])
-    data.append(fromSRGB(x))
-
-# Data is srgb->linear
-WriteSPI1D('luts/srgbf.spi1d', RANGE[0], RANGE[1], data)
-
-cs = OCIO.ColorSpace(name='sRGBf')
-cs.setDescription("Standard RGB Display Space, but with additional range to preserve float highlights.")
-cs.setBitDepth(OCIO.Constants.BIT_DEPTH_F32)
-cs.setAllocation(OCIO.Constants.ALLOCATION_UNIFORM)
-cs.setAllocationVars([RANGE[0], RANGE[1]])
-
-t = OCIO.FileTransform('srgbf.spi1d', interpolation=OCIO.Constants.INTERP_LINEAR)
-cs.setTransform(t, OCIO.Constants.COLORSPACE_DIR_TO_REFERENCE)
-config.addColorSpace(cs)
+#Disabled pending matching root lut with extra range & name in Nuke.
+#NUM_SAMPLES = 2**16+25
+#RANGE = (-0.125, 4.875)
+#data = []
+#for i in xrange(NUM_SAMPLES):
+#    x = i/(NUM_SAMPLES-1.0)
+#    x = Fit(x, 0.0, 1.0, RANGE[0], RANGE[1])
+#    data.append(fromSRGB(x))
+#
+## Data is srgb->linear
+#WriteSPI1D('luts/srgbf.spi1d', RANGE[0], RANGE[1], data)
+#
+#cs = OCIO.ColorSpace(name='sRGBf')
+#cs.setDescription("Standard RGB Display Space, but with additional range to preserve float highlights.")
+#cs.setBitDepth(OCIO.Constants.BIT_DEPTH_F32)
+#cs.setAllocation(OCIO.Constants.ALLOCATION_UNIFORM)
+#cs.setAllocationVars([RANGE[0], RANGE[1]])
+#
+#t = OCIO.FileTransform('srgbf.spi1d', interpolation=OCIO.Constants.INTERP_LINEAR)
+#cs.setTransform(t, OCIO.Constants.COLORSPACE_DIR_TO_REFERENCE)
+#config.addColorSpace(cs)
 
 
 ###############################################################################
@@ -189,7 +189,6 @@ cs.setTransform(t, OCIO.Constants.COLORSPACE_DIR_TO_REFERENCE)
 config.addColorSpace(cs)
 
 
-
 ###############################################################################
 
 cs = OCIO.ColorSpace(name='Gamma1.8')
@@ -212,9 +211,18 @@ t = OCIO.ExponentTransform(value=(2.2,2.2,2.2,1.0))
 cs.setTransform(t, OCIO.Constants.COLORSPACE_DIR_TO_REFERENCE)
 config.addColorSpace(cs)
 
+cs = OCIO.ColorSpace(name='Gamma2.4')
+cs.setDescription("Emulates a idealized Gamma 2.4 display device.")
+cs.setBitDepth(OCIO.Constants.BIT_DEPTH_F32)
+cs.setAllocation(OCIO.Constants.ALLOCATION_UNIFORM)
+cs.setAllocationVars([0.0, 1.0])
+
+t = OCIO.ExponentTransform(value=(2.4,2.4,2.4,1.0))
+cs.setTransform(t, OCIO.Constants.COLORSPACE_DIR_TO_REFERENCE)
+config.addColorSpace(cs)
+
 
 ###############################################################################
-
 
 # Log to Linear light conversions for Panalog
 # WARNING: these are estimations known to be close enough.
@@ -251,10 +259,7 @@ cs.setTransform(t, OCIO.Constants.COLORSPACE_DIR_TO_REFERENCE)
 config.addColorSpace(cs)
 
 
-
 ###############################################################################
-
-
 
 redBlackOffset = 10.0 ** ((0.0 - 1023.0) / 511.0)
 
@@ -286,7 +291,6 @@ cs.setAllocationVars([RANGE[0], RANGE[1]])
 t = OCIO.FileTransform('redlog.spi1d', interpolation=OCIO.Constants.INTERP_LINEAR)
 cs.setTransform(t, OCIO.Constants.COLORSPACE_DIR_TO_REFERENCE)
 config.addColorSpace(cs)
-
 
 
 ###############################################################################
@@ -321,9 +325,7 @@ cs.setTransform(t, OCIO.Constants.COLORSPACE_DIR_TO_REFERENCE)
 config.addColorSpace(cs)
 
 
-
 ###############################################################################
-
 
 alexav3logc_a = 5.555556
 alexav3logc_b = 0.052272
@@ -416,6 +418,11 @@ config.addColorSpace(cs)
 
 ###############################################################################
 
+'SLog'
+
+#Note this is an old version that doesn't take black offsets into account.
+#SLog1 should be used instead, this is here for back compat.
+
 def fromSLog(x):
     return (10.0 ** (((x - 0.616596 - 0.03) / 0.432699)) - 0.037584)
 
@@ -447,6 +454,146 @@ config.addColorSpace(cs)
 
 ###############################################################################
 
+'SLog1'
+
+#The original SLog is actually incorrect (see note above), this should be used
+#in its place.
+
+def fromSLog1(x):
+  return (((10.0 ** (((((x*1023.0)/4.0-16.0)/219.0)-0.616596-0.03)/0.432699))-0.037584)*0.9)
+
+# These samples and range have been chosen to write out this colorspace with
+# a limited over/undershoot range, which also exactly samples the 0.0,1.0
+# crossings
+
+NUM_SAMPLES = 2**12+5
+RANGE = (-0.125, 1.125)
+data = []
+for i in xrange(NUM_SAMPLES):
+  x = i/(NUM_SAMPLES-1.0)
+  x = Fit(x, 0.0, 1.0, RANGE[0], RANGE[1])
+  data.append(fromSLog(x))
+
+# Data is srgb->linear
+WriteSPI1D('luts/slog1.spi1d', RANGE[0], RANGE[1], data)
+
+cs = OCIO.ColorSpace(name='SLog1')
+cs.setDescription("Sony SLog1")
+cs.setBitDepth(OCIO.Constants.BIT_DEPTH_F32)
+cs.setAllocation(OCIO.Constants.ALLOCATION_UNIFORM)
+cs.setAllocationVars([RANGE[0], RANGE[1]])
+
+t = OCIO.FileTransform('slog1.spi1d', interpolation=OCIO.Constants.INTERP_LINEAR)
+cs.setTransform(t, OCIO.Constants.COLORSPACE_DIR_TO_REFERENCE)
+config.addColorSpace(cs)
+
+
+###############################################################################
+
+'SLog2'
+
+def fromSLog2(x):
+  if x >= 0.030001222851889303:
+    return ((219.0*((10.0 ** ((x-0.616596-0.04)/0.432699))-0.037584)/155.0)*0.9)
+  return ((x-0.030001222851889303)*0.28258064516129*0.9)
+
+# These samples and range have been chosen to write out this colorspace with
+# a limited over/undershoot range, which also exactly samples the 0.0,1.0
+# crossings
+
+NUM_SAMPLES = 2**12+5
+RANGE = (-0.125, 1.125)
+data = []
+for i in xrange(NUM_SAMPLES):
+  x = i/(NUM_SAMPLES-1.0)
+  x = Fit(x, 0.0, 1.0, RANGE[0], RANGE[1])
+  data.append(fromSLog2(x))
+
+# Data is srgb->linear
+WriteSPI1D('luts/slog2.spi1d', RANGE[0], RANGE[1], data)
+
+cs = OCIO.ColorSpace(name='SLog2')
+cs.setDescription("Sony SLog2")
+cs.setBitDepth(OCIO.Constants.BIT_DEPTH_F32)
+cs.setAllocation(OCIO.Constants.ALLOCATION_UNIFORM)
+cs.setAllocationVars([RANGE[0], RANGE[1]])
+
+t = OCIO.FileTransform('slog2.spi1d', interpolation=OCIO.Constants.INTERP_LINEAR)
+cs.setTransform(t, OCIO.Constants.COLORSPACE_DIR_TO_REFERENCE)
+config.addColorSpace(cs)
+
+
+###############################################################################
+
+'SLog3'
+
+def fromSLog3(x):
+  if x >= 171.2102946929/1023.0:
+    return (((10.0 ** ((x*1023.0-420.0)/261.5))*(0.18+0.01))-0.01)
+  return ((x*1023.0-95.0)*0.01125/(171.2102946929-95.0))
+
+# These samples and range have been chosen to write out this colorspace with
+# a limited over/undershoot range, which also exactly samples the 0.0,1.0
+# crossings
+
+NUM_SAMPLES = 2**12+5
+RANGE = (-0.125, 1.125)
+data = []
+for i in xrange(NUM_SAMPLES):
+  x = i/(NUM_SAMPLES-1.0)
+  x = Fit(x, 0.0, 1.0, RANGE[0], RANGE[1])
+  data.append(fromSLog3(x))
+
+# Data is srgb->linear
+WriteSPI1D('luts/slog3.spi1d', RANGE[0], RANGE[1], data)
+
+cs = OCIO.ColorSpace(name='SLog3')
+cs.setDescription("Sony SLog3")
+cs.setBitDepth(OCIO.Constants.BIT_DEPTH_F32)
+cs.setAllocation(OCIO.Constants.ALLOCATION_UNIFORM)
+cs.setAllocationVars([RANGE[0], RANGE[1]])
+
+t = OCIO.FileTransform('slog3.spi1d', interpolation=OCIO.Constants.INTERP_LINEAR)
+cs.setTransform(t, OCIO.Constants.COLORSPACE_DIR_TO_REFERENCE)
+config.addColorSpace(cs)
+
+
+###############################################################################
+
+'CLog'
+
+def fromCLog(x):
+  return (((10.0 ** (x - 0.0730597)/0.529136) - 1.0)/10.1596)
+
+# These samples and range have been chosen to write out this colorspace with
+# a limited over/undershoot range, which also exactly samples the 0.0,1.0
+# crossings
+
+NUM_SAMPLES = 2**12+5
+RANGE = (-0.125, 1.125)
+data = []
+for i in xrange(NUM_SAMPLES):
+  x = i/(NUM_SAMPLES-1.0)
+  x = Fit(x, 0.0, 1.0, RANGE[0], RANGE[1])
+  data.append(fromCLog(x))
+
+# Data is srgb->linear
+WriteSPI1D('luts/clog.spi1d', RANGE[0], RANGE[1], data)
+
+cs = OCIO.ColorSpace(name='CLog')
+cs.setDescription("Canon CLog")
+cs.setBitDepth(OCIO.Constants.BIT_DEPTH_F32)
+cs.setAllocation(OCIO.Constants.ALLOCATION_UNIFORM)
+cs.setAllocationVars([RANGE[0], RANGE[1]])
+
+t = OCIO.FileTransform('clog.spi1d', interpolation=OCIO.Constants.INTERP_LINEAR)
+cs.setTransform(t, OCIO.Constants.COLORSPACE_DIR_TO_REFERENCE)
+config.addColorSpace(cs)
+
+
+###############################################################################
+
+
 'REDSpace'
 
 
@@ -466,6 +613,7 @@ display = 'default'
 config.addDisplay(display, 'None', 'raw')
 config.addDisplay(display, 'sRGB', 'sRGB')
 config.addDisplay(display, 'rec709', 'rec709')
+config.addDisplay(display, 'rec1886', 'Gamma2.4')
 
 config.setActiveDisplays('default')
 config.setActiveViews('sRGB')

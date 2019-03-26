@@ -1619,34 +1619,34 @@ def main():
 
     usage = '%prog [options]\n'
     usage += '\n'
-    usage += 'An OCIO config generation script for ACES 1.0.3\n'
+    usage += 'An OCIO config generation script for ACES 1.1\n'
     usage += '\n'
     usage += 'Command-line examples'
     usage += '\n'
-    usage += ('Create a GUI-friendly ACES 1.0.3 config with no secondary, '
+    usage += ('Create a GUI-friendly ACES 1.1 config with no secondary, '
               'baked LUTs:\n')
     usage += ('\tcreate_aces_config -a /path/to/aces-dev/transforms/ctl '
-              '--lutResolution1d 4096 --lutResolution3d 65 -c aces_1.0.3 '
+              '--lutResolution1d 4096 --lutResolution3d 65 -c aces_1.1 '
               '--dontBakeSecondaryLUTs')
     usage += '\n'
-    usage += 'Create a more OCIO-compliant ACES 1.0.3 config:\n'
+    usage += 'Create a more OCIO-compliant ACES 1.1 config:\n'
     usage += ('\tcreate_aces_config -a /path/to/aces-dev/transforms/ctl '
-              '--lutResolution1d 4096 --lutResolution3d 65 -c aces_1.0.3 '
+              '--lutResolution1d 4096 --lutResolution3d 65 -c aces_1.1 '
               '--createMultipleDisplays')
     usage += '\n'
     usage += '\n'
     usage += 'Adding custom looks'
     usage += '\n'
-    usage += ('Create a GUI-friendly ACES 1.0.3 config with an ACES-style CDL '
+    usage += ('Create a GUI-friendly ACES 1.1 config with an ACES-style CDL '
               '(will be applied in the ACEScc colorspace):\n')
     usage += ('\tcreate_aces_config -a /path/to/aces-dev/transforms/ctl '
-              '--lutResolution1d 4096 --lutResolution3d 65 -c aces_1.0.3 '
+              '--lutResolution1d 4096 --lutResolution3d 65 -c aces_1.1 '
               '\n\t\t--addACESLookCDL ACESCDLName '
               '/path/to/SampleCDL.ccc cc03345')
     usage += '\n'
-    usage += 'Create a GUI-friendly ACES 1.0.3 config with a general CDL:\n'
+    usage += 'Create a GUI-friendly ACES 1.1 config with a general CDL:\n'
     usage += ('\tcreate_aces_config -a /path/to/aces-dev/transforms/ctl '
-              '--lutResolution1d 4096 --lutResolution3d 65 -c aces_1.0.3 '
+              '--lutResolution1d 4096 --lutResolution3d 65 -c aces_1.1 '
               '\n\t\t--addCustomLookCDL CustomCDLName "ACES - ACEScc" '
               '/path/to/SampleCDL.ccc cc03345')
     usage += '\n'
@@ -1654,16 +1654,16 @@ def main():
               'ACEScc colorspace, but the user could choose other spaces '
               'by changing the argument after the name of the look.\n')
     usage += '\n'
-    usage += ('Create a GUI-friendly ACES 1.0.3 config with an ACES-style LUT '
+    usage += ('Create a GUI-friendly ACES 1.1 config with an ACES-style LUT '
               '(will be applied in the ACEScc colorspace):\n')
     usage += ('\tcreate_aces_config -a /path/to/aces-dev/transforms/ctl '
-              '--lutResolution1d 4096 --lutResolution3d 65 -c aces_1.0.3 '
+              '--lutResolution1d 4096 --lutResolution3d 65 -c aces_1.1 '
               '\n\t\t--addACESLookLUT ACESLUTName '
               '/path/to/lookLUT.3dl')
     usage += '\n'
-    usage += 'Create a GUI-friendly ACES 1.0.3 config with a general LUT:\n'
+    usage += 'Create a GUI-friendly ACES 1.1 config with a general LUT:\n'
     usage += ('\tcreate_aces_config -a /path/to/aces-dev/transforms/ctl '
-              '--lutResolution1d 4096 --lutResolution3d 65 -c aces_1.0.3 '
+              '--lutResolution1d 4096 --lutResolution3d 65 -c aces_1.1 '
               '\n\t\t--addCustomLookLUT CustomLUTName "ACES - ACEScc" '
               '/path/to/lookLUT.3dl')
     usage += '\n'
@@ -1671,18 +1671,18 @@ def main():
               'ACEScc colorspace, but the user could choose other spaces '
               'by changing the argument after the name of the look.\n')
     usage += '\n'
-    usage += ('Create a GUI-friendly ACES 1.0.3 config using the Dolby PQ '
+    usage += ('Create a GUI-friendly ACES 1.1 config using the Dolby PQ '
               'transfer function as the shaper:\n')
     usage += ('\tcreate_aces_config -a /path/to/aces-dev/transforms/ctl '
-              '--lutResolution1d 4096 --lutResolution3d 65 -c aces_1.0.3 '
+              '--lutResolution1d 4096 --lutResolution3d 65 -c aces_1.1 '
               '--shaper DolbyPQ\n')
     usage += '\n'
     usage += 'Adding custom output transform'
     usage += '\n'
-    usage += ('Create a GUI-friendly ACES 1.0.3 config with a custom output '
+    usage += ('Create a GUI-friendly ACES 1.1 config with a custom output '
               'transform:\n')
     usage += ('\tcreate_aces_config -a /path/to/aces-dev/transforms/ctl '
-              '--lutResolution1d 4096 --lutResolution3d 65 -c aces_1.0.3 '
+              '--lutResolution1d 4096 --lutResolution3d 65 -c aces_1.1 '
               '\n\t\t--addCustomOutputLUT CustomOutputName '
               '\"Input - ARRI - V3 LogC (EI800) - Wide Gamut\"'
               '/path/to/outputLUT.3dl')

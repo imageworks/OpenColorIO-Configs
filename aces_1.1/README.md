@@ -1,7 +1,7 @@
 ACES 1.1 OpenColorIO configuration
 =
 
-Informations about ACES
+Information about ACES
 -
 
 The **ACES** project home page is here: 
@@ -18,7 +18,7 @@ Colorspaces
 
 Colorspaces in this configurations are grouped into the following families: ACES, ADX, Look, Output, Input, Utility, Aliases. Descriptions for the colorspaces in the different families are provided below.
 
-For ease of use across a broader number of applications, the family name of each colorspace is pre-prended to the colorspace name when the configuration is authored. Those prefixes will be omitted in this document, but will show up when the configuration is loaded and used.
+For ease of use across a broader number of applications, the family name of each colorspace is pre-pended to the colorspace name when the configuration is authored. Those prefixes will be omitted in this document, but will show up when the configuration is loaded and used.
 
 
 ### ACES
@@ -229,7 +229,7 @@ Considerations for custom config generation:
 - The choice of a single Display and many Views may not align well with the implementation of OCIO in an application. 
 	- If you would like to generate a config that contains multiple Displays, with a small number of Views for each, review the config generation script's '--createMultipleDisplays' option.
 - If a Look is added to the config, a new set of Views will be added, one for each of the Views listed above except Raw and Log, that includes the Look. The Views with Looks will be interleaved in the View list with the original Views.
-	- To add a custom Look to the config, review the config generation script's '--addACESLookLUT', '--addACESLookCDL', '--addCustomLookLUT' and '--addCustomLookCDL' optoins.
+	- To add a custom Look to the config, review the config generation script's '--addACESLookLUT', '--addACESLookCDL', '--addCustomLookLUT' and '--addCustomLookCDL' options.
 
 
 LUTs
@@ -244,7 +244,7 @@ The LUTs used internally by OCIO can be can be retrieved [from the repository he
 LUTs that can be used outside of OCIO are included in the ['baked' directory here.](https://github.com/imageworks/OpenColorIO-Configs/tree/master/aces_1.1/baked)
 
 - The LUTs encode the ACES Output Transform for a specific colorspace input and are generally named:
-	- 'Ouput Transform name' for 'Input colorspace name'.extension
+	- 'Output Transform name' for 'Input colorspace name'.extension
 	- Ex. 'sRGB (D60 sim.) for ACEScc.icc'
 
 The LUTs included in the 'baked' directory cover the following formats and applications:

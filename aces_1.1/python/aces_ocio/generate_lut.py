@@ -127,7 +127,7 @@ def write_SPI_1d(filename,
             entry = ''
             for j in range(0, components):
                 entry = '%s %s' % (entry, data[i * channels + j])
-            fp.write('        %s\n' % entry)
+            fp.write('%s\n' % entry)
         fp.write('}\n')
 
 

@@ -53,7 +53,8 @@ __all__ = ['ACES_AP1_TO_AP0',
            'create_shapers_dolbypq'
            'create_shapers',
            'create_ODTs',
-           'get_transform_info',
+           'get_ctl_transform_info',
+           'get_transforms_info',
            'get_ODTs_info',
            'get_LMTs_info',
            'create_colorspaces']
@@ -1783,7 +1784,7 @@ def create_ODTs(aces_ctl_directory,
     return colorspaces, displays
 
 
-def get_transform_info(ctl_transform):
+def get_ctl_transform_info(ctl_transform):
     """
     Returns the information stored in first couple of lines of an official
     *ACES Transform* CTL file.
@@ -1814,7 +1815,7 @@ def get_transform_info(ctl_transform):
     # *legal* ranges.
     transform_full_legal_switch = False
     for line in lines:
-        if line.strip() == 'input varying int legalRange = 0':
+        if line.strip() == 'input uniform bool legalRange = true':
             # print( '%s has legal range flag' % transform_user_name)
             transform_full_legal_switch = True
             break
@@ -1825,93 +1826,131 @@ def get_transform_info(ctl_transform):
             transform_full_legal_switch)
 
 
-def get_ODTs_info(aces_ctl_directory):
+def get_transforms_info(aces_ctl_directory,
+                        ctl_sub_directory,
+                        has_sub_directories,
+                        transform_type):
     """
-    Returns the information describing the names and CTL files associated with 
-    the *ACES Output Transforms* in a given *ACES* release.
+    Returns the information describing the names and CTL files associated with
+    the *ACES Transforms* in a given *ACES* release.
 
     Parameters
     ----------
     aces_ctl_directory : str or unicode
-        The path to the base *ACES* CTL directory.
+        The path to the base *ACES* transforms CTL directory, e.g.
+        *aces-dev/transforms/ctl*.
+    ctl_sub_directory : str or unicode
+        The path to the *ACES* transforms CTL sub-directory, e.g. *odt*.
+    has_sub_directories : bool
+        Whether the *ACES* transforms CTL sub-directory has sub-directories.
+    transform_type : str or unicode
+        The *ACES* transforms CTL type, e.g. *ODT*.
 
     Returns
     -------
     dict of dicts
-         Collectoin of dicts, one describing each *ACES Output Transform*.
+         Dict of dicts, one describing each *ACES Look Transform*.
     """
 
-    # TODO: Investigate usage of *files_walker* definition here.
-    # Credit to *Alex Fry* for the original approach here.
-    odt_dir = os.path.join(aces_ctl_directory, 'odt')
-    all_odt = []
-    for dir_name, subdir_list, file_list in os.walk(odt_dir):
+    # Credit to Alex Fry for the original approach here
+    transform_dir = os.path.join(aces_ctl_directory, ctl_sub_directory)
+    all_transforms = []
+    for dir_name, subdir_list, file_list in os.walk(transform_dir):
         for fname in file_list:
-            all_odt.append((os.path.join(dir_name, fname)))
+            all_transforms.append((os.path.join(dir_name, fname)))
 
-    odt_ctls = [x for x in all_odt if
-                ('InvODT' not in x) and (os.path.split(x)[-1][0] != '.')]
+    transform_ctls = [
+        x for x in all_transforms
+        if ('Inv%s' % transform_type not in x) and (
+            'README' not in x) and (os.path.split(x)[-1][0] != '.')
+    ]
 
-    odts = {}
+    transforms = {}
 
-    for odt_ctl in odt_ctls:
-        odt_tokens = os.path.split(odt_ctl)
+    for transform_ctl in transform_ctls:
+        transform_tokens = os.path.split(transform_ctl)
 
         # Handling nested directories.
-        odt_path_tokens = os.path.split(odt_tokens[-2])
-        odt_dir = odt_path_tokens[-1]
-        while odt_path_tokens[-2][-3:] != 'odt':
-            odt_path_tokens = os.path.split(odt_path_tokens[-2])
-            odt_dir = os.path.join(odt_path_tokens[-1], odt_dir)
+        transform_path_tokens = os.path.split(transform_tokens[-2])
+        transform_dir = transform_path_tokens[-1]
+        while transform_path_tokens[-2][-3:] != (
+                ctl_sub_directory if has_sub_directories else 'ctl'):
+            transform_path_tokens = os.path.split(transform_path_tokens[-2])
+            transform_dir = os.path.join(transform_path_tokens[-1],
+                                         transform_dir)
 
         # Building full name.
-        transform_ctl = odt_tokens[-1]
-        odt_name = '.'.join(transform_ctl.split('.')[1:-1])
+        transform_ctl = transform_tokens[-1]
+        transform_name = '.'.join(transform_ctl.split('.')[1:-1])
 
         # Finding id, user name and user name prefix.
-        (transform_id,
-         transform_user_name,
-         transform_user_name_prefix,
-         transform_full_legal_switch) = get_transform_info(
-            os.path.join(aces_ctl_directory, 'odt', odt_dir, transform_ctl))
+        transform_ctl_path = (os.path.join(
+            aces_ctl_directory, ctl_sub_directory, transform_dir,
+            transform_ctl) if has_sub_directories else os.path.join(
+                aces_ctl_directory, transform_dir, transform_ctl))
+        (transform_id, transform_user_name, transform_user_name_prefix,
+         transform_full_legal_switch
+         ) = get_ctl_transform_info(transform_ctl_path)
 
         # Finding inverse.
-        transform_ctl_inverse = 'InvODT.%s.ctl' % odt_name
+        transform_ctl_inverse = 'Inv%s.%s.ctl' % (
+            transform_type, transform_name)
         if not os.path.exists(
-                os.path.join(odt_tokens[-2], transform_ctl_inverse)):
+                os.path.join(transform_tokens[-2], transform_ctl_inverse)):
             transform_ctl_inverse = None
 
-        # Adding to list of *ODTs*.
-        odts[odt_name] = {}
-        odts[odt_name]['transformCTL'] = os.path.join(odt_dir, transform_ctl)
+        transforms[transform_name] = {}
+        transforms[transform_name]['transformCTL'] = os.path.join(
+            transform_dir, transform_ctl)
         if transform_ctl_inverse is not None:
-            odts[odt_name]['transformCTLInverse'] = os.path.join(
-                odt_dir, transform_ctl_inverse)
+            transforms[transform_name]['transformCTLInverse'] = os.path.join(
+                transform_dir, transform_ctl_inverse)
 
-        odts[odt_name]['transformID'] = transform_id
-        odts[odt_name]['transformUserNamePrefix'] = transform_user_name_prefix
-        odts[odt_name]['transformUserName'] = transform_user_name
-        odts[odt_name][
+        transforms[transform_name]['transformID'] = transform_id
+        transforms[transform_name][
+            'transformUserNamePrefix'] = transform_user_name_prefix
+        transforms[transform_name]['transformUserName'] = transform_user_name
+        transforms[transform_name][
             'transformHasFullLegalSwitch'] = transform_full_legal_switch
 
-        forward_ctl = odts[odt_name]['transformCTL']
+        forward_ctl = transforms[transform_name]['transformCTL']
 
-        print('ODT : %s' % odt_name)
+        print('%s : %s' % (transform_type, transform_name))
         print('\tTransform ID               : %s' % transform_id)
         print('\tTransform User Name Prefix : %s' % transform_user_name_prefix)
         print('\tTransform User Name        : %s' % transform_user_name)
-        print(
-            '\tHas Full / Legal Switch    : %s' % transform_full_legal_switch)
+        print('\tHas Full / Legal Switch    : %s' % transform_full_legal_switch)
         print('\tForward ctl                : %s' % forward_ctl)
-        if 'transformCTLInverse' in odts[odt_name]:
-            inverse_ctl = odts[odt_name]['transformCTLInverse']
+        if 'transformCTLInverse' in transforms[transform_name]:
+            inverse_ctl = transforms[transform_name]['transformCTLInverse']
             print('\tInverse ctl                : %s' % inverse_ctl)
         else:
             print('\tInverse ctl                : %s' % 'None')
 
     print('\n')
 
-    return odts
+    return transforms
+
+
+def get_ODTs_info(aces_ctl_directory):
+    """
+    Returns the information describing the names and CTL files associated with 
+    the *ACES Output Device Transforms* in a given *ACES* release.
+
+    Parameters
+    ----------
+    aces_ctl_directory : str or unicode
+        The path to the base *ACES* transforms CTL directory, e.g.
+        *aces-dev/transforms/ctl*.
+
+    Returns
+    -------
+    dict of dicts
+         Dict of dicts, one describing each *ACES Output Device Transform*.
+    """
+
+    return get_transforms_info(
+        aces_ctl_directory, 'odt', True, 'ODT')
 
 
 def get_LMTs_info(aces_ctl_directory):
@@ -1922,82 +1961,18 @@ def get_LMTs_info(aces_ctl_directory):
     Parameters
     ----------
     aces_ctl_directory : str or unicode
-        The path to the base *ACES* CTL directory.
+        The path to the base *ACES* transforms CTL directory, e.g.
+        *aces-dev/transforms/ctl*.
 
     Returns
     -------
     dict of dicts
-         Collection of dicts, one describing each *ACES Look Transform*.
+         Dict of dicts, one describing each *ACES Look Transform*.
     """
 
-    # TODO: Investigate refactoring with previous definition.
+    return get_transforms_info(
+        aces_ctl_directory, 'lmt', False, 'LMT')
 
-    # Credit to Alex Fry for the original approach here
-    lmt_dir = os.path.join(aces_ctl_directory, 'lmt')
-    all_lmt = []
-    for dir_name, subdir_list, file_list in os.walk(lmt_dir):
-        for fname in file_list:
-            all_lmt.append((os.path.join(dir_name, fname)))
-
-    lmt_ctls = [x for x in all_lmt if
-                ('InvLMT' not in x) and ('README' not in x) and (
-                    os.path.split(x)[-1][0] != '.')]
-
-    lmts = {}
-
-    for lmt_ctl in lmt_ctls:
-        lmt_tokens = os.path.split(lmt_ctl)
-
-        # Handling nested directories.
-        lmt_path_tokens = os.path.split(lmt_tokens[-2])
-        lmt_dir = lmt_path_tokens[-1]
-        while lmt_path_tokens[-2][-3:] != 'ctl':
-            lmt_path_tokens = os.path.split(lmt_path_tokens[-2])
-            lmt_dir = os.path.join(lmt_path_tokens[-1], lmt_dir)
-
-        # Building full name.
-        transform_ctl = lmt_tokens[-1]
-        lmt_name = '.'.join(transform_ctl.split('.')[1:-1])
-
-        # Finding id, user name and user name prefix.
-        (transform_id,
-         transform_user_name,
-         transform_user_name_prefix,
-         transform_full_legal_switch) = get_transform_info(
-            os.path.join(aces_ctl_directory, lmt_dir, transform_ctl))
-
-        # Finding inverse.
-        transform_ctl_inverse = 'InvLMT.%s.ctl' % lmt_name
-        if not os.path.exists(
-                os.path.join(lmt_tokens[-2], transform_ctl_inverse)):
-            transform_ctl_inverse = None
-
-        lmts[lmt_name] = {}
-        lmts[lmt_name]['transformCTL'] = os.path.join(lmt_dir, transform_ctl)
-        if transform_ctl_inverse is not None:
-            lmts[lmt_name]['transformCTLInverse'] = os.path.join(
-                lmt_dir, transform_ctl_inverse)
-
-        lmts[lmt_name]['transformID'] = transform_id
-        lmts[lmt_name]['transformUserNamePrefix'] = transform_user_name_prefix
-        lmts[lmt_name]['transformUserName'] = transform_user_name
-
-        forward_ctl = lmts[lmt_name]['transformCTL']
-
-        print('LMT : %s' % lmt_name)
-        print('\tTransform ID               : %s' % transform_id)
-        print('\tTransform User Name Prefix : %s' % transform_user_name_prefix)
-        print('\tTransform User Name        : %s' % transform_user_name)
-        print('\t Forward ctl               : %s' % forward_ctl)
-        if 'transformCTLInverse' in lmts[lmt_name]:
-            inverse_ctl = lmts[lmt_name]['transformCTLInverse']
-            print('\t Inverse ctl                : %s' % inverse_ctl)
-        else:
-            print('\t Inverse ctl                : %s' % 'None')
-
-    print('\n')
-
-    return lmts
 
 
 def create_colorspaces(aces_ctl_directory,

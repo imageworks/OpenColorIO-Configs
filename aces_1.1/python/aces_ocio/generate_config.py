@@ -1067,8 +1067,9 @@ def create_config(config_data,
     return config
 
 
-def create_config_data(odt_info,
-                       lmt_info,
+def create_config_data(odts_info,
+                       lmts_info,
+                       ssts_ot_info,
                        shaper_name,
                        aces_ctl_directory,
                        lut_directory,
@@ -1081,10 +1082,12 @@ def create_config_data(odt_info,
 
     Parameters
     ----------
-    odt_info : array of dicts of str or unicode
-        Descriptions of the *ACES* Output Transforms.
-    lmt_info : array of dicts of str or unicode
+    odts_info : array of dicts of str or unicode
+        Descriptions of the *ACES* Output Device Transforms.
+    lmts_info : array of dicts of str or unicode
         Descriptions of the *ACES* Look Transforms.
+    ssts_ot_info : array of dicts of str or unicode
+        Descriptions of the *ACES* Output Transforms.
     shaper_name : str or unicode
         {'Log2', 'DolbyPQ'},
         The name of the Shaper function to use when generating LUTs. 
@@ -1126,8 +1129,9 @@ def create_config_data(odt_info,
                                                      lut_directory,
                                                      lut_resolution_1d,
                                                      lut_resolution_3d,
-                                                     lmt_info,
-                                                     odt_info,
+                                                     lmts_info,
+                                                     odts_info,
+                                                     ssts_ot_info,
                                                      shaper_name,
                                                      cleanup)
 
@@ -1541,8 +1545,12 @@ def generate_config(aces_ctl_directory,
     lut_directory = generate_config_directory(config_directory,
                                               bake_secondary_luts,
                                               custom_lut_dir)
-    odt_info = aces.get_ODTs_info(aces_ctl_directory)
-    lmt_info = aces.get_LMTs_info(aces_ctl_directory)
+    lmt_info = aces.get_transforms_info(
+        aces_ctl_directory, 'lmt', False, 'LMT')
+    odt_info = aces.get_transforms_info(
+        aces_ctl_directory, 'odt', True, 'ODT')
+    ssts_ot_info = aces.get_transforms_info(
+        aces_ctl_directory, 'outputTransforms', False, 'RRTODT')
 
     if shaper_base_name == 'DolbyPQ':
         shaper_name = 'Dolby PQ 48 nits Shaper'
@@ -1551,6 +1559,7 @@ def generate_config(aces_ctl_directory,
 
     config_data = create_config_data(odt_info,
                                      lmt_info,
+                                     ssts_ot_info,
                                      shaper_name,
                                      aces_ctl_directory,
                                      lut_directory,
@@ -1601,6 +1610,14 @@ def generate_config(aces_ctl_directory,
 
     if bake_secondary_luts:
         generate_baked_LUTs(odt_info,
+                            shaper_name,
+                            os.path.join(config_directory, 'baked'),
+                            os.path.join(config_directory, 'config.ocio'),
+                            lut_resolution_3d,
+                            lut_resolution_1d,
+                            prefix=prefix_colorspaces_with_family_names)
+
+        generate_baked_LUTs(ssts_ot_info,
                             shaper_name,
                             os.path.join(config_directory, 'baked'),
                             os.path.join(config_directory, 'config.ocio'),

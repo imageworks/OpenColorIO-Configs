@@ -32,9 +32,9 @@ __all__ = [
     'create_ACES', 'create_ACEScc', 'create_ACEScct', 'create_ACESproxy',
     'create_ACEScg', 'create_ADX', 'create_generic_log', 'create_DolbyPQ',
     'create_shaper_DolbyPQ', 'create_shapers_log2', 'create_shapers_DolbyPQ',
-    'create_shapers', 'create_LMT', 'create_LMTs', 'create_output_transform',
-    'create_output_transforms', 'get_transform_info', 'get_transforms_info',
-    'create_colorspaces'
+    'create_shapers', 'create_blue_light_artifact_fix_LMT', 'create_LMT',
+    'create_LMTs', 'create_output_transform', 'create_output_transforms',
+    'get_transform_info', 'get_transforms_info', 'create_colorspaces'
 ]
 
 # Matrix converting *ACES AP1* primaries to *ACES AP0*.
@@ -1164,6 +1164,61 @@ def create_shapers(aces_ctl_directory, lut_directory, lut_resolution_1D,
 # -------------------------------------------------------------------------
 # Individual *LMT*
 # -------------------------------------------------------------------------
+def create_blue_light_artifact_fix_LMT(lmt_name, lmt_values, aliases=None):
+    """
+    Creates the *Blue Light Artifact Fix* *ACES Look Transform (LMT)*
+    colorspace.
+
+    Parameters
+    ----------
+    lmt_name : str or unicode
+        The name of the Look Transform (LMT).
+    lmt_values : dict
+        A collection of values that define the Look Transform's attributes and
+        behavior.
+    aliases : list of str or unicode, optional
+        The alias names to use for the colorspace.
+
+    Returns
+    -------
+    ColorSpace
+         The *Blue Light Artifact Fix* *ACES LMT* colorspace.
+    """
+
+    if aliases is None:
+        aliases = []
+
+    cs = ColorSpace('{0}'.format(lmt_name))
+    cs.description = 'The ACES Look Transform: {0}'.format(lmt_name)
+    cs.aliases = aliases
+    cs.equality_group = ''
+    cs.family = 'Utility/Look'
+    cs.is_data = False
+    cs.allocation_type = ocio.Constants.ALLOCATION_LG2
+    cs.allocation_vars = [-8, 5, 0.00390625]
+    cs.aces_transform_id = lmt_values['transformID']
+
+    pprint.pprint(lmt_values)
+
+    # The matrix *M* is the *lmt/LMT.Academy.BlueLightArtifactFix.ctl* matrix
+    # transposed.
+    M = [
+        0.9404372683, -0.0183068787, 0.0778696104, 0.0083786969, 0.8286599939,
+        0.1629613092, 0.0005471261, -0.0008833746, 1.0003362486
+    ]
+    cs.to_reference_transforms = []
+
+    cs.to_reference_transforms.append({
+        'type': 'matrix',
+        'matrix': mat44_from_mat33(M),
+        'direction': 'inverse'
+    })
+
+    cs.from_reference_transforms = []
+
+    return cs
+
+
 def create_LMT(lmt_name,
                lmt_values,
                shaper_info,
@@ -1360,9 +1415,16 @@ def create_LMTs(aces_ctl_directory, lut_directory, lut_resolution_1D,
         lmt_aliases = [
             'look_{0}'.format(compact(lmt_values['transformUserName']))
         ]
-        cs = create_LMT(lmt_values['transformUserName'], lmt_values,
-                        lmt_shaper_data, aces_ctl_directory, lut_directory,
-                        lmt_lut_resolution_3D, cleanup, lmt_aliases)
+        if lmt_values['transformUserName'] == 'Blue Light Artifact Fix':
+            # Pragmatic special case for
+            # *lmt/LMT.Academy.BlueLightArtifactFix.ctl* so that it is handled
+            # as a *MatrixTransform* directly instead of a *LUT*.
+            cs = create_blue_light_artifact_fix_LMT(
+                lmt_values['transformUserName'], lmt_values, lmt_aliases)
+        else:
+            cs = create_LMT(lmt_values['transformUserName'], lmt_values,
+                            lmt_shaper_data, aces_ctl_directory, lut_directory,
+                            lmt_lut_resolution_3D, cleanup, lmt_aliases)
         colorspaces.append(cs)
 
     return colorspaces
@@ -1508,14 +1570,10 @@ def create_output_transform(output_transform_name,
         shutil.copy(output_transform_values['transformLUTInverse'], lut)
 
         cs.to_reference_transforms.append({
-            'type':
-            'lutFile',
-            'path':
-            transform_lut_inverse_file_name,
-            'interpolation':
-            'tetrahedral',
-            'direction':
-            'forward'
+            'type': 'lutFile',
+            'path': transform_lut_inverse_file_name,
+            'interpolation': 'tetrahedral',
+            'direction': 'forward'
         })
 
         shaper_inverse = shaper_ocio_transform.copy()
@@ -1761,9 +1819,8 @@ def get_transforms_info(aces_ctl_directory, ctl_sub_directory,
         # Handling nested directories.
         transform_path_tokens = os.path.split(transform_tokens[-2])
         transform_dir = transform_path_tokens[-1]
-        while transform_path_tokens[-2][-3:] != (ctl_sub_directory
-                                                 if has_sub_directories else
-                                                 'ctl'):
+        while transform_path_tokens[-2][-3:] != (
+                ctl_sub_directory if has_sub_directories else 'ctl'):
             transform_path_tokens = os.path.split(transform_path_tokens[-2])
             transform_dir = os.path.join(transform_path_tokens[-1],
                                          transform_dir)

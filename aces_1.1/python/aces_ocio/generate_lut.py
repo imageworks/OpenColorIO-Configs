@@ -9,6 +9,7 @@ from __future__ import division
 
 import array
 import os
+import re
 
 import OpenImageIO as oiio
 
@@ -22,12 +23,29 @@ __email__ = 'aces@oscars.org'
 __status__ = 'Production'
 
 __all__ = [
-    'generate_1D_LUT_image', 'write_SPI_1D', 'write_CSP_1D', 'write_CTL_1D',
-    'write_1D', 'generate_1D_LUT_from_image', 'generate_3D_LUT_image',
-    'generate_3D_LUT_from_image', 'apply_CTL_to_image', 'convert_bit_depth',
-    'generate_1D_LUT_from_CTL', 'correct_LUT_image',
-    'generate_3D_LUT_from_CTL', 'main'
+    'remove_nans_from_file', 'generate_1D_LUT_image', 'write_SPI_1D',
+    'write_CSP_1D', 'write_CTL_1D', 'write_1D', 'generate_1D_LUT_from_image',
+    'generate_3D_LUT_image', 'generate_3D_LUT_from_image',
+    'apply_CTL_to_image', 'convert_bit_depth', 'generate_1D_LUT_from_CTL',
+    'correct_LUT_image', 'generate_3D_LUT_from_CTL', 'main'
 ]
+
+
+def remove_nans_from_file(filename):
+    """
+    Removes NaNs from given file.
+
+    Parameters
+    ----------
+    filename : str or unicode
+        File to remove the NaNs from.
+    """
+
+    with open(filename, 'r') as reader:
+        content = re.sub('-?nan', '0', reader.read(), flags=re.IGNORECASE)
+
+    with open(filename, 'w') as writer:
+        writer.write(content)
 
 
 def generate_1D_LUT_image(ramp_1d_path,
@@ -380,6 +398,8 @@ def generate_1D_LUT_from_image(ramp_1d_path,
     write_1D(output_path, min_value, max_value, ramp_data, ramp_width,
              ramp_channels, channels, format)
 
+    remove_nans_from_file(output_path)
+
 
 def generate_3D_LUT_image(ramp_3d_path, resolution=32):
     """
@@ -468,6 +488,8 @@ def generate_3D_LUT_from_image(ramp_3d_path,
         lut_convert = Process(
             description='convert a 3d LUT', cmd='ociobakelut', args=args)
         lut_convert.execute()
+
+    remove_nans_from_file(output_path)
 
 
 def apply_CTL_to_image(input_image,

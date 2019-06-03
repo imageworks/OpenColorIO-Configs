@@ -136,7 +136,7 @@ def write_SPI_1D(filename,
         for i in range(0, entries):
             entry = ''
             for j in range(0, components):
-                entry = '{0} {1}'.format(entry, data[i * channels + j])
+                entry = '{0} {1:.10e}'.format(entry, data[i * channels + j])
             fp.write('{0}\n'.format(entry))
         fp.write('}\n')
 
@@ -199,13 +199,14 @@ def write_CSP_1D(filename,
             for i in range(0, entries):
                 entry = ''
                 for j in range(3):
-                    entry = '{0} {1}'.format(entry, data[i * channels])
+                    entry = '{0} {1:.10e}'.format(entry, data[i * channels])
                 fp.write('{0}\n'.format(entry))
         else:
             for i in range(entries):
                 entry = ''
                 for j in range(components):
-                    entry = '{0} {1}'.format(entry, data[i * channels + j])
+                    entry = '{0} {1:.10e}'.format(entry,
+                                                  data[i * channels + j])
                 fp.write('{0}\n'.format(entry))
         fp.write('\n')
 

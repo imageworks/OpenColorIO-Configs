@@ -25,8 +25,10 @@ __status__ = 'Production'
 
 __all__ = [
     'create_matrix_colorspace', 'create_transfer_colorspace',
-    'create_matrix_plus_transfer_colorspace', 'sRGB_to_linear',
-    'Rec709_to_linear', 'Rec2020_10bit_to_linear', 'Rec2020_12bit_to_linear',
+    'create_matrix_plus_transfer_colorspace', 'linear_to_sRGB',
+    'sRGB_to_linear', 'linear_to_Rec709', 'Rec709_to_linear',
+    'linear_to_Rec2020_10bit', 'Rec2020_10bit_to_linear',
+    'linear_to_Rec2020_12bit', 'Rec2020_12bit_to_linear', 'linear_to_Rec1886',
     'Rec1886_to_linear', 'create_colorspaces', 'create_raw'
 ]
 
@@ -160,7 +162,7 @@ def create_transfer_colorspace(name='transfer',
         data[c] = transfer_function(c / (lut_resolution_1D - 1))
 
     # Writing the sampled data to a *LUT*.
-    lut = '{0}_to_linear.spi1d'.format(transfer_function_name)
+    lut = 'linear_to_{0}.spi1d'.format(transfer_function_name)
     genlut.write_SPI_1D(
         os.path.join(lut_directory, lut), 0, 1, data, lut_resolution_1D, 1)
 
@@ -170,7 +172,7 @@ def create_transfer_colorspace(name='transfer',
         'type': 'lutFile',
         'path': lut,
         'interpolation': 'linear',
-        'direction': 'forward'
+        'direction': 'inverse'
     })
 
     # Creating the *from_reference* transforms.
@@ -249,7 +251,7 @@ def create_matrix_plus_transfer_colorspace(
         data[c] = transfer_function(c / (lut_resolution_1D - 1))
 
     # Writing the sampled data to a *LUT*.
-    lut = '{0}_to_linear.spi1d'.format(transfer_function_name)
+    lut = 'linear_to_{0}.spi1d'.format(transfer_function_name)
     genlut.write_SPI_1D(
         os.path.join(lut_directory, lut), 0, 1, data, lut_resolution_1D, 1)
 
@@ -260,7 +262,7 @@ def create_matrix_plus_transfer_colorspace(
             'type': 'lutFile',
             'path': lut,
             'interpolation': 'linear',
-            'direction': 'forward'
+            'direction': 'inverse'
         })
 
         for matrix in to_reference_values:
@@ -290,21 +292,21 @@ def create_matrix_plus_transfer_colorspace(
             'type': 'lutFile',
             'path': lut,
             'interpolation': 'linear',
-            'direction': 'inverse'
+            'direction': 'forward'
         })
 
     return cs
 
 
 # Transfer functions for standard colorspaces.
-def sRGB_to_linear(v):
+def linear_to_sRGB(L):
     """
-    The *sRGB (IEC 61966-2-1)* transfer function.
+    The *sRGB (IEC 61966-2-1)* encoding transfer function.
 
     Parameters
     ----------
-    v : float
-        The normalized value to pass through the function.
+    L : float
+        *Luminance* :math:`L` of the image.
 
     Returns
     -------
@@ -312,24 +314,20 @@ def sRGB_to_linear(v):
         A converted value.
     """
 
-    a = 1.055
-    b = 0.04045
-    d = 12.92
-    g = 2.4
-
-    if v < b:
-        return v / d
-    return pow(((v + (a - 1)) / a), g)
+    if L <= 0.0031308:
+        return L * 12.92
+    else:
+        return 1.055 * pow(L, 1.0 / 2.4) - 0.055
 
 
-def Rec709_to_linear(v):
+def sRGB_to_linear(V):
     """
-    The *Rec.709* transfer function.
+    The *sRGB (IEC 61966-2-1)* decoding transfer function.
 
     Parameters
     ----------
-    v : float
-        The normalized value to pass through the function.
+    V : float
+         Electrical signal :math:`V`.
 
     Returns
     -------
@@ -337,25 +335,20 @@ def Rec709_to_linear(v):
         A converted value.
     """
 
-    a = 1.099
-    b = 0.018
-    d = 4.5
-    g = (1.0 / 0.45)
-
-    if v < b * d:
-        return v / d
-
-    return pow(((v + (a - 1)) / a), g)
+    if V < linear_to_sRGB(0.0031308):
+        return V / 12.92
+    else:
+        return pow((V + 0.055) / 1.055, 2.4)
 
 
-def Rec2020_10bit_to_linear(v):
+def linear_to_Rec709(L):
     """
-    The *Rec.2020* 10-bit transfer function.
+    The *Rec.709* encoding transfer function.
 
     Parameters
     ----------
-    v : float
-        The normalized value to pass through the function.
+    L : float
+        *Luminance* :math:`L` of the image.
 
     Returns
     -------
@@ -363,25 +356,20 @@ def Rec2020_10bit_to_linear(v):
         A converted value.
     """
 
-    a = 1.099
-    b = 0.018
-    d = 4.5
-    g = (1.0 / 0.45)
-
-    if v < b * d:
-        return v / d
-
-    return pow(((v + (a - 1)) / a), g)
+    if L < 0.018:
+        return L * 4.5
+    else:
+        return 1.099 * pow(L, 0.45) - 0.099
 
 
-def Rec2020_12bit_to_linear(v):
+def Rec709_to_linear(E):
     """
-    The *Rec.2020* 12-bit transfer function.
+    The *Rec.709* decoding transfer function.
 
     Parameters
     ----------
-    v : float
-        The normalized value to pass through the function.
+    E : float
+        Electrical signal :math:`E`.
 
     Returns
     -------
@@ -389,25 +377,22 @@ def Rec2020_12bit_to_linear(v):
         A converted value.
     """
 
-    a = 1.0993
-    b = 0.0181
-    d = 4.5
-    g = (1.0 / 0.45)
-
-    if v < b * d:
-        return v / d
-
-    return pow(((v + (a - 1)) / a), g)
+    if E < linear_to_Rec709(0.018):
+        return E / 4.5
+    else:
+        return pow((E + 0.099) / 1.099, 1.0 / 0.45)
 
 
-def Rec1886_to_linear(v):
+def linear_to_Rec2020_10bit(E):
     """
-    The *Rec.1886* transfer function.
+    The *Rec.2020* 10-bit encoding transfer function.
 
     Parameters
     ----------
-    v : float
-        The normalized value to pass through the function.
+    E : float
+        Voltage :math:`E` normalised by the reference white level and
+        proportional to the implicit light intensity that would be detected
+        with a reference camera colour channel R, G, B.
 
     Returns
     -------
@@ -415,21 +400,143 @@ def Rec1886_to_linear(v):
         A converted value.
     """
 
-    g = 2.4
-    Lw = 1
-    Lb = 0
-
-    # Ignoring legal to full scaling for now.
-    # v = (1023.0*v - 64.0)/876.0
-
-    t = pow(Lw, 1.0 / g) - pow(Lb, 1.0 / g)
-    a = pow(t, g)
-    b = pow(Lb, 1.0 / g) / t
-
-    return a * pow(max((v + b), 0.0), g)
+    if E < 0.018:
+        return E * 4.5
+    else:
+        return 1.099 * pow(E, 0.45) - (1.099 - 1)
 
 
-def create_colorspaces(lut_directory, lut_resolution_1D):
+def Rec2020_10bit_to_linear(E_p):
+    """
+    The *Rec.2020* 10-bit decoding transfer function.
+
+    Parameters
+    ----------
+    E_p : float
+        Non-linear signal :math:`E'`.
+
+    Returns
+    -------
+    float
+        A converted value.
+    """
+
+    if E_p < linear_to_Rec2020_10bit(0.018):
+        return E_p / 4.5
+    else:
+        return pow((E_p + 0.099) / 1.099, 1.0 / 0.45)
+
+
+def linear_to_Rec2020_12bit(E):
+    """
+    The *Rec.2020* 12-bit encoding transfer function.
+
+    Parameters
+    ----------
+    E : float
+        Voltage :math:`E` normalised by the reference white level and
+        proportional to the implicit light intensity that would be detected
+        with a reference camera colour channel R, G, B.
+
+    Returns
+    -------
+    float
+        A converted value.
+    """
+
+    if E < 0.0181:
+        return E * 4.5
+    else:
+        return 1.0993 * pow(E, 0.45) - (1.0993 - 1)
+
+
+def Rec2020_12bit_to_linear(E_p):
+    """
+    The *Rec.2020* 12-bit decoding transfer function.
+
+    Parameters
+    ----------
+    E_p : float
+        Non-linear signal :math:`E'`.
+
+    Returns
+    -------
+    float
+        A converted value.
+    """
+
+    if E_p < linear_to_Rec2020_10bit(0.0181):
+        return E_p / 4.5
+    else:
+        return pow((E_p + 0.0993) / 1.0993, 1.0 / 0.45)
+
+
+def linear_to_Rec1886(L, L_B=0, L_W=1):
+    """
+    The *Rec.1886* encoding transfer function.
+
+    Parameters
+    ----------
+    L : numeric or array_like
+        Screen luminance in :math:`cd/m^2`.
+    L_B : numeric, optional
+        Screen luminance for black.
+    L_W : numeric, optional
+        Screen luminance for white.
+
+    Returns
+    -------
+    float
+        A converted value.
+    """
+
+    gamma = 2.40
+    gamma_d = 1.0 / gamma
+
+    n = L_W**gamma_d - L_B**gamma_d
+    a = n**gamma
+    b = L_B**gamma_d / n
+
+    V = (L / a)**gamma_d - b
+
+    return V
+
+
+def Rec1886_to_linear(V, L_B=0, L_W=1):
+    """
+    The *Rec.1886* decoding transfer function.
+
+    Parameters
+    ----------
+    V : numeric or array_like
+        Input video signal level (normalised, black at :math:`V = 0`, to white
+        at :math:`V = 1`. For content mastered per
+        *Recommendation ITU-R BT.709*, 10-bit digital code values :math:`D` map
+        into values of :math:`V` per the following equation:
+        :math:`V = (D-64)/876`
+    L_B : numeric, optional
+        Screen luminance for black.
+    L_W : numeric, optional
+        Screen luminance for white.
+
+    Returns
+    -------
+    float
+        A converted value.
+    """
+
+    gamma = 2.40
+    gamma_d = 1.0 / gamma
+
+    n = L_W**gamma_d - L_B**gamma_d
+    a = n**gamma
+    b = L_B**gamma_d / n
+    L = a * max(V + b, 0)**gamma
+
+    return L
+
+
+def create_colorspaces(lut_directory, lut_resolution_1D=1024):
     """
     Generates the colorspace conversions.
 
@@ -437,7 +544,7 @@ def create_colorspaces(lut_directory, lut_resolution_1D):
     ----------
     lut_directory : str or unicode 
         The directory to use when generating LUTs.
-    lut_resolution_1D : int
+    lut_resolution_1D : int, optional
         The resolution of generated 1D LUTs.
 
     Returns
@@ -526,7 +633,7 @@ def create_colorspaces(lut_directory, lut_resolution_1D):
     cs = create_transfer_colorspace(
         'Curve - sRGB',
         'sRGB',
-        sRGB_to_linear,
+        linear_to_sRGB,
         lut_directory,
         lut_resolution_1D,
         aliases=['crv_srgb'])
@@ -536,7 +643,7 @@ def create_colorspaces(lut_directory, lut_resolution_1D):
     cs = create_matrix_plus_transfer_colorspace(
         'sRGB - Texture',
         'sRGB',
-        sRGB_to_linear,
+        linear_to_sRGB,
         lut_directory,
         lut_resolution_1D,
         from_reference_values=[aces.ACES_AP0_TO_XYZ, XYZ_to_Rec709],
@@ -563,7 +670,7 @@ def create_colorspaces(lut_directory, lut_resolution_1D):
     cs = create_transfer_colorspace(
         'Curve - Rec.709',
         'rec709',
-        Rec709_to_linear,
+        linear_to_Rec709,
         lut_directory,
         lut_resolution_1D,
         aliases=['crv_rec709'])
@@ -573,7 +680,7 @@ def create_colorspaces(lut_directory, lut_resolution_1D):
     cs = create_matrix_plus_transfer_colorspace(
         'Rec.709 - Camera',
         'rec709',
-        Rec709_to_linear,
+        linear_to_Rec709,
         lut_directory,
         lut_resolution_1D,
         from_reference_values=[aces.ACES_AP0_TO_XYZ, XYZ_to_Rec709],
@@ -600,7 +707,7 @@ def create_colorspaces(lut_directory, lut_resolution_1D):
     cs = create_transfer_colorspace(
         'Curve - Rec.2020',
         'rec2020',
-        Rec2020_10bit_to_linear,
+        linear_to_Rec2020_10bit,
         lut_directory,
         lut_resolution_1D,
         aliases=['crv_rec2020'])
@@ -610,7 +717,7 @@ def create_colorspaces(lut_directory, lut_resolution_1D):
     cs = create_matrix_plus_transfer_colorspace(
         'Rec.2020 - Camera',
         'rec2020',
-        Rec2020_10bit_to_linear,
+        linear_to_Rec2020_10bit,
         lut_directory,
         lut_resolution_1D,
         from_reference_values=[aces.ACES_AP0_TO_XYZ, XYZ_to_Rec2020],
@@ -624,7 +731,7 @@ def create_colorspaces(lut_directory, lut_resolution_1D):
     cs = create_transfer_colorspace(
         'Curve - Rec.1886',
         'rec1886',
-        Rec1886_to_linear,
+        linear_to_Rec1886,
         lut_directory,
         lut_resolution_1D,
         aliases=['crv_rec1886'])
@@ -634,7 +741,7 @@ def create_colorspaces(lut_directory, lut_resolution_1D):
     cs = create_matrix_plus_transfer_colorspace(
         'Rec.709 - Display',
         'rec1886',
-        Rec1886_to_linear,
+        linear_to_Rec1886,
         lut_directory,
         lut_resolution_1D,
         from_reference_values=[aces.ACES_AP0_TO_XYZ, XYZ_to_Rec709],
@@ -645,7 +752,7 @@ def create_colorspaces(lut_directory, lut_resolution_1D):
     cs = create_matrix_plus_transfer_colorspace(
         'Rec.2020 - Display',
         'rec1886',
-        Rec1886_to_linear,
+        linear_to_Rec1886,
         lut_directory,
         lut_resolution_1D,
         from_reference_values=[aces.ACES_AP0_TO_XYZ, XYZ_to_Rec2020],

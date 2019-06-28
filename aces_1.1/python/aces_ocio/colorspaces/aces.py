@@ -1047,10 +1047,16 @@ def create_shapers(aces_ctl_directory, lut_directory, lut_resolution_1D,
     shaper_data = {}
 
     # Define the base *Log2 48 nits shaper*
-    #
+    # The original domain [-6.5, 6.5] has been extended to reduce artefacts
+    # induced by over-exposure of highly saturated colours:
+    # https://acescentral.com/t/aces-1-1-discussion-tell-us-what-you-think/1421/11
+    # The new domain [-7.246068811667588, 10.273931188332412] makes the shaper
+    # fit to *ACEScc* and was computed with *Colour*:
+    # >>> np.log2(log_decoding_ACEScc([0, 1]) / 0.18)
+    # array([-7.246068811667588, 10.273931188332412])
     (log2_48nits_shaper_data, log2_48nits_colorspaces) = create_shapers_log2(
         aces_ctl_directory, lut_directory, lut_resolution_1D, cleanup,
-        'Log2 48 nits Shaper', 0.18, -6.5, 6.5)
+        'Log2 48 nits Shaper', 0.18, -7.246068811667588, 10.273931188332412)
     colorspaces.extend(log2_48nits_colorspaces)
     shaper_data.update(log2_48nits_shaper_data)
 

@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """
 Implements support for *ACES* colorspaces conversions and transfer functions.
 """
@@ -16,15 +15,10 @@ import shutil
 
 import PyOpenColorIO as ocio
 
-from aces_ocio.generate_lut import (
-    generate_1d_LUT_from_CTL,
-    generate_3d_LUT_from_CTL,
-    write_SPI_1d)
-from aces_ocio.utilities import (
-    ColorSpace,
-    mat44_from_mat33,
-    sanitize,
-    compact)
+from aces_ocio.generate_lut import (generate_1D_LUT_from_CTL,
+                                    generate_3D_LUT_from_CTL, write_SPI_1D)
+from aces_ocio.utilities import (ColorSpace, mat44_from_mat33, sanitize,
+                                 compact)
 
 __author__ = 'ACES Developers'
 __copyright__ = 'Copyright (C) 2014 - 2016 - ACES Developers'
@@ -33,49 +27,39 @@ __maintainer__ = 'ACES Developers'
 __email__ = 'aces@oscars.org'
 __status__ = 'Production'
 
-__all__ = ['ACES_AP1_TO_AP0',
-           'ACES_AP0_TO_AP1',
-           'ACES_AP0_TO_XYZ',
-           'ACES_XYZ_TO_AP0',
-           'create_ACES',
-           'create_ACEScc',
-           'create_ACEScct',
-           'create_ACESproxy',
-           'create_ACEScg',
-           'create_ADX',
-           'create_generic_log',
-           'create_Dolby_PQ',
-           'create_Dolby_PQ_shaper',
-           'create_shapers_log2',
-           'create_shapers_dolbypq',
-           'create_shapers',
-           'create_LMT',
-           'create_LMTs',
-           'create_output_transform',
-           'create_output_transforms',
-           'get_transform_info',
-           'get_transforms_info',
-           'create_colorspaces']
+__all__ = [
+    'ACES_AP1_TO_AP0', 'ACES_AP0_TO_AP1', 'ACES_AP0_TO_XYZ', 'ACES_XYZ_TO_AP0',
+    'create_ACES', 'create_ACEScc', 'create_ACEScct', 'create_ACESproxy',
+    'create_ACEScg', 'create_ADX', 'create_generic_log', 'create_DolbyPQ',
+    'create_shaper_DolbyPQ', 'create_shapers_log2', 'create_shapers_DolbyPQ',
+    'create_shapers', 'create_LMT', 'create_LMTs', 'create_output_transform',
+    'create_output_transforms', 'get_transform_info', 'get_transforms_info',
+    'create_colorspaces'
+]
 
 # Matrix converting *ACES AP1* primaries to *ACES AP0*.
-ACES_AP1_TO_AP0 = [0.6954522414, 0.1406786965, 0.1638690622,
-                   0.0447945634, 0.8596711185, 0.0955343182,
-                   -0.0055258826, 0.0040252103, 1.0015006723]
+ACES_AP1_TO_AP0 = [
+    0.6954522414, 0.1406786965, 0.1638690622, 0.0447945634, 0.8596711185,
+    0.0955343182, -0.0055258826, 0.0040252103, 1.0015006723
+]
 
 # Matrix converting *ACES AP0* primaries to *ACES AP1*.
-ACES_AP0_TO_AP1 = [1.4514393161, -0.2365107469, -0.2149285693,
-                   -0.0765537734, 1.1762296998, -0.0996759264,
-                   0.0083161484, -0.0060324498, 0.9977163014]
+ACES_AP0_TO_AP1 = [
+    1.4514393161, -0.2365107469, -0.2149285693, -0.0765537734, 1.1762296998,
+    -0.0996759264, 0.0083161484, -0.0060324498, 0.9977163014
+]
 
 # Matrix converting *ACES AP0* primaries to *XYZ*.
-ACES_AP0_TO_XYZ = [0.9525523959, 0.0000000000, 0.0000936786,
-                   0.3439664498, 0.7281660966, -0.0721325464,
-                   0.0000000000, 0.0000000000, 1.0088251844]
+ACES_AP0_TO_XYZ = [
+    0.9525523959, 0.0000000000, 0.0000936786, 0.3439664498, 0.7281660966,
+    -0.0721325464, 0.0000000000, 0.0000000000, 1.0088251844
+]
 
 # Matrix converting *ACES AP0* primaries to *XYZ*.
-ACES_XYZ_TO_AP0 = [1.0498110175, 0.0000000000, -0.0000974845,
-                   -0.4959030231, 1.3733130458, 0.0982400361,
-                   0.0000000000, 0.0000000000, 0.9912520182]
+ACES_XYZ_TO_AP0 = [
+    1.0498110175, 0.0000000000, -0.0000974845, -0.4959030231, 1.3733130458,
+    0.0982400361, 0.0000000000, 0.0000000000, 0.9912520182
+]
 
 
 def create_ACES():
@@ -104,7 +88,7 @@ def create_ACES():
 
 def create_ACEScc(aces_ctl_directory,
                   lut_directory,
-                  lut_resolution_1d,
+                  lut_resolution_1D,
                   cleanup,
                   name='ACEScc',
                   min_value=0,
@@ -119,7 +103,7 @@ def create_ACEScc(aces_ctl_directory,
         The path to *ACES* *CTL* *transforms/ctl/utilities* directory.
     lut_directory : str or unicode 
         The directory to use when generating LUTs.
-    lut_resolution_1d : int
+    lut_resolution_1D : int
         The resolution of generated 1D LUTs.
     cleanup : bool
         Whether or not to clean up the intermediate images.
@@ -139,7 +123,7 @@ def create_ACEScc(aces_ctl_directory,
     """
 
     cs = ColorSpace(name)
-    cs.description = 'The %s color space' % name
+    cs.description = 'The {0} color space'.format(name)
     cs.aliases = ['acescc', 'acescc_ap1']
     cs.equality_group = ''
     cs.family = 'ACES'
@@ -148,47 +132,41 @@ def create_ACEScc(aces_ctl_directory,
     cs.allocation_vars = [min_value, max_value]
     cs.aces_transform_id = 'ACEScsc.ACEScc_to_ACES'
 
-    ctls = [os.path.join(aces_ctl_directory,
-                         'csc',
-                         'ACEScc',
-                         'ACEScsc.ACEScc_to_ACES.ctl'),
-            # This transform gets back to the *AP1* primaries.
-            # Useful as the 1d LUT is only covering the transfer function.
-            # The primaries switch is covered by the matrix below:
-            os.path.join(aces_ctl_directory,
-                         'csc',
-                         'ACEScg',
-                         'ACEScsc.ACES_to_ACEScg.ctl')]
-    lut = '%s_to_linear.spi1d' % name
+    ctls = [
+        os.path.join(aces_ctl_directory, 'csc', 'ACEScc',
+                     'ACEScsc.ACEScc_to_ACES.ctl'),
+        # This transform gets back to the *AP1* primaries.
+        # Useful as the 1d LUT is only covering the transfer function.
+        # The primaries switch is covered by the matrix below:
+        os.path.join(aces_ctl_directory, 'csc', 'ACEScg',
+                     'ACEScsc.ACES_to_ACEScg.ctl')
+    ]
+    lut = '{0}_to_linear.spi1d'.format(name)
 
     lut = sanitize(lut)
 
-    generate_1d_LUT_from_CTL(
-        os.path.join(lut_directory, lut),
-        ctls,
-        lut_resolution_1d,
-        'float',
-        input_scale,
-        1,
-        {},
-        cleanup,
-        aces_ctl_directory,
-        min_value,
-        max_value,
-        1)
+    generate_1D_LUT_from_CTL(
+        os.path.join(lut_directory,
+                     lut), ctls, lut_resolution_1D, 'float', input_scale, 1,
+        {}, cleanup, aces_ctl_directory, min_value, max_value, 1)
 
     cs.to_reference_transforms = []
     cs.to_reference_transforms.append({
         'type': 'lutFile',
         'path': lut,
         'interpolation': 'linear',
-        'direction': 'forward'})
+        'direction': 'forward'
+    })
 
     # *AP1* primaries to *AP0* primaries
     cs.to_reference_transforms.append({
-        'type': 'matrix',
-        'matrix': mat44_from_mat33(ACES_AP1_TO_AP0),
-        'direction': 'forward'})
+        'type':
+        'matrix',
+        'matrix':
+        mat44_from_mat33(ACES_AP1_TO_AP0),
+        'direction':
+        'forward'
+    })
 
     cs.from_reference_transforms = []
     return cs
@@ -196,7 +174,7 @@ def create_ACEScc(aces_ctl_directory,
 
 def create_ACEScct(aces_ctl_directory,
                    lut_directory,
-                   lut_resolution_1d,
+                   lut_resolution_1D,
                    cleanup,
                    name='ACEScct',
                    min_value=0,
@@ -211,7 +189,7 @@ def create_ACEScct(aces_ctl_directory,
         The path to *ACES* *CTL* *transforms/ctl/utilities* directory.
     lut_directory : str or unicode 
         The directory to use when generating LUTs.
-    lut_resolution_1d : int
+    lut_resolution_1D : int
         The resolution of generated 1D LUTs.
     cleanup : bool
         Whether or not to clean up the intermediate images.
@@ -231,7 +209,7 @@ def create_ACEScct(aces_ctl_directory,
     """
 
     cs = ColorSpace(name)
-    cs.description = 'The %s color space' % name
+    cs.description = 'The {0} color space'.format(name)
     cs.aliases = ['acescct', 'acescct_ap1']
     cs.equality_group = ''
     cs.family = 'ACES'
@@ -240,10 +218,10 @@ def create_ACEScct(aces_ctl_directory,
     cs.allocation_vars = [min_value, max_value]
     cs.aces_transform_id = 'ACEScsc.ACEScct_to_ACES'
 
-    ctls = [os.path.join(aces_ctl_directory,
-                         'csc',
-                         'ACEScct',
-                         'ACEScsc.ACEScct_to_ACES.ctl')]
+    ctls = [
+        os.path.join(aces_ctl_directory, 'csc', 'ACEScct',
+                     'ACEScsc.ACEScct_to_ACES.ctl')
+    ]
 
     # Removing the ACES to ACEScg transform for ACEScct only.
     # Including this transform allows us to isolate the ACEScct transfer
@@ -262,36 +240,32 @@ def create_ACEScct(aces_ctl_directory,
     #              'ACEScg',
     #              'ACEScsc.ACES_to_ACEScg.ctl')]
 
-    lut = '%s_to_linear.spi1d' % name
+    lut = '{0}_to_linear.spi1d'.format(name)
 
     lut = sanitize(lut)
 
-    generate_1d_LUT_from_CTL(
-        os.path.join(lut_directory, lut),
-        ctls,
-        lut_resolution_1d,
-        'float',
-        input_scale,
-        1,
-        {},
-        cleanup,
-        aces_ctl_directory,
-        min_value,
-        max_value,
-        1)
+    generate_1D_LUT_from_CTL(
+        os.path.join(lut_directory,
+                     lut), ctls, lut_resolution_1D, 'float', input_scale, 1,
+        {}, cleanup, aces_ctl_directory, min_value, max_value, 1)
 
     cs.to_reference_transforms = []
     cs.to_reference_transforms.append({
         'type': 'lutFile',
         'path': lut,
         'interpolation': 'linear',
-        'direction': 'forward'})
+        'direction': 'forward'
+    })
 
     # *AP1* primaries to *AP0* primaries
     cs.to_reference_transforms.append({
-        'type': 'matrix',
-        'matrix': mat44_from_mat33(ACES_AP1_TO_AP0),
-        'direction': 'forward'})
+        'type':
+        'matrix',
+        'matrix':
+        mat44_from_mat33(ACES_AP1_TO_AP0),
+        'direction':
+        'forward'
+    })
 
     cs.from_reference_transforms = []
     return cs
@@ -299,7 +273,7 @@ def create_ACEScct(aces_ctl_directory,
 
 def create_ACESproxy(aces_ctl_directory,
                      lut_directory,
-                     lut_resolution_1d,
+                     lut_resolution_1D,
                      cleanup,
                      name='ACESproxy'):
     """
@@ -311,7 +285,7 @@ def create_ACESproxy(aces_ctl_directory,
         The path to *ACES* *CTL* *transforms/ctl/utilities* directory.
     lut_directory : str or unicode 
         The directory to use when generating LUTs.
-    lut_resolution_1d : int
+    lut_resolution_1D : int
         The resolution of generated 1D LUTs.
     cleanup : bool
         Whether or not to clean up the intermediate images.
@@ -325,7 +299,7 @@ def create_ACESproxy(aces_ctl_directory,
     """
 
     cs = ColorSpace(name)
-    cs.description = 'The %s color space' % name
+    cs.description = 'The {0} color space'.format(name)
     cs.aliases = ['acesproxy', 'acesproxy_ap1']
     cs.equality_group = ''
     cs.family = 'ACES'
@@ -333,47 +307,40 @@ def create_ACESproxy(aces_ctl_directory,
 
     cs.aces_transform_id = 'ACEScsc.ACESproxy10i_to_ACES'
 
-    ctls = [os.path.join(aces_ctl_directory,
-                         'csc',
-                         'ACESproxy',
-                         'ACEScsc.ACESproxy10i_to_ACES.ctl'),
-            # This transform gets back to the *AP1* primaries.
-            # Useful as the 1d LUT is only covering the transfer function.
-            # The primaries switch is covered by the matrix below:
-            os.path.join(aces_ctl_directory,
-                         'csc',
-                         'ACEScg',
-                         'ACEScsc.ACES_to_ACEScg.ctl')]
-    lut = '%s_to_linear.spi1d' % name
+    ctls = [
+        os.path.join(aces_ctl_directory, 'csc', 'ACESproxy',
+                     'ACEScsc.ACESproxy10i_to_ACES.ctl'),
+        # This transform gets back to the *AP1* primaries.
+        # Useful as the 1d LUT is only covering the transfer function.
+        # The primaries switch is covered by the matrix below:
+        os.path.join(aces_ctl_directory, 'csc', 'ACEScg',
+                     'ACEScsc.ACES_to_ACEScg.ctl')
+    ]
+    lut = '{0}_to_linear.spi1d'.format(name)
 
     lut = sanitize(lut)
 
-    generate_1d_LUT_from_CTL(
-        os.path.join(lut_directory, lut),
-        ctls,
-        lut_resolution_1d,
-        'float',
-        1,
-        1,
-        {},
-        cleanup,
-        aces_ctl_directory,
-        0,
-        1,
-        1)
+    generate_1D_LUT_from_CTL(
+        os.path.join(lut_directory, lut), ctls, lut_resolution_1D, 'float', 1,
+        1, {}, cleanup, aces_ctl_directory, 0, 1, 1)
 
     cs.to_reference_transforms = []
     cs.to_reference_transforms.append({
         'type': 'lutFile',
         'path': lut,
         'interpolation': 'linear',
-        'direction': 'forward'})
+        'direction': 'forward'
+    })
 
     # *AP1* primaries to *AP0* primaries
     cs.to_reference_transforms.append({
-        'type': 'matrix',
-        'matrix': mat44_from_mat33(ACES_AP1_TO_AP0),
-        'direction': 'forward'})
+        'type':
+        'matrix',
+        'matrix':
+        mat44_from_mat33(ACES_AP1_TO_AP0),
+        'direction':
+        'forward'
+    })
 
     cs.from_reference_transforms = []
     return cs
@@ -395,7 +362,7 @@ def create_ACEScg():
     name = 'ACEScg'
 
     cs = ColorSpace(name)
-    cs.description = 'The %s color space' % name
+    cs.description = 'The {0} color space'.format(name)
     cs.aliases = ['acescg', 'lin_ap1']
     cs.equality_group = ''
     cs.family = 'ACES'
@@ -409,9 +376,13 @@ def create_ACEScg():
 
     # *AP1* primaries to *AP0* primaries
     cs.to_reference_transforms.append({
-        'type': 'matrix',
-        'matrix': mat44_from_mat33(ACES_AP1_TO_AP0),
-        'direction': 'forward'})
+        'type':
+        'matrix',
+        'matrix':
+        mat44_from_mat33(ACES_AP1_TO_AP0),
+        'direction':
+        'forward'
+    })
 
     cs.from_reference_transforms = []
 
@@ -431,9 +402,7 @@ def create_ACEScg():
 # -------------------------------------------------------------------------
 # *ADX*
 # -------------------------------------------------------------------------
-def create_ADX(lut_directory,
-               bit_depth=10,
-               name='ADX'):
+def create_ADX(lut_directory, bit_depth=10, name='ADX'):
     """
     Creates the *ADX* colorspace.
 
@@ -452,10 +421,10 @@ def create_ADX(lut_directory,
          *ADX* and all its identifying information.
     """
 
-    name = '%s%s' % (name, bit_depth)
+    name = '{0}{1}'.format(name, bit_depth)
     cs = ColorSpace(name)
-    cs.description = '%s color space - used for film scans' % name
-    cs.aliases = ['adx%s' % str(bit_depth)]
+    cs.description = '{0} color space - used for film scans'.format(name)
+    cs.aliases = ['adx{0}'.format(bit_depth)]
     cs.equality_group = ''
     cs.family = 'Input/ADX'
     cs.is_data = False
@@ -464,19 +433,19 @@ def create_ADX(lut_directory,
         cs.aces_transform_id = 'ACEScsc.ADX10_to_ACES'
 
         cs.bit_depth = ocio.Constants.BIT_DEPTH_UINT10
-        ADX_to_CDD = [1023 / 500, 0, 0, 0,
-                      0, 1023 / 500, 0, 0,
-                      0, 0, 1023 / 500, 0,
-                      0, 0, 0, 1]
+        ADX_to_CDD = [
+            1023 / 500, 0, 0, 0, 0, 1023 / 500, 0, 0, 0, 0, 1023 / 500, 0, 0,
+            0, 0, 1
+        ]
         offset = [-95 / 500, -95 / 500, -95 / 500, 0]
     elif bit_depth == 16:
         cs.aces_transform_id = 'ACEScsc.ADX16_to_ACES'
 
         cs.bit_depth = ocio.Constants.BIT_DEPTH_UINT16
-        ADX_to_CDD = [65535 / 8000, 0, 0, 0,
-                      0, 65535 / 8000, 0, 0,
-                      0, 0, 65535 / 8000, 0,
-                      0, 0, 0, 1]
+        ADX_to_CDD = [
+            65535 / 8000, 0, 0, 0, 0, 65535 / 8000, 0, 0, 0, 0, 65535 / 8000,
+            0, 0, 0, 0, 1
+        ]
         offset = [-1520 / 8000, -1520 / 8000, -1520 / 8000, 0]
 
     cs.to_reference_transforms = []
@@ -486,50 +455,42 @@ def create_ADX(lut_directory,
         'type': 'matrix',
         'matrix': ADX_to_CDD,
         'offset': offset,
-        'direction': 'forward'})
+        'direction': 'forward'
+    })
 
     # Converting from *Channel-Dependent Density* to
     # *Channel-Independent Density*.
     cs.to_reference_transforms.append({
-        'type': 'matrix',
-        'matrix': [0.75573, 0.22197, 0.02230, 0,
-                   0.05901, 0.96928, -0.02829, 0,
-                   0.16134, 0.07406, 0.76460, 0,
-                   0, 0, 0, 1],
-        'direction': 'forward'})
+        'type':
+        'matrix',
+        'matrix': [
+            0.75573, 0.22197, 0.02230, 0, 0.05901, 0.96928, -0.02829, 0,
+            0.16134, 0.07406, 0.76460, 0, 0, 0, 0, 1
+        ],
+        'direction':
+        'forward'
+    })
 
     # Copied from *Alex Fry*'s *adx_cid_to_rle.py*
     def create_CID_to_RLE_LUT():
-
         def interpolate_1d(x, xp, fp):
             return numpy.interp(x, xp, fp)
 
-        LUT_1D_XP = [-0.190000000000000,
-                     0.010000000000000,
-                     0.028000000000000,
-                     0.054000000000000,
-                     0.095000000000000,
-                     0.145000000000000,
-                     0.220000000000000,
-                     0.300000000000000,
-                     0.400000000000000,
-                     0.500000000000000,
-                     0.600000000000000]
+        LUT_1D_XP = [
+            -0.190000000000000, 0.010000000000000, 0.028000000000000,
+            0.054000000000000, 0.095000000000000, 0.145000000000000,
+            0.220000000000000, 0.300000000000000, 0.400000000000000,
+            0.500000000000000, 0.600000000000000
+        ]
 
-        LUT_1D_FP = [-6.000000000000000,
-                     -2.721718645000000,
-                     -2.521718645000000,
-                     -2.321718645000000,
-                     -2.121718645000000,
-                     -1.921718645000000,
-                     -1.721718645000000,
-                     -1.521718645000000,
-                     -1.321718645000000,
-                     -1.121718645000000,
-                     -0.926545676714876]
+        LUT_1D_FP = [
+            -6.000000000000000, -2.721718645000000, -2.521718645000000,
+            -2.321718645000000, -2.121718645000000, -1.921718645000000,
+            -1.721718645000000, -1.521718645000000, -1.321718645000000,
+            -1.121718645000000, -0.926545676714876
+        ]
 
-        REF_PT = ((7120 - 1520) / 8000 * (100 / 55) -
-                  math.log(0.18, 10))
+        REF_PT = ((7120 - 1520) / 8000 * (100 / 55) - math.log(0.18, 10))
 
         def cid_to_rle(x):
             if x <= 0.6:
@@ -542,20 +503,18 @@ def create_ADX(lut_directory,
             return (value - from_min) / (from_max - from_min) * (
                 to_max - to_min) + to_min
 
-        num_samples = 2 ** 12
+        num_samples = 2**12
         domain = (-0.19, 3)
         data = []
-        for i in xrange(num_samples):
+        for i in range(num_samples):
             x = i / (num_samples - 1)
             x = fit(x, 0, 1, domain[0], domain[1])
             data.append(cid_to_rle(x))
 
         lut = 'ADX_CID_to_RLE.spi1d'
-        write_SPI_1d(os.path.join(lut_directory, lut),
-                     domain[0],
-                     domain[1],
-                     data,
-                     num_samples, 1)
+        write_SPI_1D(
+            os.path.join(lut_directory, lut), domain[0], domain[1], data,
+            num_samples, 1)
 
         return lut
 
@@ -566,23 +525,28 @@ def create_ADX(lut_directory,
         'type': 'lutFile',
         'path': lut,
         'interpolation': 'linear',
-        'direction': 'forward'})
+        'direction': 'forward'
+    })
 
     # Converting *Relative Log Exposure* values to
     # *Relative Exposure* values.
     cs.to_reference_transforms.append({
         'type': 'log',
         'base': 10,
-        'direction': 'inverse'})
+        'direction': 'inverse'
+    })
 
     # Convert *Relative Exposure* values to *ACES* values.
     cs.to_reference_transforms.append({
-        'type': 'matrix',
-        'matrix': [0.72286, 0.12630, 0.15084, 0,
-                   0.11923, 0.76418, 0.11659, 0,
-                   0.01427, 0.08213, 0.90359, 0,
-                   0, 0, 0, 1],
-        'direction': 'forward'})
+        'type':
+        'matrix',
+        'matrix': [
+            0.72286, 0.12630, 0.15084, 0, 0.11923, 0.76418, 0.11659, 0,
+            0.01427, 0.08213, 0.90359, 0, 0, 0, 0, 1
+        ],
+        'direction':
+        'forward'
+    })
 
     cs.from_reference_transforms = []
     return cs
@@ -593,7 +557,7 @@ def create_ADX(lut_directory,
 # -------------------------------------------------------------------------
 def create_generic_log(aces_ctl_directory,
                        lut_directory,
-                       lut_resolution_1d,
+                       lut_resolution_1D,
                        cleanup,
                        name='log',
                        aliases=None,
@@ -612,7 +576,7 @@ def create_generic_log(aces_ctl_directory,
         The path to *ACES* *CTL* *transforms/ctl/utilities* directory.
     lut_directory : str or unicode 
         The directory to use when generating LUTs.
-    lut_resolution_1d : int
+    lut_resolution_1D : int
         The resolution of generated 1D LUTs.
     cleanup : bool
         Whether or not to clean up the intermediate images.
@@ -645,42 +609,35 @@ def create_generic_log(aces_ctl_directory,
         aliases = []
 
     cs = ColorSpace(name)
-    cs.description = 'The %s color space' % name
+    cs.description = 'The {0} color space'.format(name)
     cs.aliases = aliases
     cs.equality_group = name
     cs.family = 'Utility'
     cs.is_data = False
 
-    ctls = [os.path.join(
-        aces_ctl_directory,
-        'utilities',
-        'ACESutil.Log2_to_Lin_param.ctl')]
-    lut = '%s_to_linear.spi1d' % name
+    ctls = [
+        os.path.join(aces_ctl_directory, 'utilities',
+                     'ACESutil.Log2_to_Lin_param.ctl')
+    ]
+    lut = '{0}_to_linear.spi1d'.format(name)
 
     lut = sanitize(lut)
 
-    generate_1d_LUT_from_CTL(
-        os.path.join(lut_directory, lut),
-        ctls,
-        lut_resolution_1d,
-        'float',
-        input_scale,
-        1,
-        {'middleGrey': middle_grey,
-         'minExposure': min_exposure,
-         'maxExposure': max_exposure},
-        cleanup,
-        aces_ctl_directory,
-        min_value,
-        max_value,
-        1)
+    generate_1D_LUT_from_CTL(
+        os.path.join(lut_directory, lut), ctls, lut_resolution_1D, 'float',
+        input_scale, 1, {
+            'middleGrey': middle_grey,
+            'minExposure': min_exposure,
+            'maxExposure': max_exposure
+        }, cleanup, aces_ctl_directory, min_value, max_value, 1)
 
     cs.to_reference_transforms = []
     cs.to_reference_transforms.append({
         'type': 'lutFile',
         'path': lut,
         'interpolation': 'linear',
-        'direction': 'forward'})
+        'direction': 'forward'
+    })
 
     cs.from_reference_transforms = []
     return cs
@@ -689,15 +646,15 @@ def create_generic_log(aces_ctl_directory,
 # -------------------------------------------------------------------------
 # Base *Dolby PQ* Transform
 # -------------------------------------------------------------------------
-def create_Dolby_PQ(aces_ctl_directory,
-                    lut_directory,
-                    lut_resolution_1d,
-                    cleanup,
-                    name='pq',
-                    aliases=None,
-                    min_value=0.0,
-                    max_value=1.0,
-                    input_scale=1.0):
+def create_DolbyPQ(aces_ctl_directory,
+                   lut_directory,
+                   lut_resolution_1D,
+                   cleanup,
+                   name='pq',
+                   aliases=None,
+                   min_value=0.0,
+                   max_value=1.0,
+                   input_scale=1.0):
     """
     Creates the generic *Dolby PQ* colorspace.
 
@@ -707,7 +664,7 @@ def create_Dolby_PQ(aces_ctl_directory,
         The path to *ACES* *CTL* *transforms/ctl/utilities* directory.
     lut_directory : str or unicode 
         The directory to use when generating LUTs.
-    lut_resolution_1d : int
+    lut_resolution_1D : int
         The resolution of generated 1D LUTs.
     cleanup : bool
         Whether or not to clean up the intermediate images.
@@ -732,39 +689,32 @@ def create_Dolby_PQ(aces_ctl_directory,
         aliases = []
 
     cs = ColorSpace(name)
-    cs.description = 'The %s color space' % name
+    cs.description = 'The {0} color space'.format(name)
     cs.aliases = aliases
     cs.equality_group = name
     cs.family = 'Utility'
     cs.is_data = False
 
-    ctls = [os.path.join(
-        aces_ctl_directory,
-        'utilities',
-        'ACESutil.DolbyPQ_to_Lin.ctl')]
-    lut = '%s_to_linear.spi1d' % name
+    ctls = [
+        os.path.join(aces_ctl_directory, 'utilities',
+                     'ACESutil.DolbyPQ_to_Lin.ctl')
+    ]
+    lut = '{0}_to_linear.spi1d'.format(name)
 
     lut = sanitize(lut)
 
-    generate_1d_LUT_from_CTL(
-        os.path.join(lut_directory, lut),
-        ctls,
-        lut_resolution_1d,
-        'float',
-        input_scale,
-        1.0,
-        {},
-        cleanup,
-        aces_ctl_directory,
-        min_value,
-        max_value)
+    generate_1D_LUT_from_CTL(
+        os.path.join(lut_directory,
+                     lut), ctls, lut_resolution_1D, 'float', input_scale, 1.0,
+        {}, cleanup, aces_ctl_directory, min_value, max_value)
 
     cs.to_reference_transforms = []
     cs.to_reference_transforms.append({
         'type': 'lutFile',
         'path': lut,
         'interpolation': 'linear',
-        'direction': 'forward'})
+        'direction': 'forward'
+    })
 
     cs.from_reference_transforms = []
     return cs
@@ -773,18 +723,18 @@ def create_Dolby_PQ(aces_ctl_directory,
 # -------------------------------------------------------------------------
 # *Dolby PQ* Transform - Fixed Linear Range
 # -------------------------------------------------------------------------
-def create_Dolby_PQ_shaper(aces_ctl_directory,
-                           lut_directory,
-                           lut_resolution_1d,
-                           cleanup,
-                           name='pq',
-                           aliases=None,
-                           min_value=0.0,
-                           max_value=1.0,
-                           input_scale=1.0,
-                           middle_grey=0.18,
-                           min_exposure=-6.5,
-                           max_exposure=6.5):
+def create_shaper_DolbyPQ(aces_ctl_directory,
+                          lut_directory,
+                          lut_resolution_1D,
+                          cleanup,
+                          name='pq',
+                          aliases=None,
+                          min_value=0.0,
+                          max_value=1.0,
+                          input_scale=1.0,
+                          middle_grey=0.18,
+                          min_exposure=-6.5,
+                          max_exposure=6.5):
     """
     Creates a *Dolby PQ* colorspace that covers a specific dynamic range.
 
@@ -794,7 +744,7 @@ def create_Dolby_PQ_shaper(aces_ctl_directory,
         The path to *ACES* *CTL* *transforms/ctl/utilities* directory.
     lut_directory : str or unicode 
         The directory to use when generating LUTs.
-    lut_resolution_1d : int
+    lut_resolution_1D : int
         The resolution of generated 1D LUTs.
     cleanup : bool
         Whether or not to clean up the intermediate images.
@@ -827,53 +777,42 @@ def create_Dolby_PQ_shaper(aces_ctl_directory,
         aliases = []
 
     cs = ColorSpace(name)
-    cs.description = 'The %s color space' % name
+    cs.description = 'The {0} color space'.format(name)
     cs.aliases = aliases
     cs.equality_group = name
     cs.family = 'Utility'
     cs.is_data = False
 
-    ctls = [os.path.join(
-        aces_ctl_directory,
-        'utilities',
-        'ACESutil.OCIOshaper_to_Lin_param.ctl')]
-    lut = '%s_to_linear.spi1d' % name
+    ctls = [
+        os.path.join(aces_ctl_directory, 'utilities',
+                     'ACESutil.OCIOshaper_to_Lin_param.ctl')
+    ]
+    lut = '{0}_to_linear.spi1d'.format(name)
 
     lut = sanitize(lut)
 
-    generate_1d_LUT_from_CTL(
-        os.path.join(lut_directory, lut),
-        ctls,
-        lut_resolution_1d,
-        'float',
-        input_scale,
-        1.0,
-        {'middleGrey': middle_grey,
-         'minExposure': min_exposure,
-         'maxExposure': max_exposure},
-        cleanup,
-        aces_ctl_directory,
-        min_value,
-        max_value)
+    generate_1D_LUT_from_CTL(
+        os.path.join(lut_directory, lut), ctls, lut_resolution_1D, 'float',
+        input_scale, 1.0, {
+            'middleGrey': middle_grey,
+            'minExposure': min_exposure,
+            'maxExposure': max_exposure
+        }, cleanup, aces_ctl_directory, min_value, max_value)
 
     cs.to_reference_transforms = []
     cs.to_reference_transforms.append({
         'type': 'lutFile',
         'path': lut,
         'interpolation': 'linear',
-        'direction': 'forward'})
+        'direction': 'forward'
+    })
 
     cs.from_reference_transforms = []
     return cs
 
 
-def create_shapers_log2(aces_ctl_directory,
-                        lut_directory,
-                        lut_resolution_1d,
-                        cleanup,
-                        shaper_name,
-                        middle_grey,
-                        min_exposure,
+def create_shapers_log2(aces_ctl_directory, lut_directory, lut_resolution_1D,
+                        cleanup, shaper_name, middle_grey, min_exposure,
                         max_exposure):
     """
     Creates two *Log base 2* colorspaces, that cover a specific dynamic range.
@@ -886,7 +825,7 @@ def create_shapers_log2(aces_ctl_directory,
         The path to *ACES* *CTL* *transforms/ctl/utilities* directory.
     lut_directory : str or unicode
         The directory to use when generating LUTs.
-    lut_resolution_1d : int
+    lut_resolution_1D : int
         The resolution of generated 1D LUTs.
     cleanup : bool
         Whether or not to clean up the intermediate images.
@@ -912,16 +851,17 @@ def create_shapers_log2(aces_ctl_directory,
 
     # Defining the *Log 2* shaper for *ODTs covering 48 nit output*.
     log2_shaper_name = shaper_name
-    log2_shaper_name_aliases = ['crv_%s' % compact(log2_shaper_name)]
+    log2_shaper_name_aliases = ['crv_{0}'.format(compact(log2_shaper_name))]
     log2_params = {
         'middleGrey': middle_grey,
         'minExposure': min_exposure,
-        'maxExposure': max_exposure}
+        'maxExposure': max_exposure
+    }
 
     log2_shaper_colorspace = create_generic_log(
         aces_ctl_directory,
         lut_directory,
-        lut_resolution_1d,
+        lut_resolution_1D,
         cleanup,
         name=log2_shaper_name,
         middle_grey=log2_params['middleGrey'],
@@ -935,33 +875,34 @@ def create_shapers_log2(aces_ctl_directory,
     # *Log 2* shaper name and *CTL* transforms bundled up.
     log2_shaper_data = [
         log2_shaper_name,
-        os.path.join('%s',
-                     'utilities',
-                     'ACESutil.Log2_to_Lin_param.ctl'),
-        os.path.join('%s',
-                     'utilities',
-                     'ACESutil.Lin_to_Log2_param.ctl'),
-        shaper_input_scale_generic_log2,
-        log2_params]
+        os.path.join('{0}', 'utilities', 'ACESutil.Log2_to_Lin_param.ctl'),
+        os.path.join('{0}', 'utilities', 'ACESutil.Lin_to_Log2_param.ctl'),
+        shaper_input_scale_generic_log2, log2_params
+    ]
 
     shaper_data[log2_shaper_name] = log2_shaper_data
 
     # Defining the *Log2 shaper that includes the AP1* primaries.
-    log2_shaper_api1_name = '%s - AP1' % log2_shaper_name
+    log2_shaper_api1_name = '{0} - AP1'.format(log2_shaper_name)
     log2_shaper_api1_colorspace = copy.deepcopy(log2_shaper_colorspace)
 
     log2_shaper_api1_colorspace.name = log2_shaper_api1_name
     log2_shaper_api1_colorspace.description = (
-        'The %s color space' % log2_shaper_api1_name)
+        'The {0} color space'.format(log2_shaper_api1_name))
     log2_shaper_api1_colorspace.aliases = [
-        '%s_ap1' % compact(log2_shaper_name)]
+        '{0}_ap1'.format(compact(log2_shaper_name))
+    ]
     log2_shaper_api1_colorspace.equality_group = log2_shaper_api1_name
 
     # *AP1* primaries to *AP0* primaries
     log2_shaper_api1_colorspace.to_reference_transforms.append({
-        'type': 'matrix',
-        'matrix': mat44_from_mat33(ACES_AP1_TO_AP0),
-        'direction': 'forward'})
+        'type':
+        'matrix',
+        'matrix':
+        mat44_from_mat33(ACES_AP1_TO_AP0),
+        'direction':
+        'forward'
+    })
     colorspaces.append(log2_shaper_api1_colorspace)
 
     return shaper_data, colorspaces
@@ -970,14 +911,9 @@ def create_shapers_log2(aces_ctl_directory,
 # -------------------------------------------------------------------------
 # *Dolby PQ-based Shapers*
 # -------------------------------------------------------------------------
-def create_shapers_dolbypq(aces_ctl_directory,
-                           lut_directory,
-                           lut_resolution_1d,
-                           cleanup,
-                           shaper_name,
-                           middle_grey,
-                           min_exposure,
-                           max_exposure):
+def create_shapers_DolbyPQ(aces_ctl_directory, lut_directory,
+                           lut_resolution_1D, cleanup, shaper_name,
+                           middle_grey, min_exposure, max_exposure):
     """
     Creates two *Dolby PQ* colorspaces, that cover a specific dynamic range.
     One has no gamut conversion. The other with has conversion from *ACES*
@@ -989,7 +925,7 @@ def create_shapers_dolbypq(aces_ctl_directory,
         The path to *ACES* *CTL* *transforms/ctl/utilities* directory.
     lut_directory : str or unicode
         The directory to use when generating LUTs.
-    lut_resolution_1d : int
+    lut_resolution_1D : int
         The resolution of generated 1D LUTs.
     cleanup : bool
         Whether or not to clean up the intermediate images.
@@ -1017,17 +953,20 @@ def create_shapers_dolbypq(aces_ctl_directory,
 
     # Define the *Dolby PQ Shaper that considers a fixed linear range*
     dolby_pq_shaper_name = shaper_name
-    dolby_pq_shaper_name_aliases = ['crv_%s' % compact(dolby_pq_shaper_name)]
+    dolby_pq_shaper_name_aliases = [
+        'crv_{0}'.format(compact(dolby_pq_shaper_name))
+    ]
 
     dolby_pq_params = {
         'middleGrey': middle_grey,
         'minExposure': min_exposure,
-        'maxExposure': max_exposure}
+        'maxExposure': max_exposure
+    }
 
-    dolby_pq_shaper_colorspace = create_Dolby_PQ_shaper(
+    dolby_pq_shaper_colorspace = create_shaper_DolbyPQ(
         aces_ctl_directory,
         lut_directory,
-        lut_resolution_1d,
+        lut_resolution_1D,
         cleanup,
         name=dolby_pq_shaper_name,
         aliases=dolby_pq_shaper_name_aliases,
@@ -1039,33 +978,36 @@ def create_shapers_dolbypq(aces_ctl_directory,
     # *Dolby PQ* shaper name and *CTL* transforms bundled up.
     dolby_pq_shaper_data = [
         dolby_pq_shaper_name,
-        os.path.join('%s',
-                     'utilities',
+        os.path.join('{0}', 'utilities',
                      'ACESutil.OCIOshaper_to_Lin_param.ctl'),
-        os.path.join('%s',
-                     'utilities',
-                     'ACESutil.Lin_to_OCIOshaper_param.ctl'),
-        1.0,
-        dolby_pq_params]
+        os.path.join('{0}', 'utilities',
+                     'ACESutil.Lin_to_OCIOshaper_param.ctl'), 1.0,
+        dolby_pq_params
+    ]
 
     shaper_data[dolby_pq_shaper_name] = dolby_pq_shaper_data
 
     # Defining the *Dolby PQ shaper that includes the AP1* primaries.
-    dolby_pq_shaper_api1_name = '%s - AP1' % dolby_pq_shaper_name
+    dolby_pq_shaper_api1_name = '{0} - AP1'.format(dolby_pq_shaper_name)
     dolby_pq_shaper_api1_colorspace = copy.deepcopy(dolby_pq_shaper_colorspace)
 
     dolby_pq_shaper_api1_colorspace.name = dolby_pq_shaper_api1_name
     dolby_pq_shaper_api1_colorspace.description = (
-        'The %s color space' % dolby_pq_shaper_api1_name)
+        'The {0} color space'.format(dolby_pq_shaper_api1_name))
     dolby_pq_shaper_api1_colorspace.aliases = [
-        '%s_ap1' % compact(dolby_pq_shaper_name)]
+        '{0}_ap1'.format(compact(dolby_pq_shaper_name))
+    ]
     dolby_pq_shaper_api1_colorspace.equality_group = dolby_pq_shaper_api1_name
 
     # *AP1* primaries to *AP0* primaries
     dolby_pq_shaper_api1_colorspace.to_reference_transforms.append({
-        'type': 'matrix',
-        'matrix': mat44_from_mat33(ACES_AP1_TO_AP0),
-        'direction': 'forward'})
+        'type':
+        'matrix',
+        'matrix':
+        mat44_from_mat33(ACES_AP1_TO_AP0),
+        'direction':
+        'forward'
+    })
     colorspaces.append(dolby_pq_shaper_api1_colorspace)
 
     return shaper_data, colorspaces
@@ -1074,9 +1016,7 @@ def create_shapers_dolbypq(aces_ctl_directory,
 # -------------------------------------------------------------------------
 # *Shapers*
 # -------------------------------------------------------------------------
-def create_shapers(aces_ctl_directory,
-                   lut_directory,
-                   lut_resolution_1d,
+def create_shapers(aces_ctl_directory, lut_directory, lut_resolution_1D,
                    cleanup):
     """
     Creates sets of shaper colorspaces covering the *Log 2* and *Dolby PQ*
@@ -1089,7 +1029,7 @@ def create_shapers(aces_ctl_directory,
         The path to *ACES* *CTL* *transforms/ctl/utilities* directory.
     lut_directory : str or unicode
         The directory to use when generating LUTs.
-    lut_resolution_1d : int
+    lut_resolution_1D : int
         The resolution of generated 1D LUTs.
     cleanup : bool
         Whether or not to clean up the intermediate images.
@@ -1108,31 +1048,17 @@ def create_shapers(aces_ctl_directory,
 
     # Define the base *Log2 48 nits shaper*
     #
-    (log2_48nits_shaper_data,
-     log2_48nits_colorspaces) = create_shapers_log2(
-        aces_ctl_directory,
-        lut_directory,
-        lut_resolution_1d,
-        cleanup,
-        'Log2 48 nits Shaper',
-        0.18,
-        -6.5,
-        6.5)
+    (log2_48nits_shaper_data, log2_48nits_colorspaces) = create_shapers_log2(
+        aces_ctl_directory, lut_directory, lut_resolution_1D, cleanup,
+        'Log2 48 nits Shaper', 0.18, -6.5, 6.5)
     colorspaces.extend(log2_48nits_colorspaces)
     shaper_data.update(log2_48nits_shaper_data)
 
     # Define the base *Log2 108 nits shaper*
     #
-    (log2_108nits_shaper_data,
-     log2_108nits_colorspaces) = create_shapers_log2(
-        aces_ctl_directory,
-        lut_directory,
-        lut_resolution_1d,
-        cleanup,
-        'Log2 108 nits Shaper',
-        0.18,
-        -12.0,
-        8)
+    (log2_108nits_shaper_data, log2_108nits_colorspaces) = create_shapers_log2(
+        aces_ctl_directory, lut_directory, lut_resolution_1D, cleanup,
+        'Log2 108 nits Shaper', 0.18, -12.0, 8)
     colorspaces.extend(log2_108nits_colorspaces)
     shaper_data.update(log2_108nits_shaper_data)
 
@@ -1140,14 +1066,8 @@ def create_shapers(aces_ctl_directory,
     #
     (log2_1000nits_shaper_data,
      log2_1000nits_colorspaces) = create_shapers_log2(
-        aces_ctl_directory,
-        lut_directory,
-        lut_resolution_1d,
-        cleanup,
-        'Log2 1000 nits Shaper',
-        0.18,
-        -12.0,
-        10.0)
+         aces_ctl_directory, lut_directory, lut_resolution_1D, cleanup,
+         'Log2 1000 nits Shaper', 0.18, -12.0, 10.0)
     colorspaces.extend(log2_1000nits_colorspaces)
     shaper_data.update(log2_1000nits_shaper_data)
 
@@ -1155,14 +1075,8 @@ def create_shapers(aces_ctl_directory,
     #
     (log2_2000nits_shaper_data,
      log2_2000nits_colorspaces) = create_shapers_log2(
-        aces_ctl_directory,
-        lut_directory,
-        lut_resolution_1d,
-        cleanup,
-        'Log2 2000 nits Shaper',
-        0.18,
-        -12.0,
-        11.0)
+         aces_ctl_directory, lut_directory, lut_resolution_1D, cleanup,
+         'Log2 2000 nits Shaper', 0.18, -12.0, 11.0)
     colorspaces.extend(log2_2000nits_colorspaces)
     shaper_data.update(log2_2000nits_shaper_data)
 
@@ -1170,26 +1084,20 @@ def create_shapers(aces_ctl_directory,
     #
     (log2_4000nits_shaper_data,
      log2_4000nits_colorspaces) = create_shapers_log2(
-        aces_ctl_directory,
-        lut_directory,
-        lut_resolution_1d,
-        cleanup,
-        'Log2 4000 nits Shaper',
-        0.18,
-        -12.0,
-        12.0)
+         aces_ctl_directory, lut_directory, lut_resolution_1D, cleanup,
+         'Log2 4000 nits Shaper', 0.18, -12.0, 12.0)
     colorspaces.extend(log2_4000nits_colorspaces)
     shaper_data.update(log2_4000nits_shaper_data)
 
     # Define the base *Dolby PQ transfer function*
     #
     dolby_pq_shaper_name = 'Dolby PQ 10000'
-    dolby_pq_shaper_name_aliases = ['crv_%s' % 'dolbypq_10000']
+    dolby_pq_shaper_name_aliases = ['crv_{0}'.format('dolbypq_10000')]
 
-    dolby_pq_shaper_colorspace = create_Dolby_PQ(
+    dolby_pq_shaper_colorspace = create_DolbyPQ(
         aces_ctl_directory,
         lut_directory,
-        lut_resolution_1d,
+        lut_resolution_1D,
         cleanup,
         name=dolby_pq_shaper_name,
         aliases=dolby_pq_shaper_name_aliases)
@@ -1198,89 +1106,55 @@ def create_shapers(aces_ctl_directory,
     # *Dolby PQ* shaper name and *CTL* transforms bundled up.
     dolby_pq_shaper_data = [
         dolby_pq_shaper_name,
-        os.path.join('%s',
-                     'utilities',
-                     'ACESutil.DolbyPQ_to_Lin.ctl'),
-        os.path.join('%s',
-                     'utilities',
-                     'ACESutil.Lin_to_DolbyPQ.ctl'),
-        1.0,
-        {}]
+        os.path.join('{0}', 'utilities', 'ACESutil.DolbyPQ_to_Lin.ctl'),
+        os.path.join('{0}', 'utilities', 'ACESutil.Lin_to_DolbyPQ.ctl'), 1.0,
+        {}
+    ]
 
     shaper_data[dolby_pq_shaper_name] = dolby_pq_shaper_data
 
     # Define the *Dolby PQ 48 nits shaper*
     #
     (dolbypq_48nits_shaper_data,
-     dolbypq_48nits_colorspaces) = create_shapers_dolbypq(
-        aces_ctl_directory,
-        lut_directory,
-        lut_resolution_1d,
-        cleanup,
-        'Dolby PQ 48 nits Shaper',
-        0.18,
-        -6.5,
-        6.5)
+     dolbypq_48nits_colorspaces) = create_shapers_DolbyPQ(
+         aces_ctl_directory, lut_directory, lut_resolution_1D, cleanup,
+         'Dolby PQ 48 nits Shaper', 0.18, -6.5, 6.5)
     colorspaces.extend(dolbypq_48nits_colorspaces)
     shaper_data.update(dolbypq_48nits_shaper_data)
 
     # Define the *Dolby PQ 108 nits shaper*
     #
     (dolbypq_108nits_shaper_data,
-     dolbypq_108nits_colorspaces) = create_shapers_dolbypq(
-        aces_ctl_directory,
-        lut_directory,
-        lut_resolution_1d,
-        cleanup,
-        'Dolby PQ 108 nits Shaper',
-        0.18,
-        -12,
-        8)
+     dolbypq_108nits_colorspaces) = create_shapers_DolbyPQ(
+         aces_ctl_directory, lut_directory, lut_resolution_1D, cleanup,
+         'Dolby PQ 108 nits Shaper', 0.18, -12, 8)
     colorspaces.extend(dolbypq_108nits_colorspaces)
     shaper_data.update(dolbypq_108nits_shaper_data)
 
     # Define the *Dolby PQ 1000 nits shaper*
     #
     (dolbypq_1000nits_shaper_data,
-     dolbypq_1000nits_colorspaces) = create_shapers_dolbypq(
-        aces_ctl_directory,
-        lut_directory,
-        lut_resolution_1d,
-        cleanup,
-        'Dolby PQ 1000 nits Shaper',
-        0.18,
-        -12.0,
-        10.0)
+     dolbypq_1000nits_colorspaces) = create_shapers_DolbyPQ(
+         aces_ctl_directory, lut_directory, lut_resolution_1D, cleanup,
+         'Dolby PQ 1000 nits Shaper', 0.18, -12.0, 10.0)
     colorspaces.extend(dolbypq_1000nits_colorspaces)
     shaper_data.update(dolbypq_1000nits_shaper_data)
 
     # Define the *Dolby PQ 2000 nits shaper*
     #
     (dolbypq_2000nits_shaper_data,
-     dolbypq_2000nits_colorspaces) = create_shapers_dolbypq(
-        aces_ctl_directory,
-        lut_directory,
-        lut_resolution_1d,
-        cleanup,
-        'Dolby PQ 2000 nits Shaper',
-        0.18,
-        -12.0,
-        11.0)
+     dolbypq_2000nits_colorspaces) = create_shapers_DolbyPQ(
+         aces_ctl_directory, lut_directory, lut_resolution_1D, cleanup,
+         'Dolby PQ 2000 nits Shaper', 0.18, -12.0, 11.0)
     colorspaces.extend(dolbypq_2000nits_colorspaces)
     shaper_data.update(dolbypq_2000nits_shaper_data)
 
     # Define the *Dolby PQ 4000 nits shaper*
     #
     (dolbypq_4000nits_shaper_data,
-     dolbypq_4000nits_colorspaces) = create_shapers_dolbypq(
-        aces_ctl_directory,
-        lut_directory,
-        lut_resolution_1d,
-        cleanup,
-        'Dolby PQ 4000 nits Shaper',
-        0.18,
-        -12.0,
-        12.0)
+     dolbypq_4000nits_colorspaces) = create_shapers_DolbyPQ(
+         aces_ctl_directory, lut_directory, lut_resolution_1D, cleanup,
+         'Dolby PQ 4000 nits Shaper', 0.18, -12.0, 12.0)
     colorspaces.extend(dolbypq_4000nits_colorspaces)
     shaper_data.update(dolbypq_4000nits_shaper_data)
 
@@ -1295,7 +1169,7 @@ def create_LMT(lmt_name,
                shaper_info,
                aces_ctl_directory,
                lut_directory,
-               lut_resolution_3d=64,
+               lut_resolution_3D=64,
                cleanup=True,
                aliases=None):
     """
@@ -1315,7 +1189,7 @@ def create_LMT(lmt_name,
         The path to *ACES* *CTL* *transforms/ctl/utilities* directory.
     lut_directory : str or unicode 
         The directory to use when generating LUTs.
-    lut_resolution_3d : int, optional
+    lut_resolution_3D : int, optional
         The resolution of generated 3D LUTs.
     cleanup : bool, optional
         Whether or not to clean up the intermediate images.
@@ -1331,8 +1205,8 @@ def create_LMT(lmt_name,
     if aliases is None:
         aliases = []
 
-    cs = ColorSpace('%s' % lmt_name)
-    cs.description = 'The ACES Look Transform: %s' % lmt_name
+    cs = ColorSpace('{0}'.format(lmt_name))
+    cs.description = 'The ACES Look Transform: {0}'.format(lmt_name)
     cs.aliases = aliases
     cs.equality_group = ''
     cs.family = 'Utility/Look'
@@ -1344,41 +1218,34 @@ def create_LMT(lmt_name,
     pprint.pprint(lmt_values)
 
     # Generating the *shaper* transform.
-    (shaper_name,
-     shaper_to_aces_ctl,
-     shaper_from_aces_ctl,
-     shaper_input_scale,
+    (shaper_name, shaper_to_aces_ctl, shaper_from_aces_ctl, shaper_input_scale,
      shaper_params) = shaper_info
 
-    shaper_lut = '%s_to_linear.spi1d' % shaper_name
+    shaper_lut = '{0}_to_linear.spi1d'.format(shaper_name)
     shaper_lut = sanitize(shaper_lut)
 
     shaper_ocio_transform = {
         'type': 'lutFile',
         'path': shaper_lut,
         'interpolation': 'linear',
-        'direction': 'inverse'}
+        'direction': 'inverse'
+    }
 
     # Generating the forward transform.
     cs.from_reference_transforms = []
 
     if 'transformCTL' in lmt_values:
-        ctls = [shaper_to_aces_ctl % aces_ctl_directory,
-                os.path.join(aces_ctl_directory,
-                             lmt_values['transformCTL'])]
-        lut = '%s.%s.spi3d' % (shaper_name, lmt_name)
+        ctls = [
+            shaper_to_aces_ctl.format(aces_ctl_directory),
+            os.path.join(aces_ctl_directory, lmt_values['transformCTL'])
+        ]
+        lut = '{0}.{1}.spi3d'.format(shaper_name, lmt_name)
 
         lut = sanitize(lut)
 
-        generate_3d_LUT_from_CTL(
-            os.path.join(lut_directory, lut),
-            ctls,
-            lut_resolution_3d,
-            'float',
-            1 / shaper_input_scale,
-            1,
-            shaper_params,
-            cleanup,
+        generate_3D_LUT_from_CTL(
+            os.path.join(lut_directory, lut), ctls, lut_resolution_3D, 'float',
+            1 / shaper_input_scale, 1, shaper_params, cleanup,
             aces_ctl_directory)
 
         cs.from_reference_transforms.append(shaper_ocio_transform)
@@ -1386,36 +1253,33 @@ def create_LMT(lmt_name,
             'type': 'lutFile',
             'path': lut,
             'interpolation': 'tetrahedral',
-            'direction': 'forward'})
+            'direction': 'forward'
+        })
 
     # Generating the inverse transform.
     cs.to_reference_transforms = []
 
     if 'transformCTLInverse' in lmt_values:
-        ctls = [os.path.join(aces_ctl_directory,
-                             lmt_values['transformCTLInverse']),
-                shaper_from_aces_ctl % aces_ctl_directory]
-        lut = 'Inverse.%s.%s.spi3d' % (lmt_name, shaper_name)
+        ctls = [
+            os.path.join(aces_ctl_directory,
+                         lmt_values['transformCTLInverse']),
+            shaper_from_aces_ctl.format(aces_ctl_directory)
+        ]
+        lut = 'Inverse.{0}.{1}.spi3d'.format(lmt_name, shaper_name)
 
         lut = sanitize(lut)
 
-        generate_3d_LUT_from_CTL(
-            os.path.join(lut_directory, lut),
-            ctls,
-            lut_resolution_3d,
-            'half',
-            1,
-            shaper_input_scale,
-            shaper_params,
-            cleanup,
-            aces_ctl_directory,
-            0)
+        generate_3D_LUT_from_CTL(
+            os.path.join(lut_directory,
+                         lut), ctls, lut_resolution_3D, 'half', 1,
+            shaper_input_scale, shaper_params, cleanup, aces_ctl_directory, 0)
 
         cs.to_reference_transforms.append({
             'type': 'lutFile',
             'path': lut,
             'interpolation': 'tetrahedral',
-            'direction': 'forward'})
+            'direction': 'forward'
+        })
 
         shaper_inverse = shaper_ocio_transform.copy()
         shaper_inverse['direction'] = 'forward'
@@ -1427,12 +1291,8 @@ def create_LMT(lmt_name,
 # -------------------------------------------------------------------------
 # *LMTs*
 # -------------------------------------------------------------------------
-def create_LMTs(aces_ctl_directory,
-                lut_directory,
-                lut_resolution_1d,
-                lut_resolution_3d,
-                lmt_info,
-                cleanup):
+def create_LMTs(aces_ctl_directory, lut_directory, lut_resolution_1D,
+                lut_resolution_3D, lmt_info, cleanup):
     """
     Create ColorSpaces representing the *ACES Look Transforms*.
 
@@ -1442,9 +1302,9 @@ def create_LMTs(aces_ctl_directory,
         The path to *ACES* *CTL* *transforms/ctl/utilities* directory.
     lut_directory : str or unicode 
         The directory to use when generating LUTs.
-    lut_resolution_1d : int
+    lut_resolution_1D : int
         The resolution of generated 1D LUTs.
-    lut_resolution_3d : int
+    lut_resolution_3D : int
         The resolution of generated 3D LUTs.
     cleanup : bool
         Whether or not to clean up the intermediate images.
@@ -1463,26 +1323,24 @@ def create_LMTs(aces_ctl_directory,
     # -------------------------------------------------------------------------
     # *LMT Shaper*
     # -------------------------------------------------------------------------
-    lmt_lut_resolution_1d = max(4096, lut_resolution_1d)
-    lmt_lut_resolution_3d = max(65, lut_resolution_3d)
+    lmt_lut_resolution_1D = max(4096, lut_resolution_1D)
+    lmt_lut_resolution_3D = max(65, lut_resolution_3D)
 
     # Defining the *Log 2* shaper.
     lmt_shaper_name = 'LMT Shaper'
     lmt_shaper_name_aliases = ['crv_lmtshaper']
-    lmt_params = {
-        'middleGrey': 0.18,
-        'minExposure': -10,
-        'maxExposure': 6.5}
+    lmt_params = {'middleGrey': 0.18, 'minExposure': -10, 'maxExposure': 6.5}
 
-    lmt_shaper = create_generic_log(aces_ctl_directory,
-                                    lut_directory,
-                                    lmt_lut_resolution_1d,
-                                    cleanup,
-                                    name=lmt_shaper_name,
-                                    middle_grey=lmt_params['middleGrey'],
-                                    min_exposure=lmt_params['minExposure'],
-                                    max_exposure=lmt_params['maxExposure'],
-                                    aliases=lmt_shaper_name_aliases)
+    lmt_shaper = create_generic_log(
+        aces_ctl_directory,
+        lut_directory,
+        lmt_lut_resolution_1D,
+        cleanup,
+        name=lmt_shaper_name,
+        middle_grey=lmt_params['middleGrey'],
+        min_exposure=lmt_params['minExposure'],
+        max_exposure=lmt_params['maxExposure'],
+        aliases=lmt_shaper_name_aliases)
     colorspaces.append(lmt_shaper)
 
     shaper_input_scale_generic_log2 = 1
@@ -1490,29 +1348,21 @@ def create_LMTs(aces_ctl_directory,
     # *Log 2* shaper name and *CTL* transforms bundled up.
     lmt_shaper_data = [
         lmt_shaper_name,
-        os.path.join('%s',
-                     'utilities',
-                     'ACESutil.Log2_to_Lin_param.ctl'),
-        os.path.join('%s',
-                     'utilities',
-                     'ACESutil.Lin_to_Log2_param.ctl'),
-        shaper_input_scale_generic_log2,
-        lmt_params]
+        os.path.join('{0}', 'utilities', 'ACESutil.Log2_to_Lin_param.ctl'),
+        os.path.join('{0}', 'utilities', 'ACESutil.Lin_to_Log2_param.ctl'),
+        shaper_input_scale_generic_log2, lmt_params
+    ]
 
-    sorted_lmts = sorted(lmt_info.iteritems(), key=lambda x: x[1])
+    sorted_lmts = sorted(iter(lmt_info.items()), key=lambda x: x[1])
     print(sorted_lmts)
     for lmt in sorted_lmts:
         lmt_name, lmt_values = lmt
-        lmt_aliases = ['look_%s' % compact(lmt_values['transformUserName'])]
-        cs = create_LMT(
-            lmt_values['transformUserName'],
-            lmt_values,
-            lmt_shaper_data,
-            aces_ctl_directory,
-            lut_directory,
-            lmt_lut_resolution_3d,
-            cleanup,
-            lmt_aliases)
+        lmt_aliases = [
+            'look_{0}'.format(compact(lmt_values['transformUserName']))
+        ]
+        cs = create_LMT(lmt_values['transformUserName'], lmt_values,
+                        lmt_shaper_data, aces_ctl_directory, lut_directory,
+                        lmt_lut_resolution_3D, cleanup, lmt_aliases)
         colorspaces.append(cs)
 
     return colorspaces
@@ -1527,7 +1377,7 @@ def create_output_transform(output_transform_name,
                             shaper_info,
                             aces_ctl_directory,
                             lut_directory,
-                            lut_resolution_3d=64,
+                            lut_resolution_3D=64,
                             cleanup=True,
                             aliases=None):
     """
@@ -1550,7 +1400,7 @@ def create_output_transform(output_transform_name,
         The path to *ACES* *CTL* *transforms/ctl/utilities* directory.
     lut_directory : str or unicode 
         The directory to use when generating LUTs.
-    lut_resolution_3d : int, optional
+    lut_resolution_3D : int, optional
         The resolution of generated 3D LUTs.
     cleanup : bool, optional
         Whether or not to clean up the intermediate images.
@@ -1566,9 +1416,10 @@ def create_output_transform(output_transform_name,
     if aliases is None:
         aliases = []
 
-    cs = ColorSpace('%s' % output_transform_name)
-    cs.description = '%s - %s Output Transform' % (
-        output_transform_values['transformUserNamePrefix'], output_transform_name)
+    cs = ColorSpace('{0}'.format(output_transform_name))
+    cs.description = '{0} - {1} Output Transform'.format(
+        output_transform_values['transformUserNamePrefix'],
+        output_transform_name)
     cs.aliases = aliases
     cs.equality_group = ''
     cs.family = 'Output'
@@ -1579,10 +1430,7 @@ def create_output_transform(output_transform_name,
     pprint.pprint(output_transform_values)
 
     # Generating the *shaper* transform.
-    (shaper_name,
-     shaper_to_aces_ctl,
-     shaper_from_aces_ctl,
-     shaper_input_scale,
+    (shaper_name, shaper_to_aces_ctl, shaper_from_aces_ctl, shaper_input_scale,
      shaper_params) = shaper_info
 
     if 'legalRange' in output_transform_values:
@@ -1590,14 +1438,15 @@ def create_output_transform(output_transform_name,
     else:
         shaper_params['legalRange'] = 0
 
-    shaper_lut = '%s_to_linear.spi1d' % shaper_name
+    shaper_lut = '{0}_to_linear.spi1d'.format(shaper_name)
     shaper_lut = sanitize(shaper_lut)
 
     shaper_ocio_transform = {
         'type': 'lutFile',
         'path': shaper_lut,
         'interpolation': 'linear',
-        'direction': 'inverse'}
+        'direction': 'inverse'
+    }
 
     # Generating the *forward* transform.
     cs.from_reference_transforms = []
@@ -1613,36 +1462,32 @@ def create_output_transform(output_transform_name,
             'type': 'lutFile',
             'path': transform_lut_file_name,
             'interpolation': 'tetrahedral',
-            'direction': 'forward'})
+            'direction': 'forward'
+        })
     elif 'transformCTL' in output_transform_values:
         if is_SSTS_based:
             ctls = [
-                shaper_to_aces_ctl % aces_ctl_directory,
+                shaper_to_aces_ctl.format(aces_ctl_directory),
                 os.path.join(aces_ctl_directory,
-                             output_transform_values['transformCTL'])]
-            lut = '%s.RRTODT.%s.spi3d' % (shaper_name, output_transform_name)
+                             output_transform_values['transformCTL'])
+            ]
+            lut = '{0}.RRTODT.{1}.spi3d'.format(shaper_name,
+                                                output_transform_name)
         else:
             ctls = [
-                shaper_to_aces_ctl % aces_ctl_directory,
-                os.path.join(aces_ctl_directory,
-                             'rrt',
-                             'RRT.ctl'),
-                os.path.join(aces_ctl_directory,
-                             'odt',
-                             output_transform_values['transformCTL'])]
-            lut = '%s.RRT.%s.spi3d' % (shaper_name, output_transform_name)
+                shaper_to_aces_ctl.format(aces_ctl_directory),
+                os.path.join(aces_ctl_directory, 'rrt', 'RRT.ctl'),
+                os.path.join(aces_ctl_directory, 'odt',
+                             output_transform_values['transformCTL'])
+            ]
+            lut = '{0}.RRT.{1}.spi3d'.format(shaper_name,
+                                             output_transform_name)
 
         lut = sanitize(lut)
 
-        generate_3d_LUT_from_CTL(
-            os.path.join(lut_directory, lut),
-            ctls,
-            lut_resolution_3d,
-            'float',
-            1 / shaper_input_scale,
-            1,
-            shaper_params,
-            cleanup,
+        generate_3D_LUT_from_CTL(
+            os.path.join(lut_directory, lut), ctls, lut_resolution_3D, 'float',
+            1 / shaper_input_scale, 1, shaper_params, cleanup,
             aces_ctl_directory)
 
         cs.from_reference_transforms.append(shaper_ocio_transform)
@@ -1650,7 +1495,8 @@ def create_output_transform(output_transform_name,
             'type': 'lutFile',
             'path': lut,
             'interpolation': 'tetrahedral',
-            'direction': 'forward'})
+            'direction': 'forward'
+        })
 
     # Generating the *inverse* transform.
     cs.to_reference_transforms = []
@@ -1662,48 +1508,50 @@ def create_output_transform(output_transform_name,
         shutil.copy(output_transform_values['transformLUTInverse'], lut)
 
         cs.to_reference_transforms.append({
-            'type': 'lutFile',
-            'path': transform_lut_inverse_file_name,
-            'interpolation': 'tetrahedral',
-            'direction': 'forward'})
+            'type':
+            'lutFile',
+            'path':
+            transform_lut_inverse_file_name,
+            'interpolation':
+            'tetrahedral',
+            'direction':
+            'forward'
+        })
 
         shaper_inverse = shaper_ocio_transform.copy()
         shaper_inverse['direction'] = 'forward'
         cs.to_reference_transforms.append(shaper_inverse)
     elif 'transformCTLInverse' in output_transform_values:
         if is_SSTS_based:
-            ctls = [os.path.join(aces_ctl_directory,
-                                 output_transform_values['transformCTLInverse']),
-                    shaper_from_aces_ctl % aces_ctl_directory]
-            lut = 'InvRRTODT.%s.%s.spi3d' % (output_transform_name, shaper_name)
+            ctls = [
+                os.path.join(aces_ctl_directory,
+                             output_transform_values['transformCTLInverse']),
+                shaper_from_aces_ctl.format(aces_ctl_directory)
+            ]
+            lut = 'InvRRTODT.{0}.{1}.spi3d'.format(output_transform_name,
+                                                   shaper_name)
         else:
-            ctls = [os.path.join(aces_ctl_directory,
-                                 'odt',
-                                 output_transform_values['transformCTLInverse']),
-                    os.path.join(aces_ctl_directory,
-                                 'rrt',
-                                 'InvRRT.ctl'),
-                    shaper_from_aces_ctl % aces_ctl_directory]
-            lut = 'InvRRT.%s.%s.spi3d' % (output_transform_name, shaper_name)
+            ctls = [
+                os.path.join(aces_ctl_directory, 'odt',
+                             output_transform_values['transformCTLInverse']),
+                os.path.join(aces_ctl_directory, 'rrt', 'InvRRT.ctl'),
+                shaper_from_aces_ctl.format(aces_ctl_directory)
+            ]
+            lut = 'InvRRT.{0}.{1}.spi3d'.format(output_transform_name,
+                                                shaper_name)
 
         lut = sanitize(lut)
 
-        generate_3d_LUT_from_CTL(
-            os.path.join(lut_directory, lut),
-            ctls,
-            lut_resolution_3d,
-            'half',
-            1,
-            shaper_input_scale,
-            shaper_params,
-            cleanup,
-            aces_ctl_directory)
+        generate_3D_LUT_from_CTL(
+            os.path.join(lut_directory, lut), ctls, lut_resolution_3D, 'half',
+            1, shaper_input_scale, shaper_params, cleanup, aces_ctl_directory)
 
         cs.to_reference_transforms.append({
             'type': 'lutFile',
             'path': lut,
             'interpolation': 'tetrahedral',
-            'direction': 'forward'})
+            'direction': 'forward'
+        })
 
         shaper_inverse = shaper_ocio_transform.copy()
         shaper_inverse['direction'] = 'forward'
@@ -1715,15 +1563,10 @@ def create_output_transform(output_transform_name,
 # -------------------------------------------------------------------------
 # *ACES Output Transforms*
 # -------------------------------------------------------------------------
-def create_output_transforms(aces_ctl_directory,
-                             lut_directory,
-                             lut_resolution_1d,
-                             lut_resolution_3d,
-                             output_transform_info,
-                             shaper_name,
-                             cleanup,
-                             linear_display_space,
-                             log_display_space):
+def create_output_transforms(aces_ctl_directory, lut_directory,
+                             lut_resolution_1D, lut_resolution_3D,
+                             output_transform_info, shaper_name, cleanup,
+                             linear_display_space, log_display_space):
     """
     Create ColorSpaces representing the *ACES Output Transforms*.
 
@@ -1733,9 +1576,9 @@ def create_output_transforms(aces_ctl_directory,
         The path to *ACES* *CTL* *transforms/ctl/utilities* directory.
     lut_directory : str or unicode 
         The directory to use when generating LUTs.
-    lut_resolution_1d : int
+    lut_resolution_1D : int
         The resolution of generated 1D LUTs.
-    lut_resolution_3d : int
+    lut_resolution_3D : int
         The resolution of generated 3D LUTs.
     output_transform_info : dict
         A collection of values that define the Output Transforms that need to
@@ -1764,31 +1607,28 @@ def create_output_transforms(aces_ctl_directory,
     # -------------------------------------------------------------------------
     # *RRT / ODTs* and *SSTS OTs* Shaper Options
     # -------------------------------------------------------------------------
-    shaper_data, shaper_colorspaces = create_shapers(aces_ctl_directory,
-                                                     lut_directory,
-                                                     lut_resolution_1d,
-                                                     cleanup)
+    shaper_data, shaper_colorspaces = create_shapers(
+        aces_ctl_directory, lut_directory, lut_resolution_1D, cleanup)
 
     colorspaces.extend(shaper_colorspaces)
 
     # Assumes shaper has variants covering the range expected by the
     # 48, 108, 1000, 2000 and 4000 nits Output Transforms
-    rrt_shaper_48nits = shaper_data[shaper_name]
+    shaper_48nits = shaper_data[shaper_name]
 
     # Override 108, 1000, 2000 and 4000 nits to always use the PQ shapers
-    pq_shaper_name = (
-        '%s %s' % ('Dolby PQ', ' '.join(shaper_name.split(' ')[-3:])))
-    rrt_shaper_108nits = shaper_data[
-        pq_shaper_name.replace('48 nits', '108 nits')]
-    rrt_shaper_1000nits = shaper_data[
-        pq_shaper_name.replace('48 nits', '1000 nits')]
-    rrt_shaper_2000nits = shaper_data[
-        pq_shaper_name.replace('48 nits', '2000 nits')]
-    rrt_shaper_4000nits = shaper_data[
-        pq_shaper_name.replace('48 nits', '4000 nits')]
+    pq_shaper_name = ('{0} {1}'.format('Dolby PQ', ' '.join(
+        shaper_name.split(' ')[-3:])))
+    shaper_108nits = shaper_data[pq_shaper_name.replace('48 nits', '108 nits')]
+    shaper_1000nits = shaper_data[pq_shaper_name.replace(
+        '48 nits', '1000 nits')]
+    shaper_2000nits = shaper_data[pq_shaper_name.replace(
+        '48 nits', '2000 nits')]
+    shaper_4000nits = shaper_data[pq_shaper_name.replace(
+        '48 nits', '4000 nits')]
 
     sorted_output_transforms = sorted(
-        output_transform_info.iteritems(), key=lambda x: x[1])
+        iter(output_transform_info.items()), key=lambda x: x[1])
 
     for output_transform in sorted_output_transforms:
         output_transform_name, output_transform_values = output_transform
@@ -1796,42 +1636,39 @@ def create_output_transforms(aces_ctl_directory,
         output_transform_name_legal = output_transform_values[
             'transformUserName']
         output_transform_legal = output_transform_values.copy()
-        output_transform_aliases = ['out_%s' % compact(
-            output_transform_name_legal)]
+        output_transform_aliases = [
+            'out_{0}'.format(compact(output_transform_name_legal))
+        ]
 
         if output_transform_values['transformHasFullLegalSwitch']:
             output_transform_legal['legalRange'] = 0
 
-        output_transform_is_ssts_based=output_transform_values[
+        output_transform_is_ssts_based = output_transform_values[
             'transformIsSSTSBased']
 
         if '108 nits' in output_transform_name_legal:
-            rrt_shaper = rrt_shaper_108nits
+            shaper = shaper_108nits
         elif '1000 nits' in output_transform_name_legal:
-            rrt_shaper = rrt_shaper_1000nits
+            shaper = shaper_1000nits
         elif '2000 nits' in output_transform_name_legal:
-            rrt_shaper = rrt_shaper_2000nits
+            shaper = shaper_2000nits
         elif '4000 nits' in output_transform_name_legal:
-            rrt_shaper = rrt_shaper_4000nits
+            shaper = shaper_4000nits
         else:
-            rrt_shaper = rrt_shaper_48nits
+            shaper = shaper_48nits
 
         cs = create_output_transform(
-            output_transform_name_legal,
-            output_transform_legal,
-            output_transform_is_ssts_based,
-            rrt_shaper,
-            aces_ctl_directory,
-            lut_directory,
-            lut_resolution_3d,
-            cleanup,
+            output_transform_name_legal, output_transform_legal,
+            output_transform_is_ssts_based, shaper, aces_ctl_directory,
+            lut_directory, lut_resolution_3D, cleanup,
             output_transform_aliases)
         colorspaces.append(cs)
 
         displays[output_transform_name_legal] = {
             'Raw': linear_display_space,
             'Log': log_display_space,
-            'Output Transform': cs}
+            'Output Transform': cs
+        }
 
     return colorspaces, displays
 
@@ -1875,17 +1712,12 @@ def get_transform_info(ctl_transform):
         elif 'outputTransform(' in line or 'invOutputTransform(' in line:
             transform_is_SSTS_based = True
 
-    return (transform_id,
-            transform_user_name,
-            transform_user_name_prefix,
-            transform_full_legal_switch,
-            transform_is_SSTS_based)
+    return (transform_id, transform_user_name, transform_user_name_prefix,
+            transform_full_legal_switch, transform_is_SSTS_based)
 
 
-def get_transforms_info(aces_ctl_directory,
-                        ctl_sub_directory,
-                        has_sub_directories,
-                        transform_type):
+def get_transforms_info(aces_ctl_directory, ctl_sub_directory,
+                        has_sub_directories, transform_type):
     """
     Returns the information describing the names and CTL files associated with
     the *ACES Transforms* in a given *ACES* release.
@@ -1917,7 +1749,7 @@ def get_transforms_info(aces_ctl_directory,
 
     transform_ctls = [
         x for x in all_transforms
-        if ('Inv%s' % transform_type not in x) and (
+        if ('Inv{0}'.format(transform_type) not in x) and (
             'README' not in x) and (os.path.split(x)[-1][0] != '.')
     ]
 
@@ -1929,8 +1761,9 @@ def get_transforms_info(aces_ctl_directory,
         # Handling nested directories.
         transform_path_tokens = os.path.split(transform_tokens[-2])
         transform_dir = transform_path_tokens[-1]
-        while transform_path_tokens[-2][-3:] != (
-                ctl_sub_directory if has_sub_directories else 'ctl'):
+        while transform_path_tokens[-2][-3:] != (ctl_sub_directory
+                                                 if has_sub_directories else
+                                                 'ctl'):
             transform_path_tokens = os.path.split(transform_path_tokens[-2])
             transform_dir = os.path.join(transform_path_tokens[-1],
                                          transform_dir)
@@ -1945,11 +1778,11 @@ def get_transforms_info(aces_ctl_directory,
             transform_ctl) if has_sub_directories else os.path.join(
                 aces_ctl_directory, transform_dir, transform_ctl))
         (transform_id, transform_user_name, transform_user_name_prefix,
-         transform_full_legal_switch, transform_is_SSTS_based
-         ) = get_transform_info(transform_ctl_path)
+         transform_full_legal_switch,
+         transform_is_SSTS_based) = get_transform_info(transform_ctl_path)
 
         # Finding inverse.
-        transform_ctl_inverse = 'Inv%s.%s.ctl' % (
+        transform_ctl_inverse = 'Inv{0}.{1}.ctl'.format(
             transform_type, transform_name)
         if not os.path.exists(
                 os.path.join(transform_tokens[-2], transform_ctl_inverse)):
@@ -1973,33 +1806,30 @@ def get_transforms_info(aces_ctl_directory,
 
         forward_ctl = transforms[transform_name]['transformCTL']
 
-        print('%s : %s' % (transform_type, transform_name))
-        print('\tTransform ID               : %s' % transform_id)
-        print('\tTransform User Name Prefix : %s' % transform_user_name_prefix)
-        print('\tTransform User Name        : %s' % transform_user_name)
-        print('\tHas Full / Legal Switch    : %s' % transform_full_legal_switch)
-        print('\tSSTS Based                 : %s' % transform_is_SSTS_based)
-        print('\tForward ctl                : %s' % forward_ctl)
+        print('{0} : {1}'.format(transform_type, transform_name))
+        print('\tTransform ID               : {0}'.format(transform_id))
+        print('\tTransform User Name Prefix : {0}'.format(
+            transform_user_name_prefix))
+        print('\tTransform User Name        : {0}'.format(transform_user_name))
+        print('\tHas Full / Legal Switch    : {0}'.format(
+            transform_full_legal_switch))
+        print('\tSSTS Based                 : {0}'.format(
+            transform_is_SSTS_based))
+        print('\tForward ctl                : {0}'.format(forward_ctl))
         if 'transformCTLInverse' in transforms[transform_name]:
             inverse_ctl = transforms[transform_name]['transformCTLInverse']
-            print('\tInverse ctl                : %s' % inverse_ctl)
+            print('\tInverse ctl                : {0}'.format(inverse_ctl))
         else:
-            print('\tInverse ctl                : %s' % 'None')
+            print('\tInverse ctl                : {0}'.format(None))
 
     print('\n')
 
     return transforms
 
 
-def create_colorspaces(aces_ctl_directory,
-                       lut_directory,
-                       lut_resolution_1d,
-                       lut_resolution_3d,
-                       lmt_info,
-                       odt_info,
-                       ssts_ot_info,
-                       shaper_name,
-                       cleanup):
+def create_colorspaces(aces_ctl_directory, lut_directory, lut_resolution_1D,
+                       lut_resolution_3D, lmts_info, odts_info, ssts_ots_info,
+                       shaper_name, cleanup):
     """
     Generates the *ACES* colorspaces, displays and views.
 
@@ -2009,17 +1839,17 @@ def create_colorspaces(aces_ctl_directory,
         The path to *ACES* *CTL* *transforms/ctl/utilities* directory.
     lut_directory : str or unicode 
         The directory to use when generating LUTs.
-    lut_resolution_1d : int
+    lut_resolution_1D : int
         The resolution of generated 1D LUTs.
-    lut_resolution_3d : int
+    lut_resolution_3D : int
         The resolution of generated 3D LUTs.
-    lmt_info : dict
+    lmts_info : dict
         A collection of values that define the Look Transforms that need to be 
         generated.
-    odt_info : dict
+    odts_info : dict
         A collection of values that define the Output Device Transforms that
         need to be generated.
-    ssts_ot_info : dict
+    ssts_ots_info : dict
         A collection of values that define the Output Transforms that need to
         be generated.
     shaper_name : str or unicode, optional
@@ -2043,18 +1873,26 @@ def create_colorspaces(aces_ctl_directory,
 
     ACES = create_ACES()
 
-    ACEScc = create_ACEScc(aces_ctl_directory, lut_directory,
-                           lut_resolution_1d, cleanup,
-                           min_value=-0.35840, max_value=1.468)
+    ACEScc = create_ACEScc(
+        aces_ctl_directory,
+        lut_directory,
+        lut_resolution_1D,
+        cleanup,
+        min_value=-0.35840,
+        max_value=1.468)
     colorspaces.append(ACEScc)
 
-    ACEScct = create_ACEScct(aces_ctl_directory, lut_directory,
-                             lut_resolution_1d, cleanup,
-                             min_value=-0.24913611, max_value=1.468)
+    ACEScct = create_ACEScct(
+        aces_ctl_directory,
+        lut_directory,
+        lut_resolution_1D,
+        cleanup,
+        min_value=-0.24913611,
+        max_value=1.468)
     colorspaces.append(ACEScct)
 
     ACESproxy = create_ACESproxy(aces_ctl_directory, lut_directory,
-                                 lut_resolution_1d, cleanup)
+                                 lut_resolution_1D, cleanup)
     colorspaces.append(ACESproxy)
 
     ACEScg = create_ACEScg()
@@ -2066,34 +1904,18 @@ def create_colorspaces(aces_ctl_directory,
     ADX16 = create_ADX(lut_directory, bit_depth=16)
     colorspaces.append(ADX16)
 
-    lmts = create_LMTs(aces_ctl_directory,
-                       lut_directory,
-                       lut_resolution_1d,
-                       lut_resolution_3d,
-                       lmt_info,
-                       cleanup)
+    lmts = create_LMTs(aces_ctl_directory, lut_directory, lut_resolution_1D,
+                       lut_resolution_3D, lmts_info, cleanup)
     colorspaces.extend(lmts)
 
-    odts, odt_displays = create_output_transforms(aces_ctl_directory,
-                                                  lut_directory,
-                                                  lut_resolution_1d,
-                                                  lut_resolution_3d,
-                                                  odt_info,
-                                                  shaper_name,
-                                                  cleanup,
-                                                  ACES,
-                                                  ACEScc)
+    odts, odt_displays = create_output_transforms(
+        aces_ctl_directory, lut_directory, lut_resolution_1D,
+        lut_resolution_3D, odts_info, shaper_name, cleanup, ACES, ACEScc)
     colorspaces.extend(odts)
 
-    ssts_ots, ssts_ots_displays = create_output_transforms(aces_ctl_directory,
-                                                           lut_directory,
-                                                           lut_resolution_1d,
-                                                           lut_resolution_3d,
-                                                           ssts_ot_info,
-                                                           shaper_name,
-                                                           cleanup,
-                                                           ACES,
-                                                           ACEScc)
+    ssts_ots, ssts_ots_displays = create_output_transforms(
+        aces_ctl_directory, lut_directory, lut_resolution_1D,
+        lut_resolution_3D, ssts_ots_info, shaper_name, cleanup, ACES, ACEScc)
     colorspaces.extend(ssts_ots)
 
     displays = odt_displays
@@ -2103,16 +1925,18 @@ def create_colorspaces(aces_ctl_directory,
     default_display = 'sRGB'
     color_picking = 'Rec.709'
 
-    roles = {'color_picking': color_picking,
-             'color_timing': ACEScc.name,
-             'compositing_log': ADX10.name,
-             'data': '',
-             'default': ACES.name,
-             'matte_paint': ACEScc.name,
-             'reference': '',
-             'scene_linear': ACEScg.name,
-             'texture_paint': ACEScc.name,
-             'compositing_linear': ACEScg.name,
-             'rendering': ACEScg.name}
+    roles = {
+        'color_picking': color_picking,
+        'color_timing': ACEScc.name,
+        'compositing_log': ADX10.name,
+        'data': '',
+        'default': ACES.name,
+        'matte_paint': ACEScc.name,
+        'reference': '',
+        'scene_linear': ACEScg.name,
+        'texture_paint': ACEScc.name,
+        'compositing_linear': ACEScg.name,
+        'rendering': ACEScg.name
+    }
 
     return ACES, colorspaces, displays, ACEScc, roles, default_display

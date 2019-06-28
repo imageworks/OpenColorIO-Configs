@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """
 Defines unit tests for *ACES* configuration.
 """
@@ -15,13 +14,12 @@ import sys
 import tempfile
 import unittest
 
-sys.path.append(os.path.abspath(
-    os.path.join(os.path.dirname(__file__), '..', '..')))
+sys.path.append(
+    os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
 from aces_ocio.utilities import files_walker
-from aces_ocio.generate_config import (
-    ACES_OCIO_CTL_DIRECTORY_ENVIRON,
-    generate_config)
+from aces_ocio.generate_config import (ACES_OCIO_CTL_DIRECTORY_ENVIRON,
+                                       generate_config)
 
 __author__ = 'ACES Developers'
 __copyright__ = 'Copyright (C) 2014 - 2016 - ACES Developers'
@@ -30,10 +28,10 @@ __maintainer__ = 'ACES Developers'
 __email__ = 'aces@oscars.org'
 __status__ = 'Production'
 
-__all__ = ['REFERENCE_CONFIG_ROOT_DIRECTORY',
-           'HASH_TEST_PATTERNS',
-           'UNHASHABLE_TEST_PATTERNS',
-           'TestACESConfig']
+__all__ = [
+    'REFERENCE_CONFIG_ROOT_DIRECTORY', 'HASH_TEST_PATTERNS',
+    'UNHASHABLE_TEST_PATTERNS', 'TestACESConfig'
+]
 
 # TODO: Investigate how the current config has been generated to use it for
 # tests.
@@ -58,11 +56,11 @@ class TestACESConfig(unittest.TestCase):
             ACES_OCIO_CTL_DIRECTORY_ENVIRON, None)
 
         assert self.__aces_ocio_ctl_directory is not None, (
-            'Undefined "%s" environment variable!' % (
+            'Undefined "{0}" environment variable!'.format(
                 ACES_OCIO_CTL_DIRECTORY_ENVIRON))
 
         assert os.path.exists(self.__aces_ocio_ctl_directory) is True, (
-            '"%s" directory does not exists!' % (
+            '"{0}" directory does not exists!'.format(
                 self.__aces_ocio_ctl_directory))
 
         self.maxDiff = None
@@ -76,9 +74,7 @@ class TestACESConfig(unittest.TestCase):
         shutil.rmtree(self.__temporary_directory)
 
     @staticmethod
-    def directory_hashes(directory,
-                         filters_in=None,
-                         filters_out=None,
+    def directory_hashes(directory, filters_in=None, filters_out=None,
                          flags=0):
         """
         Recursively computes the hashes from the file within given directory.
@@ -101,13 +97,13 @@ class TestACESConfig(unittest.TestCase):
         """
 
         hashes = {}
-        for path in files_walker(directory,
-                                 filters_in=filters_in,
-                                 filters_out=filters_out,
-                                 flags=flags):
+        for path in files_walker(
+                directory,
+                filters_in=filters_in,
+                filters_out=filters_out,
+                flags=flags):
             with open(path) as file:
-                digest = hashlib.md5(
-                    re.sub('\s', '', file.read())).hexdigest()
+                digest = hashlib.md5(re.sub('\s', '', file.read())).hexdigest()
             hashes[path.replace(directory, '')] = digest
         return hashes
 
@@ -117,15 +113,14 @@ class TestACESConfig(unittest.TestCase):
         generated configuration and comparing them to the existing one.
         """
 
-        self.assertTrue(generate_config(self.__aces_ocio_ctl_directory,
-                                        self.__temporary_directory))
+        self.assertTrue(
+            generate_config(self.__aces_ocio_ctl_directory,
+                            self.__temporary_directory))
 
         reference_hashes = self.directory_hashes(
-            REFERENCE_CONFIG_ROOT_DIRECTORY,
-            HASH_TEST_PATTERNS)
-        test_hashes = self.directory_hashes(
-            self.__temporary_directory,
-            HASH_TEST_PATTERNS)
+            REFERENCE_CONFIG_ROOT_DIRECTORY, HASH_TEST_PATTERNS)
+        test_hashes = self.directory_hashes(self.__temporary_directory,
+                                            HASH_TEST_PATTERNS)
 
         self.assertDictEqual(reference_hashes, test_hashes)
 
@@ -134,8 +129,9 @@ class TestACESConfig(unittest.TestCase):
             sorted([file.replace(x, '') for file in
                     files_walker(x, UNHASHABLE_TEST_PATTERNS)]))
 
-        self.assertListEqual(unashable(REFERENCE_CONFIG_ROOT_DIRECTORY),
-                             unashable(self.__temporary_directory))
+        self.assertListEqual(
+            unashable(REFERENCE_CONFIG_ROOT_DIRECTORY),
+            unashable(self.__temporary_directory))
 
 
 if __name__ == '__main__':

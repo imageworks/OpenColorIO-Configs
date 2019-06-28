@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """
 Defines various package utilities objects.
 """
@@ -21,15 +20,11 @@ __maintainer__ = 'ACES Developers'
 __email__ = 'aces@oscars.org'
 __status__ = 'Production'
 
-__all__ = ['ColorSpace',
-           'mat44_from_mat33',
-           'filter_words',
-           'files_walker',
-           'replace',
-           'sanitize',
-           'compact',
-           'colorspace_prefixed_name',
-           'unpack_default']
+__all__ = [
+    'ColorSpace', 'mat44_from_mat33', 'filter_words', 'files_walker',
+    'replace', 'sanitize', 'compact', 'colorspace_prefixed_name',
+    'unpack_default'
+]
 
 
 class ColorSpace(object):
@@ -101,15 +96,15 @@ def mat44_from_mat33(mat33):
          A 4x4 matrix
     """
 
-    return [mat33[0], mat33[1], mat33[2], 0,
-            mat33[3], mat33[4], mat33[5], 0,
-            mat33[6], mat33[7], mat33[8], 0,
-            0, 0, 0, 1]
+    return [
+        mat33[0], mat33[1], mat33[2], 0, mat33[3], mat33[4], mat33[5], 0,
+        mat33[6], mat33[7], mat33[8], 0, 0, 0, 0, 1
+    ]
 
 
 def filter_words(words, filters_in=None, filters_out=None, flags=0):
     """
-    A function to filter strings in an array
+    A function to filter strings in an array.
 
     Parameters
     ----------
@@ -178,7 +173,7 @@ def files_walker(directory, filters_in=None, filters_out=None, flags=0):
         for file in files:
             path = os.path.join(parent_directory, file)
             if os.path.isfile(path):
-                if not filter_words((path,), filters_in, filters_out, flags):
+                if not filter_words((path, ), filters_in, filters_out, flags):
                     continue
 
                 yield path
@@ -211,7 +206,7 @@ def replace(string, data):
     u'Users are: Luke Skywalker, Anakin Skywalker, R2D2.'
     """
 
-    for old, new in data.iteritems():
+    for old, new in data.items():
         string = string.replace(old, new)
     return string
 
@@ -249,15 +244,10 @@ def compact(string):
          A compact version of that string.
     """
 
-    return replace(string.lower(),
-                   OrderedDict(((' ', '_'),
-                                ('(', '_'),
-                                (')', '_'),
-                                ('.', '_'),
-                                ('-', '_'),
-                                ('___', '_'),
-                                ('__', '_'),
-                                ('_', ''))))
+    return replace(
+        string.lower(),
+        OrderedDict(((' ', '_'), ('(', '_'), (')', '_'), ('.', '_'),
+                     ('-', '_'), ('___', '_'), ('__', '_'), ('_', ''))))
 
 
 def colorspace_prefixed_name(colorspace):
@@ -276,7 +266,7 @@ def colorspace_prefixed_name(colorspace):
     """
     prefix = colorspace.family.replace('/', ' - ')
 
-    return '%s - %s' % (prefix, colorspace.name)
+    return '{0} - {1}'.format(prefix, colorspace.name)
 
 
 def unpack_default(iterable, length=3, default=None):

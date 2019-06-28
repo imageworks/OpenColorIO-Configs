@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """
 Generates images comparing the *ACES* Output Transforms from *CTL* and *OCIO*.
 """
@@ -13,12 +12,10 @@ import sys
 
 from aces_ocio.colorspaces import aces
 from aces_ocio.generate_config import (
-    ACES_OCIO_CONFIGURATION_DIRECTORY_ENVIRON,
-    ACES_OCIO_CTL_DIRECTORY_ENVIRON)
+    ACES_OCIO_CONFIGURATION_DIRECTORY_ENVIRON, ACES_OCIO_CTL_DIRECTORY_ENVIRON)
 from aces_ocio.process import Process
 
-from aces_ocio.generate_lut import (
-    apply_CTL_to_image)
+from aces_ocio.generate_lut import (apply_CTL_to_image)
 
 __author__ = 'ACES Developers'
 __copyright__ = 'Copyright (C) 2014 - 2016 - ACES Developers'
@@ -27,17 +24,16 @@ __maintainer__ = 'ACES Developers'
 __email__ = 'aces@oscars.org'
 __status__ = 'Production'
 
-__all__ = ['apply_ocio_to_image'
-           'idiff_images'
-           'generate_comparison_images'
-           'main']
+__all__ = [
+    'apply_ocio_to_image'
+    'idiff_images'
+    'generate_comparison_images'
+    'main'
+]
 
 
-def apply_ocio_to_image(input_image,
-                        input_colorspace,
-                        output_image,
-                        output_colorspace,
-                        ocio_config):
+def apply_ocio_to_image(input_image, input_colorspace, output_image,
+                        output_colorspace, ocio_config):
     """
     Applies an *OCIO* colorspace transform to an input image and writes a new
     image.
@@ -65,17 +61,16 @@ def apply_ocio_to_image(input_image,
     args += [input_image, input_colorspace]
     args += [output_image, output_colorspace]
 
-    ociop = Process(description='an ocioconvert process',
-                    cmd='ocioconvert',
-                    args=args,
-                    env=ocioenv)
+    ociop = Process(
+        description='an ocioconvert process',
+        cmd='ocioconvert',
+        args=args,
+        env=ocioenv)
 
     ociop.execute()
 
 
-def idiff_images(image_1,
-                 image_2,
-                 difference_image):
+def idiff_images(image_1, image_2, difference_image):
     """
     Generates an image encoding the difference between two images.
 
@@ -95,9 +90,7 @@ def idiff_images(image_1,
     args += [image_1, image_2]
     args += ["-abs", "-o", difference_image]
 
-    idiffp = Process(description='an idiff process',
-                     cmd='idiff',
-                     args=args)
+    idiffp = Process(description='an idiff process', cmd='idiff', args=args)
 
     idiffp.execute()
 
@@ -140,10 +133,10 @@ def generate_comparison_images(aces_ctl_directory,
     image_format = os.path.splitext(source_image_name)[-1].split('.')[-1]
 
     # RRT Only - Not compared, but helpful for reference
-    dest_image = '%s.RRT' % image_base
+    dest_image = '{0}.RRT'.format(image_base)
 
-    dest_image_ctl = os.path.join(
-        destination_directory, '.'.join([dest_image, 'ctl', image_format]))
+    dest_image_ctl = os.path.join(destination_directory,
+                                  '.'.join([dest_image, 'ctl', image_format]))
 
     ctls = [os.path.join(aces_ctl_directory, 'rrt', 'RRT.ctl')]
 
@@ -151,23 +144,18 @@ def generate_comparison_images(aces_ctl_directory,
     output_scale = 1.0
     global_params = None
 
-    apply_CTL_to_image(source_image,
-                       dest_image_ctl,
-                       ctls,
-                       input_scale,
-                       output_scale,
-                       global_params,
-                       aces_ctl_directory)
+    apply_CTL_to_image(source_image, dest_image_ctl, ctls, input_scale,
+                       output_scale, global_params, aces_ctl_directory)
 
     # Output Transforms
-    for odt_ctl_name, odt_values in odt_info.iteritems():
+    for odt_ctl_name, odt_values in odt_info.items():
         odt_name = odt_values['transformUserName']
 
         if specific_odts and odt_name not in specific_odts:
-          continue
+            continue
 
         print('')
-        print('Output Transform - %s' % odt_name)
+        print('Output Transform - {0}'.format(odt_name))
         print('')
 
         # Forward Output Transform
@@ -178,27 +166,25 @@ def generate_comparison_images(aces_ctl_directory,
         # One difference images per Output Transform:
         #   1. The difference between the the *OCIO* and *CTL* results
         if 'transformCTL' in odt_values:
-            output_transform_image = '%s.RRT.%s' % (image_base, odt_name)
+            output_transform_image = '{0}.RRT.{1}'.format(image_base, odt_name)
 
             # *CTL* render
             output_transform_image_ctl = os.path.join(
                 destination_directory,
                 '.'.join([output_transform_image, 'ctl', image_format]))
 
-            ctls = [os.path.join(aces_ctl_directory, 'rrt', 'RRT.ctl'),
-                    os.path.join(aces_ctl_directory, 'odt',
-                                 odt_values['transformCTL'])]
+            ctls = [
+                os.path.join(aces_ctl_directory, 'rrt', 'RRT.ctl'),
+                os.path.join(aces_ctl_directory, 'odt',
+                             odt_values['transformCTL'])
+            ]
 
             input_scale = 1.0
             output_scale = 1.0
             global_params = None
 
-            apply_CTL_to_image(source_image,
-                               output_transform_image_ctl,
-                               ctls,
-                               input_scale,
-                               output_scale,
-                               global_params,
+            apply_CTL_to_image(source_image, output_transform_image_ctl, ctls,
+                               input_scale, output_scale, global_params,
                                aces_ctl_directory)
 
             if use_ocio:
@@ -208,24 +194,20 @@ def generate_comparison_images(aces_ctl_directory,
                     '.'.join([output_transform_image, 'ocio', image_format]))
 
                 ocio_input_colorspace = 'ACES - ACES2065-1'
-                ocio_output_colorspace = 'Output - %s' % odt_name
+                ocio_output_colorspace = 'Output - {0}'.format(odt_name)
 
-                apply_ocio_to_image(
-                    source_image,
-                    ocio_input_colorspace,
-                    output_transform_image_ocio,
-                    ocio_output_colorspace,
-                    config_path)
+                apply_ocio_to_image(source_image, ocio_input_colorspace,
+                                    output_transform_image_ocio,
+                                    ocio_output_colorspace, config_path)
 
                 # Difference image
                 output_transform_image_diff = os.path.join(
                     destination_directory,
                     '.'.join([output_transform_image, 'diff', image_format]))
 
-                idiff_images(
-                    output_transform_image_ctl,
-                    output_transform_image_ocio,
-                    output_transform_image_diff)
+                idiff_images(output_transform_image_ctl,
+                             output_transform_image_ocio,
+                             output_transform_image_diff)
 
             # Inverse Output Transform
             # Generate difference images for the Inverse Output Transform
@@ -242,85 +224,75 @@ def generate_comparison_images(aces_ctl_directory,
             #   original image.
             if 'transformCTLInverse' in odt_values:
                 inverse_output_transform_image = (
-                    '%s.Inverse%s.InvRRT' % (image_base, odt_name))
+                    '{0}.Inverse{1}.InvRRT'.format(image_base, odt_name))
 
                 # *CTL Render*
                 inverse_output_transform_image_ctl = os.path.join(
-                    destination_directory,
-                    '.'.join([inverse_output_transform_image,
-                              'ctl',
-                              image_format]))
+                    destination_directory, '.'.join(
+                        [inverse_output_transform_image, 'ctl', image_format]))
 
                 ctls = [
                     os.path.join(aces_ctl_directory, 'odt',
                                  odt_values['transformCTLInverse']),
-                    os.path.join(aces_ctl_directory, 'rrt', 'InvRRT.ctl')]
+                    os.path.join(aces_ctl_directory, 'rrt', 'InvRRT.ctl')
+                ]
 
                 input_scale = 1.0
                 output_scale = 1.0
                 global_params = None
 
                 apply_CTL_to_image(output_transform_image_ctl,
-                                   inverse_output_transform_image_ctl,
-                                   ctls,
-                                   input_scale,
-                                   output_scale,
-                                   global_params,
+                                   inverse_output_transform_image_ctl, ctls,
+                                   input_scale, output_scale, global_params,
                                    aces_ctl_directory)
 
                 if use_ocio:
                     # *OCIO* render
                     inverse_output_transform_image_ocio = os.path.join(
-                        destination_directory,
-                        '.'.join(
-                            [inverse_output_transform_image,
-                             'ocio',
-                             image_format]))
+                        destination_directory, '.'.join([
+                            inverse_output_transform_image, 'ocio',
+                            image_format
+                        ]))
 
-                    ocio_input_colorspace = 'Output - %s' % odt_name
+                    ocio_input_colorspace = 'Output - {0}'.format(odt_name)
                     ocio_output_colorspace = 'ACES - ACES2065-1'
 
-                    apply_ocio_to_image(
-                        output_transform_image_ocio,
-                        ocio_input_colorspace,
-                        inverse_output_transform_image_ocio,
-                        ocio_output_colorspace,
-                        config_path)
+                    apply_ocio_to_image(output_transform_image_ocio,
+                                        ocio_input_colorspace,
+                                        inverse_output_transform_image_ocio,
+                                        ocio_output_colorspace, config_path)
 
                     # Difference Image - CTL and OCIO
                     inverse_output_transform_image_diff1 = os.path.join(
-                        destination_directory,
-                        '.'.join(
-                            [inverse_output_transform_image, 'diff_ocio_ctl',
-                             image_format]))
+                        destination_directory, '.'.join([
+                            inverse_output_transform_image, 'diff_ocio_ctl',
+                            image_format
+                        ]))
 
-                    idiff_images(
-                        inverse_output_transform_image_ctl,
-                        inverse_output_transform_image_ocio,
-                        inverse_output_transform_image_diff1)
+                    idiff_images(inverse_output_transform_image_ctl,
+                                 inverse_output_transform_image_ocio,
+                                 inverse_output_transform_image_diff1)
 
                     # Difference image - OCIO original
                     inverse_output_transform_image_diff3 = os.path.join(
-                        destination_directory,
-                        '.'.join([inverse_output_transform_image,
-                                  'diff_ocio_original', image_format]))
+                        destination_directory, '.'.join([
+                            inverse_output_transform_image,
+                            'diff_ocio_original', image_format
+                        ]))
 
-                    idiff_images(
-                        inverse_output_transform_image_ocio,
-                        source_image,
-                        inverse_output_transform_image_diff3)
+                    idiff_images(inverse_output_transform_image_ocio,
+                                 source_image,
+                                 inverse_output_transform_image_diff3)
 
                 # Difference image - CTL and original
                 inverse_output_transform_image_diff2 = os.path.join(
-                    destination_directory,
-                    '.'.join(
-                        [inverse_output_transform_image, 'diff_ctl_original',
-                         image_format]))
+                    destination_directory, '.'.join([
+                        inverse_output_transform_image, 'diff_ctl_original',
+                        image_format
+                    ]))
 
-                idiff_images(
-                    inverse_output_transform_image_ctl,
-                    source_image,
-                    inverse_output_transform_image_diff2)
+                idiff_images(inverse_output_transform_image_ctl, source_image,
+                             inverse_output_transform_image_diff2)
 
     return True
 
@@ -335,7 +307,7 @@ def main():
     bool
     """
 
-    usage = '%prog [options]\n'
+    usage = '.format(prog) [options]\n'
     usage += '\n'
     usage += ('A script to compare results between OCIO and CTL '
               'for an ACES release.\n')
@@ -351,15 +323,21 @@ def main():
     usage += 'Ex. -o sRGB -o P3-DCI'
     usage += '\n'
 
-    p = optparse.OptionParser(description='',
-                              prog='generate_comparison_images',
-                              version='generate_comparison_images 1.0',
-                              usage=usage)
+    p = optparse.OptionParser(
+        description='',
+        prog='generate_comparison_images',
+        version='generate_comparison_images 1.0',
+        usage=usage)
 
-    p.add_option('--acesCTLDir', '-a', default=os.environ.get(
-        ACES_OCIO_CTL_DIRECTORY_ENVIRON, None))
-    p.add_option('--configDir', '-c', default=os.environ.get(
-        ACES_OCIO_CONFIGURATION_DIRECTORY_ENVIRON, None))
+    p.add_option(
+        '--acesCTLDir',
+        '-a',
+        default=os.environ.get(ACES_OCIO_CTL_DIRECTORY_ENVIRON, None))
+    p.add_option(
+        '--configDir',
+        '-c',
+        default=os.environ.get(ACES_OCIO_CONFIGURATION_DIRECTORY_ENVIRON,
+                               None))
     p.add_option('--sourceImage', '-s', type='string', default='')
     p.add_option('--destinationDir', '-d', type='string', default='')
     p.add_option('--odt', '-o', type='string', default=None, action='append')
@@ -372,17 +350,18 @@ def main():
     destination_directory = options.destinationDir
     specific_odts = options.odt
 
-    print('command line : \n%s\n' % ' '.join(sys.argv))
+    print('command line : \n{0}\n'.format(' '.join(sys.argv)))
 
     assert aces_ctl_directory is not None, (
-        'process: No "%s" environment variable defined or no "ACES CTL" '
-        'directory specified' % ACES_OCIO_CTL_DIRECTORY_ENVIRON)
+        'process: No "{0}" environment variable defined or no "ACES CTL" '
+        'directory specified'.format(ACES_OCIO_CTL_DIRECTORY_ENVIRON))
 
-    return generate_comparison_images(aces_ctl_directory,
-                                      config_directory,
-                                      source_image,
-                                      destination_directory,
-                                      specific_odts=specific_odts)
+    return generate_comparison_images(
+        aces_ctl_directory,
+        config_directory,
+        source_image,
+        destination_directory,
+        specific_odts=specific_odts)
 
 
 if __name__ == '__main__':

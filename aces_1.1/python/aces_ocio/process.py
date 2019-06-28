@@ -1,12 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """
 A process wrapper class that maintains the text output and execution status of
 a process or a list of other process wrappers which carry such data.
 """
-
-from __future__ import division
 
 import os
 import sys
@@ -19,11 +16,7 @@ __maintainer__ = 'ACES Developers'
 __email__ = 'aces@oscars.org'
 __status__ = 'Production'
 
-__all__ = ['read_text',
-           'write_text',
-           'Process',
-           'ProcessList',
-           'main']
+__all__ = ['read_text', 'write_text', 'Process', 'ProcessList', 'main']
 
 
 def read_text(text_file):
@@ -142,8 +135,9 @@ class Process:
 
         if self.end and self.start:
             delta = (self.end - self.start)
-            formatted = '%s.%s' % (delta.days * 86400 + delta.seconds,
-                                   int(math.floor(delta.microseconds / 1e3)))
+            formatted = '{0}.{1}'.format(
+                delta.days * 86400 + delta.seconds,
+                int(math.floor(delta.microseconds / 1e3)))
         else:
             formatted = None
         return formatted
@@ -167,15 +161,17 @@ class Process:
             indent = '\t' * write_dict['indentationLevel']
             if write_dict['format'] == 'xml':
                 if start_stop == 'start':
-                    write_dict['logHandle'].write('%s<%s>\n' % (indent, key))
+                    write_dict['logHandle'].write('{0}<{1}>\n'.format(
+                        indent, key))
                 elif start_stop == 'stop':
-                    write_dict['logHandle'].write('%s</%s>\n' % (indent, key))
+                    write_dict['logHandle'].write('{0}</{1}>\n'.format(
+                        indent, key))
                 else:
-                    write_dict['logHandle'].write(
-                        '%s<%s>%s</%s>\n' % (indent, key, value, key))
+                    write_dict['logHandle'].write('{0}<{1}>{2}</{3}>\n'.format(
+                        indent, key, value, key))
             else:
-                write_dict['logHandle'].write(
-                    '%s%40s : %s\n' % (indent, key, value))
+                write_dict['logHandle'].write('{0:<40} : {1}\n'.format(
+                    indent, key, value))
 
     def write_log_header(self, write_dict):
         """
@@ -207,9 +203,10 @@ class Process:
             (sysname, nodename, release, version, machine,
              processor) = platform.uname()
         except:
-            (sysname, nodename, release, version, machine, processor) = (
-                'unknown_sysname', 'unknown_nodename', 'unknown_release',
-                'unknown_version', 'unknown_machine', 'unknown_processor')
+            (sysname, nodename, release, version, machine,
+             processor) = ('unknown_sysname', 'unknown_nodename',
+                           'unknown_release', 'unknown_version',
+                           'unknown_machine', 'unknown_processor')
 
         self.write_key(write_dict, 'process', None, 'start')
         write_dict['indentationLevel'] += 1
@@ -280,7 +277,8 @@ class Process:
         write_dict = {
             'logHandle': log_handle,
             'indentationLevel': indentation_level,
-            'format': format}
+            'format': format
+        }
 
         if log_handle:
             self.write_log_header(write_dict)
@@ -290,7 +288,7 @@ class Process:
                 if format == 'xml':
                     log_handle.write('<![CDATA[\n')
                 for line in self.log:
-                    log_handle.write('%s%s\n' % ('', line))
+                    log_handle.write('{0}{1}\n'.format('', line))
                 if format == 'xml':
                     log_handle.write(']]>\n')
                 self.write_key(write_dict, 'output', None, 'stop')
@@ -317,13 +315,13 @@ class Process:
                 # TODO: Review statements.
                 # 3.1
                 try:
-                    log_handle = (
-                        open(log_filename, mode='wt', encoding='utf-8'))
+                    log_handle = (open(
+                        log_filename, mode='wt', encoding='utf-8'))
                 # 2.6
                 except:
                     log_handle = open(log_filename, mode='wt')
             except:
-                print('Couldn\'t open log : %s' % log_filename)
+                print('Couldn\'t open log : {0}'.format(log_filename))
                 log_handle = None
 
         if log_handle:
@@ -353,7 +351,7 @@ class Process:
 
         self.log.append(line.rstrip())
         if self.echo:
-            print('%s' % line.rstrip())
+            print('{0}'.format(line.rstrip()))
 
     def execute(self):
         """
@@ -385,10 +383,11 @@ class Process:
 
         if self.echo:
             if sp:
-                print(
-                    '\n%s : %s\n' % (self.__class__, sp.list2cmdline(cmdargs)))
+                print('\n{0} : {1}\n'.format(self.__class__,
+                                             sp.list2cmdline(cmdargs)))
             else:
-                print('\n%s : %s\n' % (self.__class__, ' '.join(cmdargs)))
+                print('\n{0} : {1}\n'.format(self.__class__,
+                                             ' '.join(cmdargs)))
 
         process = None
         tmp_wrapper = None
@@ -404,15 +403,21 @@ class Process:
                     cmd = ' '.join(cmdargs)
                     tmp_wrapper = os.path.join(self.cwd, 'process.bat')
                     write_text(cmd, tmp_wrapper)
-                    print('%s : Running process through wrapper %s\n' % (
+                    print('{0} : Running process through wrapper {1}\n'.format(
                         self.__class__, tmp_wrapper))
-                    process = sp.Popen([tmp_wrapper], stdout=sp.PIPE,
-                                       stderr=sp.STDOUT,
-                                       cwd=self.cwd, env=self.env)
+                    process = sp.Popen(
+                        [tmp_wrapper],
+                        stdout=sp.PIPE,
+                        stderr=sp.STDOUT,
+                        cwd=self.cwd,
+                        env=self.env)
                 else:
-                    process = sp.Popen(cmdargs, stdout=sp.PIPE,
-                                       stderr=sp.STDOUT,
-                                       cwd=self.cwd, env=self.env)
+                    process = sp.Popen(
+                        cmdargs,
+                        stdout=sp.PIPE,
+                        stderr=sp.STDOUT,
+                        cwd=self.cwd,
+                        env=self.env)
 
             # using *os.popen4*.
             else:
@@ -423,14 +428,14 @@ class Process:
 
                 stdin, stdout = os.popen4(cmdargs, 'r')
         except:
-            print('Couldn\'t execute command : %s' % cmdargs[0])
+            print('Couldn\'t execute command : {0}'.format(cmdargs)[0])
             traceback.print_exc()
 
         # Using *subprocess*
         if sp:
             if process is not None:
                 # pid = process.pid
-                # log.logLine('process id %s\n' % pid)
+                # log.logLine('process id {0}\n'.format(pid))
 
                 try:
                     # This is more proper python, and resolves some issues with
@@ -460,7 +465,8 @@ class Process:
                         except:
                             self.log_line(line)
                 except:
-                    self.log_line('Logging error : %s' % sys.exc_info()[0])
+                    self.log_line('Logging error : {0}'.format(
+                        sys.exc_info()[0]))
 
                 self.status = process.returncode
 
@@ -468,8 +474,8 @@ class Process:
                     try:
                         os.remove(tmp_wrapper)
                     except:
-                        print(
-                            'Couldn\'t remove temp wrapper : %s' % tmp_wrapper)
+                        print('Couldn\'t remove temp wrapper : {0}'.format(
+                            tmp_wrapper))
                         traceback.print_exc()
 
         # Using *os.popen4*.
@@ -496,7 +502,7 @@ class Process:
                 if not exit_code:
                     exit_code = 0
             except:
-                self.log_line('Logging error : %s' % sys.exc_info()[0])
+                self.log_line('Logging error : {0}'.format(sys.exc_info()[0]))
 
             self.status = exit_code
 
@@ -557,10 +563,10 @@ class ProcessList(Process):
                 value = child.status
                 if write_dict['format'] == 'xml':
                     child_result = (
-                        '%s<result description=\'%s\'>%s</result>' % (
+                        '{0}<result description=\'{1}\'>{2}</result>'.format(
                             indent, key, value))
                 else:
-                    child_result = ('%s%40s : %s' % (indent, key, value))
+                    child_result = ('{0:<40} : {1}'.format(indent, key, value))
                 self.log.append(child_result)
 
                 if child.status != 0:
@@ -639,7 +645,8 @@ class ProcessList(Process):
         write_dict = {
             'logHandle': log_handle,
             'indentationLevel': indentation_level,
-            'format': format}
+            'format': format
+        }
 
         if log_handle:
             self.write_log_header(write_dict)
@@ -647,7 +654,7 @@ class ProcessList(Process):
             if self.log:
                 self.write_key(write_dict, 'output', None, 'start')
                 for line in self.log:
-                    log_handle.write('%s%s\n' % ('', line))
+                    log_handle.write('{0}{1}\n'.format('', line))
                 self.write_key(write_dict, 'output', None, 'stop')
 
             if self.processes:
@@ -684,14 +691,15 @@ class ProcessList(Process):
                     try:
                         child.execute()
                     except:
-                        print('%s : caught exception in child class %s' % (
-                            self.__class__, child.__class__))
+                        print(
+                            '{0} : caught exception in child class {1}'.format(
+                                self.__class__, child.__class__))
                         traceback.print_exc()
                         child.status = -1
 
                     if self.blocking and child.status != 0:
-                        print('%s : child class %s finished with an error' % (
-                            self.__class__, child.__class__))
+                        print('{0} : child class {1} finished with an error'.
+                              format(self.__class__, child.__class__))
                         self.status = -1
                         break
 
@@ -715,11 +723,12 @@ def main():
 
     import optparse
 
-    p = optparse.OptionParser(description='A process logging script',
-                              prog='process',
-                              version='process 0.1',
-                              usage=('%prog [options] '
-                                     '[options for the logged process]'))
+    p = optparse.OptionParser(
+        description='A process logging script',
+        prog='process',
+        version='process 0.1',
+        usage=('.format(prog) [options] '
+               '[options for the logged process]'))
     p.add_option('--cmd', '-c', default=None)
     p.add_option('--log', '-l', default=None)
 

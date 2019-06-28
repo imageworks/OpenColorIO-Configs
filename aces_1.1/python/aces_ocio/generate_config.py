@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """
 Defines objects creating the *ACES* configuration.
 """
@@ -24,12 +23,8 @@ from aces_ocio.colorspaces import red
 from aces_ocio.colorspaces import sony
 from aces_ocio.process import Process
 
-from aces_ocio.utilities import (
-    ColorSpace,
-    colorspace_prefixed_name,
-    compact,
-    replace,
-    unpack_default)
+from aces_ocio.utilities import (ColorSpace, colorspace_prefixed_name, compact,
+                                 replace, unpack_default)
 
 __author__ = 'ACES Developers'
 __copyright__ = 'Copyright (C) 2014 - 2016 - ACES Developers'
@@ -38,21 +33,14 @@ __maintainer__ = 'ACES Developers'
 __email__ = 'aces@oscars.org'
 __status__ = 'Production'
 
-__all__ = ['ACES_OCIO_CTL_DIRECTORY_ENVIRON',
-           'ACES_OCIO_CONFIGURATION_DIRECTORY_ENVIRON',
-           'set_config_roles',
-           'create_ocio_transform',
-           'add_colorspace_aliases',
-           'add_look',
-           'add_looks_to_views',
-           'add_custom_output',
-           'create_config',
-           'create_config_data',
-           'write_config',
-           'generate_baked_LUTs',
-           'generate_config_directory',
-           'generate_config',
-           'main']
+__all__ = [
+    'ACES_OCIO_CTL_DIRECTORY_ENVIRON',
+    'ACES_OCIO_CONFIGURATION_DIRECTORY_ENVIRON', 'set_config_roles',
+    'create_ocio_transform', 'add_colorspace_aliases', 'add_look',
+    'add_looks_to_views', 'add_custom_output', 'create_config',
+    'create_config_data', 'write_config', 'generate_baked_LUTs',
+    'generate_config_directory', 'generate_config', 'main'
+]
 
 ACES_OCIO_CTL_DIRECTORY_ENVIRON = 'ACES_OCIO_CTL_DIRECTORY'
 ACES_OCIO_CONFIGURATION_DIRECTORY_ENVIRON = 'ACES_OCIO_CONFIGURATION_DIRECTORY'
@@ -155,7 +143,8 @@ def create_ocio_transform(transforms):
 
     direction_options = {
         'forward': ocio.Constants.TRANSFORM_DIR_FORWARD,
-        'inverse': ocio.Constants.TRANSFORM_DIR_INVERSE}
+        'inverse': ocio.Constants.TRANSFORM_DIR_INVERSE
+    }
 
     ocio_transforms = []
 
@@ -256,7 +245,8 @@ def create_ocio_transform(transforms):
 
         # *unknown* type
         else:
-            print('Ignoring unknown transform type : %s' % transform['type'])
+            print('Ignoring unknown transform type : {0}'.format(transform)[
+                'type'])
 
     if len(ocio_transforms) > 1:
         group_transform = ocio.GroupTransform()
@@ -298,20 +288,20 @@ def add_colorspace_aliases(config,
 
     for alias_name in colorspace_alias_names:
         if alias_name.lower() == colorspace.name.lower():
-            print('Skipping alias creation for %s, alias %s, '
-                  'because lower cased names match' % (
-                      colorspace.name, alias_name))
+            print(('Skipping alias creation for {0}, alias {1}, '
+                   'because lower cased names match').format(
+                       colorspace.name, alias_name))
             continue
 
-        print('Adding alias colorspace space %s, alias to %s' % (
+        print('Adding alias colorspace space {0}, alias to {1}'.format(
             alias_name, colorspace.name))
 
         compact_family_name = family
 
         description = colorspace.description
         if colorspace.aces_transform_id:
-            description += (
-                '\n\nACES Transform ID : %s' % colorspace.aces_transform_id)
+            description += ('\n\nACES Transform ID : {0}'.format(
+                colorspace.aces_transform_id))
 
         ocio_colorspace_alias = ocio.ColorSpace(
             name=alias_name,
@@ -325,34 +315,38 @@ def add_colorspace_aliases(config,
 
         if colorspace.to_reference_transforms:
             print('\tGenerating To-Reference transforms')
-            ocio_transform = create_ocio_transform(
-                [{'type': 'colorspace',
-                  'src': colorspace.name,
-                  'dst': reference_colorspace.name,
-                  'direction': 'forward'}])
+            ocio_transform = create_ocio_transform([{
+                'type':
+                'colorspace',
+                'src':
+                colorspace.name,
+                'dst':
+                reference_colorspace.name,
+                'direction':
+                'forward'
+            }])
             ocio_colorspace_alias.setTransform(
-                ocio_transform,
-                ocio.Constants.COLORSPACE_DIR_TO_REFERENCE)
+                ocio_transform, ocio.Constants.COLORSPACE_DIR_TO_REFERENCE)
 
         if colorspace.from_reference_transforms:
             print('\tGenerating From-Reference transforms')
-            ocio_transform = create_ocio_transform(
-                [{'type': 'colorspace',
-                  'src': reference_colorspace.name,
-                  'dst': colorspace.name,
-                  'direction': 'forward'}])
+            ocio_transform = create_ocio_transform([{
+                'type':
+                'colorspace',
+                'src':
+                reference_colorspace.name,
+                'dst':
+                colorspace.name,
+                'direction':
+                'forward'
+            }])
             ocio_colorspace_alias.setTransform(
-                ocio_transform,
-                ocio.Constants.COLORSPACE_DIR_FROM_REFERENCE)
+                ocio_transform, ocio.Constants.COLORSPACE_DIR_FROM_REFERENCE)
 
         config.addColorSpace(ocio_colorspace_alias)
 
 
-def add_look(config,
-             look,
-             custom_lut_dir,
-             reference_name,
-             config_data):
+def add_look(config, look, custom_lut_dir, reference_name, config_data):
     """
     Adds given look to the *OCIO* config.
 
@@ -378,12 +372,12 @@ def add_look(config,
 
     look_name, look_colorspace, look_lut, look_cccid = unpack_default(look, 4)
 
-    print('Adding look %s - %s' % (look_name, ', '.join(look)))
+    print('Adding look {0} - {1}'.format(look_name, ', '.join(look)))
 
     # Copy *look LUT* if `custom_lut_dir` is provided.
     if custom_lut_dir:
         if '$' not in look_lut:
-            print('Getting ready to copy look lut : %s' % look_lut)
+            print('Getting ready to copy look lut : {0}'.format(look_lut))
             shutil.copy2(look_lut, custom_lut_dir)
             look_lut = os.path.split(look_lut)[1]
         else:
@@ -394,9 +388,7 @@ def add_look(config,
     ocio_look.setName(look_name)
     ocio_look.setProcessSpace(look_colorspace)
 
-    keys = {'type': 'lutFile',
-            'path': look_lut,
-            'direction': 'forward'}
+    keys = {'type': 'lutFile', 'path': look_lut, 'direction': 'forward'}
     if look_cccid:
         keys['cccid'] = look_cccid
 
@@ -410,19 +402,22 @@ def add_look(config,
     # Creating *OCIO* colorspace referencing the look:
     # - Needed for implementations that don't process looks properly.
     # - Needed for implementations that don't expose looks properly.
-    look_aliases = ['look_%s' % compact(look_name)]
-    colorspace = ColorSpace(look_name,
-                            aliases=look_aliases,
-                            description='The %s Look colorspace' % look_name,
-                            family='Look')
+    look_aliases = ['look_{0}'.format(compact(look_name))]
+    colorspace = ColorSpace(
+        look_name,
+        aliases=look_aliases,
+        description='The {0} Look colorspace'.format(look_name),
+        family='Look')
 
-    colorspace.from_reference_transforms = [{'type': 'look',
-                                             'look': look_name,
-                                             'src': reference_name,
-                                             'dst': reference_name,
-                                             'direction': 'forward'}]
+    colorspace.from_reference_transforms = [{
+        'type': 'look',
+        'look': look_name,
+        'src': reference_name,
+        'dst': reference_name,
+        'direction': 'forward'
+    }]
 
-    print('Adding colorspace %s, alias to look %s to config data' % (
+    print('Adding colorspace {0}, alias to look {1} to config data'.format(
         look_name, look_name))
 
     config_data['colorSpaces'].append(colorspace)
@@ -468,10 +463,10 @@ def add_looks_to_views(looks,
     # `from_reference` transform list.
     # - Add these the copy colorspaces for the *Displays* / *Views*.
     else:
-        for display, view_list in config_data['displays'].iteritems():
+        for display, view_list in config_data['displays'].items():
             colorspace_c = None
             look_names_string = ''
-            for view_name, output_colorspace in view_list.iteritems():
+            for view_name, output_colorspace in view_list.items():
                 if view_name == 'Output Transform':
 
                     print('Adding new View that incorporates looks')
@@ -485,37 +480,45 @@ def add_looks_to_views(looks,
                         # `from_reference` transform list.
                         if colorspace_c.from_reference_transforms:
                             colorspace_c.from_reference_transforms.insert(
-                                i,
-                                {'type': 'look',
-                                 'look': look_name,
-                                 'src': reference_name,
-                                 'dst': reference_name,
-                                 'direction': 'forward'})
+                                i, {
+                                    'type': 'look',
+                                    'look': look_name,
+                                    'src': reference_name,
+                                    'dst': reference_name,
+                                    'direction': 'forward'
+                                })
 
                         # Add the `LookTransform` to the end of
                         # the `to_reference` transform list.
                         if colorspace_c.to_reference_transforms:
-                            inverse_look_name = look_names[
-                                len(look_names) - 1 - i]
+                            inverse_look_name = look_names[len(look_names) - 1
+                                                           - i]
 
-                            colorspace_c.to_reference_transforms.append(
-                                {'type': 'look',
-                                 'look': inverse_look_name,
-                                 'src': reference_name,
-                                 'dst': reference_name,
-                                 'direction': 'inverse'})
+                            colorspace_c.to_reference_transforms.append({
+                                'type':
+                                'look',
+                                'look':
+                                inverse_look_name,
+                                'src':
+                                reference_name,
+                                'dst':
+                                reference_name,
+                                'direction':
+                                'inverse'
+                            })
 
                         if look_name not in config_data['looks']:
                             config_data['looks'].append(look_name)
 
                     look_names_string = ', '.join(look_names)
-                    colorspace_c.name = '%s with %s' % (
+                    colorspace_c.name = '{0} with {1}'.format(
                         output_colorspace.name, look_names_string)
                     colorspace_c.aliases = [
-                        'out_%s' % compact(colorspace_c.name)]
+                        'out_{0}'.format(compact(colorspace_c.name))
+                    ]
 
-                    print('Colorspace that incorporates looks '
-                          'created : %s' % colorspace_c.name)
+                    print(('Colorspace that incorporates looks '
+                           'created : {0}').format(colorspace_c.name))
 
                     config_data['colorSpaces'].append(colorspace_c)
 
@@ -524,8 +527,8 @@ def add_looks_to_views(looks,
                       'into view list')
 
                 # Updating the *View* name.
-                view_list['Output Transform with %s' % look_names_string] = (
-                    colorspace_c)
+                view_list['Output Transform with {0}'.format(
+                    look_names_string)] = (colorspace_c)
                 config_data['displays'][display] = view_list
 
 
@@ -562,15 +565,17 @@ def add_custom_output(custom_output,
     reference_colorspace_name = reference_colorspace.name
 
     (custom_output_name, custom_output_working_colorspace_name,
-     custom_output_lut, custom_output_cccid) = unpack_default(custom_output, 4)
+     custom_output_lut, custom_output_cccid) = unpack_default(
+         custom_output, 4)
 
-    print('Adding custom output %s -\n\t%s' % (
+    print('Adding custom output {0} -\n\t{1}'.format(
         custom_output_name, '\n\t'.join(custom_output)))
 
     # Copy *custom output LUT* if `custom_lut_dir` is provided.
     if custom_lut_dir:
         if '$' not in custom_output_lut:
-            print('Getting ready to copy look lut : %s' % custom_output_lut)
+            print('Getting ready to copy look lut : {0}'.format(
+                custom_output_lut))
             shutil.copy2(custom_output_lut, custom_lut_dir)
             custom_output_lut = os.path.split(custom_output_lut)[1]
         else:
@@ -580,20 +585,24 @@ def add_custom_output(custom_output,
     print('Adding colorspace for custom output to config')
     custom_output_colorspace = ColorSpace(
         custom_output_name,
-        description='The %s colorspace' % custom_output_name,
+        description='The {0} colorspace'.format(custom_output_name),
         family=family)
 
     print('\tGenerating From-Reference transforms')
     # Convert to colorspace LUT expects.
-    transforms = [{'type': 'colorspace',
-                   'src': reference_colorspace_name,
-                   'dst': custom_output_working_colorspace_name,
-                   'direction': 'forward'}]
+    transforms = [{
+        'type': 'colorspace',
+        'src': reference_colorspace_name,
+        'dst': custom_output_working_colorspace_name,
+        'direction': 'forward'
+    }]
 
     # Apply LUT
-    lut_keys = {'type': 'lutFile',
-                'path': custom_output_lut,
-                'direction': 'forward'}
+    lut_keys = {
+        'type': 'lutFile',
+        'path': custom_output_lut,
+        'direction': 'forward'
+    }
     if custom_output_cccid:
         lut_keys['cccid'] = custom_output_cccid
     transforms.append(lut_keys)
@@ -603,16 +612,16 @@ def add_custom_output(custom_output,
 
     config_data['colorSpaces'].append(custom_output_colorspace)
 
-    print('Adding Display for custom output %s' % custom_output_name)
+    print('Adding Display for custom output {0}'.format(custom_output_name))
     view_list = {'Output Transform': custom_output_colorspace}
     config_data['displays'][custom_output_name] = view_list
 
     print('Creating alias colorspace')
-    custom_output_alias_name = 'out_%s' % compact(custom_output_name)
+    custom_output_alias_name = 'out_{0}'.format(compact(custom_output_name))
     custom_output_colorspace.aliases = [custom_output_alias_name]
 
     if make_default:
-        print('Making %s the default Display' % custom_output_name)
+        print('Making {0} the default Display'.format(custom_output_name))
         config_data['defaultDisplay'] = custom_output_name
 
     print('')
@@ -682,7 +691,7 @@ def create_config(config_data,
         reference_data.base_name = reference_data.name
         reference_data.name = prefixed_name
 
-    print('Adding the reference color space: %s' % reference_data.name)
+    print('Adding the reference color space: {0}'.format(reference_data.name))
 
     reference = ocio.ColorSpace(
         name=reference_data.name,
@@ -719,15 +728,10 @@ def create_config(config_data,
         config_data['looks'] = []
 
         for look in look_info:
-            add_look(config,
-                     look,
-                     custom_lut_dir,
-                     reference_data.name,
+            add_look(config, look, custom_lut_dir, reference_data.name,
                      config_data)
 
-        add_looks_to_views(look_info,
-                           reference_data.name,
-                           config_data,
+        add_looks_to_views(look_info, reference_data.name, config_data,
                            multiple_displays)
 
         print('')
@@ -736,9 +740,7 @@ def create_config(config_data,
         print('Adding custom output transforms')
 
         for custom_output in custom_output_info:
-            add_custom_output(custom_output,
-                              custom_lut_dir,
-                              reference_data,
+            add_custom_output(custom_output, custom_lut_dir, reference_data,
                               config_data)
 
         print('')
@@ -746,8 +748,8 @@ def create_config(config_data,
     print('Adding regular colorspaces')
 
     for colorspace in sorted(
-            config_data['colorSpaces'], cmp=lambda x, y: cmp(
-                x.family.lower(), y.family.lower())):
+            config_data['colorSpaces'],
+            cmp=lambda x, y: cmp(x.family.lower(), y.family.lower())):
         # Adding the colorspace *Family* into the name which helps with
         # applications that present colorspaces as one a flat list.
         if prefix:
@@ -756,12 +758,12 @@ def create_config(config_data,
             colorspace.base_name = colorspace.name
             colorspace.name = prefixed_name
 
-        print('Creating new color space : %s' % colorspace.name)
+        print('Creating new color space : {0}'.format(colorspace.name))
 
         description = colorspace.description
         if colorspace.aces_transform_id:
-            description += (
-                '\n\nACES Transform ID : %s' % colorspace.aces_transform_id)
+            description += ('\n\nACES Transform ID : {0}'.format(
+                colorspace.aces_transform_id))
 
         ocio_colorspace = ocio.ColorSpace(
             name=colorspace.name,
@@ -778,16 +780,14 @@ def create_config(config_data,
             ocio_transform = create_ocio_transform(
                 colorspace.to_reference_transforms)
             ocio_colorspace.setTransform(
-                ocio_transform,
-                ocio.Constants.COLORSPACE_DIR_TO_REFERENCE)
+                ocio_transform, ocio.Constants.COLORSPACE_DIR_TO_REFERENCE)
 
         if colorspace.from_reference_transforms:
             print('\tGenerating From-Reference transforms')
             ocio_transform = create_ocio_transform(
                 colorspace.from_reference_transforms)
             ocio_colorspace.setTransform(
-                ocio_transform,
-                ocio.Constants.COLORSPACE_DIR_FROM_REFERENCE)
+                ocio_transform, ocio.Constants.COLORSPACE_DIR_FROM_REFERENCE)
 
         config.addColorSpace(ocio_colorspace)
 
@@ -811,33 +811,33 @@ def create_config(config_data,
     if prefix:
         set_config_roles(
             config,
-            color_picking=prefixed_names[
-                config_data['roles']['color_picking']],
+            color_picking=prefixed_names[config_data['roles'][
+                'color_picking']],
             color_timing=prefixed_names[config_data['roles']['color_timing']],
-            compositing_log=prefixed_names[
-                config_data['roles']['compositing_log']],
+            compositing_log=prefixed_names[config_data['roles'][
+                'compositing_log']],
             data=prefixed_names[config_data['roles']['data']],
             default=prefixed_names[config_data['roles']['default']],
             matte_paint=prefixed_names[config_data['roles']['matte_paint']],
             reference=prefixed_names[config_data['roles']['reference']],
             scene_linear=prefixed_names[config_data['roles']['scene_linear']],
-            compositing_linear=prefixed_names[
-                config_data['roles']['scene_linear']],
+            compositing_linear=prefixed_names[config_data['roles'][
+                'scene_linear']],
             rendering=prefixed_names[config_data['roles']['scene_linear']],
-            texture_paint=prefixed_names[
-                config_data['roles']['texture_paint']])
+            texture_paint=prefixed_names[config_data['roles'][
+                'texture_paint']])
 
         # Add the aliased colorspaces for each role
-        for role_name, role_colorspace_name in (
-                config_data['roles'].iteritems()):
+        for role_name, role_colorspace_name in (iter(
+                config_data['roles'].items())):
             role_colorspace_prefixed_name = prefixed_names[
                 role_colorspace_name]
 
-            # print('Finding colorspace : %s' % role_colorspace_prefixed_name)
             # Find the colorspace pointed to by the role
             role_colorspaces = [
                 colorspace for colorspace in config_data['colorSpaces']
-                if colorspace.name == role_colorspace_prefixed_name]
+                if colorspace.name == role_colorspace_prefixed_name
+            ]
             role_colorspace = None
             if len(role_colorspaces) > 0:
                 role_colorspace = role_colorspaces[0]
@@ -847,19 +847,17 @@ def create_config(config_data,
 
             if role_colorspace:
                 # The alias colorspace shouldn't match the role name exactly
-                role_name_alias1 = 'role_%s' % role_name
-                role_name_alias2 = 'Role - %s' % role_name
+                role_name_alias1 = 'role_{0}'.format(role_name)
+                role_name_alias2 = 'Role - {0}'.format(role_name)
 
-                print('Adding a role colorspace named %s, pointing to %s' % (
-                    role_name_alias2, role_colorspace.name))
+                print('Adding a role colorspace named {0}, pointing to {1}'.
+                      format(role_name_alias2, role_colorspace.name))
 
-                alias_colorspaces.append(
-                    (reference_data, role_colorspace, [role_name_alias1]))
+                alias_colorspaces.append((reference_data, role_colorspace,
+                                          [role_name_alias1]))
 
-                add_colorspace_aliases(
-                    config, reference_data, role_colorspace,
-                    [role_name_alias2],
-                    'Utility/Roles')
+                add_colorspace_aliases(config, reference_data, role_colorspace,
+                                       [role_name_alias2], 'Utility/Roles')
 
     else:
         set_config_roles(
@@ -877,12 +875,13 @@ def create_config(config_data,
             texture_paint=config_data['roles']['texture_paint'])
 
         # Add the aliased colorspaces for each role
-        for role_name, role_colorspace_name in (
-                config_data['roles'].iteritems()):
+        for role_name, role_colorspace_name in (iter(
+                config_data['roles'].items())):
             # Find the colorspace pointed to by the role
             role_colorspaces = [
                 colorspace for colorspace in config_data['colorSpaces']
-                if colorspace.name == role_colorspace_name]
+                if colorspace.name == role_colorspace_name
+            ]
             role_colorspace = None
             if len(role_colorspaces) > 0:
                 role_colorspace = role_colorspaces[0]
@@ -892,19 +891,17 @@ def create_config(config_data,
 
             if role_colorspace:
                 # The alias colorspace shouldn't match the role name exactly
-                role_name_alias1 = 'role_%s' % role_name
-                role_name_alias2 = 'Role - %s' % role_name
+                role_name_alias1 = 'role_{0}'.format(role_name)
+                role_name_alias2 = 'Role - {0}'.format(role_name)
 
-                print('Adding a role colorspace named %s, pointing to %s' % (
-                    role_name_alias2, role_colorspace.name))
+                print('Adding a role colorspace named {0}, pointing to {1}'.
+                      format(role_name_alias2, role_colorspace.name))
 
-                alias_colorspaces.append(
-                    (reference_data, role_colorspace, [role_name_alias1]))
+                alias_colorspaces.append((reference_data, role_colorspace,
+                                          [role_name_alias1]))
 
-                add_colorspace_aliases(
-                    config, reference_data, role_colorspace,
-                    [role_name_alias2],
-                    'Utility/Roles')
+                add_colorspace_aliases(config, reference_data, role_colorspace,
+                                       [role_name_alias2], 'Utility/Roles')
 
     print('')
 
@@ -934,20 +931,21 @@ def create_config(config_data,
     if multiple_displays:
         looks = config_data['looks'] if ('looks' in config_data) else []
         looks = ', '.join(looks)
-        print('Creating multiple displays, with looks : %s' % looks)
+        print('Creating multiple displays, with looks : {0}'.format(looks))
 
         # *Displays* are not reordered to put the *defaultDisplay* first
         # because *OCIO* will order them alphabetically when the configuration
         # is written to disk.
-        for display, view_list in config_data['displays'].iteritems():
-            for view_name, colorspace in view_list.iteritems():
+        for display, view_list in config_data['displays'].items():
+            for view_name, colorspace in view_list.items():
                 config.addDisplay(display, view_name, colorspace.name, looks)
                 if 'Output Transform' in view_name and looks != '':
                     # *Views* without *Looks*.
                     config.addDisplay(display, view_name, colorspace.name)
 
                     # *Views* with *Looks*.
-                    view_name_with_looks = '%s with %s' % (view_name, looks)
+                    view_name_with_looks = '{0} with {1}'.format(
+                        view_name, looks)
                     config.addDisplay(display, view_name_with_looks,
                                       colorspace.name, looks)
                 else:
@@ -963,8 +961,8 @@ def create_config(config_data,
 
         # Ensuring the *defaultDisplay* is first.
         display_names = sorted(config_data['displays'])
-        display_names.insert(0, display_names.pop(
-            display_names.index(default_display_name)))
+        display_names.insert(
+            0, display_names.pop(display_names.index(default_display_name)))
 
         looks = config_data['looks'] if ('looks' in config_data) else []
         look_names = ', '.join(looks)
@@ -973,7 +971,7 @@ def create_config(config_data,
 
         for display in display_names:
             view_list = config_data['displays'][display]
-            for view_name, colorspace in view_list.iteritems():
+            for view_name, colorspace in view_list.items():
                 if 'Output Transform' in view_name:
 
                     # We use the *Display* names as the *View* names in this
@@ -988,16 +986,17 @@ def create_config(config_data,
 
                     # *View* with *Looks*.
                     if 'with' in view_name:
-                        sanitised_display = '%s with %s' % (
+                        sanitised_display = '{0} with {1}'.format(
                             sanitised_display, look_names)
 
                         views_with_looks_at_end = False
                         # Storing combo of *Display*, *View* and *Colorspace*
                         # name so they can be added to the end of the list.
                         if views_with_looks_at_end:
-                            displays_views_colorspaces.append(
-                                [single_display_name, sanitised_display,
-                                 colorspace.name])
+                            displays_views_colorspaces.append([
+                                single_display_name, sanitised_display,
+                                colorspace.name
+                            ])
                         else:
                             config.addDisplay(single_display_name,
                                               sanitised_display,
@@ -1009,8 +1008,7 @@ def create_config(config_data,
                     # *View* without *Looks*.
                     else:
                         config.addDisplay(single_display_name,
-                                          sanitised_display,
-                                          colorspace.name)
+                                          sanitised_display, colorspace.name)
 
                         if not (sanitised_display in views):
                             views.append(sanitised_display)
@@ -1023,8 +1021,7 @@ def create_config(config_data,
             single_display_name, sanitised_display, colorspace_name = (
                 display_view_colorspace)
 
-            config.addDisplay(single_display_name,
-                              sanitised_display,
+            config.addDisplay(single_display_name, sanitised_display,
                               colorspace_name)
 
             if not (sanitised_display in views):
@@ -1059,8 +1056,8 @@ def create_config(config_data,
                 colorspace.name = colorspace.base_name
         except:
             print('Error with Prefixed names')
-            for original, prefixed in prefixed_names.iteritems():
-                print('%s, %s' % (original, prefixed))
+            for original, prefixed in prefixed_names.items():
+                print('{0}, {1}'.format(original, prefixed))
 
             print('\n')
 
@@ -1069,12 +1066,12 @@ def create_config(config_data,
 
 def create_config_data(odts_info,
                        lmts_info,
-                       ssts_ot_info,
+                       ssts_ots_info,
                        shaper_name,
                        aces_ctl_directory,
                        lut_directory,
-                       lut_resolution_1d=4096,
-                       lut_resolution_3d=64,
+                       lut_resolution_1D=4096,
+                       lut_resolution_3D=64,
                        cleanup=True):
     """
     Create the *ACES* LUTs and data structures needed for later *OCIO* 
@@ -1086,7 +1083,7 @@ def create_config_data(odts_info,
         Descriptions of the *ACES* Output Device Transforms.
     lmts_info : array of dicts of str or unicode
         Descriptions of the *ACES* Look Transforms.
-    ssts_ot_info : array of dicts of str or unicode
+    ssts_ots_info : array of dicts of str or unicode
         Descriptions of the *ACES* Output Transforms.
     shaper_name : str or unicode
         {'Log2', 'DolbyPQ'},
@@ -1095,9 +1092,9 @@ def create_config_data(odts_info,
         The path to *ACES* *CTL* *transforms/ctl/utilities* directory.
     lut_directory : str or unicode
         The path to use when writing LUTs.
-    lut_resolution_1d : int, optional
+    lut_resolution_1D : int, optional
         The resolution of generated 1D LUTs.
-    lut_resolution_3d : int, optional
+    lut_resolution_3D : int, optional
         The resolution of generated 3D LUTs.
     cleanup : bool
         Whether or not to clean up the intermediate images.
@@ -1111,29 +1108,18 @@ def create_config_data(odts_info,
 
     print('create_config_data - begin')
 
-    config_data = {
-        'displays': {},
-        'colorSpaces': []}
+    config_data = {'displays': {}, 'colorSpaces': []}
 
     # -------------------------------------------------------------------------
     # *ACES Color Spaces*
     # -------------------------------------------------------------------------
 
     # *ACES* colorspaces
-    (aces_reference,
-     aces_colorspaces,
-     aces_displays,
-     aces_log_display_space,
-     aces_roles,
-     aces_default_display) = aces.create_colorspaces(aces_ctl_directory,
-                                                     lut_directory,
-                                                     lut_resolution_1d,
-                                                     lut_resolution_3d,
-                                                     lmts_info,
-                                                     odts_info,
-                                                     ssts_ot_info,
-                                                     shaper_name,
-                                                     cleanup)
+    (aces_reference, aces_colorspaces, aces_displays, aces_log_display_space,
+     aces_roles, aces_default_display) = aces.create_colorspaces(
+         aces_ctl_directory, lut_directory, lut_resolution_1D,
+         lut_resolution_3D, lmts_info, odts_info, ssts_ots_info, shaper_name,
+         cleanup)
 
     config_data['referenceColorSpace'] = aces_reference
     config_data['roles'] = aces_roles
@@ -1141,7 +1127,7 @@ def create_config_data(odts_info,
     for cs in aces_colorspaces:
         config_data['colorSpaces'].append(cs)
 
-    for name, data in aces_displays.iteritems():
+    for name, data in aces_displays.items():
         config_data['displays'][name] = data
 
     config_data['defaultDisplay'] = aces_default_display
@@ -1154,46 +1140,44 @@ def create_config_data(odts_info,
 
     # *ARRI Log-C* to *ACES*
     arri_colorspaces = arri.create_colorspaces(lut_directory,
-                                               lut_resolution_1d)
+                                               lut_resolution_1D)
     for cs in arri_colorspaces:
         config_data['colorSpaces'].append(cs)
 
     # *Canon-Log* to *ACES*
     canon_colorspaces = canon.create_colorspaces(lut_directory,
-                                                 lut_resolution_1d)
+                                                 lut_resolution_1D)
     for cs in canon_colorspaces:
         config_data['colorSpaces'].append(cs)
 
     # *GoPro Protune* to *ACES*
     gopro_colorspaces = gopro.create_colorspaces(lut_directory,
-                                                 lut_resolution_1d)
+                                                 lut_resolution_1D)
     for cs in gopro_colorspaces:
         config_data['colorSpaces'].append(cs)
 
     # *Panasonic V-Log* to *ACES*
-    panasonic_colorspaces = panasonic.create_colorspaces(lut_directory,
-                                                         lut_resolution_1d)
+    panasonic_colorspaces = panasonic.create_colorspaces(
+        lut_directory, lut_resolution_1D)
     for cs in panasonic_colorspaces:
         config_data['colorSpaces'].append(cs)
 
     # *RED* colorspaces to *ACES*
-    red_colorspaces = red.create_colorspaces(lut_directory,
-                                             lut_resolution_1d)
+    red_colorspaces = red.create_colorspaces(lut_directory, lut_resolution_1D)
     for cs in red_colorspaces:
         config_data['colorSpaces'].append(cs)
 
     # *S-Log* to *ACES*
     sony_colorspaces = sony.create_colorspaces(lut_directory,
-                                               lut_resolution_1d)
+                                               lut_resolution_1D)
     for cs in sony_colorspaces:
         config_data['colorSpaces'].append(cs)
 
     # -------------------------------------------------------------------------
     # General Colorspaces
     # -------------------------------------------------------------------------
-    (general_colorspaces,
-     general_role_overrides) = general.create_colorspaces(lut_directory,
-                                                          lut_resolution_1d)
+    (general_colorspaces, general_role_overrides) = general.create_colorspaces(
+        lut_directory, lut_resolution_1D)
     for cs in general_colorspaces:
         config_data['colorSpaces'].append(cs)
 
@@ -1206,7 +1190,7 @@ def create_config_data(odts_info,
     config_data['roles']['reference'] = raw.name
 
     # Set role values as needed
-    for role, name in general_role_overrides.iteritems():
+    for role, name in general_role_overrides.items():
         config_data['roles'][role] = name
 
     print('create_config_data - end')
@@ -1249,7 +1233,7 @@ def generate_baked_LUTs(odt_info,
                         shaper_name,
                         baked_directory,
                         config_path,
-                        lut_resolution_3d,
+                        lut_resolution_3D,
                         lut_resolution_shaper=1024,
                         prefix=False):
     """
@@ -1267,7 +1251,7 @@ def generate_baked_LUTs(odt_info,
         The path to use when writing baked LUTs.
     config_path : str or unicode
         The path to the *OCIO* configuration.
-    lut_resolution_3d : int, optional
+    lut_resolution_3D : int, optional
         The resolution of generated 3D LUTs.
     lut_resolution_shaper : int, optional
         The resolution of shaper used as part of some 3D LUTs.
@@ -1286,21 +1270,21 @@ def generate_baked_LUTs(odt_info,
     #         odt_name = odt_values['transformUserName']
     #
     #         odt_values_legal = dict(odt_values)
-    #         odt_values_legal['transformUserName'] = '%s - Legal' % odt_name
-    #         odt_info_C['%s - Legal' % odt_ctl_name] = odt_values_legal
+    #         odt_values_legal['transformUserName'] = '{0} - Legal'.format(odt_name)
+    #         odt_info_C['{0} - Legal'.format(odt_ctl_name)] = odt_values_legal
     #
     #         odt_values_full = dict(odt_values)
-    #         odt_values_full['transformUserName'] = '%s - Full' % odt_name
-    #         odt_info_C['%s - Full' % odt_ctl_name] = odt_values_full
+    #         odt_values_full['transformUserName'] = '{0} - Full'.format(odt_name)
+    #         odt_info_C['{0} - Full'.format(odt_ctl_name)] = odt_values_full
     #
     #         del (odt_info_C[odt_ctl_name])
 
-    for odt_ctl_name, odt_values in odt_info_C.iteritems():
+    for odt_ctl_name, odt_values in odt_info_C.items():
         odt_prefix = odt_values['transformUserNamePrefix']
         odt_name = odt_values['transformUserName']
 
-        pq_shaper_name = (
-            '%s %s' % ('Dolby PQ', ' '.join(shaper_name.split(' ')[-3:])))
+        pq_shaper_name = ('{0} {1}'.format(
+            'Dolby PQ', ' '.join(shaper_name.split(' ')[-3:])))
 
         if '1000 nits' in odt_name:
             odt_shaper = pq_shaper_name.replace('48 nits', '1000 nits')
@@ -1315,120 +1299,136 @@ def generate_baked_LUTs(odt_info,
         for input_space in ['ACEScc', 'ACESproxy', 'ACEScct']:
             args = ['--iconfig', config_path, '-v']
             if prefix:
-                args += ['--inputspace', 'ACES - %s' % input_space]
-                args += ['--outputspace', 'Output - %s' % odt_name]
+                args += ['--inputspace', 'ACES - {0}'.format(input_space)]
+                args += ['--outputspace', 'Output - {0}'.format(odt_name)]
             else:
                 args += ['--inputspace', input_space]
                 args += ['--outputspace', odt_name]
 
-            args += ['--description',
-                     '%s - %s for %s data' % (odt_prefix,
-                                              odt_name,
-                                              input_space)]
+            args += [
+                '--description', '{0} - {1} for {2} data'.format(
+                    odt_prefix, odt_name, input_space)
+            ]
             if prefix:
-                args += ['--shaperspace', 'Utility - %s' % odt_shaper,
-                         '--shapersize', str(lut_resolution_shaper)]
+                args += [
+                    '--shaperspace', 'Utility - {0}'.format(odt_shaper),
+                    '--shapersize',
+                    str(lut_resolution_shaper)
+                ]
             else:
-                args += ['--shaperspace', odt_shaper,
-                         '--shapersize', str(lut_resolution_shaper)]
-            args += ['--cubesize', str(lut_resolution_3d)]
-            args += ['--format',
-                     'icc',
-                     os.path.join(baked_directory,
-                                  'photoshop',
-                                  '%s for %s.icc' % (odt_name, input_space))]
+                args += [
+                    '--shaperspace', odt_shaper, '--shapersize',
+                    str(lut_resolution_shaper)
+                ]
+            args += ['--cubesize', str(lut_resolution_3D)]
+            args += [
+                '--format', 'icc',
+                os.path.join(baked_directory, 'photoshop',
+                             '{0} for {1}.icc'.format(odt_name, input_space))
+            ]
 
-            bake_lut = Process(description='bake a LUT',
-                               cmd='ociobakelut',
-                               args=args)
+            bake_lut = Process(
+                description='bake a LUT', cmd='ociobakelut', args=args)
             bake_lut.execute()
 
         # *Flame*, *Lustre*
         for input_space in ['ACEScc', 'ACESproxy', 'ACEScct']:
             args = ['--iconfig', config_path, '-v']
             if prefix:
-                args += ['--inputspace', 'ACES - %s' % input_space]
-                args += ['--outputspace', 'Output - %s' % odt_name]
+                args += ['--inputspace', 'ACES - {0}'.format(input_space)]
+                args += ['--outputspace', 'Output - {0}'.format(odt_name)]
             else:
                 args += ['--inputspace', input_space]
                 args += ['--outputspace', odt_name]
-            args += ['--description',
-                     '%s - %s for %s data' % (
-                         odt_prefix, odt_name, input_space)]
+            args += [
+                '--description', '{0} - {1} for {2} data'.format(
+                    odt_prefix, odt_name, input_space)
+            ]
             if prefix:
-                args += ['--shaperspace', 'Utility - %s' % odt_shaper,
-                         '--shapersize', str(lut_resolution_shaper)]
+                args += [
+                    '--shaperspace', 'Utility - {0}'.format(odt_shaper),
+                    '--shapersize',
+                    str(lut_resolution_shaper)
+                ]
             else:
-                args += ['--shaperspace', odt_shaper,
-                         '--shapersize', str(lut_resolution_shaper)]
-            args += ['--cubesize', str(lut_resolution_3d)]
+                args += [
+                    '--shaperspace', odt_shaper, '--shapersize',
+                    str(lut_resolution_shaper)
+                ]
+            args += ['--cubesize', str(lut_resolution_3D)]
 
-            fargs = ['--format',
-                     'flame',
-                     os.path.join(
-                         baked_directory,
-                         'flame',
-                         '%s for %s Flame.3dl' % (odt_name, input_space))]
-            bake_lut = Process(description='bake a LUT',
-                               cmd='ociobakelut',
-                               args=(args + fargs))
+            fargs = [
+                '--format', 'flame',
+                os.path.join(
+                    baked_directory, 'flame', '{0} for {1} Flame.3dl'.format(
+                        odt_name, input_space))
+            ]
+            bake_lut = Process(
+                description='bake a LUT',
+                cmd='ociobakelut',
+                args=(args + fargs))
             bake_lut.execute()
 
-            largs = ['--format',
-                     'lustre',
-                     os.path.join(
-                         baked_directory,
-                         'lustre',
-                         '%s for %s Lustre.3dl' % (odt_name, input_space))]
-            bake_lut = Process(description='bake a LUT',
-                               cmd='ociobakelut',
-                               args=(args + largs))
+            largs = [
+                '--format', 'lustre',
+                os.path.join(
+                    baked_directory, 'lustre', '{0} for {1} Lustre.3dl'.format(
+                        odt_name, input_space))
+            ]
+            bake_lut = Process(
+                description='bake a LUT',
+                cmd='ociobakelut',
+                args=(args + largs))
             bake_lut.execute()
 
         # *Maya*, *Houdini*
         for input_space in ['ACEScg', 'ACES2065-1']:
-            args = ['--iconfig', config_path,
-                    '-v']
+            args = ['--iconfig', config_path, '-v']
             if prefix:
-                args += ['--inputspace', 'ACES - %s' % input_space]
-                args += ['--outputspace', 'Output - %s' % odt_name]
+                args += ['--inputspace', 'ACES - {0}'.format(input_space)]
+                args += ['--outputspace', 'Output - {0}'.format(odt_name)]
             else:
                 args += ['--inputspace', input_space]
                 args += ['--outputspace', odt_name]
-            args += ['--description',
-                     '%s - %s for %s data' % (
-                         odt_prefix, odt_name, input_space)]
+            args += [
+                '--description', '{0} - {1} for {2} data'.format(
+                    odt_prefix, odt_name, input_space)
+            ]
             if input_space == 'ACEScg':
-                lin_shaper_name = '%s - AP1' % odt_shaper
+                lin_shaper_name = '{0} - AP1'.format(odt_shaper)
             else:
                 lin_shaper_name = odt_shaper
             if prefix:
-                lin_shaper_name = 'Utility - %s' % lin_shaper_name
-            args += ['--shaperspace', lin_shaper_name,
-                     '--shapersize', str(lut_resolution_shaper)]
+                lin_shaper_name = 'Utility - {0}'.format(lin_shaper_name)
+            args += [
+                '--shaperspace', lin_shaper_name, '--shapersize',
+                str(lut_resolution_shaper)
+            ]
 
-            args += ['--cubesize', str(lut_resolution_3d)]
+            args += ['--cubesize', str(lut_resolution_3D)]
 
-            margs = ['--format',
-                     'cinespace',
-                     os.path.join(
-                         baked_directory,
-                         'maya',
-                         '%s for %s Maya.csp' % (odt_name, input_space))]
-            bake_lut = Process(description='bake a LUT',
-                               cmd='ociobakelut',
-                               args=(args + margs))
+            margs = [
+                '--format', 'cinespace',
+                os.path.join(
+                    baked_directory, 'maya', '{0} for {1} Maya.csp'.format(
+                        odt_name, input_space))
+            ]
+            bake_lut = Process(
+                description='bake a LUT',
+                cmd='ociobakelut',
+                args=(args + margs))
             bake_lut.execute()
 
-            hargs = ['--format',
-                     'houdini',
-                     os.path.join(
-                         baked_directory,
-                         'houdini',
-                         '%s for %s Houdini.lut' % (odt_name, input_space))]
-            bake_lut = Process(description='bake a LUT',
-                               cmd='ociobakelut',
-                               args=(args + hargs))
+            hargs = [
+                '--format', 'houdini',
+                os.path.join(
+                    baked_directory, 'houdini',
+                    '{0} for {1} Houdini.lut'.format(odt_name, input_space))
+            ]
+            bake_lut = Process(
+                description='bake a LUT',
+                cmd='ociobakelut',
+                args=(args + hargs))
             bake_lut.execute()
 
 
@@ -1457,12 +1457,14 @@ def generate_config_directory(config_directory,
     dirs = [config_directory, lut_directory]
 
     if bake_secondary_luts:
-        dirs.extend([os.path.join(config_directory, 'baked'),
-                     os.path.join(config_directory, 'baked', 'flame'),
-                     os.path.join(config_directory, 'baked', 'photoshop'),
-                     os.path.join(config_directory, 'baked', 'houdini'),
-                     os.path.join(config_directory, 'baked', 'lustre'),
-                     os.path.join(config_directory, 'baked', 'maya')])
+        dirs.extend([
+            os.path.join(config_directory, 'baked'),
+            os.path.join(config_directory, 'baked', 'flame'),
+            os.path.join(config_directory, 'baked', 'photoshop'),
+            os.path.join(config_directory, 'baked', 'houdini'),
+            os.path.join(config_directory, 'baked', 'lustre'),
+            os.path.join(config_directory, 'baked', 'maya')
+        ])
 
     if custom_lut_dir:
         dirs.append(os.path.join(config_directory, 'custom'))
@@ -1475,8 +1477,8 @@ def generate_config_directory(config_directory,
 
 def generate_config(aces_ctl_directory,
                     config_directory,
-                    lut_resolution_1d=4096,
-                    lut_resolution_3d=64,
+                    lut_resolution_1D=4096,
+                    lut_resolution_3D=64,
                     bake_secondary_luts=True,
                     multiple_displays=False,
                     look_info=None,
@@ -1496,9 +1498,9 @@ def generate_config(aces_ctl_directory,
         The path to *ACES* *CTL* *transforms/ctl/utilities* directory.
     config_directory : str or unicode
         The directory that will hold the generated configuration and LUTs.
-    lut_resolution_1d : int, optional
+    lut_resolution_1D : int, optional
         The resolution of generated 1D LUTs.
-    lut_resolution_3d : int, optional
+    lut_resolution_3D : int, optional
         The resolution of generated 3D LUTs.
     bake_secondary_luts : bool, optional
         Whether or not to create directories for baked LUTs.
@@ -1542,13 +1544,11 @@ def generate_config(aces_ctl_directory,
     if copy_custom_luts:
         custom_lut_dir = os.path.join(config_directory, 'custom')
 
-    lut_directory = generate_config_directory(config_directory,
-                                              bake_secondary_luts,
-                                              custom_lut_dir)
-    lmt_info = aces.get_transforms_info(
-        aces_ctl_directory, 'lmt', False, 'LMT')
-    odt_info = aces.get_transforms_info(
-        aces_ctl_directory, 'odt', True, 'ODT')
+    lut_directory = generate_config_directory(
+        config_directory, bake_secondary_luts, custom_lut_dir)
+    lmt_info = aces.get_transforms_info(aces_ctl_directory, 'lmt', False,
+                                        'LMT')
+    odt_info = aces.get_transforms_info(aces_ctl_directory, 'odt', True, 'ODT')
     ssts_ot_info = aces.get_transforms_info(
         aces_ctl_directory, 'outputTransforms', False, 'RRTODT')
 
@@ -1557,15 +1557,9 @@ def generate_config(aces_ctl_directory,
     else:
         shaper_name = 'Log2 48 nits Shaper'
 
-    config_data = create_config_data(odt_info,
-                                     lmt_info,
-                                     ssts_ot_info,
-                                     shaper_name,
-                                     aces_ctl_directory,
-                                     lut_directory,
-                                     lut_resolution_1d,
-                                     lut_resolution_3d,
-                                     cleanup)
+    config_data = create_config_data(
+        odt_info, lmt_info, ssts_ot_info, shaper_name, aces_ctl_directory,
+        lut_directory, lut_resolution_1D, lut_resolution_3D, cleanup)
 
     if custom_output_info:
         print('\n')
@@ -1573,15 +1567,18 @@ def generate_config(aces_ctl_directory,
         for custom_output in custom_output_info:
             (custom_output_name, custom_output_working_colorspace_name,
              custom_output_lut, custom_output_cccid) = unpack_default(
-                custom_output, 4)
+                 custom_output, 4)
 
-            print('Adding %s to the odt_info struct' % custom_output_name)
+            print(
+                'Adding {0} to the odt_info struct'.format(custom_output_name))
 
-            odt_values = {'transformUserName': custom_output_name,
-                          'transformUserNamePrefix': 'Output',
-                          'transformHasFullLegalSwitch': False}
+            odt_values = {
+                'transformUserName': custom_output_name,
+                'transformUserNamePrefix': 'Output',
+                'transformHasFullLegalSwitch': False
+            }
 
-            odt_info['%s.ctl' % custom_output_name] = odt_values
+            odt_info['{0}.ctl'.format(custom_output_name)] = odt_values
 
         print('\n')
 
@@ -1590,40 +1587,42 @@ def generate_config(aces_ctl_directory,
 
         for custom_role_assignment in custom_role_info:
             (role, colorspace_name) = custom_role_assignment
-            print('Role overrride : %s - %s' % (role, colorspace_name))
+            print('Role overrride : {0} - {1}'.format(role, colorspace_name))
             config_data['roles'][role] = colorspace_name
 
         print('\n')
 
     print('Creating config - with prefixes, with aliases')
-    config = create_config(config_data,
-                           prefix=prefix_colorspaces_with_family_names,
-                           aliases=True,
-                           multiple_displays=multiple_displays,
-                           look_info=look_info,
-                           custom_output_info=custom_output_info,
-                           custom_lut_dir=custom_lut_dir)
+    config = create_config(
+        config_data,
+        prefix=prefix_colorspaces_with_family_names,
+        aliases=True,
+        multiple_displays=multiple_displays,
+        look_info=look_info,
+        custom_output_info=custom_output_info,
+        custom_lut_dir=custom_lut_dir)
     print('\n\n\n')
 
-    write_config(config,
-                 os.path.join(config_directory, 'config.ocio'))
+    write_config(config, os.path.join(config_directory, 'config.ocio'))
 
     if bake_secondary_luts:
-        generate_baked_LUTs(odt_info,
-                            shaper_name,
-                            os.path.join(config_directory, 'baked'),
-                            os.path.join(config_directory, 'config.ocio'),
-                            lut_resolution_3d,
-                            lut_resolution_1d,
-                            prefix=prefix_colorspaces_with_family_names)
+        generate_baked_LUTs(
+            odt_info,
+            shaper_name,
+            os.path.join(config_directory, 'baked'),
+            os.path.join(config_directory, 'config.ocio'),
+            lut_resolution_3D,
+            lut_resolution_1D,
+            prefix=prefix_colorspaces_with_family_names)
 
-        generate_baked_LUTs(ssts_ot_info,
-                            shaper_name,
-                            os.path.join(config_directory, 'baked'),
-                            os.path.join(config_directory, 'config.ocio'),
-                            lut_resolution_3d,
-                            lut_resolution_1d,
-                            prefix=prefix_colorspaces_with_family_names)
+        generate_baked_LUTs(
+            ssts_ot_info,
+            shaper_name,
+            os.path.join(config_directory, 'baked'),
+            os.path.join(config_directory, 'config.ocio'),
+            lut_resolution_3D,
+            lut_resolution_1D,
+            prefix=prefix_colorspaces_with_family_names)
 
     return True
 
@@ -1634,7 +1633,7 @@ def main():
     defined in the module.
     """
 
-    usage = '%prog [options]\n'
+    usage = '.format(prog) [options]\n'
     usage += '\n'
     usage += 'An OCIO config generation script for ACES 1.1\n'
     usage += '\n'
@@ -1710,8 +1709,6 @@ def main():
     look_info = []
 
     def look_info_callback(option, opt_str, value, parser):
-        # print('look_info_callback')
-        # print(option, opt_str, value, parser)
         if opt_str == '--addCustomLookCDL':
             look_info.append(value)
         elif opt_str == '--addCustomLookLUT':
@@ -1722,48 +1719,80 @@ def main():
             look_info.append([value[0], 'ACES - ACEScc', value[1]])
 
     def output_info_callback(option, opt_str, value, parser):
-        # print('output_info_callback')
-        # print(option, opt_str, value, parser)
         if opt_str == '--addCustomOutputLUT':
             custom_output_info.append(value)
 
     def role_info_callback(option, opt_str, value, parser):
-        # print('output_info_callback')
-        # print(option, opt_str, value, parser)
         if opt_str == '--addCustomRole':
             custom_role_info.append(value)
 
-    p = optparse.OptionParser(description='',
-                              prog='create_aces_config',
-                              version='create_aces_config 1.0',
-                              usage=usage)
-    p.add_option('--acesCTLDir', '-a', default=os.environ.get(
-        ACES_OCIO_CTL_DIRECTORY_ENVIRON, None))
-    p.add_option('--configDir', '-c', default=os.environ.get(
-        ACES_OCIO_CONFIGURATION_DIRECTORY_ENVIRON, None))
+    p = optparse.OptionParser(
+        description='',
+        prog='create_aces_config',
+        version='create_aces_config 1.0',
+        usage=usage)
+    p.add_option(
+        '--acesCTLDir',
+        '-a',
+        default=os.environ.get(ACES_OCIO_CTL_DIRECTORY_ENVIRON, None))
+    p.add_option(
+        '--configDir',
+        '-c',
+        default=os.environ.get(ACES_OCIO_CONFIGURATION_DIRECTORY_ENVIRON,
+                               None))
     p.add_option('--lutResolution1d', default=4096)
     p.add_option('--lutResolution3d', default=64)
     p.add_option('--dontBakeSecondaryLUTs', action='store_true', default=False)
     p.add_option('--keepTempImages', action='store_true', default=False)
 
-    p.add_option('--createMultipleDisplays', action='store_true',
-                 default=False)
+    p.add_option(
+        '--createMultipleDisplays', action='store_true', default=False)
 
-    p.add_option('--addCustomLookLUT', '', type='string', nargs=3,
-                 action='callback', callback=look_info_callback)
-    p.add_option('--addCustomLookCDL', '', type='string', nargs=4,
-                 action='callback', callback=look_info_callback)
-    p.add_option('--addACESLookLUT', '', type='string', nargs=2,
-                 action='callback', callback=look_info_callback)
-    p.add_option('--addACESLookCDL', '', type='string', nargs=3,
-                 action='callback', callback=look_info_callback)
+    p.add_option(
+        '--addCustomLookLUT',
+        '',
+        type='string',
+        nargs=3,
+        action='callback',
+        callback=look_info_callback)
+    p.add_option(
+        '--addCustomLookCDL',
+        '',
+        type='string',
+        nargs=4,
+        action='callback',
+        callback=look_info_callback)
+    p.add_option(
+        '--addACESLookLUT',
+        '',
+        type='string',
+        nargs=2,
+        action='callback',
+        callback=look_info_callback)
+    p.add_option(
+        '--addACESLookCDL',
+        '',
+        type='string',
+        nargs=3,
+        action='callback',
+        callback=look_info_callback)
     p.add_option('--copyCustomLUTs', action='store_true', default=False)
 
-    p.add_option('--addCustomOutputLUT', '', type='string', nargs=3,
-                 action='callback', callback=output_info_callback)
+    p.add_option(
+        '--addCustomOutputLUT',
+        '',
+        type='string',
+        nargs=3,
+        action='callback',
+        callback=output_info_callback)
 
-    p.add_option('--addCustomRole', '', type='string', nargs=2,
-                 action='callback', callback=role_info_callback)
+    p.add_option(
+        '--addCustomRole',
+        '',
+        type='string',
+        nargs=2,
+        action='callback',
+        callback=role_info_callback)
 
     p.add_option('--shaper', '-s', default='Log2')
 
@@ -1771,8 +1800,8 @@ def main():
 
     aces_ctl_directory = options.acesCTLDir
     config_directory = options.configDir
-    lut_resolution_1d = int(options.lutResolution1d)
-    lut_resolution_3d = int(options.lutResolution3d)
+    lut_resolution_1D = int(options.lutResolution1d)
+    lut_resolution_3D = int(options.lutResolution3d)
     bake_secondary_luts = not options.dontBakeSecondaryLUTs
     cleanup_temp_images = not options.keepTempImages
     multiple_displays = options.createMultipleDisplays
@@ -1780,7 +1809,7 @@ def main():
     shaper_base_name = options.shaper
     prefix = True
 
-    print('command line :\n%s\n' % ' '.join(sys.argv))
+    print('command line :\n{0}\n'.format(' '.join(sys.argv)))
 
     if look_info:
         print('custom look info')
@@ -1797,26 +1826,19 @@ def main():
     print('\n')
 
     assert aces_ctl_directory is not None, (
-        'process: No "%s" environment variable defined or no "ACES CTL" '
-        'directory specified' % ACES_OCIO_CTL_DIRECTORY_ENVIRON)
+        'process: No "{0}" environment variable defined or no "ACES CTL" '
+        'directory specified'.format(ACES_OCIO_CTL_DIRECTORY_ENVIRON))
 
     assert config_directory is not None, (
-        'process: No "%s" environment variable defined or no configuration '
-        'directory specified' % ACES_OCIO_CONFIGURATION_DIRECTORY_ENVIRON)
+        'process: No "{0}" environment variable defined or no configuration '
+        'directory specified'.format(ACES_OCIO_CONFIGURATION_DIRECTORY_ENVIRON)
+    )
 
-    return generate_config(aces_ctl_directory,
-                           config_directory,
-                           lut_resolution_1d,
-                           lut_resolution_3d,
-                           bake_secondary_luts,
-                           multiple_displays,
-                           look_info,
-                           custom_output_info,
-                           custom_role_info,
-                           copy_custom_luts,
-                           cleanup_temp_images,
-                           prefix,
-                           shaper_base_name)
+    return generate_config(
+        aces_ctl_directory, config_directory, lut_resolution_1D,
+        lut_resolution_3D, bake_secondary_luts, multiple_displays, look_info,
+        custom_output_info, custom_role_info, copy_custom_luts,
+        cleanup_temp_images, prefix, shaper_base_name)
 
 
 if __name__ == '__main__':

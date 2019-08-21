@@ -1741,7 +1741,7 @@ def main():
         default=os.environ.get(ACES_OCIO_CONFIGURATION_DIRECTORY_ENVIRON,
                                None))
     p.add_option('--lutResolution1d', default=4096)
-    p.add_option('--lutResolution3d', default=64)
+    p.add_option('--lutResolution3d', default=65)
     p.add_option('--dontBakeSecondaryLUTs', action='store_true', default=False)
     p.add_option('--keepTempImages', action='store_true', default=False)
 

@@ -8,7 +8,7 @@ description: An ACES config generated from python
 
 
 roles:
-  color_picking: Output - Rec.709
+  color_picking: Output - sRGB
   color_timing: ACES - ACEScc
   compositing_linear: ACES - ACEScg
   compositing_log: Input - ADX - ADX10
@@ -2373,14 +2373,14 @@ colorspaces:
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      ACES 1.0 Output - Rec.709 Output Transform
+      ACES 1.0 Output - sRGB Output Transform
       
-      ACES Transform ID : ODT.Academy.Rec709_100nits_dim.a1.0.3
+      ACES Transform ID : ODT.Academy.RGBmonitor_100nits_dim.a1.0.3
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
-    to_reference: !<ColorSpaceTransform> {src: Output - Rec.709, dst: ACES - ACES2065-1}
-    from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: Output - Rec.709}
+    to_reference: !<ColorSpaceTransform> {src: Output - sRGB, dst: ACES - ACES2065-1}
+    from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: Output - sRGB}
 
   - !<ColorSpace>
     name: Role - color_timing
@@ -4550,14 +4550,14 @@ colorspaces:
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      ACES 1.0 Output - Rec.709 Output Transform
+      ACES 1.0 Output - sRGB Output Transform
       
-      ACES Transform ID : ODT.Academy.Rec709_100nits_dim.a1.0.3
+      ACES Transform ID : ODT.Academy.RGBmonitor_100nits_dim.a1.0.3
     isdata: false
     allocation: uniform
     allocationvars: [0, 1]
-    to_reference: !<ColorSpaceTransform> {src: Output - Rec.709, dst: ACES - ACES2065-1}
-    from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: Output - Rec.709}
+    to_reference: !<ColorSpaceTransform> {src: Output - sRGB, dst: ACES - ACES2065-1}
+    from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: Output - sRGB}
 
   - !<ColorSpace>
     name: role_color_timing

@@ -1986,7 +1986,7 @@ def create_colorspaces(aces_ctl_directory, lut_directory, lut_resolution_1D,
 
     # TODO: Investigate if there is a way to retrieve these values from *CTL*.
     default_display = 'sRGB'
-    color_picking = 'Rec.709'
+    color_picking = 'sRGB'
 
     roles = {
         'color_picking': color_picking,

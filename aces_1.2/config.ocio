@@ -1306,6 +1306,30 @@ colorspaces:
     to_reference: !<MatrixTransform> {matrix: [0.752983, 0.14337, 0.103647, 0, 0.0217077, 1.01532, -0.0370265, 0, -0.00941605, 0.00337042, 1.00605, 0, 0, 0, 0, 1]}
 
   - !<ColorSpace>
+    name: Input - Sony - Linear - Venice S-Gamut3
+    family: Input/Sony
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      Linear - Venice S-Gamut3
+    isdata: false
+    allocation: lg2
+    allocationvars: [-8, 5, 0.00390625]
+    to_reference: !<MatrixTransform> {matrix: [0.79333, 0.0890786, 0.117592, 0, 0.0155811, 1.03271, -0.0482934, 0, -0.0188647, 0.0127694, 1.0061, 0, 0, 0, 0, 1]}
+
+  - !<ColorSpace>
+    name: Input - Sony - Linear - Venice S-Gamut3.Cine
+    family: Input/Sony
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      Linear - Venice S-Gamut3.Cine
+    isdata: false
+    allocation: lg2
+    allocationvars: [-8, 5, 0.00390625]
+    to_reference: !<MatrixTransform> {matrix: [0.674257, 0.220572, 0.105171, 0, -0.00931361, 1.10596, -0.0966453, 0, -0.0382091, -0.0179384, 1.05615, 0, 0, 0, 0, 1]}
+
+  - !<ColorSpace>
     name: Output - DCDM
     family: Output
     equalitygroup: ""
@@ -3660,6 +3684,30 @@ colorspaces:
     allocation: lg2
     allocationvars: [-8, 5, 0.00390625]
     to_reference: !<ColorSpaceTransform> {src: Input - Sony - Linear - S-Gamut3, dst: ACES - ACES2065-1}
+
+  - !<ColorSpace>
+    name: lin_venice_sgamut3
+    family: Utility/Aliases
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      Linear - Venice S-Gamut3
+    isdata: false
+    allocation: lg2
+    allocationvars: [-8, 5, 0.00390625]
+    to_reference: !<ColorSpaceTransform> {src: Input - Sony - Linear - Venice S-Gamut3, dst: ACES - ACES2065-1}
+
+  - !<ColorSpace>
+    name: lin_venice_sgamut3cine
+    family: Utility/Aliases
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      Linear - Venice S-Gamut3.Cine
+    isdata: false
+    allocation: lg2
+    allocationvars: [-8, 5, 0.00390625]
+    to_reference: !<ColorSpaceTransform> {src: Input - Sony - Linear - Venice S-Gamut3.Cine, dst: ACES - ACES2065-1}
 
   - !<ColorSpace>
     name: out_dcdm

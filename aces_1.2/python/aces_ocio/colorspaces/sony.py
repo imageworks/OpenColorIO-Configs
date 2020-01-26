@@ -225,6 +225,32 @@ def create_SLog(gamut, transfer_function, lut_directory, lut_resolution_1D,
             'direction':
             'forward'
         })
+    elif gamut == 'Venice S-Gamut3':
+        cs.to_reference_transforms.append({
+            'type':
+            'matrix',
+            'matrix':
+            mat44_from_mat33([
+                0.7933297411, 0.0890786256, 0.1175916333, 0.0155810585,
+                1.0327123069, -0.0482933654, -0.0188647478, 0.0127694121,
+                1.0060953358
+            ]),
+            'direction':
+            'forward'
+        })
+    elif gamut == 'Venice S-Gamut3.Cine':
+        cs.to_reference_transforms.append({
+            'type':
+            'matrix',
+            'matrix':
+            mat44_from_mat33([
+                0.6742570921, 0.2205717359, 0.1051711720, -0.0093136061,
+                1.1059588614, -0.0966452553, -0.0382090673, -0.0179383766,
+                1.0561474439
+            ]),
+            'direction':
+            'forward'
+        })
 
     cs.from_reference_transforms = []
     return cs
@@ -270,13 +296,23 @@ def create_colorspaces(lut_directory, lut_resolution_1D):
     colorspaces.append(s_log2_s_gamut_tungsten)
 
     # *S-Log3*
+    s_log3_s_gamut3 = create_SLog('S-Gamut3', 'S-Log3', lut_directory,
+                                  lut_resolution_1D, ['slog3_sgamut3'])
+    colorspaces.append(s_log3_s_gamut3)
+
     s_log3_s_gamut3Cine = create_SLog('S-Gamut3.Cine', 'S-Log3', lut_directory,
                                       lut_resolution_1D, ['slog3_sgamutcine'])
     colorspaces.append(s_log3_s_gamut3Cine)
 
-    s_log3_s_gamut3 = create_SLog('S-Gamut3', 'S-Log3', lut_directory,
-                                  lut_resolution_1D, ['slog3_sgamut3'])
-    colorspaces.append(s_log3_s_gamut3)
+    s_log3_venice_s_gamut3 = create_SLog('Venice S-Gamut3', 'S-Log3',
+                                         lut_directory, lut_resolution_1D,
+                                         ['slog3_venice_sgamut3'])
+    colorspaces.append(s_log3_venice_s_gamut3)
+
+    s_log3_venice_s_gamut3Cine = create_SLog('Venice S-Gamut3.Cine', 'S-Log3',
+                                             lut_directory, lut_resolution_1D,
+                                             ['slog3_venice_sgamutcine'])
+    colorspaces.append(s_log3_venice_s_gamut3Cine)
 
     # Linearization Only
     s_log1 = create_SLog('', 'S-Log1', lut_directory, lut_resolution_1D,
@@ -311,5 +347,14 @@ def create_colorspaces(lut_directory, lut_resolution_1D):
     s_gamut3 = create_SLog('S-Gamut3', '', lut_directory, lut_resolution_1D,
                            ['lin_sgamut3'])
     colorspaces.append(s_gamut3)
+
+    venice_s_gamut3 = create_SLog('Venice S-Gamut3', '', lut_directory,
+                                  lut_resolution_1D, ['lin_venice_sgamut3'])
+    colorspaces.append(venice_s_gamut3)
+
+    venice_s_gamut3Cine = create_SLog('Venice S-Gamut3.Cine', '',
+                                      lut_directory, lut_resolution_1D,
+                                      ['lin_venice_sgamut3cine'])
+    colorspaces.append(venice_s_gamut3Cine)
 
     return colorspaces

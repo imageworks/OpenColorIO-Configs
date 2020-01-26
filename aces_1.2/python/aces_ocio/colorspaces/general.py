@@ -157,7 +157,7 @@ def create_transfer_colorspace(name='transfer',
     cs.allocation_vars = [0, 1]
 
     # Sampling the transfer function.
-    data = array.array('f', '\0' * lut_resolution_1D * 4)
+    data = array.array('f', b'\0' * lut_resolution_1D * 4)
     for c in range(lut_resolution_1D):
         data[c] = transfer_function(c / (lut_resolution_1D - 1))
 
@@ -246,7 +246,7 @@ def create_matrix_plus_transfer_colorspace(
     cs.allocation_vars = [0, 1]
 
     # Sampling the transfer function.
-    data = array.array('f', '\0' * lut_resolution_1D * 4)
+    data = array.array('f', b'\0' * lut_resolution_1D * 4)
     for c in range(lut_resolution_1D):
         data[c] = transfer_function(c / (lut_resolution_1D - 1))
 

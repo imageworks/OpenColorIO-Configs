@@ -7,6 +7,7 @@ Defines objects creating the *ACES* configuration.
 from __future__ import division
 
 import copy
+import functools
 import optparse
 import os
 import shutil
@@ -24,7 +25,7 @@ from aces_ocio.colorspaces import sony
 from aces_ocio.process import Process
 
 from aces_ocio.utilities import (ColorSpace, colorspace_prefixed_name, compact,
-                                 replace, unpack_default)
+                                 replace, unpack_default, cmp)
 
 __author__ = 'ACES Developers'
 __copyright__ = 'Copyright (C) 2014 - 2016 - ACES Developers'
@@ -422,7 +423,7 @@ def add_look(config, look, custom_lut_dir, reference_name, config_data):
 
     config_data['colorSpaces'].append(colorspace)
 
-    print('')
+    print('\n')
 
 
 def add_looks_to_views(looks,
@@ -624,7 +625,7 @@ def add_custom_output(custom_output,
         print('Making {0} the default Display'.format(custom_output_name))
         config_data['defaultDisplay'] = custom_output_name
 
-    print('')
+    print('\n')
 
 
 def create_config(config_data,
@@ -720,7 +721,7 @@ def create_config(config_data,
             alias_colorspaces.append(
                 [reference_data, reference_data, reference_data.aliases])
 
-    print('')
+    print('\n')
 
     if look_info:
         print('Adding looks')
@@ -734,7 +735,7 @@ def create_config(config_data,
         add_looks_to_views(look_info, reference_data.name, config_data,
                            multiple_displays)
 
-        print('')
+        print('\n')
 
     if custom_output_info:
         print('Adding custom output transforms')
@@ -743,13 +744,14 @@ def create_config(config_data,
             add_custom_output(custom_output, custom_lut_dir, reference_data,
                               config_data)
 
-        print('')
+        print('\n')
 
     print('Adding regular colorspaces')
 
     for colorspace in sorted(
             config_data['colorSpaces'],
-            cmp=lambda x, y: cmp(x.family.lower(), y.family.lower())):
+            key=functools.cmp_to_key(
+                lambda x, y: cmp(x.family.lower(), y.family.lower()))):
         # Adding the colorspace *Family* into the name which helps with
         # applications that present colorspaces as one a flat list.
         if prefix:
@@ -799,9 +801,9 @@ def create_config(config_data,
                 alias_colorspaces.append(
                     [reference_data, colorspace, colorspace.aliases])
 
-        print('')
+        print('\n')
 
-    print('')
+    print('\n')
 
     # Adding roles early so that alias colorspaces can be created
     # with roles names before remaining colorspace aliases are added
@@ -903,7 +905,7 @@ def create_config(config_data,
                 add_colorspace_aliases(config, reference_data, role_colorspace,
                                        [role_name_alias2], 'Utility/Roles')
 
-    print('')
+    print('\n')
 
     # Adding alias colorspaces at the end as some applications use
     # colorspaces definitions order of the configuration to order
@@ -916,7 +918,7 @@ def create_config(config_data,
         add_colorspace_aliases(config, reference, colorspace, aliases,
                                'Utility/Aliases')
 
-    print('')
+    print('\n')
 
     print('Adding the diplays and views')
 
@@ -1042,7 +1044,7 @@ def create_config(config_data,
     config.setActiveDisplays(','.join(sorted(displays)))
     config.setActiveViews(','.join(views))
 
-    print('')
+    print('\n')
 
     # Ensuring the configuration is valid.
     config.sanityCheck()

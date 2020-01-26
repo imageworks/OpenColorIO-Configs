@@ -8,6 +8,7 @@ formats.
 from __future__ import division
 
 import array
+import numpy as np
 import os
 import re
 
@@ -77,10 +78,10 @@ def generate_1D_LUT_image(ramp_1d_path,
     spec.height = 1
     spec.nchannels = 3
 
-    ramp.open(ramp_1d_path, spec, oiio.Create)
+    ramp.open(ramp_1d_path, spec)
 
     data = array.array('f',
-                       '\0' * spec.width * spec.height * spec.nchannels * 4)
+                       b'\0' * spec.width * spec.height * spec.nchannels * 4)
     for i in range(resolution):
         value = float(i) / (resolution - 1) * (
             max_value - min_value) + min_value
@@ -88,7 +89,7 @@ def generate_1D_LUT_image(ramp_1d_path,
         data[i * spec.nchannels + 1] = value
         data[i * spec.nchannels + 2] = value
 
-    ramp.write_image(spec.format, data)
+    ramp.write_image(data)
     ramp.close()
 
 
@@ -123,6 +124,10 @@ def write_SPI_1D(filename,
         The number of channels in the data to actually write.
     """
 
+    data = np.squeeze(data)
+    if data.ndim == 1:
+        data = data[..., np.newaxis]
+
     # May want to use fewer components than there are channels in the data
     # Most commonly used for single channel LUTs
     components = min(3, components, channels)
@@ -136,7 +141,7 @@ def write_SPI_1D(filename,
         for i in range(0, entries):
             entry = ''
             for j in range(0, components):
-                entry = '{0} {1:.10e}'.format(entry, data[i * channels + j])
+                entry = '{0} {1:.10e}'.format(entry, data[i, j])
             fp.write('{0}\n'.format(entry))
         fp.write('}\n')
 
@@ -168,6 +173,10 @@ def write_CSP_1D(filename,
     components : int, optional
         The number of channels in the data to actually write.
     """
+
+    data = np.squeeze(data)
+    if data.ndim == 1:
+        data = data[..., np.newaxis]
 
     # May want to use fewer components than there are channels in the data
     # Most commonly used for single channel LUTs
@@ -238,6 +247,10 @@ def write_CTL_1D(filename,
     components : int, optional
         The number of channels in the data to actually write.
     """
+
+    data = np.squeeze(data)
+    if data.ndim == 1:
+        data = data[..., np.newaxis]
 
     # May want to use fewer components than there are channels in the data
     # Most commonly used for single channel LUTs
@@ -745,7 +758,7 @@ def correct_LUT_image(transformed_lut_image, corrected_lut_image,
         correct.open(corrected_lut_image, correct_spec, oiio.Create)
 
         dest_data = array.array(
-            'f', ('\0' * correct_spec.width * correct_spec.height *
+            'f', (b'\0' * correct_spec.width * correct_spec.height *
                   correct_spec.nchannels * 4))
         for j in range(0, correct_spec.height):
             for i in range(0, correct_spec.width):

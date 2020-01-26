@@ -132,7 +132,7 @@ def create_LogC(gamut, transfer_function, exposure_index, lut_directory,
     cs.to_reference_transforms = []
 
     if transfer_function == 'V3 LogC':
-        data = array.array('f', '\0' * lut_resolution_1D * 4)
+        data = array.array('f', b'\0' * lut_resolution_1D * 4)
         for c in range(lut_resolution_1D):
             data[c] = normalized_LogC_to_linear(c / (lut_resolution_1D - 1),
                                                 int(exposure_index))

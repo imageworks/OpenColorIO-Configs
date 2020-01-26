@@ -83,7 +83,7 @@ def create_VLog(gamut, transfer_function, lut_directory, lut_resolution_1D,
     cs.to_reference_transforms = []
 
     if transfer_function == 'V-Log':
-        data = array.array('f', '\0' * lut_resolution_1D * 4)
+        data = array.array('f', b'\0' * lut_resolution_1D * 4)
         for c in range(lut_resolution_1D):
             data[c] = VLog_to_linear(float(c) / (lut_resolution_1D - 1))
 

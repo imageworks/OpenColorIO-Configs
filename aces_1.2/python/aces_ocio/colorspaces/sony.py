@@ -115,7 +115,7 @@ def create_SLog(gamut, transfer_function, lut_directory, lut_resolution_1D,
     cs.to_reference_transforms = []
 
     if transfer_function == 'S-Log1':
-        data = array.array('f', '\0' * lut_resolution_1D * 4)
+        data = array.array('f', b'\0' * lut_resolution_1D * 4)
         for c in range(lut_resolution_1D):
             data[c] = SLog1_to_linear(1023 * c / (lut_resolution_1D - 1))
 
@@ -130,7 +130,7 @@ def create_SLog(gamut, transfer_function, lut_directory, lut_resolution_1D,
             'direction': 'forward'
         })
     elif transfer_function == 'S-Log2':
-        data = array.array('f', '\0' * lut_resolution_1D * 4)
+        data = array.array('f', b'\0' * lut_resolution_1D * 4)
         for c in range(lut_resolution_1D):
             data[c] = SLog2_to_linear(1023 * c / (lut_resolution_1D - 1))
 
@@ -145,7 +145,7 @@ def create_SLog(gamut, transfer_function, lut_directory, lut_resolution_1D,
             'direction': 'forward'
         })
     elif transfer_function == 'S-Log3':
-        data = array.array('f', '\0' * lut_resolution_1D * 4)
+        data = array.array('f', b'\0' * lut_resolution_1D * 4)
         for c in range(lut_resolution_1D):
             data[c] = SLog3_to_linear(1023 * c / (lut_resolution_1D - 1))
 

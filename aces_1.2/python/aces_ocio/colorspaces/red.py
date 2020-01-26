@@ -110,12 +110,12 @@ def create_REDLog_film(gamut,
     if transfer_function:
         if transfer_function == 'REDlogFilm':
             lut_name = "CineonLog"
-            data = array.array('f', '\0' * lut_resolution_1D * 4)
+            data = array.array('f', b'\0' * lut_resolution_1D * 4)
             for c in range(lut_resolution_1D):
                 data[c] = Cineon_to_linear(1023 * c / (lut_resolution_1D - 1))
         elif transfer_function == 'REDLog3G10':
             lut_name = "REDLog3G10"
-            data = array.array('f', '\0' * lut_resolution_1D * 4)
+            data = array.array('f', b'\0' * lut_resolution_1D * 4)
             for c in range(lut_resolution_1D):
                 data[c] = Log3G10_to_linear(1023 * c / (lut_resolution_1D - 1))
 

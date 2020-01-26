@@ -8,7 +8,7 @@ from __future__ import division
 
 import copy
 import math
-import numpy
+import numpy as np
 import os
 import pprint
 import shutil
@@ -474,7 +474,7 @@ def create_ADX(lut_directory, bit_depth=10, name='ADX'):
     # Copied from *Alex Fry*'s *adx_cid_to_rle.py*
     def create_CID_to_RLE_LUT():
         def interpolate_1d(x, xp, fp):
-            return numpy.interp(x, xp, fp)
+            return np.interp(x, xp, fp)
 
         LUT_1D_XP = [
             -0.190000000000000, 0.010000000000000, 0.028000000000000,
@@ -1414,7 +1414,7 @@ def create_LMTs(aces_ctl_directory, lut_directory, lut_resolution_1D,
         shaper_input_scale_generic_log2, lmt_params
     ]
 
-    sorted_lmts = sorted(iter(lmt_info.items()), key=lambda x: x[1])
+    sorted_lmts = sorted(lmt_info.items(), key=lambda x: tuple(x[1].items()))
     print(sorted_lmts)
     for lmt in sorted_lmts:
         lmt_name, lmt_values = lmt
@@ -1692,7 +1692,7 @@ def create_output_transforms(aces_ctl_directory, lut_directory,
         '48 nits', '4000 nits')]
 
     sorted_output_transforms = sorted(
-        iter(output_transform_info.items()), key=lambda x: x[1])
+        iter(output_transform_info.items()), key=lambda x: tuple(x[1].items()))
 
     for output_transform in sorted_output_transforms:
         output_transform_name, output_transform_values = output_transform
@@ -1754,7 +1754,7 @@ def get_transform_info(ctl_transform):
          Full / Legal switch and whether it is *SSTS* based.
     """
 
-    with open(ctl_transform, 'rb') as fp:
+    with open(ctl_transform, 'r') as fp:
         lines = fp.readlines()
 
     # Retrieving the *transform ID* and *User Name*.

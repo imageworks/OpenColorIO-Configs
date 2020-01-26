@@ -154,9 +154,9 @@ def generate_comparison_images(aces_ctl_directory,
         if specific_odts and odt_name not in specific_odts:
             continue
 
-        print('')
+        print('\n')
         print('Output Transform - {0}'.format(odt_name))
-        print('')
+        print('\n')
 
         # Forward Output Transform
         # Generate difference images for the forward Output Transform

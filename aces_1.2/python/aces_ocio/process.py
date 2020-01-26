@@ -38,7 +38,7 @@ def read_text(text_file):
     if not text_file:
         return
 
-    with open(text_file, 'rb') as fp:
+    with open(text_file, 'r') as fp:
         text = (fp.read())
 
     return text
@@ -383,10 +383,10 @@ class Process:
 
         if self.echo:
             if sp:
-                print('\n{0} : {1}\n'.format(self.__class__,
+                print('\n{0} : {1}\n'.format(self.__class__.__name__,
                                              sp.list2cmdline(cmdargs)))
             else:
-                print('\n{0} : {1}\n'.format(self.__class__,
+                print('\n{0} : {1}\n'.format(self.__class__.__name__,
                                              ' '.join(cmdargs)))
 
         process = None
@@ -404,7 +404,7 @@ class Process:
                     tmp_wrapper = os.path.join(self.cwd, 'process.bat')
                     write_text(cmd, tmp_wrapper)
                     print('{0} : Running process through wrapper {1}\n'.format(
-                        self.__class__, tmp_wrapper))
+                        self.__class__.__name__, tmp_wrapper))
                     process = sp.Popen(
                         [tmp_wrapper],
                         stdout=sp.PIPE,
@@ -693,13 +693,15 @@ class ProcessList(Process):
                     except:
                         print(
                             '{0} : caught exception in child class {1}'.format(
-                                self.__class__, child.__class__))
+                                self.__class__.__name__,
+                                child.__class__.__name__))
                         traceback.print_exc()
                         child.status = -1
 
                     if self.blocking and child.status != 0:
                         print('{0} : child class {1} finished with an error'.
-                              format(self.__class__, child.__class__))
+                              format(self.__class__.__name__,
+                                     child.__class__.__name__))
                         self.status = -1
                         break
 

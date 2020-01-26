@@ -1306,74 +1306,6 @@ colorspaces:
     to_reference: !<MatrixTransform> {matrix: [0.752983, 0.14337, 0.103647, 0, 0.0217077, 1.01532, -0.0370265, 0, -0.00941605, 0.00337042, 1.00605, 0, 0, 0, 0, 1]}
 
   - !<ColorSpace>
-    name: Output - DCDM (P3D60 Limited)
-    family: Output
-    equalitygroup: ""
-    bitdepth: 32f
-    description: |
-      ACES 1.0 Output - DCDM (P3D60 Limited) Output Transform
-      
-      ACES Transform ID : ODT.Academy.DCDM_P3D60.a1.0.3
-    isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
-    from_reference: !<GroupTransform>
-      children:
-        - !<FileTransform> {src: Log2_48_nits_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
-        - !<FileTransform> {src: Log2_48_nits_Shaper.RRT.DCDM__P3D60_Limited_.spi3d, interpolation: tetrahedral}
-
-  - !<ColorSpace>
-    name: Output - P3D65 (Rec.709 Limited)
-    family: Output
-    equalitygroup: ""
-    bitdepth: 32f
-    description: |
-      ACES 1.0 Output - P3D65 (Rec.709 Limited) Output Transform
-      
-      ACES Transform ID : ODT.Academy.P3D65_709limit_48nits.a1.1
-    isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
-    from_reference: !<GroupTransform>
-      children:
-        - !<FileTransform> {src: Log2_48_nits_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
-        - !<FileTransform> {src: Log2_48_nits_Shaper.RRT.P3D65__Rec.709_Limited_.spi3d, interpolation: tetrahedral}
-
-  - !<ColorSpace>
-    name: Output - Rec.2020 (P3D65 Limited)
-    family: Output
-    equalitygroup: ""
-    bitdepth: 32f
-    description: |
-      ACES 1.0 Output - Rec.2020 (P3D65 Limited) Output Transform
-      
-      ACES Transform ID : ODT.Academy.Rec2020_100nits.a1.1
-    isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
-    from_reference: !<GroupTransform>
-      children:
-        - !<FileTransform> {src: Log2_48_nits_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
-        - !<FileTransform> {src: Log2_48_nits_Shaper.RRT.Rec.2020__P3D65_Limited_.spi3d, interpolation: tetrahedral}
-
-  - !<ColorSpace>
-    name: Output - Rec.2020 (Rec.709 Limited)
-    family: Output
-    equalitygroup: ""
-    bitdepth: 32f
-    description: |
-      ACES 1.0 Output - Rec.2020 (Rec.709 Limited) Output Transform
-      
-      ACES Transform ID : ODT.Academy.Rec2020_Rec709limited_100nits.a1.1
-    isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
-    from_reference: !<GroupTransform>
-      children:
-        - !<FileTransform> {src: Log2_48_nits_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
-        - !<FileTransform> {src: Log2_48_nits_Shaper.RRT.Rec.2020__Rec.709_Limited_.spi3d, interpolation: tetrahedral}
-
-  - !<ColorSpace>
     name: Output - DCDM
     family: Output
     equalitygroup: ""
@@ -1393,6 +1325,23 @@ colorspaces:
       children:
         - !<FileTransform> {src: Log2_48_nits_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
         - !<FileTransform> {src: Log2_48_nits_Shaper.RRT.DCDM.spi3d, interpolation: tetrahedral}
+
+  - !<ColorSpace>
+    name: Output - DCDM (P3D60 Limited)
+    family: Output
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      ACES 1.0 Output - DCDM (P3D60 Limited) Output Transform
+      
+      ACES Transform ID : ODT.Academy.DCDM_P3D60.a1.0.3
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    from_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: Log2_48_nits_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
+        - !<FileTransform> {src: Log2_48_nits_Shaper.RRT.DCDM__P3D60_Limited_.spi3d, interpolation: tetrahedral}
 
   - !<ColorSpace>
     name: Output - DCDM (P3D65 Limited)
@@ -1479,6 +1428,23 @@ colorspaces:
         - !<FileTransform> {src: Log2_48_nits_Shaper.RRT.P3D65__D60_simulation_.spi3d, interpolation: tetrahedral}
 
   - !<ColorSpace>
+    name: Output - P3D65 (Rec.709 Limited)
+    family: Output
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      ACES 1.0 Output - P3D65 (Rec.709 Limited) Output Transform
+      
+      ACES Transform ID : ODT.Academy.P3D65_709limit_48nits.a1.1
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    from_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: Log2_48_nits_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
+        - !<FileTransform> {src: Log2_48_nits_Shaper.RRT.P3D65__Rec.709_Limited_.spi3d, interpolation: tetrahedral}
+
+  - !<ColorSpace>
     name: Output - P3-DCI (D60 simulation)
     family: Output
     equalitygroup: ""
@@ -1540,6 +1506,40 @@ colorspaces:
       children:
         - !<FileTransform> {src: Log2_48_nits_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
         - !<FileTransform> {src: Log2_48_nits_Shaper.RRT.Rec.2020.spi3d, interpolation: tetrahedral}
+
+  - !<ColorSpace>
+    name: Output - Rec.2020 (P3D65 Limited)
+    family: Output
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      ACES 1.0 Output - Rec.2020 (P3D65 Limited) Output Transform
+      
+      ACES Transform ID : ODT.Academy.Rec2020_100nits.a1.1
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    from_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: Log2_48_nits_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
+        - !<FileTransform> {src: Log2_48_nits_Shaper.RRT.Rec.2020__P3D65_Limited_.spi3d, interpolation: tetrahedral}
+
+  - !<ColorSpace>
+    name: Output - Rec.2020 (Rec.709 Limited)
+    family: Output
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      ACES 1.0 Output - Rec.2020 (Rec.709 Limited) Output Transform
+      
+      ACES Transform ID : ODT.Academy.Rec2020_Rec709limited_100nits.a1.1
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    from_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: Log2_48_nits_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
+        - !<FileTransform> {src: Log2_48_nits_Shaper.RRT.Rec.2020__Rec.709_Limited_.spi3d, interpolation: tetrahedral}
 
   - !<ColorSpace>
     name: Output - Rec.709
@@ -2368,29 +2368,33 @@ colorspaces:
     to_reference: !<MatrixTransform> {matrix: [0.940437, -0.0183069, 0.0778696, 0, 0.0083787, 0.82866, 0.162961, 0, 0.000547126, -0.000883375, 1.00034, 0, 0, 0, 0, 1], direction: inverse}
 
   - !<ColorSpace>
-    name: Role - reference
-    family: Utility/Roles
-    equalitygroup: Raw
-    bitdepth: 32f
-    description: |
-      The Raw color space
-    isdata: true
-    allocation: uniform
-    allocationvars: [0, 1]
-
-  - !<ColorSpace>
-    name: Role - compositing_linear
+    name: Role - color_picking
     family: Utility/Roles
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      The ACEScg color space
+      ACES 1.0 Output - Rec.709 Output Transform
       
-      ACES Transform ID : ACEScsc.ACEScg_to_ACES
+      ACES Transform ID : ODT.Academy.Rec709_100nits_dim.a1.0.3
     isdata: false
-    allocation: lg2
-    allocationvars: [-8, 5, 0.00390625]
-    to_reference: !<ColorSpaceTransform> {src: ACES - ACEScg, dst: ACES - ACES2065-1}
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<ColorSpaceTransform> {src: Output - Rec.709, dst: ACES - ACES2065-1}
+    from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: Output - Rec.709}
+
+  - !<ColorSpace>
+    name: Role - color_timing
+    family: Utility/Roles
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      The ACEScc color space
+      
+      ACES Transform ID : ACEScsc.ACEScc_to_ACES
+    isdata: false
+    allocation: uniform
+    allocationvars: [-0.3584, 1.468]
+    to_reference: !<ColorSpaceTransform> {src: ACES - ACEScc, dst: ACES - ACES2065-1}
 
   - !<ColorSpace>
     name: Role - compositing_log
@@ -2407,18 +2411,49 @@ colorspaces:
     to_reference: !<ColorSpaceTransform> {src: Input - ADX - ADX10, dst: ACES - ACES2065-1}
 
   - !<ColorSpace>
-    name: Role - rendering
+    name: Role - data
+    family: Utility/Roles
+    equalitygroup: Raw
+    bitdepth: 32f
+    description: |
+      The Raw color space
+    isdata: true
+    allocation: uniform
+    allocationvars: [0, 1]
+
+  - !<ColorSpace>
+    name: Role - default
     family: Utility/Roles
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      The ACEScg color space
-      
-      ACES Transform ID : ACEScsc.ACEScg_to_ACES
+      The Academy Color Encoding System reference color space
     isdata: false
     allocation: lg2
     allocationvars: [-8, 5, 0.00390625]
-    to_reference: !<ColorSpaceTransform> {src: ACES - ACEScg, dst: ACES - ACES2065-1}
+
+  - !<ColorSpace>
+    name: Role - matte_paint
+    family: Utility/Roles
+    equalitygroup: sRGB - Texture
+    bitdepth: 32f
+    description: |
+      The sRGB - Texture color space
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: Utility - sRGB - Texture}
+
+  - !<ColorSpace>
+    name: Role - reference
+    family: Utility/Roles
+    equalitygroup: Raw
+    bitdepth: 32f
+    description: |
+      The Raw color space
+    isdata: true
+    allocation: uniform
+    allocationvars: [0, 1]
 
   - !<ColorSpace>
     name: Role - scene_linear
@@ -2449,67 +2484,32 @@ colorspaces:
     to_reference: !<ColorSpaceTransform> {src: ACES - ACEScc, dst: ACES - ACES2065-1}
 
   - !<ColorSpace>
-    name: Role - default
+    name: Role - compositing_linear
     family: Utility/Roles
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      The Academy Color Encoding System reference color space
+      The ACEScg color space
+      
+      ACES Transform ID : ACEScsc.ACEScg_to_ACES
     isdata: false
     allocation: lg2
     allocationvars: [-8, 5, 0.00390625]
+    to_reference: !<ColorSpaceTransform> {src: ACES - ACEScg, dst: ACES - ACES2065-1}
 
   - !<ColorSpace>
-    name: Role - data
-    family: Utility/Roles
-    equalitygroup: Raw
-    bitdepth: 32f
-    description: |
-      The Raw color space
-    isdata: true
-    allocation: uniform
-    allocationvars: [0, 1]
-
-  - !<ColorSpace>
-    name: Role - matte_paint
-    family: Utility/Roles
-    equalitygroup: sRGB - Texture
-    bitdepth: 32f
-    description: |
-      The sRGB - Texture color space
-    isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
-    from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: Utility - sRGB - Texture}
-
-  - !<ColorSpace>
-    name: Role - color_picking
+    name: Role - rendering
     family: Utility/Roles
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      ACES 1.0 Output - Rec.709 Output Transform
+      The ACEScg color space
       
-      ACES Transform ID : ODT.Academy.Rec709_100nits_dim.a1.0.3
+      ACES Transform ID : ACEScsc.ACEScg_to_ACES
     isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
-    to_reference: !<ColorSpaceTransform> {src: Output - Rec.709, dst: ACES - ACES2065-1}
-    from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: Output - Rec.709}
-
-  - !<ColorSpace>
-    name: Role - color_timing
-    family: Utility/Roles
-    equalitygroup: ""
-    bitdepth: 32f
-    description: |
-      The ACEScc color space
-      
-      ACES Transform ID : ACEScsc.ACEScc_to_ACES
-    isdata: false
-    allocation: uniform
-    allocationvars: [-0.3584, 1.468]
-    to_reference: !<ColorSpaceTransform> {src: ACES - ACEScc, dst: ACES - ACES2065-1}
+    allocation: lg2
+    allocationvars: [-8, 5, 0.00390625]
+    to_reference: !<ColorSpaceTransform> {src: ACES - ACEScg, dst: ACES - ACES2065-1}
 
   - !<ColorSpace>
     name: lin_ap0
@@ -3662,62 +3662,6 @@ colorspaces:
     to_reference: !<ColorSpaceTransform> {src: Input - Sony - Linear - S-Gamut3, dst: ACES - ACES2065-1}
 
   - !<ColorSpace>
-    name: out_dcdmp3d60limited
-    family: Utility/Aliases
-    equalitygroup: ""
-    bitdepth: 32f
-    description: |
-      ACES 1.0 Output - DCDM (P3D60 Limited) Output Transform
-      
-      ACES Transform ID : ODT.Academy.DCDM_P3D60.a1.0.3
-    isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
-    from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: Output - DCDM (P3D60 Limited)}
-
-  - !<ColorSpace>
-    name: out_p3d65rec709limited
-    family: Utility/Aliases
-    equalitygroup: ""
-    bitdepth: 32f
-    description: |
-      ACES 1.0 Output - P3D65 (Rec.709 Limited) Output Transform
-      
-      ACES Transform ID : ODT.Academy.P3D65_709limit_48nits.a1.1
-    isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
-    from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: Output - P3D65 (Rec.709 Limited)}
-
-  - !<ColorSpace>
-    name: out_rec2020p3d65limited
-    family: Utility/Aliases
-    equalitygroup: ""
-    bitdepth: 32f
-    description: |
-      ACES 1.0 Output - Rec.2020 (P3D65 Limited) Output Transform
-      
-      ACES Transform ID : ODT.Academy.Rec2020_100nits.a1.1
-    isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
-    from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: Output - Rec.2020 (P3D65 Limited)}
-
-  - !<ColorSpace>
-    name: out_rec2020rec709limited
-    family: Utility/Aliases
-    equalitygroup: ""
-    bitdepth: 32f
-    description: |
-      ACES 1.0 Output - Rec.2020 (Rec.709 Limited) Output Transform
-      
-      ACES Transform ID : ODT.Academy.Rec2020_Rec709limited_100nits.a1.1
-    isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
-    from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: Output - Rec.2020 (Rec.709 Limited)}
-
-  - !<ColorSpace>
     name: out_dcdm
     family: Utility/Aliases
     equalitygroup: ""
@@ -3731,6 +3675,20 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<ColorSpaceTransform> {src: Output - DCDM, dst: ACES - ACES2065-1}
     from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: Output - DCDM}
+
+  - !<ColorSpace>
+    name: out_dcdmp3d60limited
+    family: Utility/Aliases
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      ACES 1.0 Output - DCDM (P3D60 Limited) Output Transform
+      
+      ACES Transform ID : ODT.Academy.DCDM_P3D60.a1.0.3
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: Output - DCDM (P3D60 Limited)}
 
   - !<ColorSpace>
     name: out_dcdmp3d65limited
@@ -3793,6 +3751,20 @@ colorspaces:
     from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: Output - P3D65 (D60 simulation)}
 
   - !<ColorSpace>
+    name: out_p3d65rec709limited
+    family: Utility/Aliases
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      ACES 1.0 Output - P3D65 (Rec.709 Limited) Output Transform
+      
+      ACES Transform ID : ODT.Academy.P3D65_709limit_48nits.a1.1
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: Output - P3D65 (Rec.709 Limited)}
+
+  - !<ColorSpace>
     name: out_p3dcid60simulation
     family: Utility/Aliases
     equalitygroup: ""
@@ -3836,6 +3808,34 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<ColorSpaceTransform> {src: Output - Rec.2020, dst: ACES - ACES2065-1}
     from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: Output - Rec.2020}
+
+  - !<ColorSpace>
+    name: out_rec2020p3d65limited
+    family: Utility/Aliases
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      ACES 1.0 Output - Rec.2020 (P3D65 Limited) Output Transform
+      
+      ACES Transform ID : ODT.Academy.Rec2020_100nits.a1.1
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: Output - Rec.2020 (P3D65 Limited)}
+
+  - !<ColorSpace>
+    name: out_rec2020rec709limited
+    family: Utility/Aliases
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      ACES 1.0 Output - Rec.2020 (Rec.709 Limited) Output Transform
+      
+      ACES Transform ID : ODT.Academy.Rec2020_Rec709limited_100nits.a1.1
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: Output - Rec.2020 (Rec.709 Limited)}
 
   - !<ColorSpace>
     name: out_rec709
@@ -4545,29 +4545,33 @@ colorspaces:
     to_reference: !<ColorSpaceTransform> {src: Utility - Look - Blue Light Artifact Fix, dst: ACES - ACES2065-1}
 
   - !<ColorSpace>
-    name: role_reference
-    family: Utility/Aliases
-    equalitygroup: Raw
-    bitdepth: 32f
-    description: |
-      The Raw color space
-    isdata: true
-    allocation: uniform
-    allocationvars: [0, 1]
-
-  - !<ColorSpace>
-    name: role_compositing_linear
+    name: role_color_picking
     family: Utility/Aliases
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      The ACEScg color space
+      ACES 1.0 Output - Rec.709 Output Transform
       
-      ACES Transform ID : ACEScsc.ACEScg_to_ACES
+      ACES Transform ID : ODT.Academy.Rec709_100nits_dim.a1.0.3
     isdata: false
-    allocation: lg2
-    allocationvars: [-8, 5, 0.00390625]
-    to_reference: !<ColorSpaceTransform> {src: ACES - ACEScg, dst: ACES - ACES2065-1}
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<ColorSpaceTransform> {src: Output - Rec.709, dst: ACES - ACES2065-1}
+    from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: Output - Rec.709}
+
+  - !<ColorSpace>
+    name: role_color_timing
+    family: Utility/Aliases
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      The ACEScc color space
+      
+      ACES Transform ID : ACEScsc.ACEScc_to_ACES
+    isdata: false
+    allocation: uniform
+    allocationvars: [-0.3584, 1.468]
+    to_reference: !<ColorSpaceTransform> {src: ACES - ACEScc, dst: ACES - ACES2065-1}
 
   - !<ColorSpace>
     name: role_compositing_log
@@ -4584,18 +4588,49 @@ colorspaces:
     to_reference: !<ColorSpaceTransform> {src: Input - ADX - ADX10, dst: ACES - ACES2065-1}
 
   - !<ColorSpace>
-    name: role_rendering
+    name: role_data
+    family: Utility/Aliases
+    equalitygroup: Raw
+    bitdepth: 32f
+    description: |
+      The Raw color space
+    isdata: true
+    allocation: uniform
+    allocationvars: [0, 1]
+
+  - !<ColorSpace>
+    name: role_default
     family: Utility/Aliases
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      The ACEScg color space
-      
-      ACES Transform ID : ACEScsc.ACEScg_to_ACES
+      The Academy Color Encoding System reference color space
     isdata: false
     allocation: lg2
     allocationvars: [-8, 5, 0.00390625]
-    to_reference: !<ColorSpaceTransform> {src: ACES - ACEScg, dst: ACES - ACES2065-1}
+
+  - !<ColorSpace>
+    name: role_matte_paint
+    family: Utility/Aliases
+    equalitygroup: sRGB - Texture
+    bitdepth: 32f
+    description: |
+      The sRGB - Texture color space
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: Utility - sRGB - Texture}
+
+  - !<ColorSpace>
+    name: role_reference
+    family: Utility/Aliases
+    equalitygroup: Raw
+    bitdepth: 32f
+    description: |
+      The Raw color space
+    isdata: true
+    allocation: uniform
+    allocationvars: [0, 1]
 
   - !<ColorSpace>
     name: role_scene_linear
@@ -4626,64 +4661,29 @@ colorspaces:
     to_reference: !<ColorSpaceTransform> {src: ACES - ACEScc, dst: ACES - ACES2065-1}
 
   - !<ColorSpace>
-    name: role_default
+    name: role_compositing_linear
     family: Utility/Aliases
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      The Academy Color Encoding System reference color space
+      The ACEScg color space
+      
+      ACES Transform ID : ACEScsc.ACEScg_to_ACES
     isdata: false
     allocation: lg2
     allocationvars: [-8, 5, 0.00390625]
+    to_reference: !<ColorSpaceTransform> {src: ACES - ACEScg, dst: ACES - ACES2065-1}
 
   - !<ColorSpace>
-    name: role_data
-    family: Utility/Aliases
-    equalitygroup: Raw
-    bitdepth: 32f
-    description: |
-      The Raw color space
-    isdata: true
-    allocation: uniform
-    allocationvars: [0, 1]
-
-  - !<ColorSpace>
-    name: role_matte_paint
-    family: Utility/Aliases
-    equalitygroup: sRGB - Texture
-    bitdepth: 32f
-    description: |
-      The sRGB - Texture color space
-    isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
-    from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: Utility - sRGB - Texture}
-
-  - !<ColorSpace>
-    name: role_color_picking
+    name: role_rendering
     family: Utility/Aliases
     equalitygroup: ""
     bitdepth: 32f
     description: |
-      ACES 1.0 Output - Rec.709 Output Transform
+      The ACEScg color space
       
-      ACES Transform ID : ODT.Academy.Rec709_100nits_dim.a1.0.3
+      ACES Transform ID : ACEScsc.ACEScg_to_ACES
     isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
-    to_reference: !<ColorSpaceTransform> {src: Output - Rec.709, dst: ACES - ACES2065-1}
-    from_reference: !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: Output - Rec.709}
-
-  - !<ColorSpace>
-    name: role_color_timing
-    family: Utility/Aliases
-    equalitygroup: ""
-    bitdepth: 32f
-    description: |
-      The ACEScc color space
-      
-      ACES Transform ID : ACEScsc.ACEScc_to_ACES
-    isdata: false
-    allocation: uniform
-    allocationvars: [-0.3584, 1.468]
-    to_reference: !<ColorSpaceTransform> {src: ACES - ACEScc, dst: ACES - ACES2065-1}
+    allocation: lg2
+    allocationvars: [-8, 5, 0.00390625]
+    to_reference: !<ColorSpaceTransform> {src: ACES - ACEScg, dst: ACES - ACES2065-1}

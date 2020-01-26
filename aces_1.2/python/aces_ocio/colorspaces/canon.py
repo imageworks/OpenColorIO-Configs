@@ -132,15 +132,15 @@ def create_CLog(gamut, transfer_function, lut_directory, lut_resolution_1D,
 
     if transfer_function:
         if transfer_function == 'Canon-Log':
-            data = array.array('f', '\0' * lut_resolution_1D * 4)
+            data = array.array('f', b'\0' * lut_resolution_1D * 4)
             for c in range(lut_resolution_1D):
                 data[c] = CLog_to_linear(1023 * c / (lut_resolution_1D - 1))
         elif transfer_function == 'Canon-Log2':
-            data = array.array('f', '\0' * lut_resolution_1D * 4)
+            data = array.array('f', b'\0' * lut_resolution_1D * 4)
             for c in range(lut_resolution_1D):
                 data[c] = CLog2_to_linear(1023 * c / (lut_resolution_1D - 1))
         elif transfer_function == 'Canon-Log3':
-            data = array.array('f', '\0' * lut_resolution_1D * 4)
+            data = array.array('f', b'\0' * lut_resolution_1D * 4)
             for c in range(lut_resolution_1D):
                 data[c] = CLog3_to_linear(1023 * c / (lut_resolution_1D - 1))
 

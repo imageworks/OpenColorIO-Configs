@@ -23,7 +23,7 @@ __status__ = 'Production'
 __all__ = [
     'ColorSpace', 'mat44_from_mat33', 'filter_words', 'files_walker',
     'replace', 'sanitize', 'compact', 'colorspace_prefixed_name',
-    'unpack_default'
+    'unpack_default', 'cmp'
 ]
 
 
@@ -290,3 +290,23 @@ def unpack_default(iterable, length=3, default=None):
 
     return itertools.islice(
         itertools.chain(iter(iterable), itertools.repeat(default)), length)
+
+
+def cmp(x, y):
+    """
+    Comparison function compatible with Python 2.
+
+    Parameters
+    ----------
+    x : object
+        Object to compare.
+    y : object
+        Object to compare.
+
+    Returns
+    -------
+    int
+        Comparison result.
+    """
+
+    return (x > y) - (x < y)

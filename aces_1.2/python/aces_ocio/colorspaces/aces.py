@@ -130,16 +130,16 @@ def create_ACEScc(aces_ctl_directory,
     cs.is_data = False
     cs.allocation_type = ocio.Constants.ALLOCATION_UNIFORM
     cs.allocation_vars = [min_value, max_value]
-    cs.aces_transform_id = 'ACEScsc.ACEScc_to_ACES'
+    cs.aces_transform_id = 'ACEScsc.Academy.ACEScc_to_ACES'
 
     ctls = [
         os.path.join(aces_ctl_directory, 'csc', 'ACEScc',
-                     'ACEScsc.ACEScc_to_ACES.ctl'),
+                     'ACEScsc.Academy.ACEScc_to_ACES.ctl'),
         # This transform gets back to the *AP1* primaries.
         # Useful as the 1d LUT is only covering the transfer function.
         # The primaries switch is covered by the matrix below:
         os.path.join(aces_ctl_directory, 'csc', 'ACEScg',
-                     'ACEScsc.ACES_to_ACEScg.ctl')
+                     'ACEScsc.Academy.ACES_to_ACEScg.ctl')
     ]
     lut = '{0}_to_linear.spi1d'.format(name)
 
@@ -216,11 +216,11 @@ def create_ACEScct(aces_ctl_directory,
     cs.is_data = False
     cs.allocation_type = ocio.Constants.ALLOCATION_UNIFORM
     cs.allocation_vars = [min_value, max_value]
-    cs.aces_transform_id = 'ACEScsc.ACEScct_to_ACES'
+    cs.aces_transform_id = 'ACEScsc.Academy.ACEScct_to_ACES'
 
     ctls = [
         os.path.join(aces_ctl_directory, 'csc', 'ACEScct',
-                     'ACEScsc.ACEScct_to_ACES.ctl')
+                     'ACEScsc.Academy.ACEScct_to_ACES.ctl')
     ]
 
     # Removing the ACES to ACEScg transform for ACEScct only.
@@ -238,7 +238,7 @@ def create_ACEScct(aces_ctl_directory,
     # os.path.join(aces_ctl_directory,
     #              'csc',
     #              'ACEScg',
-    #              'ACEScsc.ACES_to_ACEScg.ctl')]
+    #              'ACEScsc.Academy.ACES_to_ACEScg.ctl')]
 
     lut = '{0}_to_linear.spi1d'.format(name)
 
@@ -305,16 +305,16 @@ def create_ACESproxy(aces_ctl_directory,
     cs.family = 'ACES'
     cs.is_data = False
 
-    cs.aces_transform_id = 'ACEScsc.ACESproxy10i_to_ACES'
+    cs.aces_transform_id = 'ACEScsc.Academy.ACESproxy10i_to_ACES'
 
     ctls = [
         os.path.join(aces_ctl_directory, 'csc', 'ACESproxy',
-                     'ACEScsc.ACESproxy10i_to_ACES.ctl'),
+                     'ACEScsc.Academy.ACESproxy10i_to_ACES.ctl'),
         # This transform gets back to the *AP1* primaries.
         # Useful as the 1d LUT is only covering the transfer function.
         # The primaries switch is covered by the matrix below:
         os.path.join(aces_ctl_directory, 'csc', 'ACEScg',
-                     'ACEScsc.ACES_to_ACEScg.ctl')
+                     'ACEScsc.Academy.ACES_to_ACEScg.ctl')
     ]
     lut = '{0}_to_linear.spi1d'.format(name)
 
@@ -370,7 +370,7 @@ def create_ACEScg():
     cs.allocation_type = ocio.Constants.ALLOCATION_LG2
     cs.allocation_vars = [-8, 5, 0.00390625]
 
-    cs.aces_transform_id = 'ACEScsc.ACEScg_to_ACES'
+    cs.aces_transform_id = 'ACEScsc.Academy.ACEScg_to_ACES'
 
     cs.to_reference_transforms = []
 
@@ -430,7 +430,7 @@ def create_ADX(lut_directory, bit_depth=10, name='ADX'):
     cs.is_data = False
 
     if bit_depth == 10:
-        cs.aces_transform_id = 'ACEScsc.ADX10_to_ACES'
+        cs.aces_transform_id = 'ACEScsc.Academy.ADX10_to_ACES'
 
         cs.bit_depth = ocio.Constants.BIT_DEPTH_UINT10
         ADX_to_CDD = [
@@ -439,7 +439,7 @@ def create_ADX(lut_directory, bit_depth=10, name='ADX'):
         ]
         offset = [-95 / 500, -95 / 500, -95 / 500, 0]
     elif bit_depth == 16:
-        cs.aces_transform_id = 'ACEScsc.ADX16_to_ACES'
+        cs.aces_transform_id = 'ACEScsc.Academy.ADX16_to_ACES'
 
         cs.bit_depth = ocio.Constants.BIT_DEPTH_UINT16
         ADX_to_CDD = [

@@ -41,7 +41,7 @@ def create_matrix_colorspace(name='matrix',
                              to_reference_values=None,
                              aliases=None):
     """
-    Creates a colorspace that only uses *Matrix Transforms*.
+    Creates a colorspace expressed as a single or multiple *MatrixTransform*.
 
     Parameters
     ----------
@@ -59,7 +59,7 @@ def create_matrix_colorspace(name='matrix',
     Returns
     -------
     ColorSpace
-         A *Matrix Transform*-based colorspace.
+         A colorspace expressed as a single or multiple *MatrixTransform*.
     """
 
     if from_reference_values is None:
@@ -119,7 +119,7 @@ def create_transfer_colorspace(name='transfer',
                                lut_resolution_1D=1024,
                                aliases=None):
     """
-    Creates a colorspace that only uses transfer functions encoded as 1D LUTs.
+    Creates a colorspace expressed as a *FileTransform* transformation.
 
     Parameters
     ----------
@@ -139,7 +139,7 @@ def create_transfer_colorspace(name='transfer',
     Returns
     -------
     ColorSpace
-         A *LUT1D Transform*-based colorspace representing a transfer function.
+         A colorspace expressed as a *FileTransform* transformation.
     """
 
     if aliases is None:
@@ -152,7 +152,6 @@ def create_transfer_colorspace(name='transfer',
     cs.family = 'Utility'
     cs.is_data = False
 
-    # A linear space needs allocation variables.
     cs.allocation_type = ocio.Constants.ALLOCATION_UNIFORM
     cs.allocation_vars = [0, 1]
 
@@ -194,8 +193,8 @@ def create_matrix_plus_transfer_colorspace(
         to_reference_values=None,
         aliases=None):
     """
-    Creates a colorspace that uses transfer functions encoded as 1D LUTs and
-    matrix
+    Creates a colorspace expressed as a single or multiple *MatrixTransform*
+    and 1D LUT *FileTransform* transformations.
 
     Parameters
     ----------
@@ -221,8 +220,8 @@ def create_matrix_plus_transfer_colorspace(
     Returns
     -------
     ColorSpace
-         A *Matrx and LUT1D Transform*-based colorspace representing a transfer
-         function and matrix.
+         A colorspace expressed as a single or multiple *MatrixTransform* and
+         1D LUT *FileTransform* transformations.
     """
 
     if from_reference_values is None:
@@ -659,7 +658,7 @@ def create_colorspaces(lut_directory, lut_resolution_1D=1024):
     # -------------------------------------------------------------------------
     # Rec 709
     # -------------------------------------------------------------------------
-    # *sRGB* and *Rec 709* use the same gamut.
+    # *sRGB* and *Rec. 709* use the same primaries.
     cs = create_matrix_colorspace(
         'Linear - Rec.709',
         from_reference_values=[aces.ACES_AP0_TO_XYZ, XYZ_to_Rec709],

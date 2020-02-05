@@ -25,11 +25,12 @@ __status__ = 'Production'
 
 __all__ = [
     'create_matrix_colorspace', 'create_transfer_colorspace',
-    'create_matrix_plus_transfer_colorspace', 'linear_to_sRGB',
-    'sRGB_to_linear', 'linear_to_Rec709', 'Rec709_to_linear',
-    'linear_to_Rec2020_10bit', 'Rec2020_10bit_to_linear',
-    'linear_to_Rec2020_12bit', 'Rec2020_12bit_to_linear', 'linear_to_Rec1886',
-    'Rec1886_to_linear', 'create_colorspaces', 'create_raw'
+    'create_matrix_plus_transfer_colorspace', 'create_gamma_colorspace',
+    'create_matrix_plus_gamma_colorspace', 'linear_to_sRGB', 'sRGB_to_linear',
+    'linear_to_Rec709', 'Rec709_to_linear', 'linear_to_Rec2020_10bit',
+    'Rec2020_10bit_to_linear', 'linear_to_Rec2020_12bit',
+    'Rec2020_12bit_to_linear', 'linear_to_Rec1886', 'Rec1886_to_linear',
+    'create_colorspaces', 'create_raw'
 ]
 
 
@@ -292,6 +293,151 @@ def create_matrix_plus_transfer_colorspace(
             'path': lut,
             'interpolation': 'linear',
             'direction': 'forward'
+        })
+
+    return cs
+
+
+# -------------------------------------------------------------------------
+# *Gamma Function Transform*
+# -------------------------------------------------------------------------
+def create_gamma_colorspace(name='gamma', gamma_value=1.0, aliases=None):
+    """
+    Creates a colorspace expressed as an *ExponentTransform* transformation.
+
+    Parameters
+    ----------
+    name : str, optional
+        Aliases for this colorspace.
+    gamma_value : function, optional
+        The gamma value.
+    aliases : list of str
+        Aliases for this colorspace.
+
+    Returns
+    -------
+    ColorSpace
+         A colorspace expressed as an *ExponentTransform* transformation.
+    """
+
+    if aliases is None:
+        aliases = []
+
+    cs = ColorSpace(name)
+    cs.description = 'The {0} color space'.format(name)
+    cs.aliases = aliases
+    cs.equality_group = name
+    cs.family = 'Utility'
+    cs.is_data = False
+
+    # A linear space needs allocation variables.
+    cs.allocation_type = ocio.Constants.ALLOCATION_UNIFORM
+    cs.allocation_vars = [0, 1]
+
+    # Creating the *to_reference* transforms.
+    cs.to_reference_transforms = []
+    cs.to_reference_transforms.append({
+        'type':
+        'exponent',
+        'value': [gamma_value, gamma_value, gamma_value, 1]
+    })
+
+    # Creating the *from_reference* transforms.
+    cs.from_reference_transforms = []
+
+    return cs
+
+
+# -------------------------------------------------------------------------
+# *Gamma Function + Matrix Transform*
+# -------------------------------------------------------------------------
+def create_matrix_plus_gamma_colorspace(name='matrix_plus_gamma',
+                                        gamma_value=1.0,
+                                        from_reference_values=None,
+                                        to_reference_values=None,
+                                        aliases=None):
+    """
+    Creates a colorspace expressed as a single or multiple *MatrixTransform*
+    and an *ExponentTransform* transformations.
+
+    Parameters
+    ----------
+    name : str, optional
+        Aliases for this colorspace.
+    gamma_value : function, optional
+        The gamma value.
+    from_reference_values : list of matrices
+        List of matrices to convert from the reference colorspace to this
+        colorspace.
+    to_reference_values : list of matrices
+        List of matrices to convert to the reference colorspace from this
+        colorspace.
+    aliases : list of str
+        Aliases for this colorspace.
+
+    Returns
+    -------
+    ColorSpace
+        A colorspace expressed as a single or multiple *MatrixTransform* and an
+        *ExponentTransform* transformations.
+    """
+
+    if from_reference_values is None:
+        from_reference_values = []
+
+    if to_reference_values is None:
+        to_reference_values = []
+
+    if aliases is None:
+        aliases = []
+
+    cs = ColorSpace(name)
+    cs.description = 'The {0} color space'.format(name)
+    cs.aliases = aliases
+    cs.equality_group = name
+    cs.family = 'Utility'
+    cs.is_data = False
+
+    cs.allocation_type = ocio.Constants.ALLOCATION_UNIFORM
+    cs.allocation_vars = [0, 1]
+
+    # Creating the *to_reference* transforms.
+    cs.to_reference_transforms = []
+    if to_reference_values:
+        cs.to_reference_transforms.append({
+            'type':
+            'exponent',
+            'value': [gamma_value, gamma_value, gamma_value, 1]
+        })
+
+        for matrix in to_reference_values:
+            cs.to_reference_transforms.append({
+                'type':
+                'matrix',
+                'matrix':
+                mat44_from_mat33(matrix),
+                'direction':
+                'forward'
+            })
+
+    # Creating the *from_reference* transforms.
+    cs.from_reference_transforms = []
+    if from_reference_values:
+        for matrix in from_reference_values:
+            cs.from_reference_transforms.append({
+                'type':
+                'matrix',
+                'matrix':
+                mat44_from_mat33(matrix),
+                'direction':
+                'forward'
+            })
+
+        cs.from_reference_transforms.append({
+            'type':
+            'exponent',
+            'value':
+            [1.0 / gamma_value, 1.0 / gamma_value, 1.0 / gamma_value, 1]
         })
 
     return cs
@@ -684,6 +830,26 @@ def create_colorspaces(lut_directory, lut_resolution_1D=1024):
         lut_resolution_1D,
         from_reference_values=[aces.ACES_AP0_TO_XYZ, XYZ_to_Rec709],
         aliases=['rec709_camera'])
+    colorspaces.append(cs)
+
+    # *ACES* to *Rec.709* Primaries + Gamma 2.2*
+    cs = create_matrix_plus_gamma_colorspace(
+        'Gamma 2.2 - Rec.709 - Texture',
+        2.2,
+        from_reference_values=[aces.ACES_AP0_TO_XYZ, XYZ_to_Rec709],
+        aliases=['g22_rec709'])
+    cs.description = (
+        'The Gamma 2.2 - Rec.709 color space for importing certain textures.')
+    colorspaces.append(cs)
+
+    # *ACES* to *Rec.709* Primaries + Gamma 1.8*
+    cs = create_matrix_plus_gamma_colorspace(
+        'Gamma 1.8 - Rec.709 - Texture',
+        1.8,
+        from_reference_values=[aces.ACES_AP0_TO_XYZ, XYZ_to_Rec709],
+        aliases=['g18_rec709'])
+    cs.description = (
+        'The Gamma 1.8 - Rec.709 color space for importing certain textures.')
     colorspaces.append(cs)
 
     # -------------------------------------------------------------------------

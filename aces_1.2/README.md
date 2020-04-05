@@ -16,9 +16,9 @@ The latest documentation on the ACES transforms and specifications can be found 
 Colorspaces
 -
 
-Colorspaces in this configurations are grouped into the following families: ACES, ADX, Look, Output, Input, Utility, Aliases. Descriptions for the colorspaces in the different families are provided below.
+Colorspaces in this configurations are grouped into the following families: *ACES*, *ADX*, *Look*, *Output*, *Input*, *Utility*, *Aliases*. Descriptions for the colorspaces in the different families are provided below.
 
-For ease of use across a broader number of applications, the family name of each colorspace is pre-pended to the colorspace name when the configuration is authored. Those prefixes will be omitted in this document, but will show up when the configuration is loaded and used.
+For ease of use across a broader number of applications, the family name of each colorspace is prepended to the colorspace name when the configuration is authored. Those prefixes are omitted in this document, but will show up when the configuration is loaded and used.
 
 
 ### ACES
@@ -39,7 +39,7 @@ Colorspaces and transforms representing the core ACES working and interchange co
 
 ##### Technical information
 
-Transforms generated based on the [ACES CTL Transforms](https://github.com/ampas/aces-dev/tree/v1.2/transforms/ctl)
+The generated transforms are based on the [ACES CTL Transforms](https://github.com/ampas/aces-dev/tree/v1.2/transforms/ctl)
 
 
 ### Output
@@ -50,6 +50,9 @@ Transforms generated based on the [ACES CTL Transforms](https://github.com/ampas
 - DCDM (P3D60 Limited)
 - DCDM (P3D65 Limited)
 - P3-D60
+- P3-D65 ST2084 (1000 nits)
+- P3-D65 ST2084 (2000 nits)
+- P3-D65 ST2084 (4000 nits)
 - P3-DCI (D60 simulation)
 - P3-DCI (D65 simulation)
 - P3D65
@@ -71,13 +74,13 @@ Transforms generated based on the [ACES CTL Transforms](https://github.com/ampas
 
 ##### Description
 
-Colorspaces and transforms implementing the ACES Output Transforms. These colorspaces produce code values ready for display on hardware devices calibrated to the standard used to name the colorspace.
+Colorspaces and transforms implementing the ACES Output Transforms. These colorspaces produce code values ready for display on display devices calibrated to the standard used to name the colorspace.
 
 
 ##### Technical information
 
 - Transforms generated based on the [ACES CTL Transforms](https://github.com/ampas/aces-dev/tree/v1.2/transforms/ctl)
-- All transforms produce full-range output. Host applications should be used to apply an full-to-legal scaling needed.
+- All transforms produce full-range output. Host applications should be used to apply an full-to-legal scaling if required.
 
 
 ### Input
@@ -94,13 +97,14 @@ Colorspaces and transforms that implement the ACES Input Transforms. These color
 
 ##### Technical information
 
-References and descriptions are provided for each group of Input Transforms below.
+References and descriptions are provided for each group of Input Transforms below:
+
 - The colorspaces whose names include a transfer function and a gamut name are full implementations of ACES Input Transforms.
-    - Ex. The ARRI 'V3 LogC (EI160) - Wide Gamut' colorspace
-    - Ex. The RED 'REDlogFilm - DRAGONcolor2' colorspace
-    - Ex. The Canon 'Canon-Log - DCI-P3 Daylight' colorspace
-- The colorspaces starting with 'Linear - ' convert to or from a specific gamut but do not apply a transfer function.
-- The colorspaces starting with 'Curve - ' apply a transfer function but do not convert between gamuts.
+    - Ex. The ARRI `V3 LogC (EI160) - Wide Gamut` colorspace
+    - Ex. The RED `REDlogFilm - DRAGONcolor2` colorspace
+    - Ex. The Canon `Canon-Log - DCI-P3 Daylight` colorspace
+- The colorspaces starting with `Linear - ` convert to or from a specific gamut but do not apply a transfer function.
+- The colorspaces starting with `Curve - ` apply a transfer function but do not convert between gamuts.
 
 
 #### ADX
@@ -175,10 +179,10 @@ A collection of colorspaces that are used to facilitate the creation of LUTs and
 
 ##### Technical information
 
-- The 'Log2 xx nits Shaper' and 'Dolby PQ xx nits Shaper' spaces cover the linear range centered around 18% grey. The 48 nits spaces cover -7.2460688 stops (0.0011857) to +10.2739312 stops (222.8609442), effectively matching ACEScc. The 1000 nits spaces cover -12 stops to +10 stops. The 2000 nits spaces cover -12 stops to +11 stops. The 4000 nits spaces cover -12 stops to +12 stops.
+- The `Log2 xx nits Shaper` and `Dolby PQ xx nits Shaper` spaces cover the linear range centered around 18% grey. The 48 nits spaces cover -7.2460688 stops (0.0011857) to +10.2739312 stops (222.8609442), effectively matching ACEScc. The 1000 nits spaces cover -12 stops to +10 stops. The 2000 nits spaces cover -12 stops to +11 stops. The 4000 nits spaces cover -12 stops to +12 stops.
 - The LMT shaper spaces cover the linear range going from 10 stops below 18% grey (0.0001758) to 6.5 stops above 18% grey (16.2917402)
-- The colorspaces starting with 'Linear - ' convert to or from a specific gamut but do not apply a transfer function.
-- The colorspaces starting with 'Curve - ' apply a transfer function but do not convert between gamuts.
+- The colorspaces starting with `Linear - ` convert to or from a specific gamut but do not apply a transfer function.
+- The colorspaces starting with `Curve - ` apply a transfer function but do not convert between gamuts.
 
 
 #### Look
@@ -208,7 +212,7 @@ Transforms generated based on the [ACES CTL Transforms](https://github.com/ampas
 
 ##### Description
 
-The role colorspaces are aliases to the colorspaces used for the *OCIO* 'roles' functionality.
+The role colorspaces are aliases to the colorspaces used for the *OCIO* *roles* functionality.
 
 
 #### Aliases
@@ -225,15 +229,15 @@ Roles
 
 The standard *OCIO* roles are defined. They role assignments are:
 
-- **color_picking**: Output - Rec.709
-- **color_timing**: ACEScc
-- **compositing_log**: ADX10
-- **data**: Raw
-- **default**: ACES2065-1
-- **matte_paint**: ACEScc
-- **reference**: Raw
-- **scene_linear**: ACEScg
-- **texture_paint**: Raw
+- `color_picking`: Output - sRGB
+- `color_timing`: ACEScc
+- `compositing_log`: ADX10
+- `data`: Raw
+- `default`: ACES2065-1
+- `matte_paint`: ACEScc
+- `reference`: Raw
+- `scene_linear`: ACEScg
+- `texture_paint`: Raw
 
 Additionally, a number of colorspaces that are gaining wider adoption have been added to the config. Their names and assignment are:
 
@@ -246,36 +250,39 @@ Displays and Views
 
 The default config has one Display named **ACES**, which contains the following Views / colorspaces:
 
-- sRGB, colorspace: sRGB
-- DCDM, colorspace: DCDM
-- DCDM P3D60 Limited, colorspace: DCDM (P3D60 Limited)
-- DCDM P3D65 Limited, colorspace: DCDM (P3D65 Limited)
-- P3-D60, colorspace: P3-D60
-- P3-DCI D60 simulation, colorspace: P3-DCI (D60 simulation)
-- P3-DCI D65 simulation, colorspace: P3-DCI (D65 simulation)
-- P3D65, colorspace: P3D65
-- P3D65 D60 simulation, colorspace: P3D65 (D60 simulation)
-- P3D65 Rec.709 Limited, colorspace: P3D65 (Rec.709 Limited)
-- P3D65 ST2084 108 nits, colorspace: P3D65 ST2084 (108 nits)
-- Rec.2020, colorspace: Rec.2020
-- Rec.2020 P3D65 Limited, colorspace: Rec.2020 (P3D65 Limited)
-- Rec.2020 Rec.709 Limited, colorspace: Rec.2020 (Rec.709 Limited)
-- Rec.2020 HLG 1000 nits, colorspace: Rec.2020 HLG (1000 nits)
-- Rec.2020 ST2084 1000 nits, colorspace: Rec.2020 ST2084 (1000 nits)
-- Rec.2020 ST2084 2000 nits, colorspace: Rec.2020 ST2084 (2000 nits)
-- Rec.2020 ST2084 4000 nits, colorspace: Rec.2020 ST2084 (4000 nits)
-- Rec.709, colorspace: Rec.709
-- Rec.709 D60 sim., colorspace: Rec.709 (D60 sim.)
-- sRGB D60 sim., colorspace: sRGB (D60 sim.)
-- Raw, colorspace: Raw
-- Log, colorspace: ADX - ADX10
+- DCDM P3D60 Limited, colorspace: Output - DCDM (P3D60 Limited)
+- DCDM P3D65 Limited, colorspace: Output - DCDM (P3D65 Limited)
+- DCDM, colorspace: Output - DCDM
+- P3-D60, colorspace: Output - P3-D60
+- P3-D65 ST2084 1000 nits, colorspace: Output - P3-D65 ST2084 (1000 nits)
+- P3-D65 ST2084 2000 nits, colorspace: Output - P3-D65 ST2084 (2000 nits)
+- P3-D65 ST2084 4000 nits, colorspace: Output - P3-D65 ST2084 (4000 nits)
+- P3-DCI D60 simulation, colorspace: Output - P3-DCI (D60 simulation)
+- P3-DCI D65 simulation, colorspace: Output - P3-DCI (D65 simulation)
+- P3D65 D60 simulation, colorspace: Output - P3D65 (D60 simulation)
+- P3D65 Rec.709 Limited, colorspace: Output - P3D65 (Rec.709 Limited)
+- P3D65 ST2084 108 nits, colorspace: Output - P3D65 ST2084 (108 nits)
+- P3D65, colorspace: Output - P3D65
+- Rec.2020 HLG 1000 nits, colorspace: Output - Rec.2020 HLG (1000 nits)
+- Rec.2020 P3D65 Limited, colorspace: Output - Rec.2020 (P3D65 Limited)
+- Rec.2020 Rec.709 Limited, colorspace: Output - Rec.2020 (Rec.709 Limited)
+- Rec.2020 ST2084 1000 nits, colorspace: Output - Rec.2020 ST2084 (1000 nits)
+- Rec.2020 ST2084 2000 nits, colorspace: Output - Rec.2020 ST2084 (2000 nits)
+- Rec.2020 ST2084 4000 nits, colorspace: Output - Rec.2020 ST2084 (4000 nits)
+- Rec.2020, colorspace: Output - Rec.2020
+- Rec.709 D60 sim., colorspace: Output - Rec.709 (D60 sim.)
+- Rec.709, colorspace: Output - Rec.709
+- sRGB D60 sim., colorspace: Output - sRGB (D60 sim.)
+- sRGB, colorspace: Output - sRGB
+- Raw, colorspace: Utility - Raw
+- Log, colorspace: Input - ADX - ADX10
 
 Considerations for custom config generation:
 
 - The choice of a single Display and many Views may not align well with the implementation of OCIO in an application. 
-    - If you would like to generate a config that contains multiple Displays, with a small number of Views for each, review the config generation script's '--createMultipleDisplays' option.
+    - If you would like to generate a config that contains multiple Displays, with a small number of Views for each, review the config generation script's `--createMultipleDisplays` option.
 - If a Look is added to the config, a new set of Views will be added, one for each of the Views listed above except Raw and Log, that includes the Look. The Views with Looks will be interleaved in the View list with the original Views.
-    - To add a custom Look to the config, review the config generation script's '--addACESLookLUT', '--addACESLookCDL', '--addCustomLookLUT' and '--addCustomLookCDL' options.
+    - To add a custom Look to the config, review the config generation script's `--addACESLookLUT`, `--addACESLookCDL`, `--addCustomLookLUT` and `--addCustomLookCDL` options.
 
 
 LUTs
@@ -293,11 +300,9 @@ The LUTs used internally by OCIO can be can be retrieved [from the repository he
 
 LUTs that can be used outside of OCIO are included in the ['baked' directory here.](https://github.com/imageworks/OpenColorIO-Configs/tree/master/aces_1.2/baked)
 
-- The LUTs encode the ACES Output Transform for a specific colorspace input and are generally named:
-    - 'Output Transform name' for 'Input colorspace name'.extension
-    - Ex. 'sRGB (D60 sim.) for ACEScc.icc'
+- The LUTs encode the ACES Output Transform for a specific colorspace input and are generally named *{OUTPUT_TRANSFORM_NAME} for {INPUT_COLORSPACE_NAME}.extension* e.g. `sRGB (D60 sim.) for ACEScc.icc`
 
-The LUTs included in the 'baked' directory cover the following formats and applications:
+The LUTs included in the `baked` directory cover the following formats and applications:
 
 - .3dl for Autodesk Flame
 - .3dl for Autodesk Lustre
@@ -320,7 +325,7 @@ Features exposed for customization by the user include:
 - The resolution of 1D and 3D LUTs
 - Inclusion of custom Looks
 - Two modes of creating the list of OCIO Displays and Views
-- Selection of shaper function: Log2 or Dolby PQ
+- Selection of shaper function: *Log2* or Dolby *PQ*
 
 
 ### CTL Source
@@ -347,6 +352,7 @@ libraries:
 - **OpenColorIO**: http://opencolorio.org
     - Detailed build instructions can be found here: [OpenColorIO Build Instructions](http://opencolorio.org/installation.html)
 - **CTL**: https://github.com/ampas/CTL
+- **Numpy**: https://numpy.org/
 
 
 Acknowledgements

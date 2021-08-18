@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: AMPAS
+# Copyright Academy of Motion Picture Arts and Sciences
 """
 A process wrapper class that maintains the text output and execution status of
 a process or a list of other process wrappers which carry such data.
@@ -9,11 +11,14 @@ import os
 import sys
 import traceback
 
-__author__ = 'ACES Developers'
-__copyright__ = 'Copyright (C) 2014 - 2016 - ACES Developers'
-__license__ = ''
-__maintainer__ = 'ACES Developers'
-__email__ = 'aces@oscars.org'
+__author__ = (
+    'Haarm-Pieter Duiker, Thomas Mansencal, Stephen Hill, Kevin Wheatley, '
+    'Joseph Goldstone')
+__copyright__ = (
+    'Copyright (C) 2014-2021 Academy of Motion Picture Arts and Sciences')
+__license__ = 'Academy of Motion Picture Arts and Sciences License Terms'
+__maintainer__ = 'Academy of Motion Picture Arts and Sciences'
+__email__ = 'acessupport@oscars.org'
 __status__ = 'Production'
 
 __all__ = ['read_text', 'write_text', 'Process', 'ProcessList', 'main']

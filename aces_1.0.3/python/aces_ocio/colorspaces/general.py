@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: AMPAS
+# Copyright Academy of Motion Picture Arts and Sciences
 
 """
 Implements support for general colorspaces conversions and transfer functions.
@@ -17,11 +19,14 @@ import aces_ocio.generate_lut as genlut
 from aces_ocio.colorspaces import aces
 from aces_ocio.utilities import ColorSpace, mat44_from_mat33
 
-__author__ = 'ACES Developers'
-__copyright__ = 'Copyright (C) 2014 - 2016 - ACES Developers'
-__license__ = ''
-__maintainer__ = 'ACES Developers'
-__email__ = 'aces@oscars.org'
+__author__ = (
+    'Haarm-Pieter Duiker, Thomas Mansencal, Stephen Hill, Kevin Wheatley, '
+    'Joseph Goldstone')
+__copyright__ = (
+    'Copyright (C) 2014-2021 Academy of Motion Picture Arts and Sciences')
+__license__ = 'Academy of Motion Picture Arts and Sciences License Terms'
+__maintainer__ = 'Academy of Motion Picture Arts and Sciences'
+__email__ = 'acessupport@oscars.org'
 __status__ = 'Production'
 
 __all__ = ['create_matrix_colorspace',

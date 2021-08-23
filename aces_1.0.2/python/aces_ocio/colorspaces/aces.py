@@ -27,11 +27,14 @@ from aces_ocio.utilities import (
     sanitize,
     compact)
 
-__author__ = 'ACES Developers'
-__copyright__ = 'Copyright (C) 2014 - 2015 - ACES Developers'
-__license__ = ''
-__maintainer__ = 'ACES Developers'
-__email__ = 'aces@oscars.org'
+__author__ = (
+    'Haarm-Pieter Duiker, Thomas Mansencal, Stephen Hill, Kevin Wheatley, '
+    'Joseph Goldstone')
+__copyright__ = (
+    'Copyright (C) 2014-2021 Academy of Motion Picture Arts and Sciences')
+__license__ = 'Academy of Motion Picture Arts and Sciences License Terms'
+__maintainer__ = 'Academy of Motion Picture Arts and Sciences'
+__email__ = 'acessupport@oscars.org'
 __status__ = 'Production'
 
 __all__ = ['ACES_AP1_TO_AP0',

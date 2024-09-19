@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: AMPAS
+# Copyright Academy of Motion Picture Arts and Sciences
 
 """
 Defines unit tests for *ACES* configuration.
@@ -23,11 +25,13 @@ from aces_ocio.generate_config import (
     ACES_OCIO_CTL_DIRECTORY_ENVIRON,
     generate_config)
 
-__author__ = 'ACES Developers'
-__copyright__ = 'Copyright (C) 2014 - 2015 - ACES Developers'
-__license__ = ''
-__maintainer__ = 'ACES Developers'
-__email__ = 'aces@oscars.org'
+__author__ = (
+    'Haarm-Pieter Duiker, Thomas Mansencal, Stephen Hill, Kevin Wheatley')
+__copyright__ = (
+    'Copyright (C) 2014-2021 Academy of Motion Picture Arts and Sciences')
+__license__ = 'Academy of Motion Picture Arts and Sciences License Terms'
+__maintainer__ = 'Academy of Motion Picture Arts and Sciences'
+__email__ = 'acessupport@oscars.org'
 __status__ = 'Production'
 
 __all__ = ['REFERENCE_CONFIG_ROOT_DIRECTORY',
